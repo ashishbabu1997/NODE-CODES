@@ -1,0 +1,82 @@
+[{
+        "Effect": "Allow",
+        "service": "device-store",
+        "Action": [
+            "device-store:AddDevice",
+            "device-store:DeleteDevice",
+            "device-store:ListDevice",
+            "device-store:UpdateDevice",
+            "device-store:AddModel",
+            "device-store:*"
+        ],
+        "Resource": [
+            "*"
+        ]
+    },
+    {
+        "Effect": "Allow",
+        "service": "firmware",
+        "Action": [
+            "firmware:AddNewImage",
+            "firmware:UpdateImage",
+            "firmware:DeleteImage",
+            "firmware:ListImage",
+            "firmware:*"
+        ],
+        "Resource": [
+            "*"
+        ]
+    },
+    {
+        "Effect": "Allow",
+        "service": "device-monitoring",
+        "Action": [
+            "device-monitoring:ViewData",
+            "device-monitoring:ControlData",
+            "device-monitoring:*"
+        ],
+        "Resource": [
+            "*"
+        ]
+    },
+    {
+        "Effect": "Allow",
+        "service": "customer-complaint",
+        "Action": [
+            "customer-complaint:ListFeedback",
+            "customer-complaint:UpdateStatus",
+            "customer-complaint:*"
+        ],
+        "Resource": [
+            "*"
+        ]
+    },
+    {
+        "Effect": "Allow",
+        "service": "admin-users",
+        "Action": [
+            "admin-users:ListAdminUsers",
+            "admin-users:ListConsumerUsers",
+            "admin-users:AddAdminUser",
+            "admin-users:DeleteAdminUser",
+            "admin-users:UpdatePolicy",
+            "admin-users:*"
+        ],
+        "Resource": [
+            "*"
+        ]
+    },
+    {
+        "Effect": "Allow",
+        "service": "reports",
+        "Action": [
+            "reports:ViewFilterReport",
+            "reports:ViewUserReport",
+            "reports:ViewDeviceReport",
+            "reports:*"
+        ],
+        "Resource": [
+            "*"
+        ]
+    }
+]

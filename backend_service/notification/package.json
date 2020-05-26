@@ -1,0 +1,16 @@
+{
+  "name": "message_handler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/Server.js",
+  "scripts": {
+    "test": "node src/Server.js"
+  },
+  "author": "Sugirtharaj.s",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "twilio": "^3.42.0"
+  }
+}

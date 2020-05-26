@@ -1,0 +1,1201 @@
+{
+	"info": {
+		"_postman_id": "957285dd-3987-43e8-85cb-4a01864387d4",
+		"name": "APP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"username\",\r\n    \"password\":\"password\",\r\n    \"firstName\": \"Phani\", \r\n    \"lastName\":\"Kumar\",\r\n    \"email\": \"altiux2@gmail.com\",\r\n    \"phoneNo\":\"2234567890\"\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"auth",
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Signup",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"username\",\r\n    \"password\":\"password\",\r\n    \"firstName\": \"firstname\", \r\n    \"lastName\":\"lastname\",\r\n    \"email\": \"app@gmail.com\",\r\n    \"phoneNo\":\"2234567890\"\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:3001/v1/rest/auth/user/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"v1",
+								"rest",
+								"auth",
+								"user",
+								"signup"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET,PUT,POST,DELETE,OPTIONS"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "X-Requested-With,Content-Type,Cache-Control"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "426"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"1aa-Vv/BnXdx926OrmmQOh3eI7/l6CY\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 24 Mar 2020 10:32:32 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"userId\": 100006,\n    \"username\": \"username\",\n    \"firstName\": \"firstname\",\n    \"lastName\": \"lastname\",\n    \"email\": \"app@gmail.com\",\n    \"phoneNo\": \"2234567890\",\n    \"authToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwNiwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4MkBnbWFpbC5jb20iLCJwaG9uZU5vIjoiMjIzNDU2Nzg5MCIsImNyZWF0ZWRUaW1lIjoxNTg1MDQ1OTUyODEzfQ.CbIriBXI-tdSa0799bOo-6byTwm1YUX7c5KCyNZAcKU\"\n}"
+				},
+				{
+					"name": "Signup",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"username\",\r\n    \"password\":\"password\",\r\n    \"firstName\": \"Phani\", \r\n    \"lastName\":\"Kumar\",\r\n    \"email\": \"altiux2@gmail.com\",\r\n    \"phoneNo\":\"2234567890\"\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:3001/v1/rest/auth/user/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"v1",
+								"rest",
+								"auth",
+								"user",
+								"signup"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET,PUT,POST,DELETE,OPTIONS"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "X-Requested-With,Content-Type,Cache-Control"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1119"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"45f-K6S6C7pvp04VzRWfkBveD23b6+s\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 24 Mar 2020 10:50:50 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"userId\": 100008,\n    \"username\": \"username\",\n    \"firstName\": \"firstname\",\n    \"lastName\": \"lastname\",\n    \"email\": \"app@gmail.com\",\n    \"phoneNo\": \"2234567890\",\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwOCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4MkBnbWFpbC5jb20iLCJwaG9uZU5vIjoiMjIzNDU2Nzg5MCIsImNyZWF0ZWRUaW1lIjoxNTg1MDQ3MDUwOTMyfQ.rHSYmDWm0JEvZo2--oDkXDVv6_ETC0OnrlrdLNi4L_E\",\n    \"expires\": 29999,\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwOCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4MkBnbWFpbC5jb20iLCJwaG9uZU5vIjoiMjIzNDU2Nzg5MCIsImFjY2Vzc1Rva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSjkuZXlKMWMyVnlTV1FpT2pFd01EQXdPQ3dpZFhObGNtNWhiV1VpT2lKaGJIUnBkWGhwYm1ScFlTSXNJbVpwY25OMFRtRnRaU0k2SWxCb1lXNXBJaXdpYkdGemRFNWhiV1VpT2lKTGRXMWhjaUlzSW1WdFlXbHNJam9pWVd4MGFYVjRNa0JuYldGcGJDNWpiMjBpTENKd2FHOXVaVTV2SWpvaU1qSXpORFUyTnpnNU1DSXNJbU55WldGMFpXUlVhVzFsSWpveE5UZzFNRFEzTURVd09UTXlmUS5ySFNZbURXbTBKRXZabzItLW9Ea1hEVnY2X0VUQzBPbnJscmRMTmk0TF9FIiwiZXhwaXJlcyI6Mjk5OTl9.SiOsvrK-43JyF671HOPfGDBtKRUv_1Wje8MCvhA_blI\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"username\",\r\n    \"password\":\"password\"\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"user",
+						"login"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Login",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"username\",\r\n    \"password\":\"password\"\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:3001/v1/rest/auth/user/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"v1",
+								"rest",
+								"auth",
+								"user",
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET,PUT,POST,DELETE,OPTIONS"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "X-Requested-With,Content-Type,Cache-Control"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "251"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"fb-Dq1qlXt+d0+I0tE/VYT9mCyt22M\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 24 Mar 2020 11:21:14 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"userId\": 100010,\n    \"tokens\": {\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJjcmVhdGVkVGltZSI6MTU4NTA0ODg3NDk2MH0.2XPziSaRNVZoFyQkbhGpFUUL0l_lCyiDS0Qb452M5ec\",\n        \"expires\": 29999,\n        \"refreshToken\": \"eyJhbGciOiJIUzI1NiJ9.e30.akEDEWaWYCmZnRKfMZRypGds309qTT2p6Ud8j4QdAXc\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Get Profile",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/user/100000/profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"user",
+						"100000",
+						"profile"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get Profile",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/v1/rest/auth/user/100010/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"v1",
+								"rest",
+								"auth",
+								"user",
+								"100010",
+								"profile"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET,PUT,POST,DELETE,OPTIONS"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "X-Requested-With,Content-Type,Cache-Control"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "107"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"6b-iM6xcC4cwT3ZO6pxaTaaxW1KJhQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 24 Mar 2020 12:37:25 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"userId\": 100010,\n    \"firstName\": \"firstanem\",\n    \"lastName\": \"lastname\",\n    \"email\": \"app@gmail.com\",\n    \"phoneNo\": \"2234567890\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Update Profile",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"Phani\",\n    \"lastName\": \"Kumar\",\n    \"email\": \"altiux2@gmail.com\",\n    \"phoneNo\": \"2234567890\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/user/100000/profile",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"user",
+						"100000",
+						"profile"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Update Profile",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"firstname\",\n    \"lastName\": \"lastname\",\n    \"email\": \"app@gmail.com\",\n    \"phoneNo\": \"2234567890\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3001/v1/rest/auth/user/100010/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"v1",
+								"rest",
+								"auth",
+								"user",
+								"100010",
+								"profile"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET,PUT,POST,DELETE,OPTIONS"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "X-Requested-With,Content-Type,Cache-Control"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "107"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"6b-iM6xcC4cwT3ZO6pxaTaaxW1KJhQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 24 Mar 2020 12:49:38 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"userId\": 100010,\n    \"firstName\": \"firstname\",\n    \"lastName\": \"lastname\",\n    \"email\": \"app@gmail.com\",\n    \"phoneNo\": \"2234567890\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Forgot password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"altiuxindia\"\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/user/forgotpassword",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"user",
+						"forgotpassword"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Validate OTP",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"type\":\"forgot\",\r\n    \"otp\":\"1223\",\r\n    \"username\":\"altiuxindia\"\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/user/validateotp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"user",
+						"validateotp"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Validate OTP",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\":\"forgot\",\r\n    \"otp\":\"1223\",\r\n    \"username\":\"username\"\r\n}\r\n"
+						},
+						"url": {
+							"raw": "http://localhost:3001/v1/rest/auth/user/validateotp",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"v1",
+								"rest",
+								"auth",
+								"user",
+								"validateotp"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET,PUT,POST,DELETE,OPTIONS"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "X-Requested-With,Content-Type,Cache-Control"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "51"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"33-x2dtSrUenWCeayAIs513BGyRiHA\""
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 24 Mar 2020 14:39:33 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"otptoken\": \"1636953c-caae-455c-be52-a04fdd2e3bb1\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Reset Password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\":\"password updated\",\r\n    \"otptoken\":\"1636953c-caae-455c-be52-a04fdd2e3bb1\",\r\n    \"username\":\"altiuxindia\"\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/user/resetpassword",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"user",
+						"resetpassword"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Forgot Username",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\":\"app@gmail.com\"\r\n}\r\n"
+				},
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/user/forgotusername",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"user",
+						"forgotusername"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/user/logout/eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAxMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4MkBnbWFpbC5jb20iLCJwaG9uZU5vIjoiMjIzNDU2Nzg5MCIsImNyZWF0ZWRUaW1lIjoxNTg1MDQ4NjQxMjcyfQ.wTkTURKoOqbEICumd0RYc9INw0fgPd0C1iIGQ3gAxlw",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"user",
+						"logout",
+						"eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAxMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4MkBnbWFpbC5jb20iLCJwaG9uZU5vIjoiMjIzNDU2Nzg5MCIsImNyZWF0ZWRUaW1lIjoxNTg1MDQ4NjQxMjcyfQ.wTkTURKoOqbEICumd0RYc9INw0fgPd0C1iIGQ3gAxlw"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ConsumerUser List",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/admin/consumeruser/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"admin",
+						"consumeruser",
+						"list"
+					],
+					"query": [
+						{
+							"key": "Authorization",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get ConsumerUser List",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3001/v1/rest/auth/admin/consumeruser/list",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"v1",
+								"rest",
+								"auth",
+								"admin",
+								"consumeruser",
+								"list"
+							],
+							"query": [
+								{
+									"key": "Authorization",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET,PUT,POST,DELETE,OPTIONS"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "X-Requested-With,Content-Type,Cache-Control,Authorization"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "189"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"bd-s1s73RGEfftxZjpQs2x+aZjKPLM\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 26 Mar 2020 08:19:31 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"username\": \"username\",\n        \"userId\": 100000,\n        \"email\": \"app@gmail.com\",\n        \"phoneNo\": \"1234567890\"\n    },\n    {\n        \"username\": \"username\",\n        \"userId\": 100004,\n        \"email\": \"username@gmail.com\",\n        \"phoneNo\": \"2234567890\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "Get Admin User List",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/admin/user/list",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"admin",
+						"user",
+						"list"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin User Signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\t\"username\": \"admin\",\r\n        \"password\": \"password\",\r\n        \"firstName\": \"First name\",\r\n        \"lastName\": \"Last Name\",\r\n        \"email\": \"sourav.satyamsing@gmail.com\",\r\n        \"phoneNo\": \"999999999\"\r\n\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/admin/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"admin",
+						"user",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Admin User",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/admin/user/100009",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"admin",
+						"user",
+						"100009"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Admin Policy",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/admin/policy?userId=100008",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"admin",
+						"policy"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "100008"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get Admin Policy",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3001/v1/rest/auth/admin/policy?userId=100008",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"v1",
+								"rest",
+								"auth",
+								"admin",
+								"policy"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "100008"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET,PUT,POST,DELETE,OPTIONS"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "X-Requested-With,Content-Type,Cache-Control,Authorization"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1140"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"474-AxKopVETZsn/hr8QeAXhmUaOM+I\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 26 Mar 2020 09:04:39 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"userId\": \"100008\",\n    \"policy\": [\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"device-store\",\n            \"Action\": [\n                \"device-store:AddDevice\",\n                \"device-store:DeleteDevice\",\n                \"device-store:ListDevice\",\n                \"device-store:UpdateDevice\",\n                \"device-store:AddModel\",\n                \"device-store:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"firmware\",\n            \"Action\": [\n                \"firmware:AddNewImage\",\n                \"firmware:UpdateImage\",\n                \"firmware:DeleteImage\",\n                \"firmware:ListImage\",\n                \"firmware:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"device-monitoring\",\n            \"Action\": [\n                \"device-monitoring:ViewData\",\n                \"device-monitoring:ControlData\",\n                \"device-monitoring:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"customer-complaint\",\n            \"Action\": [\n                \"customer-complaint:ListFeedback\",\n                \"customer-complaint:UpdateStatus\",\n                \"customer-complaint:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"admin-users\",\n            \"Action\": [\n                \"admin-users:ListAdminUsers\",\n                \"admin-users:ListConsumerUsers\",\n                \"admin-users:AddAdminUser\",\n                \"admin-users:DeleteAdminUser\",\n                \"admin-users:UpdatePolicy\",\n                \"admin-users:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"reports\",\n            \"Action\": [\n                \"reports:ViewFilterReport\",\n                \"reports:ViewUserReport\",\n                \"reports:ViewDeviceReport\",\n                \"reports:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Add/Update Policy",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"policy\": [\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"device-store\",\n            \"Action\": [\n                \"device-store:AddDevice\",\n                \"device-store:DeleteDevice\",\n                \"device-store:ListDevice\",\n                \"device-store:UpdateDevice\",\n                \"device-store:AddModel\",\n                \"device-store:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"firmware\",\n            \"Action\": [\n                \"firmware:AddNewImage\",\n                \"firmware:UpdateImage\",\n                \"firmware:DeleteImage\",\n                \"firmware:ListImage\",\n                \"firmware:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"device-monitoring\",\n            \"Action\": [\n                \"device-monitoring:ViewData\",\n                \"device-monitoring:ControlData\",\n                \"device-monitoring:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"customer-complaint\",\n            \"Action\": [\n                \"customer-complaint:ListFeedback\",\n                \"customer-complaint:UpdateStatus\",\n                \"customer-complaint:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"admin-users\",\n            \"Action\": [\n                \"admin-users:ListAdminUsers\",\n                \"admin-users:ListConsumerUsers\",\n                \"admin-users:AddAdminUser\",\n                \"admin-users:DeleteAdminUser\",\n                \"admin-users:UpdatePolicy\",\n                \"admin-users:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"reports\",\n            \"Action\": [\n                \"reports:ViewFilterReport\",\n                \"reports:ViewUserReport\",\n                \"reports:ViewDeviceReport\",\n                \"reports:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/admin/policy?userId=100008",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"admin",
+						"policy"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "100008"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Add/Update Policy",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEwMDAwMCwidXNlcm5hbWUiOiJhbHRpdXhpbmRpYSIsImZpcnN0TmFtZSI6IlBoYW5pIiwibGFzdE5hbWUiOiJLdW1hciIsImVtYWlsIjoiYWx0aXV4QGdtYWlsLmNvbSIsInBob25lTm8iOiIxMjM0NTY3ODkwIiwiY3JlYXRlZFRpbWUiOjE1ODUyMDUxNjI5MDB9.RD-eV2QZ7Sb5Cqbr9_67gEJ3ejQ0ZF065Cb3HaFyAWg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"policy\": [\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"device-store\",\n            \"Action\": [\n                \"device-store:AddDevice\",\n                \"device-store:DeleteDevice\",\n                \"device-store:ListDevice\",\n                \"device-store:UpdateDevice\",\n                \"device-store:AddModel\",\n                \"device-store:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"firmware\",\n            \"Action\": [\n                \"firmware:AddNewImage\",\n                \"firmware:UpdateImage\",\n                \"firmware:DeleteImage\",\n                \"firmware:ListImage\",\n                \"firmware:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"device-monitoring\",\n            \"Action\": [\n                \"device-monitoring:ViewData\",\n                \"device-monitoring:ControlData\",\n                \"device-monitoring:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"customer-complaint\",\n            \"Action\": [\n                \"customer-complaint:ListFeedback\",\n                \"customer-complaint:UpdateStatus\",\n                \"customer-complaint:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"admin-users\",\n            \"Action\": [\n                \"admin-users:ListAdminUsers\",\n                \"admin-users:ListConsumerUsers\",\n                \"admin-users:AddAdminUser\",\n                \"admin-users:DeleteAdminUser\",\n                \"admin-users:UpdatePolicy\",\n                \"admin-users:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        },\n        {\n            \"Effect\": \"Allow\",\n            \"service\": \"reports\",\n            \"Action\": [\n                \"reports:ViewFilterReport\",\n                \"reports:ViewUserReport\",\n                \"reports:ViewDeviceReport\",\n                \"reports:*\"\n            ],\n            \"Resource\": [\n                \"*\"\n            ]\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3001/v1/rest/auth/admin/policy?userId=100008",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"v1",
+								"rest",
+								"auth",
+								"admin",
+								"policy"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "100008"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET,PUT,POST,DELETE,OPTIONS"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "X-Requested-With,Content-Type,Cache-Control,Authorization"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "4"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"4-X/5TO4MPCKAyY0ipFgr6/IraRNs\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 26 Mar 2020 09:04:36 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "true"
+				}
+			]
+		}
+	],
+	"protocolProfileBehavior": {}
+}

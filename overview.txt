@@ -1,0 +1,92 @@
+==> backend_service
+
+    ==> auth
+        -> User auth service provides user managemnt features and user authentication features 
+            (login, logout, signup, forgotpassword, resetpassword, forgotUsername, refreshToken, userProfile, userList, etc...)
+        -> environment: nodeJS
+        -> framework: expressJS
+        -> database:  mysql (we can have a discuess)
+        -> protocol: http/https
+        -> ouptut: docker image
+        -> config: environment variables
+        -> authToken/refreshToken: JWT (Json Web Token)
+
+    ==> message_handler
+        -> This service will provide api's for other services to send sms/email/push_notifications otp, notifications and other messagings.
+        -> environment: nodeJS
+        -> framework: expressJS and other sms/email third-party sdk
+        -> protocol: http/https
+        -> ouptut: docker image
+        -> config: environment variables
+        -> api_security: JWT (Json Web Token) & helmet
+
+    ==> core
+        -> This core service will provide api's for all the core features. 
+            (
+                CRUD operations for Requirements, 
+                CRUD operations for profiles (if we have this feature), 
+                other core business logic
+            )
+        -> environment: nodeJS
+        -> framework: expressJS
+        -> database:  mongodb (we can have a discuess)
+        -> protocol: http/https
+        -> ouptut: docker image
+        -> config: environment variables
+        -> api_security: JWT (Json Web Token) & helmet
+
+    ==> search
+        -> this service is to show our USP 
+            (
+                search feature on descriptions,
+                profile_details/CV and on other criterion also
+            )
+        -> environment: nodeJS
+        -> framework: expressJS
+        -> database:  mongodb (we can have a discuess) & elasticsearch
+        -> protocol: http/https
+        -> ouptut: docker image
+        -> config: environment variables
+        -> api_security: JWT (Json Web Token) & helmet
+
+    ==> reporting
+
+        ( follows the same process with any environment )
+
+    ==> analytics
+
+        ( follows the same process with any environment )
+        
+    ==> chat 
+
+        ( follows the same process with any environment and any web socket protocol )
+
+    ==> payment
+
+        ( follows the same process with any environment if applicable )
+
+==> frontend
+
+    ==> admin
+        -> This is the main web application for the admin backdoor.
+        -> environment: nodeJS
+        -> framework: reactJS, typescript, material-ui, material-ui admin theme, redux, redux-thunk
+        -> ouptut: docker image
+        -> config: environment variables
+        -> api_security: JWT (Json Web Token) & helmet
+
+    ==> web
+        -> This is the main web application for the users to post requirments and find match for that requirement.
+        -> environment: nodeJS
+        -> framework: reactJS, typescript, material-ui, redux, redux-thunk
+        -> ouptut: docker image
+        -> config: environment variables
+        -> api_security: JWT (Json Web Token) & helmet
+
+    ==> mobile
+        -> This is the main mobile application for the users to post requirments and find match for that requirement.
+        -> environment: <yet to decided>
+        -> framework: <yet to decided>
+        -> ouptut: Android / IOS
+        -> api_security: JWT (Json Web Token) & helmet
+        
