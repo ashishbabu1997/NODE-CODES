@@ -1,14 +1,9 @@
 const express = require('express');
+const UserRouter = require('./user/user.route');
+const AppConfig = require('../config/config.json');
 const bodyParser = require('body-parser');
 
-require('./common/database/dbConnection');
-const AppConfig = require('../config/config.json');
-
-const UserRouter = require('./user/user.route');
-const AdminRouter = require('./admin/admin.route');
 const expressApp = express();
-
-global["G__dirname"] = __dirname.replace('src', '');
 
 expressApp
     .use(bodyParser.json())
@@ -27,9 +22,10 @@ expressApp
         }
     });
 
-expressApp.use(`/${AppConfig.version}/rest/auth/user`, UserRouter);
-expressApp.use(`/${AppConfig.version}/rest/auth/admin`, AdminRouter);
+    expressApp.use(`/${AppConfig.version}/rest/auth/user`, UserRouter);
 
+
+ 
 let server_http = expressApp.listen(AppConfig.http.port, function () {
     var host = server_http.address().address,
         port = server_http.address().port;

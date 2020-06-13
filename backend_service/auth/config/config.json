@@ -9,14 +9,10 @@
         "expires": 29999
     },
     "db": {
+        "user": "ellow_user",
         "host": "localhost",
-        "user": "root",
-        "password": "password",
-        "database": "b2bschema"
-    },
-    "smsServerUrl": "http://127.0.0.1:3333/message/sms/send",
-    "msg": {
-        "username": "is your Username. Please do not share your account password/OTP with anyone. We takes your account security very seriously.",
-        "password": "is the OTP for resetting your password. This OTP is valid for 15 minutes. Please do not share your account password/OTP with anyone. We takes your account security very seriously."
+        "database": "Ellow",
+        "password": "Admin123",
+        "port": 5432
     }
 }

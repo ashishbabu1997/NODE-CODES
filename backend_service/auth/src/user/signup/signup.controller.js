@@ -1,31 +1,22 @@
-"use strict";
-let ResponseManager = require.main.require('./common/response/response');
 let signupManager = require('./signup.manager');
+let responseManager = require.main.require('./common/response/response');
 
 async function signup(request, response, next) {
 
-    let validationRes = await signupManager.validate(request.body).catch(ResponseManager.catchError.bind(this, response));
-    if (validationRes !== true) return;
+  let validationRes = await signupManager.validate(request.body).catch(responseManager.catchError.bind(this, response));
+  if (validationRes !== true) return;
 
-    let validateUsernameRes = await signupManager.validateUsername(request.body).catch(ResponseManager.catchError.bind(this, response));
-    if (validateUsernameRes !== true) return;
+  let validateCompanySizeRes = await signupManager.validateCompanySize(request.body).catch(responseManager.catchError.bind(this, response));
+    if (validateCompanySizeRes !== true) return;
 
-    let validateEmailRes = await signupManager.validateEmail(request.body).catch(ResponseManager.catchError.bind(this, response));
-    if (validateEmailRes !== true) return;
+  let validateRoleRes = await signupManager.validateRole(request.body).catch(responseManager.catchError.bind(this, response));
+  if (validateRoleRes !== true) return;
 
-    let validatePhoneNoRes = await signupManager.validatePhoneNo(request.body).catch(ResponseManager.catchError.bind(this, response));
-    if (validatePhoneNoRes !== true) return;
-    
-    let signupResult = await signupManager.doSignup(request.body).catch(ResponseManager.catchError.bind(this, response));
-    if(typeof signupResult === "undefined") return;
-
-    let signupInfo = await signupManager.getSignupInfo(signupResult).catch(ResponseManager.catchError.bind(this, response));
-    if(typeof signupInfo === "undefined") return;
-    
-    // await signupManager.savePolicy(signupResult);
-
-    await signupManager.generateToken(signupInfo).then(ResponseManager.sendResponse.bind(this, response)).catch(ResponseManager.catchError.bind(this, response));
-    
+  let company = await signupManager.insertCompany(request.body)
+    .catch(responseManager.catchError.bind(this, response));
+  
+    await signupManager.insertEmployee(request.body,company.pk_id).then(responseManager.sendResponse.bind(this, response))
+    .catch(responseManager.catchError.bind(this, response));
 }
 
 module.exports = signup;
