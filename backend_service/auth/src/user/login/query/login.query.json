@@ -1,0 +1,4 @@
+{
+    "login": "SELECT `userId` FROM `user` WHERE `username`=? AND `password`=?",
+    "loginInfo": "SELECT `userId`, `username`, `firstName`, `lastName`, `email`, `phoneNo` FROM `user` WHERE userId=?"
+}

@@ -1,6 +1,4 @@
 {
     "insertCompany": "INSERT INTO company( name, company_website, fk_company_size) VALUES ($1, $2, $3) RETURNING pk_id",
-    "insertEmployee":"INSERT INTO employee(firstname, lastname, account_type, fk_company_id, telephone_number, fk_role_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING pk_id",
-    "validateCompanySize":"SELECT pk_id FROM companysize WHERE pk_id = $1",
-    "validateRole":"SELECT pk_id FROM role WHERE pk_id=$1"
+    "insertEmployee":"INSERT INTO employee(firstname, lastname, account_type, fk_company_id, telephone_number, fk_role_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING pk_id"
 }
