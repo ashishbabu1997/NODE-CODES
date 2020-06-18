@@ -11,13 +11,19 @@ let catchError = (response, msg) => {
         message = _msgArray[0];
     }
     response.status(code).json({
-        'statusCode': code,
-        'statusMessage': message
+        status:0,
+        message: message,
+        data:{}
     });
 };
 
-let sendResponse = (response, data) => {
-    response.status(200).json(data);
+let sendResponse = (response, message, data) => {
+    //response.status(200).json(data);
+    response.status(200).json({
+        status: 1,
+        message: message,
+        data: data
+    })
 };
 
 exports.catchError = catchError;

@@ -1,0 +1,100 @@
+{
+	"info": {
+		"_postman_id": "d09898c7-9d32-4b4f-b431-e4d2938e8fb1",
+		"name": "auth",
+		"description": "# Introduction\nWhat does your API do?\n\n# Overview\nThings that the developers should know about\n\n# Authentication\nWhat is the preferred way of using the API?\n\n# Error Codes\nWhat errors and status codes can a user expect?\n\n# Rate limit\nIs there a limit to the number of requests an user can send?",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3001/v1/rest/auth/user/signup",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"companyName\": \"Ellow1\",\r\n    \"companyWebsite\": \"ellow.com\",\r\n    \"companySizeId\": \"1\",\r\n    \"firstName\": \"Seethal\",\r\n    \"lastName\": \"Raj\",\r\n    \"accountType\": \"Buyer\",\r\n    \"phoneNumber\": \"25698750\",\r\n    \"roleId\": \"1\",\r\n    \"email\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/v1/rest/auth/user/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"v1",
+						"rest",
+						"auth",
+						"user",
+						"signup"
+					]
+				},
+				"description": "User Registration "
+			},
+			"response": [
+				{
+					"name": "Default",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3001/v1/rest/auth/user/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"v1",
+								"rest",
+								"auth",
+								"user",
+								"signup"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": ""
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "14d06ca2-59f7-4c5e-9bb8-0cbbe8dee628",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "debce427-35d3-46c8-aa1d-0fceea617e8e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

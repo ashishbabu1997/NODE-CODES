@@ -4,15 +4,10 @@
     "http": {
         "port": 3001
     },
-    "jwt": {
-        "secretKey": "jwt-secretKey",
-        "expires": 29999
-    },
-    "db": {
-        "user": "ellow_user",
+    "employeeApi": {
         "host": "localhost",
-        "database": "Ellow",
-        "password": "Admin123",
-        "port": 5432
+        "port": 3002,
+        "path": "/v1/rest/employee",
+        "contentType": "application/json"
     }
 }

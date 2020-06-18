@@ -1,0 +1,14 @@
+{
+    "appName": "employee",
+    "version": "v1",
+    "http": {
+        "port": 3002
+    },
+    "db": {
+        "user": "ellow_user",
+        "host": "localhost",
+        "database": "Ellow",
+        "password": "Admin123",
+        "port": 5432
+    }
+}
