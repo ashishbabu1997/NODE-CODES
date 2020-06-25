@@ -9,7 +9,6 @@ export const fetchCompanyLocations = (_body) => {
             values: [parseInt(_body.companyId)],
         }
         database().query(query, (error, results) => {
-            console.log(results, error)
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
@@ -28,7 +27,6 @@ export const createCompanyLocations = (_body) => {
             values: [_body.companyId, _body.companyAddress, _body.countryId],
         }
         database().query(query, (error, results) => {
-            console.log(results, error)
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
@@ -38,3 +36,39 @@ export const createCompanyLocations = (_body) => {
     })
 }
 
+
+export const updateCompanyLocations = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        const query = {
+            name: 'update-company-locations',
+            text: companyQuery.updateCompanyLocations,
+            values: [_body.companyAddress, _body.countryId, _body.locationId,]
+        }
+        database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                return;
+            }
+            resolve({ code: 200, message: "Location updated successfully", data: {} });
+        })
+    })
+}
+
+export const deleteCompanyLocations = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        const query = {
+            name: 'delete-company-locations',
+            text: companyQuery.deleteCompanyLocations,
+            values: [_body.locationId]
+        }
+        database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                return;
+            }
+            resolve({ code: 200, message: "Location deleted successfully", data: {} });
+        })
+    })
+}
