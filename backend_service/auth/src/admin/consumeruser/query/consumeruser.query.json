@@ -1,3 +1,0 @@
-{
-    "getConsumerUserList": "SELECT `username`, `userId`, `email`, `phoneNo` FROM `user` WHERE role=2"
-}
