@@ -43,7 +43,7 @@ export const updateCompanyLocations = (_body) => {
         const query = {
             name: 'update-company-locations',
             text: companyQuery.updateCompanyLocations,
-            values: [_body.companyAddress, _body.countryId, _body.locationId,]
+            values: [_body.companyAddress, _body.countryId, _body.locationId]
         }
         database().query(query, (error, results) => {
             if (error) {
