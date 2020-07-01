@@ -1,4 +1,0 @@
-{
-    "getUserProfile": "SELECT `userId`, `firstName`, `lastName`, `email`, `phoneNo` FROM `user` WHERE userId=?",
-    "putUserProfile": "UPDATE `user` SET `firstName`=?,`lastName`=?,`email`=?,`phoneNo`=? WHERE userId=?"
-}

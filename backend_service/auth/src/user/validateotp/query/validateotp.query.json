@@ -1,4 +1,0 @@
-{
-    "getUserId": "SELECT `userId` FROM `user` WHERE `username`=?",
-    "getOTPToken": "SELECT `otptoken` FROM `otp` WHERE `otp`=? AND `userId` IN ( SELECT `userId` FROM `user` WHERE `username`=? )"
-}

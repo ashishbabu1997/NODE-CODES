@@ -1,6 +1,0 @@
-{
-    "getUsername": "SELECT `userId`, `username`,`phoneNo` FROM `user` WHERE `email`=?",
-    "checkForgotpasswordData": "SELECT `userId` FROM `otp` WHERE `userId`=?",
-    "insertForgotpasswordData": "INSERT INTO `otp`(`userId`, `otp`, `otptoken`) VALUES (?, ?, ?)",
-    "updateForgotpasswordData": "UPDATE `otp` SET `otp`=?,`otptoken`=? WHERE `userId`=?"
-}

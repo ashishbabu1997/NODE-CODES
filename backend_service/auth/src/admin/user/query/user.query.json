@@ -1,4 +1,0 @@
-{
-    "getUserList": "SELECT `username`, `userId`, `email`, `phoneNo` FROM `user` WHERE role=1",
-    "deleteUser": "DELETE FROM `user` WHERE `userId`=?"
-}

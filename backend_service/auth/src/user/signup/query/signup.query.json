@@ -1,7 +1,0 @@
-{
-    "signup": "INSERT INTO `user`(`username`, `password`, `firstName`, `lastName`, `email`, `phoneNo`) VALUES (?, ?, ?, ?, ?, ?)",
-    "signupInfo": "SELECT `userId`, `username`, `firstName`, `lastName`, `email`, `phoneNo` FROM `user` WHERE userId=?",
-    "validateUsername": "SELECT `username` FROM `user` WHERE `username`=?",
-    "validateEmail": "SELECT `email` FROM `user` WHERE `email`=?",
-    "validatePhone": "SELECT `phoneNo` FROM `user` WHERE `phoneNo`=?"
-}
