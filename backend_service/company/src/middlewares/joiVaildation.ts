@@ -1,4 +1,4 @@
-import sendResponse from '../../common/response/response';
+import sendResponse from '../common/response/response';
 export default (schema) => {
     return (req, res, next) => {
         var body = (req.route.methods.hasOwnProperty("post") || req.route.methods.hasOwnProperty("put"))
@@ -8,6 +8,7 @@ export default (schema) => {
         const { error, value } = schema.validate(body);
 
         if (error) {
+            console.log(error)
             sendResponse(res, 400, 0, error.message, {})
         } else {
             next();

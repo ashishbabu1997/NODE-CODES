@@ -1,11 +1,11 @@
-import companyQuery from './query/company.query';
+import locationQuery from './query/locations.query';
 import database from '../common/database/database';
 
 export const fetchCompanyLocations = (_body) => {
     return new Promise((resolve, reject) => {
         const query = {
             name: 'fetch-company-locations',
-            text: companyQuery.getCompanyLocations,
+            text: locationQuery.getCompanyLocations,
             values: [parseInt(_body.companyId)],
         }
         database().query(query, (error, results) => {
@@ -23,7 +23,7 @@ export const createCompanyLocations = (_body) => {
         const currentTime = Math.floor(Date.now() / 1000);
         const query = {
             name: 'add-company-locations',
-            text: companyQuery.addCompanyLocations,
+            text: locationQuery.addCompanyLocations,
             values: [_body.companyId, _body.companyAddress, _body.countryId],
         }
         database().query(query, (error, results) => {
@@ -42,7 +42,7 @@ export const updateCompanyLocations = (_body) => {
         const currentTime = Math.floor(Date.now() / 1000);
         const query = {
             name: 'update-company-locations',
-            text: companyQuery.updateCompanyLocations,
+            text: locationQuery.updateCompanyLocations,
             values: [_body.companyAddress, _body.countryId, _body.locationId]
         }
         database().query(query, (error, results) => {
@@ -60,7 +60,7 @@ export const deleteCompanyLocations = (_body) => {
         const currentTime = Math.floor(Date.now() / 1000);
         const query = {
             name: 'delete-company-locations',
-            text: companyQuery.deleteCompanyLocations,
+            text: locationQuery.deleteCompanyLocations,
             values: [_body.locationId]
         }
         database().query(query, (error, results) => {
