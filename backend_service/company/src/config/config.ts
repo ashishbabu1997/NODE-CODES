@@ -5,9 +5,10 @@ export default {
         "port": 3001
     },
     "db": {
+        "user": "ellow_user1",
         "host": "localhost",
-        "user": "joe.davis",
-        "password": "c@bot1234",
-        "database": "ellowDb"
+        "database": "Ellow",
+        "password": "Admin123",
+        "port": 5432
     }
 }
