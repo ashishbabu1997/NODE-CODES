@@ -8,7 +8,7 @@
     "dev": "nodemon dist/Server.js",
     "prod_stop": "pm2 stop dist/Server.js",
     "lintbe": "tslint **/**.ts{,x}",
-    "serve": "pm2 start dist/Serve.js",
+    "serve": "pm2 start dist/Server.js",
     "prod": "npm run serve",
     "preprod": "tsc -p src  & pm2 stop dist/Server.js &"
   },
