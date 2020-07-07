@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "outDir": "../dist/",
+      "sourceMap": true,
+      "allowJs": true
+    },
+    "include": [
+      "*.ts", "company_details/company.route.ts", "company_details/company.controller.ts"
+    ],
+    "exclude": [
+      "node_modules"
+    ]
+  }
