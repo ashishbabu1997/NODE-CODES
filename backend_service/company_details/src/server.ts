@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app
-    .use(`/api/${AppConfig.version}/company`, router);
+    .use(`/`, router);
 
 app.listen(AppConfig.http.port, () => {
   console.log('Listening on port ' + AppConfig.http.port);
