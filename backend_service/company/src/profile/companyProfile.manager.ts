@@ -11,7 +11,7 @@ export const get_Details = (_body) => {
         database().query(query, (error, results) => {
             if (error) {
                 console.log(query);
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed to access profile. Please try again.", data: {} });
                 return;
             }
             resolve(results.rows[0].company_id);
@@ -28,10 +28,10 @@ export const update_Details = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed to update profile. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Location updated successfully", data: {} });
+            resolve({ code: 200, message: "Profile updated successfully", data: {} });
         })
     })
 }
