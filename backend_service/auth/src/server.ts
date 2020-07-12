@@ -1,18 +1,16 @@
-import express from "express";
-import createUser from "./queries"
-import bodyParser from "body-parser"
-const app = express()
-const port = 3001 
-app.use(bodyParser.json())
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-)
-app.get('/', (request, response) => {
- response.send(" ELLOW API for Email Sign In")
-   })
-app.post('/email_signup',createUser)
-app.listen(port, () => {
-    console.log(`App running on port ${port}.`)
-})
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
+import AppConfig from './config/config';
+import router from './emailApiRouter';
+const app = express();
+app.use(cors());
+app.use(bodyParser.json({ limit: '150mb' }));
+app.use(bodyParser.urlencoded({
+  limit: '150mb',
+  extended: true
+}));
+app.use('/', router);
+app.listen(AppConfig.http.port, () => {
+  console.log('Listening on port ' + AppConfig.http.port);
+});

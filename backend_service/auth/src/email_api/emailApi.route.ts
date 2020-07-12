@@ -1,8 +1,7 @@
 
 import * as express from 'express';
-import * as signup from "./email_api.controller"
+import {getEmail} from "./emailApi.controller"
 const router = express.Router();
 router
-.post('/email_signup',signup.getEmail)
-
+    .post('/',getEmail)
 export default router;
