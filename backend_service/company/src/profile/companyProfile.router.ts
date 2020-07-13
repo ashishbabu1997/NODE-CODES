@@ -4,6 +4,6 @@ import validate from '../middlewares/joiValidation';
 import updateDetailsSchema from './schemas/updateDetailsSchema';
 const router = express.Router();
 router
-    .get('/:compny_id',getDetails)
-    .put('/update_details', validate(updateDetailsSchema), updateDetails)
+    .get('/:companyId',getDetails)
+    .put('/updateDetails', validate(updateDetailsSchema), updateDetails)
 export default router;

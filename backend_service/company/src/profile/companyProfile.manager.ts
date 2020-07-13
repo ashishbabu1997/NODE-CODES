@@ -24,7 +24,8 @@ export const update_Details = (_body) => {
         const query = {
             name: 'update_details',
             text: companyQuery.update_details,
-            values: [_body.company_name, _body.company_website, _body.company_size]
+            values: [_body.companyId, _body.profileUrl, _body.description,_body.logo,_body.coverPage,_body.tagline,_body.facebookId,_body.instagramId,
+                _body.twitterId,_body.linkedinId]
         }
         database().query(query, (error, results) => {
             if (error) {
