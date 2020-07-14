@@ -2,7 +2,7 @@ export default {
     "appName": "jobs",
     "version": "v1",
     "http": {
-        "port": 3001
+        "port": 3003
     },
     "db": {
         "host": "localhost",
