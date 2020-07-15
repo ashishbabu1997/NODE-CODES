@@ -7,7 +7,8 @@ export default {
         "db": {
             "user": "postgres",
             "host": "localhost",
-            "database": "ellowai",
-            "password": "Ash1526$"
+            "database": "postgres",
+            "password": "Ash1526$",
+            "port":5432
         }
     }
