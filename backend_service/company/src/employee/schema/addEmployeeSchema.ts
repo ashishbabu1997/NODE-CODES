@@ -83,31 +83,17 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    projectFiles: Joi.string().required().error(errors => {
+    empId: Joi.string().required().error(errors => {
         errors.forEach(err => {
-            switch (err.code) {
-                case "string.base":
-                    err.message = "Project Files must be a string"
-                    break;
-                default:
-                    err.message = "Invalid Project Files"
-                    break;
-            }
-        });
-        return errors;
-    }),
-    createdBy: Joi.number().required().error(errors => {
-        errors.forEach(err => {
-            console.log(err)
             switch (err.code) {
                 case "any.required":
-                    err.message = "CreatedBy should not be empty!";
+                    err.message = "empId should not be empty";
                     break;
-                case "number.base":
-                    err.message = "CreatedBy must be a number"
+                case "string.base":
+                    err.message = "empId must be a string"
                     break;
                 default:
-                    err.message = "Invalid CreatedBy"
+                    err.message = "Invalid empId"
                     break;
             }
         });
