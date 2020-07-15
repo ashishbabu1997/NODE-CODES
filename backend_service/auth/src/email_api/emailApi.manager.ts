@@ -24,12 +24,12 @@ export const mailer = (_body) => {
     var transporter = nodemailer.createTransport({
                   service: 'gmail',
                   auth: {
-                    user: 'yourmail@gmail.com',
-                    pass: 'password'
+                    user: 'ashish.b@ellow.ai',
+                    pass: 'Ash1526$'
                   }
                 });
                 var mailOptions = {
-                  from: 'yourmail@gmail.com',
+                  from: 'ashish.b@ellow.ai',
                   to: [_body.email],
                   subject: 'Your Ellow.AI otp is here',
                   text:otp
