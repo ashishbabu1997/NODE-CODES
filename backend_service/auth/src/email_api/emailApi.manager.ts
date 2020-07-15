@@ -19,29 +19,29 @@ export const addDetails = (_body) => {
       })
   })
 }
-// export const mailer = (_body) => {
-//   return new Promise((resolve, reject) => {
-//     var transporter = nodemailer.createTransport({
-//                   service: 'gmail',
-//                   auth: {
-//                     user: 'yourmail@gmail.com',
-//                     pass: 'password'
-//                   }
-//                 });
-//                 var mailOptions = {
-//                   from: 'yourmail@gmail.com',
-//                   to: [_body.email],
-//                   subject: 'Your Ellow.AI otp is here',
-//                   text:otp
-//                 };
-//                 transporter.sendMail(mailOptions, function(error, info){
-//                   if (error) {
-//                     console.log(error);
-//                   } else {
-//                     console.log('OTP has send successfully: ' + info.response);
-//                   }
-//                 });
+export const mailer = (_body) => {
+  return new Promise((resolve, reject) => {
+    var transporter = nodemailer.createTransport({
+                  service: 'gmail',
+                  auth: {
+                    user: 'yourmail@gmail.com',
+                    pass: 'password'
+                  }
+                });
+                var mailOptions = {
+                  from: 'yourmail@gmail.com',
+                  to: [_body.email],
+                  subject: 'Your Ellow.AI otp is here',
+                  text:otp
+                };
+                transporter.sendMail(mailOptions, function(error, info){
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    console.log('OTP has send successfully: ' + info.response);
+                  }
+                });
       
-//   })
-// }        
+  })
+}        
 
