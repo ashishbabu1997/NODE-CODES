@@ -1,3 +1,3 @@
 export default {
-    createUser:"INSERT INTO employee  (email,otp) VALUES ($1,$2)"
+    createUser:"INSERT INTO ellow  (email,otp) VALUES ($1,$2)",
 }

@@ -2,7 +2,7 @@ export default {
     "appName": "employee",
     "version": "v1",
     "http": {
-        "port": 3002
+        "port": 4002
     },
     "db": {
         "user": "ellow_user1",

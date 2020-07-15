@@ -1,7 +1,7 @@
 {
-  "name": "employee",
+  "name": "settings",
   "version": "1.0.0",
-  "description": "employee section API",
+  "description": "settings section API",
   "main": "dist/Server.js",
   "scripts": {
     "predev": "tsc -w -p src &",
@@ -12,7 +12,7 @@
     "prod": "npm run serve",
     "preprod": "tsc -p src  & pm2 stop dist/Server.js &"
   },
-  "author": "Seethal Raj",
+  "author": "Joe Davis",
   "license": "ISC",
   "dependencies": {
     "@hapi/joi": "^17.1.1",

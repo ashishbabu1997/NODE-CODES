@@ -2,12 +2,13 @@ export default {
         "appName": "company",
         "version": "v1",
         "http": {
-            "port": 3001
+            "port": 4000
         },
         "db": {
             "user": "postgres",
             "host": "localhost",
-            "database": "ellowai",
-            "password": "Ash1526$"
+            "database": "postgres",
+            "password": "Ash1526$",
+            "port":5432
         }
     }
