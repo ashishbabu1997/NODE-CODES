@@ -11,7 +11,7 @@ router
     .use(`/api/${AppConfig.version}/company/locations`, locationRouter)
     .use(`/api/${AppConfig.version}/company/services`, serviceRouter)
     .use(`/api/${AppConfig.version}/company/certifications`, certificationRouter)
-    .use(`/api/${AppConfig.version}/company/companyProfile`,companyProfileRouter);
+    .use(`/api/${AppConfig.version}/company/companyProfile`,companyProfileRouter)
     .use(`/api/${AppConfig.version}/company/employee`, employeeRouter);
 
 export default router;
