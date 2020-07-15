@@ -2,7 +2,7 @@ export default {
         "appName": "company",
         "version": "v1",
         "http": {
-            "port": 3001
+            "port": 3000
         },
         "db": {
             "user": "postgres",
