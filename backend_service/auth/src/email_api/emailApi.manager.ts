@@ -12,7 +12,7 @@ export const addDetails = (_body) => {
       }
       database().query(query, (error, results) => {
           if (error) {
-              reject({ code: 400, message: "Failed. Please try again.", data:  [_body.email,otp] );
+              reject({ code: 400, message: "Failed. Please try again.", data:  [_body.email,otp] });
               return;
           }
           resolve({ code: 200, message: "Email and otp has added to database successfully", data:  [_body.email,otp] });
