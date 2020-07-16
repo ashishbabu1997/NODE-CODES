@@ -6,7 +6,6 @@ export const getCompanyPositions = (_body) => {
         const orderBy = {
             "position": "position_id"
         }
-        console.log("das", _body.searchKey)
         const query = {
             name: 'fetch-company-positions',
             text: _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearch : positionsQuery.getCompanyPositionsASC)
