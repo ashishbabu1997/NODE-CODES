@@ -22,6 +22,48 @@ export const getCompanyPositions = (_body) => {
     })
 }
 
+
+export const fetchPositionDetails = (_body) => {
+    return new Promise((resolve, reject) => {
+        const query = {
+            name: 'fetch-position-details',
+            text: positionsQuery.getPositionDetailsQuery,
+            values: [parseInt(_body.positionId)],
+        }
+        database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                return;
+            }
+            const hiringSteps = results.rows;
+            let groupedHiringStages = []
+            let result = {}
+            hiringSteps.forEach(step => {
+                result = {
+                    positionName: step.position_name,
+                    location: step.location_name,
+                    createdOn: step.created_on,
+                    jobDescription: step.job_description,
+                    hiringStepId: step.position_hiring_step_id,
+                    hiringStepName: step.hiring_step_name,
+                    hiringStepDescription: step.description,
+                    hiringStages: []
+                }
+                groupedHiringStages.push(
+                    step.position_hiring_stage_id != null && {
+                        hiringStageId: step.position_hiring_stage_id,
+                        hiringStageName: step.hiring_stage_name,
+                        hiringStageDescription: step.position_hiring_stage_description,
+                        hiringStageOrder: step.hiring_stage_order,
+                    } 
+                )
+                result['hiringStages'] = groupedHiringStages;
+            })
+            resolve({ code: 200, message: "Fetched position details successfully", data: result });
+        })
+    });
+}
+
 export const createCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
