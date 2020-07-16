@@ -21,11 +21,11 @@ export const getCompanyHiringSteps = (_body) => {
                 if (index == -1) {
                     groupedHiringStages.push({
                         hiringStepId: step.hiring_step_id,
-                        hiringStageName: step.hiring_stage_name,
+                        hiringStepName: step.hiring_step_name,
                         description: step.description,
                         hiringStages: step.hiring_stage_id != null ? [{
                             hiringStageId: step.hiring_stage_id,
-                            hiringStageName: step.hiring_step_name,
+                            hiringStageName: step.hiring_stage_name,
                             hiringStageDescription: step.hiring_stage_description,
                             hiringStageOrder: step.hiring_stage_order,
                         }] : []
@@ -33,7 +33,7 @@ export const getCompanyHiringSteps = (_body) => {
                 } else {
                     groupedHiringStages[index].hiringStages.push({
                         hiringStageId: step.hiring_stage_id,
-                        hiringStageName: step.hiring_step_name,
+                        hiringStageName: step.hiring_stage_name,
                         hiringStageDescription: step.hiring_stage_description,
                         hiringStageOrder: step.hiring_stage_order,
                     })
