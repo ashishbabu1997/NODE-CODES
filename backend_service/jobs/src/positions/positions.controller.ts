@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { createCompanyPositions, getCompanyPositions, fetchPositionDetails } from './positions.manager';
-=======
 import { createCompanyPositions, getCompanyPositions, getAllActivePositions, getPositionByPositionId, updateflagForPosition, updateIsRejectForPosition, addProfile, getProfileByCompanyId } from './positions.manager';
->>>>>>> feature/job_received
 import sendResponse from '../common/response/response';
 
 export const getPositions = (req, res) => {
@@ -14,11 +10,6 @@ export const getPositions = (req, res) => {
     })
 }
 
-<<<<<<< HEAD
-export const getPositionDetails = (req, res) => {
-    const body = req.params;
-    fetchPositionDetails(body).then((response: any) => {
-=======
 export const getAllPositions = (req, res) => {
     const body = req.query;
     getAllActivePositions(body).then((response: any) => {
@@ -31,7 +22,6 @@ export const getAllPositions = (req, res) => {
 export const getPositionById = (req, res) => {
     const body = req.query;
     getPositionByPositionId(body).then((response: any) => {
->>>>>>> feature/job_received
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, error.message, error.data)
