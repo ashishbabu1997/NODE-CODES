@@ -1,9 +1,7 @@
 import employeeQuery  from './query/employee.query';
 import database from './common/database/database';
 
-export const createCompany = (_body) => {
-    console.log(_body);
-    return new Promise((resolve, reject) => {
+export const createCompany = (_body) => { return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
         const query = {
             name: 'createCompany',
@@ -12,8 +10,7 @@ export const createCompany = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
-                console.log("This is the new error " + error);
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+               reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
             resolve(results.rows[0].company_id);
@@ -31,7 +28,8 @@ export const createCompany = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
-                console.log('Employee Error' + error);
+                console.log("This is the new error " + error);
+                
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
