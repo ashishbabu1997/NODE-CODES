@@ -21,10 +21,11 @@ export const fetchCompanyCertifications = (_body) => {
 
 export const createCompanyCertifications = (_body) => {
     return new Promise((resolve, reject) => {
+    const currentTime = Math.floor(Date.now() / 1000);
     const query = {
             name: 'add-company-certifications',
             text: certificationQuery.addCompanyCertifications,
-            values: [_body.companyId, _body.certificateId, _body.certificateNumber, _body.logo, _body.document],
+            values: [_body.companyId, _body.certificateId, _body.certificateNumber, _body.logo, _body.document, currentTime],
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -39,10 +40,11 @@ export const createCompanyCertifications = (_body) => {
 
 export const updateCompanyCertifications = (_body) => {
     return new Promise((resolve, reject) => {
+    const currentTime = Math.floor(Date.now() / 1000);
     const query = {
             name: 'update-company-certifications',
             text: certificationQuery.updateCompanyCertifications,
-            values: [_body.companyId, _body.certificateId, _body.certificateNumber, _body.logo, _body.document, _body.companyCertificateId]
+            values: [_body.companyId, _body.certificateId, _body.certificateNumber, _body.logo, _body.document, currentTime, _body.companyCertificateId]
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -56,10 +58,11 @@ export const updateCompanyCertifications = (_body) => {
 
 export const deleteCompanyCertifications = (_body) => {
     return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
         const query = {
             name: 'delete-company-certification',
             text: certificationQuery.deleteCompanyCertifications,
-            values: [parseInt(_body.companycertificationId)],
+            values: [currentTime, parseInt(_body.companycertificationId)],
         }
         database().query(query, (error, results) => {
             if (error) {
