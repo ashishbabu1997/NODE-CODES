@@ -5,10 +5,9 @@ export default {
             "port": 4000
         },
         "db": {
-            "user": "postgres",
             "host": "localhost",
-            "database": "postgres",
-            "password": "Ash1526$",
-            "port":5432
+            "user": "devdb_user",
+            "password": "DevD8u5er",
+            "database": "devdb"
         }
     }
