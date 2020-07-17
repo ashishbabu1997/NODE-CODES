@@ -3,10 +3,11 @@ import database from './common/database/database';
 
 export const createCompany = (_body) => {
     return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
         const query = {
             name: 'createCompany',
             text: employeeQuery.createCompany,
-            values: [_body.companyName, _body.company_website, _body.companySizeId],
+            values: [_body.companyName, _body.company_website, _body.companySizeId, currentTime],
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -21,10 +22,11 @@ export const createCompany = (_body) => {
 
  export const createEmployee = (_body, companyId) => {
     return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
         const query = {
             name: 'createEmployee',
             text: employeeQuery.createEmployee,
-            values: [_body.firstName, _body.lastName, _body.accountType, companyId, _body.telephoneNumber, _body.roleId],
+            values: [_body.firstName, _body.lastName, _body.accountType, companyId, _body.telephoneNumber, _body.roleId, currentTime],
         }
         database().query(query, (error, results) => {
             if (error) {

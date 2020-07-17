@@ -5,9 +5,10 @@ export default {
         "port": 4003
     },
     "db": {
-        "host": "localhost",
         "user": "devdb_user",
+        "host": "52.66.51.51",
+        "database": "devdb",
         "password": "DevD8u5er",
-        "database": "devdb"
+        "port":5432
     }
 }
