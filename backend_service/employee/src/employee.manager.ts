@@ -2,6 +2,7 @@ import employeeQuery  from './query/employee.query';
 import database from './common/database/database';
 
 export const createCompany = (_body) => {
+    console.log(_body);
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
         const query = {
