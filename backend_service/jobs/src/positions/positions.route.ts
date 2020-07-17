@@ -5,6 +5,7 @@ import addPositionSchema from './schemas/addPositionSchema';
 
 const router = express.Router();
 
+
 router
     .get('/', getPositions)
     .get('/all', getAllPositions)
