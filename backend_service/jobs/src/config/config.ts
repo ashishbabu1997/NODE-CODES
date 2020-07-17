@@ -6,8 +6,8 @@ export default {
     },
     "db": {
         "host": "localhost",
-        "user": "joe.davis",
-        "password": "c@bot1234",
-        "database": "ellowDb"
+        "user": "ellow_user1",
+        "password": "Admin123",
+        "database": "Ellow"
     }
 }
