@@ -31,7 +31,7 @@ export const createCompany = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
-                console.log(query);
+                console.log(error);
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
