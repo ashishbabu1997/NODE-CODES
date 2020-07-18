@@ -1,4 +1,4 @@
-import { createCompanyPositions, getCompanyPositions, getAllActivePositions, getPositionByPositionId, updateflagForPosition, updateIsRejectForPosition, addProfile, getProfileByCompanyId } from './positions.manager';
+import { fetchPositionDetails, createCompanyPositions, getCompanyPositions, getAllActivePositions, getPositionByPositionId, updateflagForPosition, updateIsRejectForPosition, addProfile, getProfileByCompanyId } from './positions.manager';
 import sendResponse from '../common/response/response';
 
 export const getPositions = (req, res) => {
@@ -65,9 +65,18 @@ export const addPositionProfile = (req, res) => {
 }
 
 export const getProfile = (req, res) => {
-    
+
     const body = req.query;
     getProfileByCompanyId(body).then((response: any) => {
+        sendResponse(res, response.code, 1, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, error.message, error.data)
+    })
+}
+
+export const getPositionDetails = (req, res) => {
+    const body = req.params;
+    fetchPositionDetails(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, error.message, error.data)

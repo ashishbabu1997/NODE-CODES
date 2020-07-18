@@ -13,4 +13,5 @@ export default {
     updateReject: 'UPDATE positions SET is_reject = $1 WHERE position_id = $2',
     getProfile: "SELECT * FROM candidate WHERE company_id=$1",
     addProfile: 'INSERT INTO candidate (candidate_name, company_id, position_id, cover_note, rate) VALUES %L',
+    getPositionDetailsQuery:`select ps.position_name,ps.location_name ,ps.created_on ,ps.job_description ,phs.position_hiring_step_id,phs.hiring_step_name ,phs.description ,phsg.position_hiring_stage_id ,phsg.hiring_stage_name ,phsg.hiring_stage_order,phsg.description as position_hiring_stage_description from positions ps left join position_hiring_steps phs on phs.position_id = ps.position_id and phs.status = true left join position_hiring_stages phsg on phsg.position_hiring_step_id = phs.position_hiring_step_id and phsg.status = true where ps.status = true and ps.position_id = $1`
 }

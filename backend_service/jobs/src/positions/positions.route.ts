@@ -1,4 +1,4 @@
-import { createPositions, getPositions, getAllPositions, getPositionById, updateFlag, updateReject, addPositionProfile, getProfile} from './positions.controller';
+import { getPositionDetails, createPositions, getPositions, getAllPositions, getPositionById, updateFlag, updateReject, addPositionProfile, getProfile } from './positions.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addPositionSchema from './schemas/addPositionSchema';
@@ -15,6 +15,7 @@ router
     .put('/reject', updateReject)
     .post('/profile', addPositionProfile)
     .get('/profile', getProfile)
+    .get('/:positionId', getPositionDetails)
 
 export default router;
 
