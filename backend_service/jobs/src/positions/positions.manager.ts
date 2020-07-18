@@ -11,7 +11,7 @@ export const getCompanyPositions = (_body) => {
             name: 'fetch-company-positions',
             text: _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearch : positionsQuery.getCompanyPositionsASC)
                 : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearch : positionsQuery.getCompanyPositionsDESC),
-            values: [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'],
+            values: _body.searchKey != '' ? [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] :[parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset],
         }
         database().query(query, (error, results) => {
             if (error) {
