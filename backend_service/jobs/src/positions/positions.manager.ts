@@ -13,8 +13,10 @@ export const getCompanyPositions = (_body) => {
                 : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearch : positionsQuery.getCompanyPositionsDESC),
             values: _body.searchKey != '' ? [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] :[parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset],
         }
+        console.log(query)
         database().query(query, (error, results) => {
             if (error) {
+                console.log(error,"eror")
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
