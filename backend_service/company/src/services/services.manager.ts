@@ -6,14 +6,13 @@ export const fetchCompanyServices = (_body) => {
         const query = {
             name: 'fetch-company-services',
             text: servicesQuery.getCompanyServices,
-            values: [_body.companyId],
+            values: [parseInt(_body.companyId)],
         }
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            console.log(results,"result data")
             const rows = results.rows[0];
             const services = rows.services != '' ? rows.services.split(',') : [];
             const domains = rows.domains != '' ? rows.domains.split(',') : [];
