@@ -86,6 +86,8 @@ export const createCompanyHiringSteps = (_body) => {
                         client.query('COMMIT', err => {
                             if (err) {
                                 console.error('Error committing transaction', err.stack)
+                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                return;
                             }
                             done()
                             resolve({ code: 200, message: "Hiring step created successfully", data: {} });
@@ -109,6 +111,8 @@ export const editCompanyHiringSteps = (_body) => {
                     client.query('ROLLBACK', err => {
                         if (err) {
                             console.error('Error rolling back client', err.stack)
+                            reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                            return;
                         }
                         done();
                         reject({ code: 400, message: "Failed. Please try again.", data: {} });
@@ -139,6 +143,8 @@ export const editCompanyHiringSteps = (_body) => {
                         client.query('COMMIT', err => {
                             if (err) {
                                 console.error('Error committing transaction', err.stack)
+                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                return;
                             }
                             done()
                             resolve({ code: 200, message: "Hiring step updated successfully", data: {} });
