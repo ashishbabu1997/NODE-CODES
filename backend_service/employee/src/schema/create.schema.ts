@@ -67,7 +67,6 @@ export default Joi.object().keys({
     }),
     roleId: Joi.number().required().error(errors => {
         errors.forEach(err => {
-            console.log(err)
             switch (err.code) {
                 case "any.required":
                     err.message = "Role Id should not be empty!";
@@ -116,7 +115,6 @@ export default Joi.object().keys({
     }),
     companySizeId: Joi.number().required().error(errors => {
         errors.forEach(err => {
-            console.log(err)
             switch (err.code) {
                 case "any.required":
                     err.message = "Company Size Id should not be empty!";

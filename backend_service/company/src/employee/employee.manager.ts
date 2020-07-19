@@ -24,9 +24,7 @@ export const getEmployeesByCompanyId = (_body) => {
             values: [parseInt(_body.companyId)],
         }
         database().query(query, (error, results) => {
-            console.log(query);
             if (error) {
-                console.log(error);
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
@@ -45,7 +43,6 @@ export const createEmployee = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
-                console.log(error);
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }

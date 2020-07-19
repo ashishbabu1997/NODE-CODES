@@ -3,7 +3,6 @@ import * as Joi from '@hapi/joi';
 export default Joi.object().keys({
     companyId: Joi.number().required().error(errors => {
         errors.forEach(err => {
-            console.log(err)
             switch (err.code) {
                 case "any.required":
                     err.message = "Company Id should not be empty!";
@@ -20,7 +19,6 @@ export default Joi.object().keys({
     }),    
     certificateId: Joi.number().required().error(errors => {
         errors.forEach(err => {
-            console.log(err)
             switch (err.code) {
                 case "any.required":
                     err.message = "Certificate Id should not be empty!";

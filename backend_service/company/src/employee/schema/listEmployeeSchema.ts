@@ -16,7 +16,6 @@ export default Joi.object().keys({
     }),
     companyId: Joi.number().required().error(errors => {
         errors.forEach(err => {
-            console.log(err)
             switch (err.code) {
                 case "any.required":
                     err.message = "company Id should not be empty!";
@@ -49,7 +48,6 @@ export default Joi.object().keys({
     }), 
     limit:  Joi.number().required().error(errors => {
         errors.forEach(err => {
-            console.log(err)
             switch (err.code) {
                 case "any.required":
                     err.message = "limit should not be empty!";
@@ -66,7 +64,6 @@ export default Joi.object().keys({
     }), 
     skip:  Joi.number().required().error(errors => {
         errors.forEach(err => {
-            console.log(err)
             switch (err.code) {
                 case "any.required":
                     err.message = "Skip should not be empty!";

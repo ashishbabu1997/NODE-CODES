@@ -28,7 +28,6 @@ export const createCompany = (_body) => { return new Promise((resolve, reject) =
         }
         database().query(query, (error, results) => {
             if (error) {
-                console.log("This is the new error " + error);
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }

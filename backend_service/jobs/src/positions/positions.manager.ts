@@ -48,9 +48,7 @@ export const getAllActivePositions = (_body) => {
             text: selectQuery
         }
         database().query(query, (error, results) => {
-            console.log(query);
             if (error) {
-                console.log(error);
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
@@ -60,7 +58,6 @@ export const getAllActivePositions = (_body) => {
 }
 
 export const getPositionByPositionId = (_body) => {
-    console.log(_body);
     return new Promise((resolve, reject) => {
     const query = {
             name: 'get-AllActivePositions',
@@ -68,9 +65,7 @@ export const getPositionByPositionId = (_body) => {
             values: [parseInt(_body.PositionId)]
         }
         database().query(query, (error, results) => {
-            console.log(query);
             if (error) {
-                console.log(error);
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
@@ -154,7 +149,6 @@ export const createCompanyPositions = (_body) => {
 }
 
 export const updateflagForPosition = (_body) => {
-    console.log(_body);
     return new Promise((resolve, reject) => {
     const query = {
             name: 'update-position-flag',
@@ -195,9 +189,7 @@ export const addProfile = (_body) => {
             text: format(positionsQuery.addProfile, _body.candidates),
         }
         database().query(query, (error, results) => {
-            console.log(query);
             if (error) {
-                console.log(error);
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
@@ -214,9 +206,7 @@ export const getProfileByCompanyId = (_body) => {
             values: [parseInt(_body.companyId)]
         }
         database().query(query, (error, results) => {
-            console.log(query);
             if (error) {
-                console.log(error);
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
