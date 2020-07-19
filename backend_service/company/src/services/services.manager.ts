@@ -33,6 +33,8 @@ export const createCompanyServices = (_body) => {
                     client.query('ROLLBACK', err => {
                         if (err) {
                             console.error('Error rolling back client', err.stack)
+                            reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                            return;
                         }
                         done();
                         reject({ code: 400, message: "Failed. Please try again.", data: {} });
@@ -95,6 +97,8 @@ export const createCompanyServices = (_body) => {
                                             client.query('COMMIT', err => {
                                                 if (err) {
                                                     console.error('Error committing transaction', err.stack)
+                                                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                                    return;
                                                 }
                                                 done()
                                                 resolve({ code: 200, message: "Services added successfully", data: {} });

@@ -11,12 +11,12 @@ export const getCompanyPositions = (_body) => {
             name: 'fetch-company-positions',
             text: _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearch : positionsQuery.getCompanyPositionsASC)
                 : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearch : positionsQuery.getCompanyPositionsDESC),
-            values: _body.searchKey != '' ? [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] :[parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset],
+            values: _body.searchKey != '' ? [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset],
         }
         console.log(query)
         database().query(query, (error, results) => {
             if (error) {
-                console.log(error,"eror")
+                console.log(error, "eror")
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
@@ -26,24 +26,23 @@ export const getCompanyPositions = (_body) => {
 }
 
 export const getAllActivePositions = (_body) => {
- 
+
     return new Promise((resolve, reject) => {
-    
+
         var selectQuery = positionsQuery.getAllActivePositions;
 
-        if(_body.filter)
-        {
-            selectQuery =selectQuery +  "AND (LOWER(position_name ) LIKE '%" +_body.filter.toLowerCase() + "%' OR LOWER(position_name ) LIKE '%" +  _body.filter.toLowerCase() + "%') "
+        if (_body.filter) {
+            selectQuery = selectQuery + "AND (LOWER(position_name ) LIKE '%" + _body.filter.toLowerCase() + "%' OR LOWER(position_name ) LIKE '%" + _body.filter.toLowerCase() + "%') "
         }
 
-        if(_body.sortBy){
-            selectQuery  = selectQuery + ' ORDER BY position_name ' + _body.sortBy.toUpperCase();
+        if (_body.sortBy) {
+            selectQuery = selectQuery + ' ORDER BY position_name ' + _body.sortBy.toUpperCase();
         }
 
-        if(_body.limit && _body.skip){
+        if (_body.limit && _body.skip) {
             selectQuery = selectQuery + ' LIMIT ' + _body.limit + ' OFFSET ' + _body.skip;
         }
-    const query = {
+        const query = {
             name: 'get-AllActivePositions',
             text: selectQuery
         }
@@ -54,12 +53,12 @@ export const getAllActivePositions = (_body) => {
             }
             resolve({ code: 200, message: "Jobs listed successfully", data: { Jobs: results.rows } });
         })
-    })   
+    })
 }
 
 export const getPositionByPositionId = (_body) => {
     return new Promise((resolve, reject) => {
-    const query = {
+        const query = {
             name: 'get-AllActivePositions',
             text: positionsQuery.getPositionByPositionID,
             values: [parseInt(_body.PositionId)]
@@ -71,7 +70,7 @@ export const getPositionByPositionId = (_body) => {
             }
             resolve({ code: 200, message: "Position listed successfully", data: { Jobs: results.rows } });
         })
-    })   
+    })
 }
 
 export const createCompanyPositions = (_body) => {
@@ -85,6 +84,8 @@ export const createCompanyPositions = (_body) => {
                     client.query('ROLLBACK', err => {
                         if (err) {
                             console.error('Error rolling back client', err.stack)
+                            reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                            return;
                         }
                         done();
                         reject({ code: 400, message: "Failed. Please try again.", data: {} });
@@ -135,6 +136,8 @@ export const createCompanyPositions = (_body) => {
                                 client.query('COMMIT', err => {
                                     if (err) {
                                         console.error('Error committing transaction', err.stack)
+                                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                        return;
                                     }
                                     done()
                                     resolve({ code: 200, message: "Positions created successfully", data: {} });
@@ -150,10 +153,10 @@ export const createCompanyPositions = (_body) => {
 
 export const updateflagForPosition = (_body) => {
     return new Promise((resolve, reject) => {
-    const query = {
+        const query = {
             name: 'update-position-flag',
             text: positionsQuery.updateFlag,
-            values: [ _body.flag, _body.positionId]
+            values: [_body.flag, _body.positionId]
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -167,10 +170,10 @@ export const updateflagForPosition = (_body) => {
 
 export const updateIsRejectForPosition = (_body) => {
     return new Promise((resolve, reject) => {
-    const query = {
+        const query = {
             name: 'update-position-IsReject',
             text: positionsQuery.updateReject,
-            values: [ _body.reject, _body.positionId]
+            values: [_body.reject, _body.positionId]
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -184,7 +187,7 @@ export const updateIsRejectForPosition = (_body) => {
 
 export const addProfile = (_body) => {
     return new Promise((resolve, reject) => {
-    const query = {
+        const query = {
             name: 'add-Profile',
             text: format(positionsQuery.addProfile, _body.candidates),
         }
@@ -195,12 +198,12 @@ export const addProfile = (_body) => {
             }
             resolve({ code: 200, message: "Profile added successfully", data: { Jobs: results.rows } });
         })
-    })   
+    })
 }
 
 export const getProfileByCompanyId = (_body) => {
     return new Promise((resolve, reject) => {
-    const query = {
+        const query = {
             name: 'get-ProfileByCompanyId',
             text: positionsQuery.getProfile,
             values: [parseInt(_body.companyId)]
@@ -212,7 +215,7 @@ export const getProfileByCompanyId = (_body) => {
             }
             resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
         })
-    })   
+    })
 }
 
 
@@ -248,11 +251,68 @@ export const fetchPositionDetails = (_body) => {
                         hiringStageName: step.hiring_stage_name,
                         hiringStageDescription: step.position_hiring_stage_description,
                         hiringStageOrder: step.hiring_stage_order,
-                    } 
+                    }
                 )
                 result['hiringStages'] = groupedHiringStages;
             })
             resolve({ code: 200, message: "Fetched position details successfully", data: result });
         })
     });
+}
+
+export const editCompanyPositionHiringSteps = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        database().connect((err, client, done) => {
+            const shouldAbort = err => {
+                if (err) {
+                    console.error('Error in transaction', err.stack)
+                    client.query('ROLLBACK', err => {
+                        if (err) {
+                            console.error('Error rolling back client', err.stack)
+                            reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                            return;
+                        }
+                        done();
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+
+                    })
+                }
+                return !!err
+            }
+            client.query('BEGIN', err => {
+                if (shouldAbort(err)) return
+                const editHiringStepQuery = {
+                    name: 'edit-position-hiring-steps',
+                    text: positionsQuery.editPositionHiringSteps,
+                    values: [_body.hiringStepId, _body.hiringStepName, _body.description, currentTime],
+                }
+                client.query(editHiringStepQuery, (err, res) => {
+                    if (shouldAbort(err)) return
+                    const hiringStages = _body.hiringStages;
+                    let hiringStageValues = ''
+                    const length = hiringStages.length;
+                    hiringStages.forEach((element, i) => {
+                        const end = i != length - 1 ? "," : ""
+                        hiringStageValues = hiringStageValues + "(" + element.hiringStageId + ",'" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + element.order + "," + element.coordinatorId + "," + currentTime + ")" + end
+                    });
+                    const query = positionsQuery.editPositionHiringStagesStart + hiringStageValues + positionsQuery.editPositionHiringStagesEnd
+                    console.log(query)
+                    client.query(query, (err, res) => {
+                        if (shouldAbort(err)) return
+                        client.query('COMMIT', err => {
+                            if (err) {
+                                console.error('Error committing transaction', err.stack)
+                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                return;
+                            }
+                            done()
+                            resolve({ code: 200, message: "Position hiring step updated successfully", data: {} });
+                        })
+                    })
+                })
+            })
+        })
+    })
 }
