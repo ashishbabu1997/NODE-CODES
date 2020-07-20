@@ -7,7 +7,7 @@ import listEmployeeSchema from './schema/listEmployeeSchema';
 const router = express.Router();
 
 router
-    .get('/:companyId', validate(listEmployeeSchema), getEmployee)
+    .get('/', validate(listEmployeeSchema), getEmployee)
     .post('/',validate(addEmployeeSchema), addEmployee)
 
 export default router;

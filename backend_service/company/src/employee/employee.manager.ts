@@ -39,14 +39,14 @@ export const createEmployee = (_body) => {
         const query = {
             name: 'add-employee',
             text: employeeQuery.addEmploye,
-            values: [_body.firstName, _body.lastName, _body.companyId, _body.email, _body.roleId, currentTime, _body.employeeID],
+            values: [_body.firstName, _body.lastName, _body.companyId, _body.email, _body.roleId, currentTime, _body.empId],
         }
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "employee added successfully", data: {} });
+            resolve({ code: 200, message: "Employee added successfully", data: {} });
         })
     })
 }
