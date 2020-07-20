@@ -39,7 +39,7 @@ export const getCompanyHiringSteps = (_body) => {
                     })
                 }
             })
-            resolve({ code: 200, message: "Hiring steps listed successfully", data: { groupedHiringStages } });
+            resolve({ code: 200, message: "Hiring steps listed successfully", data: { hiringSteps:groupedHiringStages } });
         })
     });
 }
