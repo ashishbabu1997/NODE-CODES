@@ -31,7 +31,7 @@ export const createCompany = (_body) => { return new Promise((resolve, reject) =
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Employee added successfully", data: {} });
+            resolve({ code: 200, message: "Employee added successfully", data: {data: {companyID :  companyId}} });
         })
     });
 }
