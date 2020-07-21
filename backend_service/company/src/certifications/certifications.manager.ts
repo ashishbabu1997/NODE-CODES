@@ -24,7 +24,7 @@ export const createCompanyCertifications = (_body) => {
     const query = {
             name: 'add-company-certifications',
             text: certificationQuery.addCompanyCertifications,
-            values: [_body.companyId, _body.certificateId, _body.certificateNumber, _body.logo, _body.document, currentTime],
+            values: [_body.companyId, _body.certificateId, _body.certificateNumber, _body.logo, _body.document, currentTime, _body.certificationType],
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -43,7 +43,7 @@ export const updateCompanyCertifications = (_body) => {
     const query = {
             name: 'update-company-certifications',
             text: certificationQuery.updateCompanyCertifications,
-            values: [_body.companyId, _body.certificateId, _body.certificateNumber, _body.logo, _body.document, currentTime, _body.companyCertificateId]
+            values: [_body.companyId, _body.certificateId, _body.certificateNumber, _body.logo, _body.document, currentTime, _body.certificationType, _body.companyCertificateId]
         }
         database().query(query, (error, results) => {
             if (error) {

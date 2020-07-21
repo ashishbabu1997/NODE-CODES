@@ -93,5 +93,21 @@ export default Joi.object().keys({
             }
         });
         return errors;
+    }),
+    certificationType: Joi.string().required().valid('certification', 'award').insensitive().lowercase().error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+               case "string.base":
+                    err.message = "Certification Type must be a string"
+                    break;
+               case "any.only":
+                              err.message = "Certification Type must certification or award"
+                              break;
+                default:
+                    err.message = "Invalid Certification Type"
+                    break;
+            }
+        });
+        return errors;
     })
 });
