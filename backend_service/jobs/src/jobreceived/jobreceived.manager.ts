@@ -52,11 +52,17 @@ export const getPositionByPositionId = (_body) => {
 
 export const updateflagForPosition = (_body) => {
     return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        const column_name = {
+            'flag' : 'is_flag'
+        }
+        var sqlJob = format(positionsQuery.createOrUpdateJob,column_name.flag, column_name.flag, column_name.flag)
         const query = {
             name: 'update-position-flag',
-            text: positionsQuery.updateFlag,
-            values: [_body.flag, _body.positionId]
+            text: sqlJob,
+            values: [ _body.positionId, _body.companyId, _body.flag, _body.userId, currentTime]
         }
+
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
@@ -69,11 +75,17 @@ export const updateflagForPosition = (_body) => {
 
 export const updateIsRejectForPosition = (_body) => {
     return new Promise((resolve, reject) => {
-        const query = {
-            name: 'update-position-IsReject',
-            text: positionsQuery.updateReject,
-            values: [_body.reject, _body.positionId]
+        const currentTime = Math.floor(Date.now() / 1000);
+        const column_name = {
+            'reject' : 'is_reject'
         }
+        var sqlJob = format(positionsQuery.createOrUpdateJob,column_name.reject, column_name.reject, column_name.reject)
+        const query = {
+            name: 'update-position-reject',
+            text: sqlJob,
+            values: [ _body.positionId, _body.companyId, _body.reject, _body.userId, currentTime]
+        }
+
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
@@ -85,21 +97,21 @@ export const updateIsRejectForPosition = (_body) => {
 }
 
 export const addProfile = (_body) => {
-     var myArray =  _body.candidates;
-     var candidates = new Array();
-     for (var i in myArray) {
-        var tempArray = new Array();
-        for(var key in myArray[i]){
-            tempArray.push(myArray[i][key]);
-        }
-     candidates.push(tempArray);
-    }
-     
     return new Promise((resolve, reject) => {
+        var myArray =  _body.candidates;
+        var candidates = new Array();
+        for (var i in myArray) {
+           var tempArray = new Array();
+           for(var key in myArray[i]){
+               tempArray.push(myArray[i][key]);
+           }
+        candidates.push(tempArray);
+       }
         const query = {
             name: 'add-Profile',
             text: format(positionsQuery.addProfile, candidates),
         }
+        
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
@@ -117,6 +129,7 @@ export const getProfileByCompanyId = (_body) => {
             text: positionsQuery.getProfile,
             values: [parseInt(_body.companyId)]
         }
+
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });

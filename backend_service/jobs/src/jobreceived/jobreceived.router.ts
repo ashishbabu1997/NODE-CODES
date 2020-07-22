@@ -2,7 +2,7 @@ import {getAllPositions, getPositionById, updateFlag, updateReject, addPositionP
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addProfileSchema from './schemas/addProfileSchema';
-import {schemaFlag, schemaReject} from './schemas/putSchema';
+import {schemaFlag, schemaReject} from './schemas/flagOrRejectSchema';
 
 const router = express.Router();
 
