@@ -7,7 +7,7 @@
       "allowJs": true
     },
     "include": [
-      "*.ts", "locations/locations.route.ts", "locations/locations.controller.ts"
+      "*.ts", "email_api/emailApi.route.ts", "email_api/emailApi.controller.ts"
     ],
     "exclude": [
       "node_modules"

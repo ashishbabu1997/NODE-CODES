@@ -1,7 +1,8 @@
 import Query from './query/query';
 import database from '../common/database/database';
+import {Promise} from 'es6-promise'
 export const otpValidate = (_body) => {
-  return new Promise((resolve, reject) => {
+   return new Promise((resolve, reject) => {
       const query = {
           name: 'add-email-otp',
           text: Query.validate,

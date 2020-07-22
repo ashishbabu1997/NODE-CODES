@@ -1,30 +1,30 @@
-import { createCompanyHiringSteps, getCompanyHiringSteps, editCompanyHiringSteps } from './hiringStep.manager';
+import { updateCompanyProfilePreferences, getPreferences, enableMasking } from './preferences.manager';
 import sendResponse from '../common/response/response';
 
-// Fetch the company hiring steps
-export const getHiringSteps = (req, res) => {
+// Fetch the company preferences
+export const getCompanyPreferences = (req, res) => {
     const body = req.params;
-    getCompanyHiringSteps(body).then((response: any) => {
+    getPreferences(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, error.message, error.data)
     })
 }
 
-// Create new hiring steps for the company
-export const createHiringSteps = (req, res) => {
+// Create/Update company profile in preferences
+export const updateCompanyProfile = (req, res) => {
     const body = req.body;
-    createCompanyHiringSteps(body).then((response: any) => {
+    updateCompanyProfilePreferences(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, error.message, error.data)
     })
 }
 
-// Edit the hiring steps of a company
-export const editHiringSteps = (req, res) => {
+// Create/Update company profile in preferences
+export const enableCompanyMasking = (req, res) => {
     const body = req.body;
-    editCompanyHiringSteps(body).then((response: any) => {
+    enableMasking(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, error.message, error.data)

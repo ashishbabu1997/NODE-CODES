@@ -1,3 +1,3 @@
 export default {
-    createUser:"SELECT * FROM employee WHERE otp=$1",
+    validate:"SELECT * FROM employee WHERE otp=$1",
 }
