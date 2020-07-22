@@ -54,4 +54,3 @@ export const getProfile = (req, res) => {
         sendResponse(res, error.code, 0, error.message, error.data)
     })
 }
-

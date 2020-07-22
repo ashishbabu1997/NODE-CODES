@@ -6,7 +6,4 @@ export default {
     getProfile: "SELECT * FROM candidate WHERE company_id=$1",
     addProfile: 'INSERT INTO candidate (candidate_name, company_id, position_id, cover_note, rate) VALUES %L',
     createOrUpdateJob:'INSERT INTO job (position_id, company_id, %I, created_by, created_on ) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (position_id, company_id) DO UPDATE SET %I = EXCLUDED.%I, created_by = EXCLUDED.created_by, updated_on = $5'
-    
-    // createOrUpdateJob:  'IF (exists(select job_id from job where position_id = $1 and company_id = $2)) begin  update job set %I = $3, updated_by =$4, updated_on = $5 where position_id = $1 and company_id = $2' +
-    // ' end  ELSE begin  insert into job values (position_id, company_id, %I, created_by, created_on) values ($1, $2, $3, $4, $5)  end'	
 }

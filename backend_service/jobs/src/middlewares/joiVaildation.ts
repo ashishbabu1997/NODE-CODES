@@ -8,7 +8,6 @@ export default (schema) => {
         const { error, value } = schema.validate(body);
 
         if (error) {
-            console.log(error)
             sendResponse(res, 400, 0, error.message, {})
         } else {
             next();
