@@ -20,9 +20,9 @@ export const addDetails = (_body) => {
   })
 }
 export const mailer = (_body) => {
-  return new Promise((resolve, reject) => {
     var transporter = nodemailer.createTransport({
-                  service: 'gmail',
+                  host:'ellow.ai',
+                  port:587,
                   auth: {
                     user: 'ashish.b@ellow.ai',
                     pass: 'Ash1526$'
@@ -42,6 +42,6 @@ export const mailer = (_body) => {
                   }
                 });
       
-  })
+
 }        
 
