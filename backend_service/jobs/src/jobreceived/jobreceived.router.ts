@@ -13,6 +13,6 @@ router
     .put('/', validate(schemaFlag), updateFlag)
     .put('/reject', validate(schemaReject), updateReject)
     .post('/profile', validate(addProfileSchema),addPositionProfile)
-    .get('/profile', getProfile)
+    .get('/profile/:companyId', getProfile)
 
 export default router;

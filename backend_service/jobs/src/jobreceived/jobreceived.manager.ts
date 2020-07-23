@@ -117,7 +117,7 @@ export const addProfile = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Profile added successfully", data: { Jobs: results.rows } });
+            resolve({ code: 200, message: "Profile added successfully", data: { Candidates: results.rows } });
         })
     })
 }

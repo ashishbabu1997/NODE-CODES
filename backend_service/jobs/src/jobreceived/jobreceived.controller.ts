@@ -46,8 +46,7 @@ export const addPositionProfile = (req, res) => {
 }
 
 export const getProfile = (req, res) => {
-
-    const body = req.query;
+    const body = req.params;
     getProfileByCompanyId(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
