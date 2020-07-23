@@ -53,13 +53,13 @@ export const schemaFlag =  Joi.object().keys({
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
-                    err.message = "createdBy should not be empty!";
+                    err.message = "userId should not be empty!";
                     break;
                 case "number.base":
-                    err.message = "createdBy must be a number"
+                    err.message = "userId must be a number"
                     break;
                 default:
-                    err.message = "Invalid createdBy"
+                    err.message = "Invalid userId"
                     break;
             }
         });
@@ -120,13 +120,13 @@ export const schemaReject =  Joi.object().keys({
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
-                    err.message = "createdBy should not be empty!";
+                    err.message = "userId should not be empty!";
                     break;
                 case "number.base":
-                    err.message = "createdBy must be a number"
+                    err.message = "userId must be a number"
                     break;
                 default:
-                    err.message = "Invalid createdBy"
+                    err.message = "Invalid userId"
                     break;
             }
         });
