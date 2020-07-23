@@ -24,6 +24,47 @@ export const getCompanyPositions = (_body) => {
     })
 }
 
+export const getAllPositionsByDescriptionKey = (_body) => {
+    return new Promise((resolve, reject) => {
+        var selectQuery = positionsQuery.getAllPositionByDescription;
+        if(_body.descriptionKey)
+        {
+            selectQuery  = selectQuery +  "and job_description like '%" + _body.descriptionKey + "%'";
+        }
+        const query = {
+            name: 'fetch-company-positions-By_Description',
+            text:selectQuery,
+            values: [_body.companyId]
+        }
+
+        database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                return;
+            }
+            resolve({ code: 200, message: "Positions listed successfully", data: { positions: results.rows } });
+        })
+    })
+}
+
+export const getCompanyPositionDetailsByPositionId = (_body) => {
+    return new Promise((resolve, reject) => {
+        const query = {
+            name: 'get-company-positions-By_PositionId',
+            text:positionsQuery.getPositionDetailsByPositionId,
+            values: [parseInt(_body.positionId)]
+        }
+
+        database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                return;
+            }
+            resolve({ code: 200, message: "Positions listed successfully", data: { positions: results.rows } });
+        })
+    })
+}
+
 export const createCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
