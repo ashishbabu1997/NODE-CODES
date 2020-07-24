@@ -4,16 +4,16 @@ import {Promise} from 'es6-promise'
 export const otpValidate = (_body) => {
    return new Promise((resolve, reject) => {
       const query = {
-          name: 'add-email-otp',
-          text: Query.validate,
-          values: [_body.otp],
+          name: 'validate-otp',
+          text: Query.validateOtp,
+          values: [_body],
       }
       database().query(query, (error, results) => {
           if (error) {
-              reject({ code: 400, message: "Failed. Please try again.", data:  [_body.otp] });
+              reject({ code: 400, message: "Failed. Please try again.", data:  [_body] });
               return;
           }
-          resolve({ code: 200, message: "OTP login successful", data:  [_body.otp] });
+          resolve({ code: 200, message: "OTP login successful", data:  [_body] });
       })
   })
 }
