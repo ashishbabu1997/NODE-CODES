@@ -5,5 +5,5 @@ import * as  express from 'express';
 const router = express.Router();
 router
     .use(`/api/${AppConfig.version}/email_signup`, emailRouter)
-    // .use(`/api/${AppConfig.version}/otp_validation`, otpRouter)
+    .use(`/api/${AppConfig.version}/otp_validation`, otpRouter)
 export default router;
