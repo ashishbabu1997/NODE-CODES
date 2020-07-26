@@ -1,3 +1,3 @@
 export default {
-    validateOtp:"SELECT * FROM ellow WHERE otp=$1",
+    validateOtp:"SELECT * FROM employee WHERE otp=$1",
 }
