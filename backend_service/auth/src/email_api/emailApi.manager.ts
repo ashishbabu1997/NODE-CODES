@@ -9,17 +9,15 @@ export const sendOtp = (_body) => {
       const query = {
           name: 'add-email-otp',
           text: Query.insertEmailOtp,
-          values: _body,otp,
+          values: [_body,otp],
       }
       database().query(query, (error, results) => {
           if (error) {
               reject({ code: 400, message: "Failed. Please try again.", data:  [_body,otp] });
               return;
           }
-          console.log("Email Send")
-          resolve({ code: 200, message: "Email and otp has added to database successfully", data:  [_body,otp] });
+          resolve({ code: 200, message: "Email and otp has added to database successfully" });
           const subject="Your OTP is"
-          resolve({ code: 200, message: "Email and otp has added to database successfully", data: [_body, otp] });
           sendMail(_body, subject, otp, function(err, data) {
                 if (err) {
                   reject({ code: 400, message: "Failed. Please try again.", data:  [_body,otp] });

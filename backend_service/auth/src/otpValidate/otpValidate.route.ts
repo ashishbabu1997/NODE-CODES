@@ -4,5 +4,5 @@ import validate from '../middlewares/joiValidation';
 import otpValidateSchema from './schemas/otpValidateSchema';
 const router = express.Router();
 router
-    .post('/',validate(otpValidateSchema),otpCheck)
+    .post('/',otpCheck);
 export default router;
