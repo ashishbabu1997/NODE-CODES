@@ -43,7 +43,7 @@ export const updateCompanyCertifications = (_body) => {
     const query = {
             name: 'update-company-certifications',
             text: certificationQuery.updateCompanyCertifications,
-            values: [_body.companyId, _body.certificateId, _body.certificateNumber, _body.logo, _body.document, currentTime, _body.certificationType, _body.companyCertificateId]
+            values: [_body.companyId, _body.certificateId, _body.certificateNumber, _body.logo, _body.document, currentTime, _body.certificationType, _body.companyCertificationId]
         }
         database().query(query, (error, results) => {
             if (error) {
