@@ -78,17 +78,17 @@ export default Joi.object().keys({
         });
         return errors;
     }),    
-    companyCertificateId: Joi.number().required().error(errors => {
+    companyCertificationId: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
-                    err.message = "Company Certificate Id should not be empty!";
+                    err.message = "Company Certification Id should not be empty!";
                     break;
                 case "number.base":
-                    err.message = "Company Certificate Id must be a number"
+                    err.message = "Company Certification Id must be a number"
                     break;
                 default:
-                    err.message = "Invalid Company Certificate Id"
+                    err.message = "Invalid Company Certification Id"
                     break;
             }
         });
