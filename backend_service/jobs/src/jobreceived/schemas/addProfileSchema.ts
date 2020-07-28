@@ -79,5 +79,21 @@ export default Joi.object().keys({
                 });
                 return errors;
             })
-    }) )
+    }) ),
+    isSubmit : Joi.boolean().required().error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "any.required":
+                    err.message = "isSubmit should not be empty";
+                    break;
+                case "boolean.base":
+                    err.message = "isSubmit must be a boolean"
+                    break;
+                default:
+                    err.message = "Invalid isSubmit"
+                    break;
+            }
+        });
+        return errors;
+    })
 });

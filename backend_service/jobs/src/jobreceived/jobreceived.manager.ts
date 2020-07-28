@@ -105,6 +105,7 @@ export const addProfile = (_body) => {
            for(var key in myArray[i]){
                tempArray.push(myArray[i][key]);
            }
+        tempArray.push(_body.isSubmit);
         candidates.push(tempArray);
        }
         const query = {
