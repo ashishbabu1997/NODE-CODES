@@ -4,6 +4,6 @@ export default {
     updateFlag: 'UPDATE positions SET is_flag = $1 WHERE position_id = $2',
     updateReject: 'UPDATE positions SET is_reject = $1 WHERE position_id = $2',
     getProfile: "SELECT * FROM candidate WHERE company_id=$1",
-    addProfile: 'INSERT INTO candidate (candidate_name, company_id, position_id, cover_note, rate) VALUES %L',
+    addProfile: 'INSERT INTO candidate (candidate_name, company_id, position_id, cover_note, rate, is_submitted) VALUES %L',
     createOrUpdateJob:'INSERT INTO job (position_id, company_id, %I, created_by, created_on ) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (position_id, company_id) DO UPDATE SET %I = EXCLUDED.%I, created_by = EXCLUDED.created_by, updated_on = $5'
 }
