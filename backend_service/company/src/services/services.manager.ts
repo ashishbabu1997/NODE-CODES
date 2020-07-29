@@ -3,6 +3,74 @@ import database from '../common/database/database';
 
 export const fetchCompanyServices = (_body) => {
     return new Promise((resolve, reject) => {
+        database().connect((err, client, done) => {
+            const shouldAbort = err => {
+                if (err) {
+                    console.error('Error in transaction', err.stack)
+                    client.query('ROLLBACK', err => {
+                        if (err) {
+                            console.error('Error rolling back client', err.stack)
+                            reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                            return;
+                        }
+                        done();
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+
+                    })
+                }
+                return !!err
+            }
+            client.query('BEGIN', err => {
+                if (shouldAbort(err)) return
+                const getCompanyServicesQuery = {
+                    name: 'get-company-services',
+                    text: servicesQuery.getCompanyServices,
+                    values: [_body.companyId]
+                }
+                client.query(getCompanyServicesQuery, (err, servicesResponse) => {
+                    if (shouldAbort(err)) return
+                    let services = servicesResponse.rows
+                    const getCompanyDomainsQuery = {
+                        name: 'get-company-domains',
+                        text: servicesQuery.getCompanyDomains,
+                        values: [_body.companyId],
+                    }
+                    client.query(getCompanyDomainsQuery, (err, domainsResponse) => {
+                        if (shouldAbort(err)) return
+                        let domains = domainsResponse.rows
+                        const getCompanyTechnologyAreasQuery = {
+                            name: 'get-company-technologyAreas',
+                            text: servicesQuery.getCompanyTechnologyAreas,
+                            values: [_body.companyId]
+                        }
+                        client.query(getCompanyTechnologyAreasQuery, (err, technologyResponse) => {
+                            if (shouldAbort(err)) return
+                            let technologyAreas = technologyResponse.rows
+                            const getSupportingDocumentQuery = {
+                                name: 'get-company-supporting-document',
+                                text: servicesQuery.getSupportingDocument,
+                                values: [_body.companyId]
+                            }
+                            client.query(getSupportingDocumentQuery, (err, res) => {
+                                if (shouldAbort(err)) return
+                                let supportingDocument = res.rows[0].supportingDocument
+                                client.query('COMMIT', err => {
+                                    if (err) {
+                                        console.error('Error committing transaction', err.stack)
+                                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                        return;
+                                    }
+                                    done()
+                                    resolve({ code: 200, message: "Services listed successfully", data: {supportingDocument,services,domains,technologyAreas} });
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+    return new Promise((resolve, reject) => {
         const query = {
             name: 'fetch-company-services',
             text: servicesQuery.getCompanyServices,
@@ -10,10 +78,12 @@ export const fetchCompanyServices = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
+                console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
             const rows = results.rows[0];
+            console.log(rows)
             const services = rows.services != '' ? rows.services.split(',') : [];
             const domains = rows.domains != '' ? rows.domains.split(',') : [];
             const technologyAreas = rows.technologyareas != '' ? rows.technologyareas.split(',') : [];
