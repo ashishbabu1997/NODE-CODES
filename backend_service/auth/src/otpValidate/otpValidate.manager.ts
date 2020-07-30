@@ -3,7 +3,7 @@ import database from '../common/database/database';
 import {Promise} from 'es6-promise'
 import * as passwordGenerator from 'generate-password'
 import {sendMail} from '../middlewares/mailer'
-import * as passwordHash from "password-hash"
+import * as crypto from "crypto"
 export const otpValidate = (_body) => {
    return new Promise((resolve, reject) => {
       const query = {
@@ -23,7 +23,7 @@ export const otpValidate = (_body) => {
             length: 10,
             numbers: true
         });
-          var hashedPassword = passwordHash.generate(password);
+          var hashedPassword= crypto.createHash("sha256").update(password).digest("hex");
           const subject=" ELLOW LOGIN PASSWORD "
           const query = {
             name: 'store-encrypted-password',

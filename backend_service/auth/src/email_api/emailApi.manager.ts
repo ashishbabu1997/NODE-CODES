@@ -6,6 +6,21 @@ import {sendMail} from '../middlewares/mailer'
 export const sendOtp = (_body) => {
   return new Promise((resolve, reject) => {
     const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false, alphabets:false });
+    const checkQuery = {
+      name: 'checkEmail',
+      text: Query.checkEmail,
+      values: [_body],
+  }
+  database().query(checkQuery, (error, results) => {
+      if (error) {
+          reject({ code: 400, message: "Failed. Please try again.", data:  [] });
+          return;
+        }
+        if (results.rowCount!=0)
+        {
+          reject({ code: 400, message: "Email Already in use.", data:  [] });
+          return;
+        }
       const query = {
           name: 'add-email-otp',
           text: Query.insertEmailOtp,
@@ -16,7 +31,6 @@ export const sendOtp = (_body) => {
               reject({ code: 400, message: "Failed. Please try again.", data:  [_body,otp] });
               return;
           }
-          resolve({ code: 200, message: "Email and otp has added to database successfully" });
           const subject="Your OTP is"
           sendMail(_body, subject, otp, function(err, data) {
                 if (err) {
@@ -26,6 +40,8 @@ export const sendOtp = (_body) => {
                 console.log('Email sent!!!');
                 resolve({ code: 201, message: "OTP  has sent to your email successfully", data: [_body, otp] });
             });
+          })
       })
   })
+
 }
