@@ -1,4 +1,4 @@
-import {getAllPositions, getPositionById, updateFlag, updateReject, addPositionProfile, getProfile } from './jobreceived.controller';
+import {getJobReceived, getJobReceivedById, updateFlag, updateReject, submitProfile, getProfile, saveProfile} from './jobreceived.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addProfileSchema from './schemas/addProfileSchema';
@@ -8,11 +8,12 @@ const router = express.Router();
 
 
 router
-    .get('/', getAllPositions)
-    .get('/:PositionId', getPositionById)
+    .get('/', getJobReceived)
+    .get('/job/:jobReceivedId/:sellerCompanyId', getJobReceivedById)
     .put('/', validate(schemaFlag), updateFlag)
     .put('/reject', validate(schemaReject), updateReject)
-    .post('/profile', validate(addProfileSchema),addPositionProfile)
-    .get('/profile', getProfile)
+    .post('/submit', validate(addProfileSchema),submitProfile)
+    .post('/save', validate(addProfileSchema),saveProfile)
+    .get('/profile/:companyId', getProfile)
 
 export default router;

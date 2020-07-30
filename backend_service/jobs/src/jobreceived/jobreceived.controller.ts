@@ -1,18 +1,18 @@
-import {getAllActivePositions, getPositionByPositionId, updateflagForPosition, updateIsRejectForPosition, addProfile, getProfileByCompanyId } from './jobreceived.manager';
+import {getAllJobReceived, getJobReceivedByJobReceivedId, updateflagForJobReceived, updateIsRejectForJobReceived, addProfile, getProfileByCompanyId, saveCandidateProfile } from './jobreceived.manager';
 import sendResponse from '../common/response/response';
 
-export const getAllPositions = (req, res) => {
+export const getJobReceived = (req, res) => {
     const body = req.query;
-    getAllActivePositions(body).then((response: any) => {
+    getAllJobReceived(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, error.message, error.data)
     })
 }
 
-export const getPositionById = (req, res) => {
+export const getJobReceivedById = (req, res) => {
     const body = req.params;
-    getPositionByPositionId(body).then((response: any) => {
+    getJobReceivedByJobReceivedId(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, error.message, error.data)
@@ -20,7 +20,7 @@ export const getPositionById = (req, res) => {
 }
 export const updateFlag = (req, res) => {
     const body = req.body;
-    updateflagForPosition(body).then((response: any) => {
+    updateflagForJobReceived(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, error.message, error.data)
@@ -29,14 +29,14 @@ export const updateFlag = (req, res) => {
 
 export const updateReject = (req, res) => {
     const body = req.body;
-    updateIsRejectForPosition(body).then((response: any) => {
+    updateIsRejectForJobReceived(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, error.message, error.data)
     })
 }
 
-export const addPositionProfile = (req, res) => {
+export const submitProfile = (req, res) => {
     const body = req.body;
     addProfile(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
@@ -45,9 +45,17 @@ export const addPositionProfile = (req, res) => {
     })
 }
 
-export const getProfile = (req, res) => {
+export const saveProfile = (req, res) => {
+    const body = req.body;
+    saveCandidateProfile(body).then((response: any) => {
+        sendResponse(res, response.code, 1, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, error.message, error.data)
+    })
+}
 
-    const body = req.query;
+export const getProfile = (req, res) => {
+    const body = req.params;
     getProfileByCompanyId(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {

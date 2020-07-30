@@ -1,17 +1,17 @@
 import * as Joi from '@hapi/joi';
 
 export const schemaFlag =  Joi.object().keys({
-    positionId: Joi.number().required().error(errors => {
+    jobReceivedId: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
-                    err.message = "Position Id should not be empty!";
+                    err.message = "job Received Id should not be empty!";
                     break;
                 case "number.base":
-                    err.message = "Position Id must be a number"
+                    err.message = "job Received Id must be a number"
                     break;
                 default:
-                    err.message = "Invalid Position Id"
+                    err.message = "Invalid job Received Id"
                     break;
             }
         });
@@ -68,30 +68,30 @@ export const schemaFlag =  Joi.object().keys({
 })
 
 export const schemaReject =  Joi.object().keys({
-    positionId: Joi.number().required().error(errors => {
+    jobReceivedId: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
-                    err.message = "Position Id should not be empty!";
+                    err.message = "job Received Id should not be empty!";
                     break;
                 case "number.base":
-                    err.message = "Position Id must be a number"
+                    err.message = "job Received Id must be a number"
                     break;
                 default:
-                    err.message = "Invalid Position Id"
+                    err.message = "Invalid job Received Id"
                     break;
             }
         });
         return errors;
     }),
-    reject: Joi.boolean().required().error(errors => {
+    reject: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
                     err.message = "reject should not be empty";
                     break;
-                case "boolean.base":
-                    err.message = "reject must be a boolean"
+                case "number.base":
+                    err.message = "reject must be a number"
                     break;
                 default:
                     err.message = "Invalid reject"
