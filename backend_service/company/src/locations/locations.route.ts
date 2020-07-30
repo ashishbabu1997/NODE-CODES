@@ -3,7 +3,8 @@ import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addLocationSchema from './schemas/addLocationSchema';
 import updateLocationSchema from './schemas/updateLocationSchema';
-
+import { jwtAuth } from '../middlewares/jwtAuthenticate';
+import setData from '../middlewares/setData';
 const router = express.Router();
 
 router
