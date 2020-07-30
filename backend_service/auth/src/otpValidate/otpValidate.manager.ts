@@ -1,7 +1,7 @@
 import Query from './query/query';
 import database from '../common/database/database';
 import {Promise} from 'es6-promise'
-import * as passwordGenerator from 'otp-generator'
+import * as passwordGenerator from 'generate-password'
 import {sendMail} from '../middlewares/mailer'
 import * as passwordHash from "password-hash"
 export const otpValidate = (_body) => {
@@ -19,7 +19,10 @@ export const otpValidate = (_body) => {
           if(results.rowCount !=0)
           {
           const mailId=results.rows[0].email
-          const password=passwordGenerator.generate(8, { upperCase: true, specialChars: true, alphabets:true,digits:true });
+          const password=passwordGenerator.generate({
+            length: 10,
+            numbers: true
+        });
           var hashedPassword = passwordHash.generate(password);
           const subject=" ELLOW LOGIN PASSWORD "
           const query = {
