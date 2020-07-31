@@ -185,7 +185,7 @@ export const getProfileByCompanyId = (_body) => {
         const query = {
             name: 'get-ProfileByCompanyId',
             text: jobReceivedQuery.getProfile,
-            values: [parseInt(_body.companyId)]
+            values: [parseInt(_body.companyId),parseInt(_body.jobReceivedId)]
         }
 
         database().query(query, (error, results) => {

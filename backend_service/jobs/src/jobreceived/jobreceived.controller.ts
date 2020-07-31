@@ -55,7 +55,7 @@ export const saveProfile = (req, res) => {
 }
 
 export const getProfile = (req, res) => {
-    const body = req.params;
+    const body = req.query;
     getProfileByCompanyId(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
