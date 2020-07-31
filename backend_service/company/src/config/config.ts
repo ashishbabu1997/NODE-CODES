@@ -10,5 +10,6 @@ export default {
         "database": "devdb",
         "password": "DevD8u5er",
         "port":5432
-    }
+    },
+    "jwtSecretKey": "elL0wA!"
 }

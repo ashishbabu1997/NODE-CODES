@@ -5,5 +5,5 @@ import updateDetailsSchema from './schemas/updateDetailsSchema';
 const router = express.Router();
 router
     .get('/:companyId',getDetails)
-    .put('/updateDetails', validate(updateDetailsSchema), updateDetails)
+    .put('/updateCompanyProfile', validate(updateDetailsSchema), updateDetails)
 export default router;

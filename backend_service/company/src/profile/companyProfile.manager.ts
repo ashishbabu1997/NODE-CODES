@@ -1,20 +1,20 @@
 import companyQuery  from './query/query';
 import database from '../common/database/database';
+import {Promise} from 'es6-promise'
 
 export const get_Details = (_body) => {
     return new Promise((resolve, reject) => {
         const query = {
             name: 'get_details',
-            text: companyQuery.get_details,
-            values: [_body.company_id],
+            text: companyQuery.getProfiles,
+            values: [_body],
         }
         database().query(query, (error, results) => {
             if (error) {
-                console.log(query);
                 reject({ code: 400, message: "Failed to access profile. Please try again.", data: {} });
                 return;
             }
-            resolve(results.rows[0].company_id);
+            resolve({ code: 200, message: "Profile listed successfully", data: { Profile: results.rows } });
         })
     });
 }
@@ -23,9 +23,8 @@ export const update_Details = (_body) => {
         const currentTime = Math.floor(Date.now() / 1000);
         const query = {
             name: 'update_details',
-            text: companyQuery.update_details,
-            values: [_body.companyId, _body.profileUrl, _body.description,_body.logo,_body.coverPage,_body.tagline,_body.facebookId,_body.instagramId,
-                _body.twitterId,_body.linkedinId]
+            text: companyQuery.updateProfileDetails,
+            values: [_body.profileUrl, _body.description, _body.logo, _body.coverPage, _body.tagline, _body.facebookId, _body.instagramId,_body.twitterId, _body.linkedinId,parseInt(_body.companyId)]
         }
         database().query(query, (error, results) => {
             if (error) {

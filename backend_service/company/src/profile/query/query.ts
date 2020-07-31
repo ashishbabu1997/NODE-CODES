@@ -1,4 +1,4 @@
 export default {
-    get_details:"SELECT * FROM company WHERE id = ($1)",
-    update_details:"UPDATE company SET companyId=$1, profileUrl= $2,description=$3,logo=$4,coverPage=$5,tagline=$6,facebookId=$7,instagramId=$8,twitterId=$9,linkedinId=$10 WHERE companyId=$11"
+    getProfiles: 'SELECT company_profile_url,company_description,company_logo,company_cover_page,company_tagline,company_fb_id,company_ig_id,company_twitter_id,company_linkedin_id  FROM company WHERE company_id = $1',
+    updateProfileDetails: "UPDATE company SET  company_profile_url= $1,company_description=$2,company_logo=$3,company_cover_page=$4,company_tagline=$5,company_fb_id=$6,company_ig_id=$7,company_twitter_id=$8,company_linkedin_id=$9 WHERE company_id=$10"
 }

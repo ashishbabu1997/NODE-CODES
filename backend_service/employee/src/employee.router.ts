@@ -1,4 +1,4 @@
-import { create } from './employee.controller';
+import { addEmployee } from './employee.controller';
  import * as express from 'express';
  import validate from './middleware/validation';
  import createSchema from './schema/create.schema';
@@ -6,6 +6,6 @@ import { create } from './employee.controller';
 const router = express.Router();
 
 router
-    .post('/create', validate(createSchema), create)
+    .post('/', validate(createSchema), addEmployee)
 
 export default router;
