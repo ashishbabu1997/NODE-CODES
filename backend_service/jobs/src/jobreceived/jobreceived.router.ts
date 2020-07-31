@@ -14,6 +14,6 @@ router
     .put('/reject', validate(schemaReject), updateReject)
     .post('/submit', validate(addProfileSchema),submitProfile)
     .post('/save', validate(addProfileSchema),saveProfile)
-    .get('/profile/:companyId', getProfile)
+    .get('/profile/', getProfile)
 
 export default router;
