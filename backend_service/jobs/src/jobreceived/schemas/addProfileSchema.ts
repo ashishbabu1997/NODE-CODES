@@ -34,17 +34,17 @@ export default Joi.object().keys({
             });
             return errors;
         }),
-        positionId : Joi.number().required().error(errors => {
+        jobReceivedId : Joi.number().required().error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
                     case "any.required":
-                        err.message = "Position Id should not be empty!";
+                        err.message = "job Received Id should not be empty!";
                         break;
                     case "number.base":
-                        err.message = "Position Id must be a number"
+                        err.message = "job Received Id must be a number"
                         break;
                     default:
-                        err.message = "Invalid Position Id"
+                        err.message = "Invalid job Received Id"
                         break;
                 }
             });
@@ -80,17 +80,17 @@ export default Joi.object().keys({
                 return errors;
             })
     }) ),
-    isSubmit : Joi.boolean().required().error(errors => {
+    candidateStatus : Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
-                    err.message = "isSubmit should not be empty";
+                    err.message = "candidate Status should not be empty";
                     break;
-                case "boolean.base":
-                    err.message = "isSubmit must be a boolean"
+                case "number.base":
+                    err.message = "candidate Status must be a number"
                     break;
                 default:
-                    err.message = "Invalid isSubmit"
+                    err.message = "Invalid candidate Status"
                     break;
             }
         });
