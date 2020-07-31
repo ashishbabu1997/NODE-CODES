@@ -6,5 +6,4 @@ export default {
     updateReject: 'INSERT INTO company_job (job_received_id, company_id, company_job_status ,created_by, created_on, status ) VALUES ($1, $2, $3, $4, $5, true) ON CONFLICT (job_received_id, company_id) DO UPDATE SET company_job_status = 2, updated_on = $4',
     getProfile: 'SELECT candidate_id as "candidateId", candidate_name as "candidateName", rate as "rate", resume  as "resume", candidate_status as "candidateStatus" FROM candidate WHERE company_id=$1 and job_received_id = $2',
     addProfile: 'INSERT INTO candidate (candidate_name, company_id, job_received_id, cover_note, rate, candidate_status) VALUES %L',
-    updateDeveloperCount: 'update  positions p set developer_count = developer_count - $1, updated_on = $2 from job_received jr where jr.position_id  = p.position_id  and job_received_id = $3',
 }
