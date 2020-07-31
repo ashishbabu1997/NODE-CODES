@@ -9,7 +9,7 @@ const router = express.Router();
 
 router
     .get('/', getJobReceived)
-    .get('/job/:jobReceivedId/:sellerCompanyId', getJobReceivedById)
+    .get('/getById', getJobReceivedById)
     .put('/', validate(schemaFlag), updateFlag)
     .put('/reject', validate(schemaReject), updateReject)
     .post('/submit', validate(addProfileSchema),submitProfile)
