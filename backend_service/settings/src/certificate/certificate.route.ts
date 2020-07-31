@@ -7,6 +7,6 @@ router
     .get('/', fetchCertificates)
     .post('/', addCertificate)
     .put('/', editCertificate)
-    .delete('/:certificateId', deleteCertificates)
+    .delete('/:certificationId', deleteCertificates)
 
 export default router;

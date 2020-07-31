@@ -24,7 +24,7 @@ export const createCertificate = (_body) => {
     const query = {
             name: 'add-certificate',
             text: certificateQuery.addCertificate,
-            values: [_body.certificateName, currentTime],
+            values: [_body.certificationName, currentTime],
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -32,7 +32,7 @@ export const createCertificate = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Certificate added successfully", data: {} });
+            resolve({ code: 200, message: "Certification added successfully", data: {} });
         })
     })
 }
@@ -43,14 +43,14 @@ export const updateCertificate = (_body) => {
     const query = {
             name: 'update-certificate',
             text: certificateQuery.updateCertificate,
-            values: [_body.certificateName, currentTime, _body.certificateId]
+            values: [_body.certificationName, currentTime, _body.certificationId]
         }
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Certificate updated successfully", data: {} });
+            resolve({ code: 200, message: "Certification updated successfully", data: {} });
         })
     })
 }
@@ -60,14 +60,14 @@ export const deleteCertificate = (_body) => {
     const query = {
             name: 'delete-certificate',
             text: certificateQuery.deleteCertificate,
-            values: [_body.certificateId]
+            values: [_body.certificationId]
         }
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Certificate deleted successfully", data: {} });
+            resolve({ code: 200, message: "Certification deleted successfully", data: {} });
         })
     })
 }

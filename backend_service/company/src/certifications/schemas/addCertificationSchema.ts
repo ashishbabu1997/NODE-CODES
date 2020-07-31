@@ -17,33 +17,33 @@ export default Joi.object().keys({
         });
         return errors;
     }),    
-    certificateId: Joi.number().required().error(errors => {
+    certificationId: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
-                    err.message = "Certificate Id should not be empty!";
+                    err.message = "Certification Id should not be empty!";
                     break;
                 case "number.base":
-                    err.message = "Certificate Id must be a number"
+                    err.message = "Certification Id must be a number"
                     break;
                 default:
-                    err.message = "Invalid Certificate Id"
+                    err.message = "Invalid Certification Id"
                     break;
             }
         });
         return errors;
     }), 
-    certificateNumber: Joi.string().required().error(errors => {
+    certificationNumber: Joi.string().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
-                    err.message = "Certificate Number should not be empty";
+                    err.message = "Certification Number should not be empty";
                     break;
                 case "string.base":
-                    err.message = "Certificate Number must be a string"
+                    err.message = "Certification Number must be a string"
                     break;
                 default:
-                    err.message = "Invalid Certificate Number"
+                    err.message = "Invalid Certification Number"
                     break;
             }
         });
