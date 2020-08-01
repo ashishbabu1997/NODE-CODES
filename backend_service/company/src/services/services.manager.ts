@@ -61,34 +61,13 @@ export const fetchCompanyServices = (_body) => {
                                         return;
                                     }
                                     done()
-                                    resolve({ code: 200, message: "Services listed successfully", data: {supportingDocument,services,domains,technologyAreas} });
+                                    resolve({ code: 200, message: "Services listed successfully", data: { supportingDocument, services, domains, technologyAreas } });
                                 })
                             })
                         })
                     })
                 })
             })
-        })
-    })
-    return new Promise((resolve, reject) => {
-        const query = {
-            name: 'fetch-company-services',
-            text: servicesQuery.getCompanyServices,
-            values: [parseInt(_body.companyId)],
-        }
-        database().query(query, (error, results) => {
-            if (error) {
-                console.log(error)
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                return;
-            }
-            const rows = results.rows[0];
-            console.log(rows)
-            const services = rows.services != '' ? rows.services.split(',') : [];
-            const domains = rows.domains != '' ? rows.domains.split(',') : [];
-            const technologyAreas = rows.technologyareas != '' ? rows.technologyareas.split(',') : [];
-
-            resolve({ code: 200, message: "Services listed successfully", data: { services, domains, technologyAreas } });
         })
     })
 }
@@ -115,63 +94,80 @@ export const createCompanyServices = (_body) => {
             }
             client.query('BEGIN', err => {
                 if (shouldAbort(err)) return
-                const deleteServicesQuery = {
-                    name: 'delete-company-services',
-                    text: servicesQuery.deleteCompanyServices,
-                    values: [_body.companyId, _body.deletedServices],
+                const getCompanyServicesOldQuery = {
+                    name: 'get-company-services-old',
+                    text: servicesQuery.getCompanyServicesOld,
+                    values: [_body.companyId]
                 }
-                client.query(deleteServicesQuery, (err, res) => {
-                    if (shouldAbort(err)) return
-                    const deleteDomainsQuery = {
-                        name: 'delete-company-domains',
-                        text: servicesQuery.deleteCompanyDomains,
-                        values: [_body.companyId, _body.deletedDomains],
+                client.query(getCompanyServicesOldQuery, (err, res) => {
+                    const response = res.rows[0];
+                    const servicesOld = response.services;
+                    const domainsOld = response.domains;
+                    const technologyAreasOld = response.technologyAreas;
+                    const services = _body.services;
+                    const domains = _body.domains;
+                    const technologyAreas = _body.technologyAreas;
+                    const deletedServices = servicesOld.filter(e => services.indexOf(e) == -1);
+                    const deletedDomains = domainsOld.filter(e => domains.indexOf(e) == -1);
+                    const deletedTechnologyAreas = technologyAreasOld.filter(e => technologyAreas.indexOf(e) == -1);
+                    const deleteServicesQuery = {
+                        name: 'delete-company-services',
+                        text: servicesQuery.deleteCompanyServices,
+                        values: [_body.companyId, deletedServices],
                     }
-                    client.query(deleteDomainsQuery, (err, res) => {
+                    client.query(deleteServicesQuery, (err, res) => {
                         if (shouldAbort(err)) return
-                        const deleteTechnologyAreasQuery = {
-                            name: 'delete-company-technologyAreas',
-                            text: servicesQuery.deleteCompanyTechnologyAreas,
-                            values: [_body.companyId, _body.deletedTechnologyAreas],
+                        const deleteDomainsQuery = {
+                            name: 'delete-company-domains',
+                            text: servicesQuery.deleteCompanyDomains,
+                            values: [_body.companyId, deletedDomains],
                         }
-                        client.query(deleteTechnologyAreasQuery, (err, res) => {
+                        client.query(deleteDomainsQuery, (err, res) => {
                             if (shouldAbort(err)) return
-                            const addServicesQuery = {
-                                name: 'create-company-services',
-                                text: servicesQuery.addCompanyServices,
-                                values: [_body.companyId, _body.services, currentTime, currentTime],
+                            const deleteTechnologyAreasQuery = {
+                                name: 'delete-company-technologyAreas',
+                                text: servicesQuery.deleteCompanyTechnologyAreas,
+                                values: [_body.companyId, deletedTechnologyAreas],
                             }
-                            client.query(addServicesQuery, (err, res) => {
+                            client.query(deleteTechnologyAreasQuery, (err, res) => {
                                 if (shouldAbort(err)) return
-                                const addDomainsQuery = {
-                                    name: 'create-company-domains',
-                                    text: servicesQuery.addCompanyDomains,
-                                    values: [_body.companyId, _body.domains, currentTime, currentTime],
+                                const addServicesQuery = {
+                                    name: 'create-company-services',
+                                    text: servicesQuery.addCompanyServices,
+                                    values: [_body.companyId, _body.services, currentTime, currentTime],
                                 }
-                                client.query(addDomainsQuery, (err, res) => {
+                                client.query(addServicesQuery, (err, res) => {
                                     if (shouldAbort(err)) return
-                                    const addTechnologiesQuery = {
-                                        name: 'create-company-technology',
-                                        text: servicesQuery.addCompanyTechnologyAreas,
-                                        values: [_body.companyId, _body.technologyAreas, currentTime, currentTime],
+                                    const addDomainsQuery = {
+                                        name: 'create-company-domains',
+                                        text: servicesQuery.addCompanyDomains,
+                                        values: [_body.companyId, _body.domains, currentTime, currentTime],
                                     }
-                                    client.query(addTechnologiesQuery, (err, res) => {
+                                    client.query(addDomainsQuery, (err, res) => {
                                         if (shouldAbort(err)) return
-                                        const addSupportDocumentQuery = {
-                                            name: 'add-support-document',
-                                            text: servicesQuery.addSupportDocument,
-                                            values: [_body.supportingDocument, _body.companyId],
+                                        const addTechnologiesQuery = {
+                                            name: 'create-company-technology',
+                                            text: servicesQuery.addCompanyTechnologyAreas,
+                                            values: [_body.companyId, _body.technologyAreas, currentTime, currentTime],
                                         }
-                                        client.query(addSupportDocumentQuery, (err, res) => {
+                                        client.query(addTechnologiesQuery, (err, res) => {
                                             if (shouldAbort(err)) return
-                                            client.query('COMMIT', err => {
-                                                if (err) {
-                                                    console.error('Error committing transaction', err.stack)
-                                                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                                                    return;
-                                                }
-                                                done()
-                                                resolve({ code: 200, message: "Services added successfully", data: {} });
+                                            const addSupportDocumentQuery = {
+                                                name: 'add-support-document',
+                                                text: servicesQuery.addSupportDocument,
+                                                values: [_body.supportingDocument, _body.companyId],
+                                            }
+                                            client.query(addSupportDocumentQuery, (err, res) => {
+                                                if (shouldAbort(err)) return
+                                                client.query('COMMIT', err => {
+                                                    if (err) {
+                                                        console.error('Error committing transaction', err.stack)
+                                                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                                        return;
+                                                    }
+                                                    done()
+                                                    resolve({ code: 200, message: "Services added successfully", data: {} });
+                                                })
                                             })
                                         })
                                     })
@@ -179,6 +175,7 @@ export const createCompanyServices = (_body) => {
                             })
                         })
                     })
+
                 })
             })
         })
