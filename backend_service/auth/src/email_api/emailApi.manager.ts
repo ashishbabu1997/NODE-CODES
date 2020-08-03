@@ -28,17 +28,17 @@ export const sendOtp = (_body) => {
       }
       database().query(query, (error, results) => {
           if (error) {
-              reject({ code: 400, message: "Failed. Please try again.", data:  [_body,otp] });
+              reject({ code: 400, message: "Error in database connection.", data:  [] });
               return;
           }
-          const subject="Your OTP is"
-          sendMail(_body, subject, otp, function(err, data) {
-                if (err) {
-                  reject({ code: 400, message: "Failed. Please try again.", data:  [_body,otp] });
+          const subject="Your OTP is";
+          sendMail(_body, subject, otp, function(error,results) {
+                if (error) {
+                  reject({ code: 400, message: "Cannot send email", data:  [] });
                   return;
                 }
                 console.log('Email sent!!!');
-                resolve({ code: 201, message: "OTP  has sent to your email successfully", data: [_body, otp] });
+                resolve({ code: 201, message: "OTP  has sent to your email successfully", data: [] });
             });
           })
       })
