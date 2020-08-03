@@ -14,7 +14,7 @@ export default {
     "mail": {
         "service": "gmail",
         "user": "ashishpallikkunnel97@gmail.com",
-        "password": "sydbwwgpiculbktg",
+        "password": "ash1526$",
     },
     "jwtSecretKey": "elL0wA!"
 }
