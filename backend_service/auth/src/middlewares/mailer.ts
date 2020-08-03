@@ -1,7 +1,7 @@
 import * as nodemailer from 'nodemailer'
 import config from '../config/config';
 
-var transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service:config.mail.service,
     auth: {
         user: config.mail.user,
@@ -15,7 +15,7 @@ export const sendMail = (email, subject, text, callback) => {
         subject,
         text
     };
-
+    
     transporter.sendMail(mailOptions, function (err, data) {
         if (err) {
             return callback(err, null);

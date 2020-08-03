@@ -6,6 +6,7 @@ import {sendMail} from '../middlewares/mailer'
 export const sendOtp = (_body) => {
   return new Promise((resolve, reject) => {
     const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false, alphabets:false });
+    console.log(_body)
     const checkQuery = {
       name: 'checkEmail',
       text: Query.checkEmail,
@@ -34,7 +35,7 @@ export const sendOtp = (_body) => {
           const subject="Your OTP is";
           sendMail(_body, subject, otp, function(err,data) {
                 if (err) {
-                  console.log(err)
+                  console.log("........Email ERROR:.........",err)
                   reject({ code: 400, message: "Cannot send email", data:  [] });
                   return;
                 }
