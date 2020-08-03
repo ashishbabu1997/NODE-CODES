@@ -2,7 +2,7 @@ export default {
     "appName": "company",
     "version": "v1",
     "http": {
-        "port": 4000
+        "port": 4005
     },
     "db": {
         "user": "devdb_user",
@@ -14,7 +14,7 @@ export default {
     "mail": {
         "service": "gmail",
         "user": "ashishpallikkunnel97@gmail.com",
-        "password": "ash1526$",
+        "password": "kffepsnpiyzpzgzn",
     },
     "jwtSecretKey": "elL0wA!"
 }
