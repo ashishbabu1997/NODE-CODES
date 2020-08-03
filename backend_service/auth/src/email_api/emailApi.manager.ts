@@ -14,12 +14,12 @@ export const sendOtp = (_body) => {
   }
   database().query(checkQuery, (error, results) => {
       if (error) {
-          reject({ code: 400, message: "Failed. Please try again.", data:  [] });
+          reject({ code: 400, message: "Failed. Please try again.", data:  {} });
           return;
         }
         if (results.rowCount!=0)
         {
-          reject({ code: 400, message: "Email Already in use.", data:  [] });
+          reject({ code: 400, message: "Email Already in use.", data:  {} });
           return;
         }
       const query = {
@@ -29,18 +29,18 @@ export const sendOtp = (_body) => {
       }
       database().query(query, (error, results) => {
           if (error) {
-              reject({ code: 400, message: "Error in database connection.", data:  [] });
+              reject({ code: 400, message: "Error in database connection.", data:{} });
               return;
           }
           const subject="Your OTP is";
           sendMail(_body, subject, otp, function(err,data) {
                 if (err) {
                   console.log("........Email ERROR:.........",err)
-                  reject({ code: 400, message: "Cannot send email", data:  [] });
+                  reject({ code: 400, message: "Cannot send email", data:{}});
                   return;
                 }
                 console.log('Email sent!!!');
-                resolve({ code: 201, message: "OTP  has sent to your email successfully", data: [] });
+                resolve({ code: 200, message: "OTP  has sent to your email successfully", data:{} });
             });
           })
       })
