@@ -32,8 +32,9 @@ export const sendOtp = (_body) => {
               return;
           }
           const subject="Your OTP is";
-          sendMail(_body, subject, otp, function(error,results) {
-                if (error) {
+          sendMail(_body, subject, otp, function(err,data) {
+                if (err) {
+                  console.log(err)
                   reject({ code: 400, message: "Cannot send email", data:  [] });
                   return;
                 }
