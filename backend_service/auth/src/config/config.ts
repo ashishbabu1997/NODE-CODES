@@ -13,8 +13,8 @@ export default {
     },
     "mail": {
         "service": "gmail",
-        "user": "ashishpallikkunnel97@gmail.com",
-        "password": "ash1526$",
+        "user": "ashish.babu@ellow.ai",
+        "password": "Ash1526$",
     },
     "jwtSecretKey": "elL0wA!"
 }
