@@ -2,7 +2,7 @@ export default {
     "appName": "company",
     "version": "v1",
     "http": {
-        "port":4004
+        "port":4005
     },
     "db": {
         "user": "devdb_user",
