@@ -23,7 +23,7 @@ export const listCandidatesDetails = (_body) => {
             var selectQuery = candidateQuery.listCandidates;
             if(_body.filter)
             {
-                 selectQuery =selectQuery +" "+"AND (LOWER(c.candidate_name) LIKE '%" +_body.filter.toLowerCase() +"%') "
+                 selectQuery =selectQuery +" "+"AND (LOWER(c.candidate_name) LIKE '%" +_body.filter.toLowerCase() +"%') " + "OR (LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%') "
             }
             const listquery = {
                 name: 'list-candidates',
