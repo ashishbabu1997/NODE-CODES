@@ -26,10 +26,10 @@ export const employeeLoginMethod = (_body) => {
             if (data.length > 0) {
                 console.log(data)
                 const token = jwt.sign({
-                    employeeId: data[0].employeeId.toString()
-                    // companyId: data[0].companyId.toString()
+                    employeeId: data[0].employeeId.toString(),
+                    companyId: data[0].companyId.toString()
                 }, config.jwtSecretKey, { expiresIn: '24h' });
-                resolve({ code: 200, message: "Login successful", data: { token: `Bearer ${token}` } });
+                resolve({ code: 200, message: "Login successful", data: { token: `Bearer ${token}`, companyId: data[0].companyId } });
             } else {
                 reject({ code: 400, message: "Invalid email or password", data: {} });
             }
