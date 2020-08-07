@@ -28,7 +28,7 @@ export const listCandidatesDetails = (_body) => {
             const listquery = {
                 name: 'list-candidates',
                 text:selectQuery,
-                values:[_body.companyId]
+                values:[_body.positionId]
             }
             database().query(listquery, (error, results) => {
                 if (error) {
