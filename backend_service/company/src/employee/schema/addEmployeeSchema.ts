@@ -1,7 +1,7 @@
 import * as Joi from '@hapi/joi';
 
-export default Joi.object().keys({ 
-        firstName: Joi.string().required().error(errors => {
+export default Joi.object().keys({
+    firstName: Joi.string().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
@@ -49,7 +49,7 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    email: Joi.string().required().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }).error(errors => {
+    email: Joi.string().required().email({ minDomainSegments: 2 }).error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":

@@ -84,14 +84,21 @@ export const createCompanyPositions = (_body) => {
                             const query = positionsQuery.addPositionHiringStages + hiringStageValues
                             client.query(query, (err, res) => {
                                 if (shouldAbort(err)) return
-                                client.query('COMMIT', err => {
-                                    if (err) {
-                                        console.error('Error committing transaction', err.stack)
-                                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                                        return;
-                                    }
-                                    done()
-                                    resolve({ code: 200, message: "Positions created successfully", data: {} });
+                                const addPositionToJobReceivedQuery = {
+                                    name: 'add-position-to-job-received',
+                                    text: positionsQuery.addPositionToJob,
+                                    values: [positionId, currentTime],
+                                }
+                                client.query(query, (err, res) => {
+                                    client.query('COMMIT', err => {
+                                        if (err) {
+                                            console.error('Error committing transaction', err.stack)
+                                            reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                            return;
+                                        }
+                                        done()
+                                        resolve({ code: 200, message: "Positions created successfully", data: {} });
+                                    })
                                 })
                             })
                         })
