@@ -81,6 +81,22 @@ export default Joi.object().keys({
         });
         return errors;
     }),
+    employeeId: Joi.number().required().error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "any.required":
+                    err.message = "Employee Id should not be empty!";
+                    break;
+                case "number.base":
+                    err.message = "Employee Id must be a number"
+                    break;
+                default:
+                    err.message = "Invalid Employee Id"
+                    break;
+            }
+        });
+        return errors;
+    }),
     companyName: Joi.string().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
