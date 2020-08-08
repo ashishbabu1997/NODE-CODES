@@ -35,7 +35,7 @@ export const createEmployee = (_body) => {
                     const createEmployeeQuery = {
                         name: 'createEmployee',
                         text: employeeQuery.createEmployee,
-                        values: [_body.firstName, _body.lastName, _body.accountType, companyId, _body.telephoneNumber, _body.roleId, currentTime],
+                        values: [_body.firstName, _body.lastName, _body.accountType, companyId, _body.telephoneNumber, _body.roleId, currentTime, _body.employeeId],
                     }
                     client.query(createEmployeeQuery, (err, res) => {
                         if (shouldAbort(err)) return
