@@ -53,7 +53,7 @@ export const fetchCompanyServices = (_body) => {
                             }
                             client.query(getSupportingDocumentQuery, (err, res) => {
                                 if (shouldAbort(err)) return
-                                let supportingDocument = res.rows[0].supportingDocument
+                                let supportingDocument = res.rows.length > 0 ? res.rows[0].supportingDocument : null;
                                 client.query('COMMIT', err => {
                                     if (err) {
                                         console.error('Error committing transaction', err.stack)
