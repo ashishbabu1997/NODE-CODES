@@ -6,11 +6,10 @@ import {sendMail} from '../middlewares/mailer'
 export const sendOtp = (_body) => {
   return new Promise((resolve, reject) => {
     const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false, alphabets:false });
-    console.log(_body)
     const checkQuery = {
       name: 'checkEmail',
       text: Query.checkEmail,
-      values: [_body],
+      values: [_body]
   }
   database().query(checkQuery, (error, results) => {
       if (error) {
@@ -19,7 +18,7 @@ export const sendOtp = (_body) => {
         }
         if (results.rowCount!=0)
         {
-          reject({ code: 400, message: "Email Already in use.", data:  {} });
+          reject({ code: 400, message: "You are a registered user", data:  {} });
           return;
         }
       const query = {
