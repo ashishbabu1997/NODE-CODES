@@ -19,17 +19,18 @@ export const employeeLoginMethod = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
+                console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
             const data = results.rows
             if (data.length > 0) {
-                console.log(data)
+                const value = data[0];
                 const token = jwt.sign({
-                    employeeId: data[0].employeeId.toString(),
-                    companyId: data[0].companyId.toString()
+                    employeeId: value.employeeId.toString(),
+                    companyId: value.companyId.toString()
                 }, config.jwtSecretKey, { expiresIn: '24h' });
-                resolve({ code: 200, message: "Login successful", data: { token: `Bearer ${token}`, companyId: data[0].companyId } });
+                resolve({ code: 200, message: "Login successful", data: { token: `Bearer ${token}`, companyId: value.companyId, companyName: value.companyName, companyLogo: value.companyLogo, email: value.email } });
             } else {
                 reject({ code: 400, message: "Invalid email or password", data: {} });
             }

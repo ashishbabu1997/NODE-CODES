@@ -1,4 +1,4 @@
-import { editCompanyPositionHiringSteps, fetchPositionDetails, createCompanyPositions, getCompanyPositions} from './positions.manager';
+import { editCompanyPositionHiringSteps, fetchPositionDetails, createCompanyPositions, getCompanyPositions, updateCompanyPositions } from './positions.manager';
 import sendResponse from '../common/response/response';
 
 export const getPositions = (req, res) => {
@@ -31,6 +31,15 @@ export const getPositionDetails = (req, res) => {
 export const editPositionHiringSteps = (req, res) => {
     const body = req.body;
     editCompanyPositionHiringSteps(body).then((response: any) => {
+        sendResponse(res, response.code, 1, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, error.message, error.data)
+    })
+}
+
+export const updatePositions = (req, res) => {
+    const body = req.body;
+    updateCompanyPositions(body).then((response: any) => {
         sendResponse(res, response.code, 1, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, error.message, error.data)

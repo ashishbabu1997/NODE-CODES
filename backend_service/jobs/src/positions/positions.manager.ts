@@ -24,87 +24,60 @@ export const getCompanyPositions = (_body) => {
     })
 }
 
-export const createCompanyPositions = (_body) => {
+export const createCompanyPositions = async (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
-
-        database().connect((err, client, done) => {
-            const shouldAbort = err => {
-                if (err) {
-                    console.error('Error in transaction', err.stack)
-                    client.query('ROLLBACK', err => {
-                        if (err) {
-                            console.error('Error rolling back client', err.stack)
-                            reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                            return;
-                        }
-                        done();
-                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
-
-                    })
-                }
-                return !!err
-            }
-            client.query('BEGIN', err => {
-                if (shouldAbort(err)) return
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
                 const addCompanyPositionsQuery = {
                     name: 'add-company-positions',
                     text: positionsQuery.addCompanyPositions,
                     values: [_body.positionName, _body.locationName, _body.developerCount, _body.companyId,
                     _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document, _body.contractPeriodId,
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
-                    _body.userId, _body.userId, currentTime, currentTime],
+                    _body.userId, _body.userId, currentTime, currentTime]
                 }
-                client.query(addCompanyPositionsQuery, (err, res) => {
-                    console.log(addCompanyPositionsQuery);
-                    if (shouldAbort(err)) return
-                    const positionId = res.rows[0].position_id
-                    const addJobSkillsQuery = {
-                        name: 'add-job-skills',
-                        text: positionsQuery.addJobSkills,
-                        values: [positionId, _body.skills, currentTime, currentTime],
-                    }
-                    client.query(addJobSkillsQuery, (err, res) => {
-                        if (shouldAbort(err)) return
-                        const addPositionHiringStepQuery = {
-                            name: 'add-position-hiring-steps',
-                            text: positionsQuery.addPositionSteps,
-                            values: [positionId, _body.hiringStepName, _body.description, currentTime, currentTime],
-                        }
-                        client.query(addPositionHiringStepQuery, (err, res) => {
-                            if (shouldAbort(err)) return
-                            const hiringStages = _body.hiringStages;
-                            const positionHiringStepId = res.rows[0].position_hiring_step_id;
-                            let hiringStageValues = ''
-                            const length = hiringStages.length;
-                            hiringStages.forEach((element, i) => {
-                                const end = i != length - 1 ? "," : ";"
-                                hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.order + "," + element.coordinatorId + "," + currentTime + "," + currentTime + ")" + end
-                            });
-                            const query = positionsQuery.addPositionHiringStages + hiringStageValues
-                            client.query(query, (err, res) => {
-                                if (shouldAbort(err)) return
-                                const addPositionToJobReceivedQuery = {
-                                    name: 'add-position-to-job-received',
-                                    text: positionsQuery.addPositionToJob,
-                                    values: [positionId, currentTime],
-                                }
-                                client.query(query, (err, res) => {
-                                    client.query('COMMIT', err => {
-                                        if (err) {
-                                            console.error('Error committing transaction', err.stack)
-                                            reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                                            return;
-                                        }
-                                        done()
-                                        resolve({ code: 200, message: "Positions created successfully", data: {} });
-                                    })
-                                })
-                            })
-                        })
-                    })
-                })
-            })
+                const companyPositionResponse = await client.query(addCompanyPositionsQuery);
+                const positionId = companyPositionResponse.rows[0].position_id
+                const addJobSkillsQuery = {
+                    name: 'add-job-skills',
+                    text: positionsQuery.addJobSkills,
+                    values: [positionId, _body.skills, currentTime, currentTime],
+                }
+                await client.query(addJobSkillsQuery)
+                if (_body.flag == 0) {
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Positions created successfully", data: {} });
+                    return;
+                }
+                const addPositionHiringStepQuery = {
+                    name: 'add-position-hiring-steps',
+                    text: positionsQuery.addPositionSteps,
+                    values: [positionId, _body.hiringStepName, _body.description, currentTime, currentTime],
+                }
+                const res = await client.query(addPositionHiringStepQuery)
+                const hiringStages = _body.hiringStages;
+                const positionHiringStepId = res.rows[0].position_hiring_step_id;
+                let hiringStageValues = ''
+                const length = hiringStages.length;
+                hiringStages.forEach((element, i) => {
+                    const end = i != length - 1 ? "," : ";"
+                    hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.order + "," + element.coordinatorId + "," + currentTime + "," + currentTime + ")" + end
+                });
+                const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
+                await client.query(addPositionHiringStagesQuery)
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Positions created successfully", data: {} });
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
 }
@@ -203,6 +176,88 @@ export const editCompanyPositionHiringSteps = (_body) => {
                     })
                 })
             })
+        })
+    })
+}
+
+export const updateCompanyPositions = async (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        const positionId = _body.positionId;
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                const updateCompanyPositionsFirstQuery = {
+                    name: 'update-company-positions-first',
+                    text: positionsQuery.updatePositionFirst,
+                    values: [_body.positionName, _body.locationName, _body.developerCount,
+                    _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document,
+                    _body.userId, currentTime, positionId, _body.companyId]
+                }
+                await client.query(updateCompanyPositionsFirstQuery);
+                const updateCompanyPositionsSecondQuery = {
+                    name: 'update-company-positions-second',
+                    text: positionsQuery.updatePositionSecond,
+                    values: [_body.contractPeriodId,
+                    _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
+                    _body.userId, currentTime, positionId, _body.companyId]
+                }
+                await client.query(updateCompanyPositionsSecondQuery);
+                const getJobSkillsQuery = {
+                    name: 'get-job-skills',
+                    text: positionsQuery.getPositionSkillsOld,
+                    values: [positionId, _body.companyId],
+                }
+                const skillsResponse = await client.query(getJobSkillsQuery);
+                const oldSkills = skillsResponse.rows[0].skills;
+                const skills = _body.skills;
+                const deletedSkills = oldSkills.filter(e => skills.indexOf(e) == -1);
+                const addJobSkillsQuery = {
+                    name: 'add-job-skills',
+                    text: positionsQuery.addJobSkills,
+                    values: [positionId, skills, currentTime, currentTime],
+                }
+                await client.query(addJobSkillsQuery);
+                const deleteJobSkillsQuery = {
+                    name: 'delete-job-skills',
+                    text: positionsQuery.deletePositionSkills,
+                    values: [positionId, deletedSkills],
+                }
+                await client.query(deleteJobSkillsQuery)
+                if (_body.flag == 0) {
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Position updated successfully", data: {} });
+                    return;
+                }
+                console.log("hi")
+                const addPositionHiringStepQuery = {
+                    name: 'add-position-hiring-steps',
+                    text: positionsQuery.addPositionSteps,
+                    values: [positionId, _body.hiringStepName, _body.description, currentTime, currentTime],
+                }
+                const res = await client.query(addPositionHiringStepQuery)
+                const hiringStages = _body.hiringStages;
+                const positionHiringStepId = res.rows[0].position_hiring_step_id;
+                let hiringStageValues = ''
+                const length = hiringStages.length;
+                hiringStages.forEach((element, i) => {
+                    const end = i != length - 1 ? "," : ";"
+                    hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.order + "," + element.coordinatorId + "," + currentTime + "," + currentTime + ")" + end
+                });
+                const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
+                await client.query(addPositionHiringStagesQuery)
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Position updated successfully", data: {} });
+            } catch (e) {
+                await client.query('ROLLBACK')
+                console.log(e)
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
 }
