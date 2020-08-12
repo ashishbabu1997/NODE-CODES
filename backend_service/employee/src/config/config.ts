@@ -10,5 +10,10 @@ export default {
         "database": "devdb",
         "password": "DevD8u5er",
         "port":5432
+    },
+    "mail": {
+        "service": "gmail",
+        "user": "ashishpallikkunnel97@gmail.com",
+        "password": "kffepsnpiyzpzgzn",
     }
 }

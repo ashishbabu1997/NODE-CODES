@@ -1,6 +1,8 @@
 import employeeQuery from './query/employee.query';
 import database from './common/database/database';
-
+import {sendMail} from './middleware/mailer'
+import * as passwordGenerator from 'generate-password'
+import * as crypto from "crypto"
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -52,6 +54,41 @@ export const createEmployee = (_body) => {
                                     reject({ code: 400, message: "Failed. Please try again.", data: {} });
                                     return;
                                 }
+                                const getEmailQuery = {
+                                    name: 'add-email-otp',
+                                    text: employeeQuery.getEmail,
+                                    values: [_body.employeeId],
+                                }
+                                database().query(getEmailQuery, (error, results) => {
+                                    if (error) {
+                                        reject({ code: 400, message: "Error in database connection.", data:{} });
+                                        return;
+                                    }
+                                    const mailId=results.rows[0].email
+                                const password = passwordGenerator.generate({
+                                        length: 10,
+                                        numbers: true
+                                });
+                                var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                                const subject = " ELLOW LOGIN PASSWORD "
+                                const storePasswordQuery = {
+                                        name: 'store-encrypted-password',
+                                        text: employeeQuery.storePassword,
+                                        values: [hashedPassword,_body.employeeId],
+                                }
+                                database().query(storePasswordQuery, (error, results) => {
+                                        if (error) {
+                                          console.log(error)
+                                          return;
+                                        }
+                                })
+                                sendMail(mailId, subject, "Your password is: " + password, function (err, data) {
+                                    if (err) {
+                                      console.log(error)
+                                      return;
+                                    }
+                                    console.log('A password has send to your email !!!');
+                                  });
                                 done()
                                 resolve({ code: 200, message: "Employee added successfully", data: {} });
                             })
@@ -60,5 +97,7 @@ export const createEmployee = (_body) => {
                 })
             })
         })
+    })
+
     })
 }
