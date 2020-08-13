@@ -82,12 +82,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    facebookId: Joi.string().required().error(function (errors) {
+    facebookId: Joi.string().error(function (errors) {
         errors.forEach(function (err) {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Facebook Id should not be empty";
-                    break;
                 case "string.base":
                     err.message = "Facebook Id must be a string of charectors";
                     break;
@@ -98,12 +95,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    instagramId: Joi.string().required().error(function (errors) {
+    instagramId: Joi.string().error(function (errors) {
         errors.forEach(function (err) {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Instagram Id should not be empty";
-                    break;
                 case "string.base":
                     err.message = "Instagram Id must be a string of charectors";
                     break;
@@ -114,12 +108,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    twitterId: Joi.string().required().error(function (errors) {
+    twitterId: Joi.string().error(function (errors) {
         errors.forEach(function (err) {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Twitter Id should not be empty";
-                    break;
                 case "string.base":
                     err.message = "Twitter Id must be a string of charactors";
                     break;
@@ -130,12 +121,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    linkedinId: Joi.string().required().error(function (errors) {
+    linkedinId: Joi.string().error(function (errors) {
         errors.forEach(function (err) {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Linkedin Id should not be empty";
-                    break;
                 case "string.base":
                     err.message = "Linkedin Id must be a string of charectors";
                     break;
