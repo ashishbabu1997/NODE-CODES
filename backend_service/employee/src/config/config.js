@@ -1,4 +1,6 @@
-export default {
+"use strict";
+exports.__esModule = true;
+exports["default"] = {
     "appName": "employee",
     "version": "v1",
     "http": {
@@ -9,11 +11,11 @@ export default {
         "host": "52.66.51.51",
         "database": "devdb",
         "password": "DevD8u5er",
-        "port":5432
+        "port": 5432
     },
     "mail": {
         "service": "gmail",
         "user": "ashishpallikkunnel97@gmail.com",
-        "password": "kffepsnpiyzpzgzn",
+        "password": "kffepsnpiyzpzgzn"
     }
-}
+};
