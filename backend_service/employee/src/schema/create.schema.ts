@@ -49,14 +49,14 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    telephoneNumber: Joi.string().required().error(errors => {
+    telephoneNumber: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
                     err.message = "Telephone Number should not be empty";
                     break;
-                case "string.base":
-                    err.message = "Telephone Number must be a string"
+                case "number.base":
+                    err.message = "Telephone Number must be a number"
                     break;
                 default:
                     err.message = "Invalid Telephone Number"
