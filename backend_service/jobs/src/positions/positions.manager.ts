@@ -49,7 +49,7 @@ export const createCompanyPositions = async (_body) => {
                 await client.query(addJobSkillsQuery)
                 if (_body.flag == 0) {
                     await client.query('COMMIT');
-                    resolve({ code: 200, message: "Positions created successfully", data: {} });
+                    resolve({ code: 200, message: "Positions created successfully", data: { positionId } });
                     return;
                 }
                 const addPositionHiringStepQuery = {
@@ -69,7 +69,7 @@ export const createCompanyPositions = async (_body) => {
                 const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
                 await client.query(addPositionHiringStagesQuery)
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Positions created successfully", data: {} });
+                resolve({ code: 200, message: "Positions created successfully", data: { positionId } });
             } catch (e) {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
