@@ -5,6 +5,8 @@ import certificateRouter from './certificate/certificate.route';
 import ServicesRouter from './services/ServicesRoute';
 import DomainsRouter from './domains/DomainsRoute';
 import TechnologyAreaRouter from './technologyAreas/TechnologyAreaRoute';
+import SkillsRouter from './skills/SkillsRoute';
+
 
 import * as express from 'express';
 const router = express.Router();
@@ -16,6 +18,8 @@ router
     .use(`/api/${AppConfig.version}/settings/services`, ServicesRouter)
     .use(`/api/${AppConfig.version}/settings/domains`, DomainsRouter)
     .use(`/api/${AppConfig.version}/settings/technologyAreas`, TechnologyAreaRouter)
+    .use(`/api/${AppConfig.version}/settings/skills`, SkillsRouter)
+
 
 
 
