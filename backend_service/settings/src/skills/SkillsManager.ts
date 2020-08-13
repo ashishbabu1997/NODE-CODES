@@ -13,7 +13,7 @@ export const getCompanySkills = () => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Services listed successfully", data: { services: results.rows } });
+            resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
         })
     });
 }
@@ -24,14 +24,14 @@ export const createNewSkills = (_body) => {
         const query = {
             name: 'create-services',
             text: skillsQuery.createSkills,
-            values: [_body.serviceName, currentTime],
+            values: [_body.skillName, currentTime],
         }
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Service created successfully", data: {} });
+            resolve({ code: 200, message: "Skills created successfully", data: {} });
         })
     })
 }
@@ -42,14 +42,14 @@ export const updateComppanySkills = (_body) => {
         const query = {
             name: 'update-sevices',
             text: skillsQuery.updateSkills,
-            values: [_body.serviceName, currentTime, _body.serviceId],
+            values: [_body.skillName, currentTime, _body.skillId],
         }
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Services updated successfully", data: {} });
+            resolve({ code: 200, message: "Skill updated successfully", data: {} });
         })
     })
 }
@@ -60,14 +60,14 @@ export const deleteCompanySkills = (_body) => {
         const query = {
             name: 'delete-sevices',
             text: skillsQuery.deleteSkills,
-            values: [currentTime, _body.serviceId],
+            values: [currentTime, _body.skillId],
         }
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Services deleted successfully", data: {} });
+            resolve({ code: 200, message: "Skills deleted successfully", data: {} });
         })
     })
 }
