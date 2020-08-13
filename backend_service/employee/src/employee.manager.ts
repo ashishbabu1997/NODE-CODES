@@ -7,7 +7,6 @@ import * as crypto from "crypto";
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
-        console.log("Hello")
         database().connect((err, client, done) => {
             const shouldAbort = err => {
                 if (err) {
