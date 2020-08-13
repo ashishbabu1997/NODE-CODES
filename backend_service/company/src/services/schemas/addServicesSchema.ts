@@ -65,12 +65,10 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    supportingDocument: Joi.string().required().error(errors => {
+    supportingDocument: Joi.string().error(errors => {
         errors.forEach(err => {
+            console.log(err)
             switch (err.code) {
-                case "any.required":
-                    err.message = "Supporting document should not be empty";
-                    break;
                 case "string.base":
                     err.message = "Supporting document must be a string"
                     break;

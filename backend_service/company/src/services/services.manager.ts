@@ -75,32 +75,18 @@ export const fetchCompanyServices = (_body) => {
 export const createCompanyServices = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
-        database().connect((err, client, done) => {
-            const shouldAbort = err => {
-                if (err) {
-                    console.error('Error in transaction', err.stack)
-                    client.query('ROLLBACK', err => {
-                        if (err) {
-                            console.error('Error rolling back client', err.stack)
-                            reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                            return;
-                        }
-                        done();
-                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
-
-                    })
-                }
-                return !!err
-            }
-            client.query('BEGIN', err => {
-                if (shouldAbort(err)) return
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
                 const getCompanyServicesOldQuery = {
                     name: 'get-company-services-old',
                     text: servicesQuery.getCompanyServicesOld,
                     values: [_body.companyId]
                 }
-                client.query(getCompanyServicesOldQuery, (err, res) => {
-                    const response = res.rows[0];
+                const previousData = await client.query(getCompanyServicesOldQuery);
+                if (previousData.rows.length> 0) {
+                    const response = previousData.rows[0];
                     const servicesOld = response.services;
                     const domainsOld = response.domains;
                     const technologyAreasOld = response.technologyAreas;
@@ -115,69 +101,55 @@ export const createCompanyServices = (_body) => {
                         text: servicesQuery.deleteCompanyServices,
                         values: [_body.companyId, deletedServices],
                     }
-                    client.query(deleteServicesQuery, (err, res) => {
-                        if (shouldAbort(err)) return
-                        const deleteDomainsQuery = {
-                            name: 'delete-company-domains',
-                            text: servicesQuery.deleteCompanyDomains,
-                            values: [_body.companyId, deletedDomains],
-                        }
-                        client.query(deleteDomainsQuery, (err, res) => {
-                            if (shouldAbort(err)) return
-                            const deleteTechnologyAreasQuery = {
-                                name: 'delete-company-technologyAreas',
-                                text: servicesQuery.deleteCompanyTechnologyAreas,
-                                values: [_body.companyId, deletedTechnologyAreas],
-                            }
-                            client.query(deleteTechnologyAreasQuery, (err, res) => {
-                                if (shouldAbort(err)) return
-                                const addServicesQuery = {
-                                    name: 'create-company-services',
-                                    text: servicesQuery.addCompanyServices,
-                                    values: [_body.companyId, _body.services, currentTime, currentTime],
-                                }
-                                client.query(addServicesQuery, (err, res) => {
-                                    if (shouldAbort(err)) return
-                                    const addDomainsQuery = {
-                                        name: 'create-company-domains',
-                                        text: servicesQuery.addCompanyDomains,
-                                        values: [_body.companyId, _body.domains, currentTime, currentTime],
-                                    }
-                                    client.query(addDomainsQuery, (err, res) => {
-                                        if (shouldAbort(err)) return
-                                        const addTechnologiesQuery = {
-                                            name: 'create-company-technology',
-                                            text: servicesQuery.addCompanyTechnologyAreas,
-                                            values: [_body.companyId, _body.technologyAreas, currentTime, currentTime],
-                                        }
-                                        client.query(addTechnologiesQuery, (err, res) => {
-                                            if (shouldAbort(err)) return
-                                            const addSupportDocumentQuery = {
-                                                name: 'add-support-document',
-                                                text: servicesQuery.addSupportDocument,
-                                                values: [_body.supportingDocument, _body.companyId],
-                                            }
-                                            client.query(addSupportDocumentQuery, (err, res) => {
-                                                if (shouldAbort(err)) return
-                                                client.query('COMMIT', err => {
-                                                    if (err) {
-                                                        console.error('Error committing transaction', err.stack)
-                                                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                                                        return;
-                                                    }
-                                                    done()
-                                                    resolve({ code: 200, message: "Services added successfully", data: {} });
-                                                })
-                                            })
-                                        })
-                                    })
-                                })
-                            })
-                        })
-                    })
+                    await client.query(deleteServicesQuery);
+                    const deleteDomainsQuery = {
+                        name: 'delete-company-domains',
+                        text: servicesQuery.deleteCompanyDomains,
+                        values: [_body.companyId, deletedDomains],
+                    }
+                    await client.query(deleteDomainsQuery);
+                    const deleteTechnologyAreasQuery = {
+                        name: 'delete-company-technologyAreas',
+                        text: servicesQuery.deleteCompanyTechnologyAreas,
+                        values: [_body.companyId, deletedTechnologyAreas],
+                    }
+                    await client.query(deleteTechnologyAreasQuery);
 
-                })
-            })
+                }
+                const addServicesQuery = {
+                    name: 'create-company-services',
+                    text: servicesQuery.addCompanyServices,
+                    values: [_body.companyId, _body.services, currentTime, currentTime],
+                }
+                await client.query(addServicesQuery)
+                const addDomainsQuery = {
+                    name: 'create-company-domains',
+                    text: servicesQuery.addCompanyDomains,
+                    values: [_body.companyId, _body.domains, currentTime, currentTime],
+                }
+                await client.query(addDomainsQuery);
+                const addTechnologiesQuery = {
+                    name: 'create-company-technology',
+                    text: servicesQuery.addCompanyTechnologyAreas,
+                    values: [_body.companyId, _body.technologyAreas, currentTime, currentTime],
+                }
+                await client.query(addTechnologiesQuery);
+                const addSupportDocumentQuery = {
+                    name: 'add-support-document',
+                    text: servicesQuery.addSupportDocument,
+                    values: [_body.supportingDocument, _body.companyId],
+                }
+                await client.query(addSupportDocumentQuery);
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Services added successfully", data: {} });
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
 }
