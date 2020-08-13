@@ -2,11 +2,12 @@ import employeeQuery from './query/employee.query';
 import database from './common/database/database';
 import {sendMail} from './middleware/mailer'
 import * as passwordGenerator from 'generate-password'
-import * as crypto from "crypto"
+import {Promise} from 'es6-promise'
+import * as crypto from "crypto";
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
-
+        console.log("Hello")
         database().connect((err, client, done) => {
             const shouldAbort = err => {
                 if (err) {
@@ -65,7 +66,7 @@ export const createEmployee = (_body) => {
                                         return;
                                     }
                                     const mailId=results.rows[0].email
-                                const password = passwordGenerator.generate({
+                                    const password = passwordGenerator.generate({
                                         length: 10,
                                         numbers: true
                                 });
