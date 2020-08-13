@@ -30,7 +30,13 @@ export const employeeLoginMethod = (_body) => {
                     employeeId: value.employeeId.toString(),
                     companyId: value.companyId.toString()
                 }, config.jwtSecretKey, { expiresIn: '24h' });
-                resolve({ code: 200, message: "Login successful", data: { token: `Bearer ${token}`, companyId: value.companyId, companyName: value.companyName, companyLogo: value.companyLogo, email: value.email } });
+                resolve({
+                    code: 200, message: "Login successful", data: {
+                        token: `Bearer ${token}`,
+                        companyId: value.companyId, companyName: value.companyName, companyLogo: value.companyLogo,
+                        email: value.email, firstName: value.firstName, lastName: value.lastName
+                    }
+                });
             } else {
                 reject({ code: 400, message: "Invalid email or password", data: {} });
             }
