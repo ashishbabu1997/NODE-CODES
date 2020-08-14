@@ -261,3 +261,38 @@ export const updateCompanyPositions = async (_body) => {
         })
     })
 }
+
+
+export const publishCompanyPositions = async (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                const positionId = _body.positionId;
+                const changePositionStatusQuery = {
+                    name: 'change-position-status',
+                    text: positionsQuery.changePositionStatus,
+                    values: [positionId, currentTime]
+                }
+                await client.query(changePositionStatusQuery);
+                const addPositionToJobReceivedQuery = {
+                    name: 'add-position-to-job-received',
+                    text: positionsQuery.addPositionToJob,
+                    values: [positionId, currentTime],
+                }
+                await client.query(addPositionToJobReceivedQuery);
+                await client.query('COMMIT');
+                resolve({ code: 200, message: "Position published successfully", data: {} });
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}

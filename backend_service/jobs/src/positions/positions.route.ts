@@ -1,7 +1,8 @@
-import { editPositionHiringSteps, getPositionDetails, createPositions, getPositions, updatePositions } from './positions.controller';
+import { editPositionHiringSteps, getPositionDetails, createPositions, getPositions, updatePositions, publishPositions } from './positions.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addPositionSchema from './schemas/addPositionSchema';
+import publishPositionSchema from './schemas/publishPositionsSchema';
 import editPositionHiringStepSchema from './schemas/editPositionHiringStepSchema';
 
 const router = express.Router();
@@ -13,6 +14,7 @@ router
     .put('/', updatePositions)
     .get('/:positionId', getPositionDetails)
     .put('/hiringSteps', validate(editPositionHiringStepSchema), editPositionHiringSteps)
+    .post('/publish', validate(publishPositionSchema), publishPositions)
 
 export default router;
 
