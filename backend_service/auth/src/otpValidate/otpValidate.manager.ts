@@ -14,7 +14,11 @@ export const otpValidate = (_body) => {
         return;
       }
       else {
-        resolve({ code: 200, message: "Otp validation successfull", data: {employeeId:results.rows[0].employeeId} });
+        if (results.rowCount==0) {
+          reject({ code: 400, message: "Incorrect OTP entry", data: {} });
+          return
+        }
+        resolve({ code: 200, message: "Otp validation successfull", data: {} });
 
       }
     })

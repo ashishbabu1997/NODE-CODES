@@ -9,7 +9,7 @@ export default (schema) => {
 
         if (error) {
             console.log(error)
-            sendResponse(res, 400, 0, error.message, {})
+            sendResponse(res, 400, 0,405, error.message, {})
         } else {
             next();
         }

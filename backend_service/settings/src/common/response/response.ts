@@ -1,5 +1,5 @@
-export default (response, code, status, message, data) => {
+export default (response, code, status,responseCode, message, data) => {
     response.status(code).json({
-        status, message, data
+        status, responseCode,message, data
     })
 }

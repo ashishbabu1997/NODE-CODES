@@ -5,9 +5,9 @@ import sendResponse from '../common/response/response';
 export const getCompanyPreferences = (req, res) => {
     const body = req.params;
     getPreferences(body).then((response: any) => {
-        sendResponse(res, response.code, 1, response.message, response.data)
+        sendResponse(res, response.code, 1,200, response.message, response.data)
     }).catch(error => {
-        sendResponse(res, error.code, 0, error.message, error.data)
+        sendResponse(res, error.code, 0,400, error.message, error.data)
     })
 }
 
@@ -15,9 +15,9 @@ export const getCompanyPreferences = (req, res) => {
 export const updateCompanyProfile = (req, res) => {
     const body = req.body;
     updateCompanyProfilePreferences(body).then((response: any) => {
-        sendResponse(res, response.code, 1, response.message, response.data)
+        sendResponse(res, response.code, 1,202, response.message, response.data)
     }).catch(error => {
-        sendResponse(res, error.code, 0, error.message, error.data)
+        sendResponse(res, error.code, 0,402, error.message, error.data)
     })
 }
 
@@ -25,8 +25,8 @@ export const updateCompanyProfile = (req, res) => {
 export const enableCompanyMasking = (req, res) => {
     const body = req.body;
     enableMasking(body).then((response: any) => {
-        sendResponse(res, response.code, 1, response.message, response.data)
+        sendResponse(res, response.code, 1,202, response.message, response.data)
     }).catch(error => {
-        sendResponse(res, error.code, 0, error.message, error.data)
+        sendResponse(res, error.code, 0,402, error.message, error.data)
     })
 }
