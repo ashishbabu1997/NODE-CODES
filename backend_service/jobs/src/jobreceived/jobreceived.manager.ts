@@ -56,7 +56,7 @@ export const updateflagForJobReceived = (_body) => {
         const query = {
             name: 'update-position-flag',
             text: jobReceivedQuery.updateFlag,
-            values: [ _body.jobReceivedId, _body.companyId, _body.flag, _body.userId, currentTime]
+            values: [_body.jobReceivedId, _body.companyId, _body.flag, _body.userId, currentTime]
         }
 
         database().query(query, (error, results) => {
@@ -75,7 +75,7 @@ export const updateIsRejectForJobReceived = (_body) => {
         const query = {
             name: 'update-JobReceived-reject',
             text: jobReceivedQuery.updateReject,
-            values: [ _body.jobReceivedId, _body.companyId, _body.reject, _body.userId, currentTime]
+            values: [_body.jobReceivedId, _body.companyId, _body.reject, _body.userId, currentTime]
         }
 
         database().query(query, (error, results) => {
@@ -90,27 +90,50 @@ export const updateIsRejectForJobReceived = (_body) => {
 
 export const saveCandidateProfile = (_body) => {
     return new Promise((resolve, reject) => {
-        var myArray =  _body.candidates;
-        var candidates = new Array();
-        for (var i in myArray) {
-           var tempArray = new Array();
-           for(var key in myArray[i]){
-               tempArray.push(myArray[i][key]);
-           }
-        tempArray.push(_body.candidateStatus);
-        candidates.push(tempArray);
-       }
-        const query = {
-            name: 'add-Profile',
-            text: format(jobReceivedQuery.addProfile, candidates),
-        }
-        
-        database().query(query, (error, results) => {
-            if (error) {
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                var myArray = _body.candidates;
+                var candidates = new Array();
+                for (var i in myArray) {
+                    var tempArray = new Array();
+                    for (var key in myArray[i]) {
+                        tempArray.push(myArray[i][key]);
+                    }
+                    tempArray.push(_body.candidateStatus);
+                    candidates.push(tempArray);
+                }
+                const saveCandidateQuery = {
+                    name: 'add-Profile',
+                    text: format(jobReceivedQuery.addProfile, candidates),
+                }
+                await client.query(saveCandidateQuery);
+                const query = {
+                    name: 'get-total-candidate-count',
+                    text: jobReceivedQuery.getTotalCountOfCandidatesSubmitted,
+                    values: [_body.candidates[0].jobReceivedId, _body.candidates[0].companyId],
+                }
+                const response = await client.query(query);
+                const status = (response.rows[0].developerCount - response.rows[0].candidateCount) <= 0 ? 3 : 9
+                const updateCompanyJobStatusQuery = {
+                    name: 'update-company-job-status',
+                    text: jobReceivedQuery.updateCompanyJobStatus,
+                    values: [_body.candidates[0].jobReceivedId, _body.candidates[0].companyId, currentTime,status],
+                }
+                await client.query(updateCompanyJobStatusQuery);
+                await client.query('COMMIT');
+                resolve({ code: 200, message: "Position published successfully", data: {} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                return;
+            } finally {
+                client.release();
             }
-            resolve({ code: 200, message: "Profile added successfully", data: { profiles : results.rows } });
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
 }
@@ -120,7 +143,7 @@ export const getProfileByCompanyId = (_body) => {
         const query = {
             name: 'get-ProfileByCompanyId',
             text: jobReceivedQuery.getProfile,
-            values: [parseInt(_body.companyId),parseInt(_body.jobReceivedId)]
+            values: [parseInt(_body.companyId), parseInt(_body.jobReceivedId)]
         }
 
         database().query(query, (error, results) => {
