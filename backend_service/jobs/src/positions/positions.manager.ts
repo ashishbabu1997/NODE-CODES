@@ -12,6 +12,7 @@ export const getCompanyPositions = (_body) => {
                 : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearch : positionsQuery.getCompanyPositionsDESC),
             values: _body.searchKey != '' ? [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey.toLowerCase() + '%'] : [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset],
         }
+        console.log(query)
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
@@ -50,25 +51,26 @@ export const createCompanyPositions = async (_body) => {
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId } });
                     return;
                 }
-                const addPositionHiringStepQuery = {
-                    name: 'add-position-hiring-steps',
-                    text: positionsQuery.addPositionSteps,
-                    values: [positionId, _body.hiringStepName, _body.description, currentTime, currentTime],
-                }
-                const res = await client.query(addPositionHiringStepQuery)
-                const hiringStages = _body.hiringStages;
-                const positionHiringStepId = res.rows[0].position_hiring_step_id;
-                let hiringStageValues = ''
-                const length = hiringStages.length;
-                hiringStages.forEach((element, i) => {
-                    const end = i != length - 1 ? "," : ";"
-                    hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.order + "," + element.coordinatorId + "," + currentTime + "," + currentTime + ")" + end
-                });
-                const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
-                await client.query(addPositionHiringStagesQuery)
+                // const addPositionHiringStepQuery = {
+                //     name: 'add-position-hiring-steps',
+                //     text: positionsQuery.addPositionSteps,
+                //     values: [positionId, _body.hiringStepName, _body.description, currentTime, currentTime],
+                // }
+                // const res = await client.query(addPositionHiringStepQuery)
+                // const hiringStages = _body.hiringStages;
+                // const positionHiringStepId = res.rows[0].position_hiring_step_id;
+                // let hiringStageValues = ''
+                // const length = hiringStages.length;
+                // hiringStages.forEach((element, i) => {
+                //     const end = i != length - 1 ? "," : ";"
+                //     hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.order + "," + element.coordinatorId + "," + currentTime + "," + currentTime + ")" + end
+                // });
+                // const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
+                // await client.query(addPositionHiringStagesQuery)
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Positions created successfully", data: { positionId } });
             } catch (e) {
+                console.log(e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             } finally {
@@ -228,23 +230,23 @@ export const updateCompanyPositions = async (_body) => {
                     resolve({ code: 200, message: "Position updated successfully", data: {} });
                     return;
                 }
-                console.log("hi")
-                const addPositionHiringStepQuery = {
-                    name: 'add-position-hiring-steps',
-                    text: positionsQuery.addPositionSteps,
-                    values: [positionId, _body.hiringStepName, _body.description, currentTime, currentTime],
-                }
-                const res = await client.query(addPositionHiringStepQuery)
-                const hiringStages = _body.hiringStages;
-                const positionHiringStepId = res.rows[0].position_hiring_step_id;
-                let hiringStageValues = ''
-                const length = hiringStages.length;
-                hiringStages.forEach((element, i) => {
-                    const end = i != length - 1 ? "," : ";"
-                    hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.order + "," + element.coordinatorId + "," + currentTime + "," + currentTime + ")" + end
-                });
-                const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
-                await client.query(addPositionHiringStagesQuery)
+                // console.log("hi")
+                // const addPositionHiringStepQuery = {
+                //     name: 'add-position-hiring-steps',
+                //     text: positionsQuery.addPositionSteps,
+                //     values: [positionId, _body.hiringStepName, _body.description, currentTime, currentTime],
+                // }
+                // const res = await client.query(addPositionHiringStepQuery)
+                // const hiringStages = _body.hiringStages;
+                // const positionHiringStepId = res.rows[0].position_hiring_step_id;
+                // let hiringStageValues = ''
+                // const length = hiringStages.length;
+                // hiringStages.forEach((element, i) => {
+                //     const end = i != length - 1 ? "," : ";"
+                //     hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.order + "," + element.coordinatorId + "," + currentTime + "," + currentTime + ")" + end
+                // });
+                // const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
+                // await client.query(addPositionHiringStagesQuery)
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Position updated successfully", data: {} });
             } catch (e) {
