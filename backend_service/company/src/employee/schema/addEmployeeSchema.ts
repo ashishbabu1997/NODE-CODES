@@ -96,5 +96,21 @@ export default Joi.object().keys({
             }
         });
         return errors;
+    }),
+    documents: Joi.string().required().error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "any.required":
+                    err.message = "Document name should not be empty";
+                    break;
+                case "string.base":
+                    err.message = "Document name must be a string"
+                    break;
+                default:
+                    err.message = "Invalid Document name"
+                    break;
+            }
+        });
+        return errors;
     })
 });
