@@ -1,32 +1,31 @@
 {
-    "name": "candidates",
-    "version": "1.0.0",
-    "description": "candidates section API",
-    "main": "dist/Server.js",
-    "scripts": {
-      "predev": "tsc -w -p src &",
-      "dev": "nodemon dist/Server.js",
-      "prod_stop": "pm2 stop dist/Server.js",
-      "lintbe": "tslint **/**.ts{,x}",
-      "serve": "pm2 start dist/Server.js",
-      "prod": "npm run serve",
-      "preprod": "tsc -p src  & pm2 stop dist/Server.js &"
-    },
-    "author": "Ashish Babu",
-    "license": "ISC",
-    "dependencies": {
-      "@hapi/joi": "^17.1.1",
-      "body-parser": "^1.19.0",
-      "cors": "^2.8.5",
-      "express": "^4.17.1",
-      "jsonwebtoken": "^8.5.1",
-      "pg": "^8.2.1",
-      "pm2": "^4.4.0"
-    },
-    "devDependencies": {
-      "@types/es6-promise": "^3.3.0",
-      "@types/node": "^14.0.27",
-      "typescript": "^3.9.5"
-    }
+  "name": "candidates",
+  "version": "1.0.0",
+  "description": "candidates section API",
+  "main": "dist/Server.js",
+  "scripts": {
+    "predev": "tsc -w -p src &",
+    "dev": "nodemon dist/Server.js",
+    "prod_stop": "pm2 stop dist/Server.js",
+    "lintbe": "tslint **/**.ts{,x}",
+    "serve": "pm2 start dist/Server.js",
+    "prod": "npm run serve",
+    "preprod": "tsc -p src  & pm2 stop dist/Server.js &"
+  },
+  "author": "Ashish Babu",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^17.1.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.2.1",
+    "pm2": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/es6-promise": "^3.3.0",
+    "@types/node": "^14.0.27",
+    "typescript": "^3.9.5"
   }
-  
+}
