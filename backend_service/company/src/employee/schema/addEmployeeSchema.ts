@@ -97,7 +97,7 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    documents: Joi.string().required().error(errors => {
+    document: Joi.string().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
