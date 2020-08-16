@@ -34,7 +34,7 @@ export const employeeLoginMethod = (_body) => {
                     code: 200, message: "Login successful", data: {
                         token: `Bearer ${token}`,
                         companyId: value.companyId, companyName: value.companyName, companyLogo: value.companyLogo,
-                        email: value.email, firstName: value.firstName, lastName: value.lastName
+                        email: value.email, firstName: value.firstName, lastName: value.lastName,accountType:value.accountType
                     }
                 });
             } else {
