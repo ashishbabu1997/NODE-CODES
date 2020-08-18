@@ -19,10 +19,11 @@ export const sendOtp = (_body) => {
         }
         if (results.rowCount == 0)
          {
+          const Time = Math.floor(Date.now()/1000);
            const insertQuery = {
              name: 'add-email-otp',
              text: Query.insertEmailOtp,
-             values: [_body,otp],
+             values: [_body,otp,Time],
            }
            database().query(insertQuery, (error, results) => {
             if (error) {
@@ -47,10 +48,11 @@ export const sendOtp = (_body) => {
               reject({ code: 400, message: "You are a registered user", data:  {} });
               return;
           }
+          const currentTime = Math.floor(Date.now()/1000);
           const query = {
             name: 'add-email-otp',
             text: Query.updateEmailOtp,
-            values: [_body,otp],
+            values: [_body,otp,currentTime],
           }
           database().query(query, (error, results) => {
             if (error) {

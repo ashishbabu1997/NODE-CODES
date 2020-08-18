@@ -16,5 +16,6 @@ export default {
         "user": "ashishpallikkunnel97@gmail.com",
         "password": "kffepsnpiyzpzgzn",
     },
-    "jwtSecretKey": "elL0wA!"
+    "jwtSecretKey": "elL0wA!",
+    "timeLimit":65
 }
