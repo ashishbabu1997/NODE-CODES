@@ -2,7 +2,7 @@ import Query from './query/query';
 import database from '../common/database/database';
 import { Promise } from 'es6-promise'
 import * as crypto from 'crypto'
-export const addNewPassword = (_body) => {
+export const addPassword = (_body) => {
   return new Promise((resolve, reject) => {
     if (_body.newPassword == _body.confirmPassword)
     {   
@@ -10,7 +10,7 @@ export const addNewPassword = (_body) => {
         const query = {
             name: 'add-password',
             text: Query.addPassword,
-            values: [_body.email,hashedPassword],
+            values: [_body.token,hashedPassword],
           }
         database().query(query, (error, results) => {
         if (error) {

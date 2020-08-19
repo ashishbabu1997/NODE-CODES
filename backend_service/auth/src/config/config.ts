@@ -13,9 +13,17 @@ export default {
     },
     "mail": {
         "service": "gmail",
-        "user": "ashishpallikkunnel97@gmail.com",
-        "password": "kffepsnpiyzpzgzn",
+        "user": "no-reply@ellow.ai",
+        "password": "fqlroidzaxmlhgml",
     },
+    "text": {
+        "firstLine": "Hello,",
+        "secondLine": "Thank you for registering with ellow.ai !",
+        "thirdLine": "Please enter the following OTP to verify your email:-",
+        "fourthLine": "This OTP is valid for 1 minute",
+
+    },
+    "nextLine":"\n",
     "jwtSecretKey": "elL0wA!",
     "timeLimit":65
 }

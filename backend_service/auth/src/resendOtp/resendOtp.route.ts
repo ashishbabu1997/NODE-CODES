@@ -1,6 +1,6 @@
 import  * as express from 'express';
-import {resetPassword} from "./changePassword.controller"
+import {resendOtp} from "./resendOtp.controller"
 const router = express.Router();
 router
-    .post('/',resetPassword)
+    .post('/',resendOtp)
 export default router;

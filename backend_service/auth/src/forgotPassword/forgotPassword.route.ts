@@ -1,5 +1,5 @@
 import  * as express from 'express';
-import {resetPwd} from "./passwordReset.controller"
+import {resetPwd} from "./forgotPassword.controller"
 const router = express.Router();
 router
     .post('/',resetPwd);
