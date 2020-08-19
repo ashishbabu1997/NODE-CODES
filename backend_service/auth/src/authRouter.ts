@@ -3,8 +3,8 @@ import emailRouter from './email_api/emailApi.route';
 import otpRouter from './otpValidate/otpValidate.route';
 import loginRouter from './employeeLogin/EmployeeLoginRoute';
 import forgotPasswordRouter from './forgotPassword/forgotPassword.route'
-import changePasswordRouter from './resetPassword/resetPassword.route'
-import resetPasswordRouter from './changeP/changePassword.route'
+import changePasswordRouter from './changePassword/changePassword.route'
+import resetPasswordRouter from './resetPassword/resetPassword.route'
 import resendOtpRouter from './resendOtp/resendOtp.route'
 import * as  express from 'express'
 const router = express.Router();
