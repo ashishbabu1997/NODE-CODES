@@ -108,8 +108,8 @@ export const fetchPositionDetails = (_body) => {
                     hiringStepDescription: step.description,
                     hiringStages: []
                 }
-                groupedHiringStages.push(
-                    step.position_hiring_stage_id != null && {
+                step.position_hiring_stage_id != null && groupedHiringStages.push(
+                    {
                         hiringStageId: step.position_hiring_stage_id,
                         hiringStageName: step.hiring_stage_name,
                         hiringStageDescription: step.position_hiring_stage_description,

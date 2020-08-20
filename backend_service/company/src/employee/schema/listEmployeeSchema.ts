@@ -1,8 +1,9 @@
 import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({ 
-    filter: Joi.string().error(errors => {
+    filter: Joi.string().allow('').error(errors => {
         errors.forEach(err => {
+            console.log(err)
             switch (err.code) {
                 case "string.base":
                     err.message = "Filter must be a string";

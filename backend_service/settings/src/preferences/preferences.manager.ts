@@ -25,7 +25,7 @@ export const updateCompanyProfilePreferences = (_body) => {
         const query = {
             name: 'update-company-profile',
             text: preferencesQuery.updateCompanyProfile,
-            values: [_body.companyId, _body.companyProfile, currentTime],
+            values: [_body.companyId, _body.companyProfile, _body.currencyType, currentTime],
         }
         database().query(query, (error, results) => {
             if (error) {
