@@ -55,7 +55,7 @@ export const createEmployee = (_body) => {
                                     return;
                                 }
                                 const getEmailQuery = {
-                                    name: 'add-email-otp',
+                                    name: 'get-email',
                                     text: employeeQuery.getEmail,
                                     values: [_body.employeeId],
                                 }
