@@ -13,7 +13,7 @@ export default{
     },
     "mail": {
         "service": "gmail",
-        "user": "ashishpallikkunnel97@gmail.com",
-        "password": "kffepsnpiyzpzgzn"
+        "user": "no-reply@ellow.ai",
+        "password": "fqlroidzaxmlhgml"
     }
 };
