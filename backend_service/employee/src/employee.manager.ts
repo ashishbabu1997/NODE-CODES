@@ -4,6 +4,7 @@ import {sendMail} from './middleware/mailer'
 import * as passwordGenerator from 'generate-password'
 import {Promise} from 'es6-promise'
 import * as crypto from "crypto";
+import config from './config/config'
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -31,13 +32,31 @@ export const createEmployee = (_body) => {
                     text: employeeQuery.createCompany,
                     values: [_body.companyName, _body.company_website, _body.companySizeId, currentTime],
                 }
+                
+                const getEmailQuery = {
+                    name: 'get-email',
+                    text: employeeQuery.getEmail,
+                    values: [_body.email],
+                }
+                database().query(getEmailQuery, (error, results) => {
+                    if (error) {
+                        reject({ code: 400, message: "Error in database connection.", data:{} });
+                        return;
+                    }
+                    if(results.rowCount >=1)
+                    {
+                        reject({ code: 400, message: "Email Already exists.", data:{} });
+                        return;  
+                    }
+                    
+                });
                 client.query(createCompanyQuery, (err, res) => {
                     if (shouldAbort(err)) return
                     const companyId = res.rows[0].company_id
                     const createEmployeeQuery = {
                         name: 'createEmployee',
                         text: employeeQuery.createEmployee,
-                        values: [_body.firstName, _body.lastName, _body.accountType, companyId, _body.telephoneNumber, _body.roleId, currentTime, _body.employeeId],
+                        values: [_body.firstName, _body.lastName,_body.email, _body.accountType, companyId, _body.telephoneNumber, _body.roleId, currentTime,true],
                     }
                     client.query(createEmployeeQuery, (err, res) => {
                         if (shouldAbort(err)) return
@@ -54,27 +73,17 @@ export const createEmployee = (_body) => {
                                     reject({ code: 400, message: "Failed. Please try again.", data: {} });
                                     return;
                                 }
-                                const getEmailQuery = {
-                                    name: 'get-email',
-                                    text: employeeQuery.getEmail,
-                                    values: [_body.employeeId],
-                                }
-                                database().query(getEmailQuery, (error, results) => {
-                                    if (error) {
-                                        reject({ code: 400, message: "Error in database connection.", data:{} });
-                                        return;
-                                    }
-                                    const mailId=results.rows[0].email
-                                    const password = passwordGenerator.generate({
+                                const mailId=_body.email
+                                const password = passwordGenerator.generate({
                                         length: 10,
                                         numbers: true
-                                });
+                                    });
                                 var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
                                 const subject = " ELLOW LOGIN PASSWORD "
                                 const storePasswordQuery = {
                                         name: 'store-encrypted-password',
                                         text: employeeQuery.storePassword,
-                                        values: [hashedPassword,_body.employeeId],
+                                        values: [hashedPassword,mailId],
                                 }
                                 database().query(storePasswordQuery, (error, results) => {
                                         if (error) {
@@ -82,9 +91,10 @@ export const createEmployee = (_body) => {
                                           return;
                                         }
                                 })
-                                sendMail(mailId, subject, "Your password is: " + password, function (err, data) {
+                                var textFormat=config.text.firstLine+config.nextLine+config.text.secondLine+config.nextLine+config.text.thirdLine+config.nextLine+password+config.nextLine
+                                sendMail(mailId, subject, textFormat, function (err, data) {
                                     if (err) {
-                                      console.log(error)
+                                      console.log(err)
                                       return;
                                     }
                                     console.log('A password has send to your email !!!');
@@ -97,7 +107,5 @@ export const createEmployee = (_body) => {
                 })
             })
         })
-    })
-
     })
 }

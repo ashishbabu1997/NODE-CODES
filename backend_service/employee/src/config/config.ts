@@ -15,5 +15,12 @@ export default{
         "service": "gmail",
         "user": "no-reply@ellow.ai",
         "password": "fqlroidzaxmlhgml"
-    }
+    },
+    "text": {
+        "firstLine": "Hello,",
+        "secondLine": "Thank you for registering with ellow.ai !",
+        "thirdLine": "Please enter the following password to login with us:-"
+
+    },
+    "nextLine":"\n"
 };

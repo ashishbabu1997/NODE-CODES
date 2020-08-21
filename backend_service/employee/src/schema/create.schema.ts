@@ -81,17 +81,17 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    employeeId: Joi.number().required().error(errors => {
-        errors.forEach(err => {
+    email: Joi.string().required().error(function (errors) {
+        errors.forEach(function (err) {
             switch (err.code) {
                 case "any.required":
-                    err.message = "Employee Id should not be empty!";
+                    err.message = "Email Address should not be empty!";
                     break;
-                case "number.base":
-                    err.message = "Employee Id must be a number"
+                case "string.base":
+                    err.message = "Email Address must be a string";
                     break;
                 default:
-                    err.message = "Invalid Employee Id"
+                    err.message = "Invalid Email Address";
                     break;
             }
         });
