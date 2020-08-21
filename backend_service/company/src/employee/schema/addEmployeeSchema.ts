@@ -97,12 +97,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    document: Joi.string().required().error(errors => {
+    document: Joi.string().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Document name should not be empty";
-                    break;
                 case "string.base":
                     err.message = "Document name must be a string"
                     break;
