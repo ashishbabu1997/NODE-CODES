@@ -6,6 +6,8 @@ import ServicesRouter from './services/ServicesRoute';
 import DomainsRouter from './domains/DomainsRoute';
 import TechnologyAreaRouter from './technologyAreas/TechnologyAreaRoute';
 import SkillsRouter from './skills/SkillsRoute';
+import countryRouter from './countries/countryApi.route'
+import stateRouter from './states/statesApi.route'
 
 
 import * as express from 'express';
@@ -19,11 +21,8 @@ router
     .use(`/api/${AppConfig.version}/settings/domains`, DomainsRouter)
     .use(`/api/${AppConfig.version}/settings/technologyAreas`, TechnologyAreaRouter)
     .use(`/api/${AppConfig.version}/settings/skills`, SkillsRouter)
-
-
-
-
-
+    .use(`/api/${AppConfig.version}/settings/countries`, countryRouter)
+    .use(`/api/${AppConfig.version}/settings/states`, stateRouter)
 export default router;
 
 

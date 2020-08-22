@@ -934,5 +934,638 @@ export default {
         "countryId": 229
         }
         ],
+        "states": [
+            {
+              "id": 19,
+              "name": "Australian Capital Territory",
+              "countryId": 18
+            },
+            {
+              "id": 20,
+              "name": "New South Wales",
+              "countryId": 18
+            },
+            {
+              "id": 21,
+              "name": "Northern Territory",
+              "countryId": 18
+            },
+            {
+              "id": 22,
+              "name": "Queensland",
+              "countryId": 18
+            },
+            {
+              "id": 23,
+              "name": "South Australia",
+              "countryId": 18
+            },
+            {
+              "id": 24,
+              "name": "Victoria",
+              "countryId": 18
+            },
+            {
+              "id": 25,
+              "name": "Western Australia",
+              "countryId": 18
+            },
+            {
+              "id": 47,
+              "name": "Alberta",
+              "countryId": 40
+            },
+            {
+              "id": 48,
+              "name": "British Columbia",
+              "countryId": 40
+            },
+            {
+              "id": 49,
+              "name": "Manitoba",
+              "countryId": 40
+            },
+            {
+              "id": 50,
+              "name": "New Brunswick",
+              "countryId": 40
+            },
+            {
+              "id": 51,
+              "name": "Newfoundland and Labrador",
+              "countryId": 40
+            },
+            {
+              "id": 52,
+              "name": "Nova Scotia",
+              "countryId": 40
+            },
+            {
+              "id": 53,
+              "name": "Northwest Territories",
+              "countryId": 40
+            },
+            {
+              "id": 54,
+              "name": "Nunavut",
+              "countryId": 40
+            },
+            {
+              "id": 55,
+              "name": "Ontario",
+              "countryId": 40
+            },
+            {
+              "id": 56,
+              "name": "Prince Edward Island",
+              "countryId": 40
+            },
+            {
+              "id": 57,
+              "name": "Quebec",
+              "countryId": 40
+            },
+            {
+              "id": 58,
+              "name": "Saskatchewan",
+              "countryId": 40
+            },
+            {
+              "id": 59,
+              "name": "Yukon",
+              "countryId": 40
+            },
+            {
+              "id": 135,
+              "name": "Hokkaido",
+              "countryId": 114
+            },
+            {
+              "id": 136,
+              "name": "Aomori",
+              "countryId": 114
+            },
+            {
+              "id": 137,
+              "name": "Iwate",
+              "countryId": 114
+            },
+            {
+              "id": 138,
+              "name": "Miyagi",
+              "countryId": 114
+            },
+            {
+              "id": 139,
+              "name": "Akita",
+              "countryId": 114
+            },
+            {
+              "id": 140,
+              "name": "Yamagata",
+              "countryId": 114
+            },
+            {
+              "id": 141,
+              "name": "Fukushima",
+              "countryId": 114
+            },
+            {
+              "id": 142,
+              "name": "Ibaraki",
+              "countryId": 114
+            },
+            {
+              "id": 143,
+              "name": "Tochigi",
+              "countryId": 114
+            },
+            {
+              "id": 144,
+              "name": "Gunma",
+              "countryId": 114
+            },
+            {
+              "id": 145,
+              "name": "Saitama",
+              "countryId": 114
+            },
+            {
+              "id": 146,
+              "name": "Chiba",
+              "countryId": 114
+            },
+            {
+              "id": 147,
+              "name": "Tokyo",
+              "countryId": 114
+            },
+            {
+              "id": 148,
+              "name": "Kanagawa",
+              "countryId": 114
+            },
+            {
+              "id": 149,
+              "name": "Niigata",
+              "countryId": 114
+            },
+            {
+              "id": 150,
+              "name": "Toyama",
+              "countryId": 114
+            },
+            {
+              "id": 151,
+              "name": "Ishikawa",
+              "countryId": 114
+            },
+            {
+              "id": 152,
+              "name": "Fukui",
+              "countryId": 114
+            },
+            {
+              "id": 153,
+              "name": "Yamanashi",
+              "countryId": 114
+            },
+            {
+              "id": 154,
+              "name": "Nagano",
+              "countryId": 114
+            },
+            {
+              "id": 155,
+              "name": "Gifu",
+              "countryId": 114
+            },
+            {
+              "id": 156,
+              "name": "Shizuoka",
+              "countryId": 114
+            },
+            {
+              "id": 157,
+              "name": "Aichi",
+              "countryId": 114
+            },
+            {
+              "id": 158,
+              "name": "Mie",
+              "countryId": 114
+            },
+            {
+              "id": 159,
+              "name": "Shiga",
+              "countryId": 114
+            },
+            {
+              "id": 160,
+              "name": "Kyoto",
+              "countryId": 114
+            },
+            {
+              "id": 161,
+              "name": "Osaka",
+              "countryId": 114
+            },
+            {
+              "id": 162,
+              "name": "Hyogo",
+              "countryId": 114
+            },
+            {
+              "id": 163,
+              "name": "Nara",
+              "countryId": 114
+            },
+            {
+              "id": 164,
+              "name": "Wakayama",
+              "countryId": 114
+            },
+            {
+              "id": 165,
+              "name": "Tottori",
+              "countryId": 114
+            },
+            {
+              "id": 166,
+              "name": "Shimane",
+              "countryId": 114
+            },
+            {
+              "id": 167,
+              "name": "Okayama",
+              "countryId": 114
+            },
+            {
+              "id": 168,
+              "name": "Hiroshima",
+              "countryId": 114
+            },
+            {
+              "id": 169,
+              "name": "Yamaguchi",
+              "countryId": 114
+            },
+            {
+              "id": 170,
+              "name": "Tokushima",
+              "countryId": 114
+            },
+            {
+              "id": 171,
+              "name": "Kagawa",
+              "countryId": 114
+            },
+            {
+              "id": 172,
+              "name": "Ehime",
+              "countryId": 114
+            },
+            {
+              "id": 173,
+              "name": "Kochi",
+              "countryId": 114
+            },
+            {
+              "id": 174,
+              "name": "Fukuoka",
+              "countryId": 114
+            },
+            {
+              "id": 175,
+              "name": "Saga",
+              "countryId": 114
+            },
+            {
+              "id": 176,
+              "name": "Nagasaki",
+              "countryId": 114
+            },
+            {
+              "id": 177,
+              "name": "Kumamoto",
+              "countryId": 114
+            },
+            {
+              "id": 178,
+              "name": "Oita",
+              "countryId": 114
+            },
+            {
+              "id": 179,
+              "name": "Miyazaki",
+              "countryId": 114
+            },
+            {
+              "id": 180,
+              "name": "Kagoshima",
+              "countryId": 114
+            },
+            {
+              "id": 181,
+              "name": "Okinawa",
+              "countryId": 114
+            },
+            {
+              "id": 296,
+              "name": "Armed Forces Americas (except Canada)",
+              "countryId": 229
+            },
+            {
+              "id": 297,
+              "name": "Armed Forces",
+              "countryId": 229
+            },
+            {
+              "id": 298,
+              "name": "Alaska",
+              "countryId": 229
+            },
+            {
+              "id": 299,
+              "name": "Alabama",
+              "countryId": 229
+            },
+            {
+              "id": 300,
+              "name": "Armed Forces Pacific",
+              "countryId": 229
+            },
+            {
+              "id": 301,
+              "name": "Arkansas",
+              "countryId": 229
+            },
+            {
+              "id": 302,
+              "name": "American Samoa",
+              "countryId": 229
+            },
+            {
+              "id": 303,
+              "name": "Arizona",
+              "countryId": 229
+            },
+            {
+              "id": 304,
+              "name": "California",
+              "countryId": 229
+            },
+            {
+              "id": 305,
+              "name": "Colorado",
+              "countryId": 229
+            },
+            {
+              "id": 306,
+              "name": "Connecticut",
+              "countryId": 229
+            },
+            {
+              "id": 307,
+              "name": "District of Columbia",
+              "countryId": 229
+            },
+            {
+              "id": 308,
+              "name": "Delaware",
+              "countryId": 229
+            },
+            {
+              "id": 309,
+              "name": "Florida",
+              "countryId": 229
+            },
+            {
+              "id": 310,
+              "name": "Federated States of Micronesia",
+              "countryId": 229
+            },
+            {
+              "id": 311,
+              "name": "Georgia",
+              "countryId": 229
+            },
+            {
+              "id": 312,
+              "name": "Guam",
+              "countryId": 229
+            },
+            {
+              "id": 313,
+              "name": "Hawaii",
+              "countryId": 229
+            },
+            {
+              "id": 314,
+              "name": "Iowa",
+              "countryId": 229
+            },
+            {
+              "id": 315,
+              "name": "Idaho",
+              "countryId": 229
+            },
+            {
+              "id": 316,
+              "name": "Illinois",
+              "countryId": 229
+            },
+            {
+              "id": 317,
+              "name": "Indiana",
+              "countryId": 229
+            },
+            {
+              "id": 318,
+              "name": "Kansas",
+              "countryId": 229
+            },
+            {
+              "id": 319,
+              "name": "Kentucky",
+              "countryId": 229
+            },
+            {
+              "id": 320,
+              "name": "Louisiana",
+              "countryId": 229
+            },
+            {
+              "id": 321,
+              "name": "Massachusetts",
+              "countryId": 229
+            },
+            {
+              "id": 322,
+              "name": "Maryland",
+              "countryId": 229
+            },
+            {
+              "id": 323,
+              "name": "Maine",
+              "countryId": 229
+            },
+            {
+              "id": 324,
+              "name": "Marshall Islands",
+              "countryId": 229
+            },
+            {
+              "id": 325,
+              "name": "Michigan",
+              "countryId": 229
+            },
+            {
+              "id": 326,
+              "name": "Minnesota",
+              "countryId": 229
+            },
+            {
+              "id": 327,
+              "name": "Northern Mariana Islands",
+              "countryId": 229
+            },
+            {
+              "id": 328,
+              "name": "Mississippi",
+              "countryId": 229
+            },
+            {
+              "id": 329,
+              "name": "Montana",
+              "countryId": 229
+            },
+            {
+              "id": 330,
+              "name": "North Carolina",
+              "countryId": 229
+            },
+            {
+              "id": 331,
+              "name": "North Dakota",
+              "countryId": 229
+            },
+            {
+              "id": 332,
+              "name": "Nebraska",
+              "countryId": 229
+            },
+            {
+              "id": 333,
+              "name": "New Hampshire",
+              "countryId": 229
+            },
+            {
+              "id": 334,
+              "name": "New Jersey",
+              "countryId": 229
+            },
+            {
+              "id": 335,
+              "name": "New Mexico",
+              "countryId": 229
+            },
+            {
+              "id": 336,
+              "name": "Nevada",
+              "countryId": 229
+            },
+            {
+              "id": 337,
+              "name": "New York",
+              "countryId": 229
+            },
+            {
+              "id": 338,
+              "name": "Ohio",
+              "countryId": 229
+            },
+            {
+              "id": 339,
+              "name": "Oklahoma",
+              "countryId": 229
+            },
+            {
+              "id": 340,
+              "name": "Oregon",
+              "countryId": 229
+            },
+            {
+              "id": 341,
+              "name": "Pennsylvania",
+              "countryId": 229
+            },
+            {
+              "id": 343,
+              "name": "Rhode Island",
+              "countryId": 229
+            },
+            {
+              "id": 344,
+              "name": "South Carolina",
+              "countryId": 229
+            },
+            {
+              "id": 345,
+              "name": "South Dakota",
+              "countryId": 229
+            },
+            {
+              "id": 346,
+              "name": "Tennessee",
+              "countryId": 229
+            },
+            {
+              "id": 347,
+              "name": "Texas",
+              "countryId": 229
+            },
+            {
+              "id": 348,
+              "name": "Utah",
+              "countryId": 229
+            },
+            {
+              "id": 349,
+              "name": "Virginia",
+              "countryId": 229
+            },
+            {
+              "id": 350,
+              "name": "Virgin Islands",
+              "countryId": 229
+            },
+            {
+              "id": 351,
+              "name": "Vermont",
+              "countryId": 229
+            },
+            {
+              "id": 352,
+              "name": "Washington",
+              "countryId": 229
+            },
+            {
+              "id": 353,
+              "name": "Wisconsin",
+              "countryId": 229
+            },
+            {
+              "id": 354,
+              "name": "West Virginia",
+              "countryId": 229
+            },
+            {
+              "id": 355,
+              "name": "Wyoming",
+              "countryId": 229
+            }
+          ],
+        
        
 }
