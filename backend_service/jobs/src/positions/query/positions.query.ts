@@ -16,5 +16,8 @@ export default {
     updatePositionSecond: `UPDATE positions SET contract_period = $1, currency_type_id = $2, billing_type = $3, min_budget = $4, max_budget = $5 , hiring_step_id = $6, updated_by = $7, updated_on = $8 WHERE position_id = $9 and  company_id = $10 and status = true`,
     getPositionSkillsOld: `SELECT ARRAY(SELECT skill_id from job_skills where position_id  = $1 AND status = true) AS skills from company where company_id = $2 AND status = true;`,
     deletePositionSkills: `delete from job_skills where position_id  = $1 and status = true  and skill_id = any($2)`,
-    changePositionStatus: `UPDATE positions SET job_status = 6, updated_on = $2 WHERE position_id = $1 and status = true`
-}
+    changePositionStatus: `UPDATE positions SET job_status = 6, updated_on = $2 WHERE position_id = $1 and status = true`,
+    closeJobs:'UPDATE positions SET job_status=8,updated_on=$1 WHERE position_id=$2 ',
+    closeJobReceived:'UPDATE job_received SET job_received_status=8,updated_on=$1 WHERE position_id=$2 '
+
+} 

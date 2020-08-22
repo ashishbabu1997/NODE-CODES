@@ -295,3 +295,35 @@ export const publishCompanyPositions = async (_body) => {
         })
     })
 }
+export const closeJobStatus= (_body) => {
+    return new Promise((resolve, reject) => {
+          const currentTime = Math.floor(Date.now()/1000);
+          const positionQuery = {
+              name: 'close-job-status',
+              text:positionsQuery.closeJobs ,
+              values: [currentTime,_body.positionId],
+            }
+          database().query(positionQuery, (error, results) => {
+          if (error) {
+              console.log(error)
+              reject({ code: 400, message: "Error in database connection.", data:{} });
+              return;
+              }
+          const jobReceivedQuery = {
+                name: 'close-job-status',
+                text:positionsQuery.closeJobReceived ,
+                values: [currentTime,_body.positionId],
+              }
+          database().query(jobReceivedQuery, (error, results) => {
+            if (error) {
+                console.log(error)
+                reject({ code: 400, message: "Error in database connection.", data:{} });
+                return;
+            }
+            else {
+                resolve({ code: 200, message: "Job status closed", data: {} });
+                }
+            })
+       })
+      })
+  }
