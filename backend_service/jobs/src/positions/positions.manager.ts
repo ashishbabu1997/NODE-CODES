@@ -91,14 +91,25 @@ export const fetchPositionDetails = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
+                console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
             const hiringSteps = results.rows;
-            let groupedHiringStages = []
-            let result = {}
+            let groupedHiringStages = [];
+            let skills = [];
+            let result = {};
             hiringSteps.forEach(step => {
                 result = {
+                    maxBudget: step.max_budget,
+                    minBudget: step.min_budget,
+                    billingType: step.billing_type,
+                    contractPeriodId: step.contract_period,
+                    currencyTypeId: step.currency_type_id,
+                    developerCount: step.developer_count,
+                    allowRemote: step.allow_remote,
+                    experienceLevel: step.experience_level,
+                    document: step.job_document,
                     positionName: step.position_name,
                     location: step.location_name,
                     createdOn: step.created_on,
@@ -106,17 +117,27 @@ export const fetchPositionDetails = (_body) => {
                     hiringStepId: step.position_hiring_step_id,
                     hiringStepName: step.hiring_step_name,
                     hiringStepDescription: step.description,
-                    hiringStages: []
+                    hiringStages: [],
+                    skills: []
                 }
-                step.position_hiring_stage_id != null && groupedHiringStages.push(
-                    {
-                        hiringStageId: step.position_hiring_stage_id,
-                        hiringStageName: step.hiring_stage_name,
-                        hiringStageDescription: step.position_hiring_stage_description,
-                        hiringStageOrder: step.hiring_stage_order,
-                    }
-                )
+                if (step.position_hiring_stage_id != null && groupedHiringStages.findIndex(({ hiringStageId }) => hiringStageId === step.position_hiring_stage_id) === -1)
+                    groupedHiringStages.push(
+                        {
+                            hiringStageId: step.position_hiring_stage_id,
+                            hiringStageName: step.hiring_stage_name,
+                            hiringStageDescription: step.position_hiring_stage_description,
+                            hiringStageOrder: step.hiring_stage_order,
+                        }
+                    )
+                if (step.skill_id != null && skills.findIndex(({ skillId }) => skillId === step.skill_id) === -1)
+                    step.skill_id != null && skills.push(
+                        {
+                            skillId: step.skill_id,
+                            skillName: step.skill_name
+                        }
+                    )
                 result['hiringStages'] = groupedHiringStages;
+                result['skills'] = skills;
             })
             resolve({ code: 200, message: "Fetched position details successfully", data: result });
         })
