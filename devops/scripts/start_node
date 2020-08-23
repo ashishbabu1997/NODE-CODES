@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 pwd
 NODE_HOME=/DEV/devops/BE/codedeploy
 cd $NODE_HOME/backend_service/auth && npm run prod && npm run prod && npm run prod && sleep 10 
