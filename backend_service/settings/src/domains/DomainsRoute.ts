@@ -11,6 +11,5 @@ router
     .post('/', addDomains)
     .put('/', updateDomains)
     .delete('/:domainId', deleteDomain)
-
 export default router;
 
