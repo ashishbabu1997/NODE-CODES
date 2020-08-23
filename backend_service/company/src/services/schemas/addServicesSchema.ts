@@ -65,7 +65,7 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    supportingDocument: Joi.string().error(errors => {
+    supportingDocument: Joi.string().allow('').error(errors => {
         errors.forEach(err => {
             console.log(err)
             switch (err.code) {
