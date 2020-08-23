@@ -1,7 +1,7 @@
 #!/bin/bash
 pwd
 
-NODE_HOME=/DEV/devops/BE/codedeploy/node
+NODE_HOME=/DEV/devops/BE/deploy/node
 cd $NODE_HOME/backend_service/auth && npm insatll                   
 cd $NODE_HOME/backend_service/company && npm insatll                   
 cd $NODE_HOME/backend_service/employee && npm insatll                   

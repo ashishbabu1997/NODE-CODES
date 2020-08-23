@@ -1,5 +1,6 @@
 #!/bin/bash
 STAGE_PATH=/DEV/devops/BE/codedeploy/stagelocation
+ls -l $STAGE_PATH
 pwd
 netstat -nlpt |grep :400[0-5]
 # stop BE node services running on 4000 , 4001, 4002, 4003, 4004 and 40005
