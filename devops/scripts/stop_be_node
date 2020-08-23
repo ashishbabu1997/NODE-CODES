@@ -1,21 +1,9 @@
 #!/bin/bash
 STAGE_PATH=/DEV/devops/BE/codedeploy/stagelocation
 pwd
-auth=0
-candidate=1
-company=2
-employee=3
-jobs=4
-settings=5
-
 netstat -nlpt |grep :400[0-5]
 # stop BE node services running on 4000 , 4001, 4002, 4003, 4004 and 40005
-fuser -k -n tcp 4000
-fuser -k -n tcp 4001
-fuser -k -n tcp 4002
-fuser -k -n tcp 4003
-fuser -k -n tcp 4004
-fuser -k -n tcp 4005
+
 echo "netstat -nlpt |grep :400[0-5]"
 netstat -nlpt |grep :400[0-5]
 rm -rf $STAGE_PATH
