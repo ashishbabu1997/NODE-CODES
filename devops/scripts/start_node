@@ -1,6 +1,6 @@
 #!/bin/bash
 pwd
-NODE_HOME=/DEV/devops/BE/codedeploy
+NODE_HOME=/DEV/devops/BE/codedeploy/node
 cd $NODE_HOME/backend_service/auth && npm run prod && npm run prod && npm run prod && sleep 10 
 cd $NODE_HOME/backend_service/company && npm run prod && npm run prod && npm run prod && sleep 10 
 cd $NODE_HOME/backend_service/employee && npm run prod && npm run prod && npm run prod && sleep 10 
