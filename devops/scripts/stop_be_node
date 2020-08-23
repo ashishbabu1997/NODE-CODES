@@ -6,4 +6,4 @@ netstat -nlpt |grep :400[0-5]
 
 echo "netstat -nlpt |grep :400[0-5]"
 netstat -nlpt |grep :400[0-5]
-rm -rf $STAGE_PATH
+#rm -rf $STAGE_PATH
