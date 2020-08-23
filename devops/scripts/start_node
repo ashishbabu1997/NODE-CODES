@@ -1,0 +1,19 @@
+#!/bin/bash
+#!/bin/bash
+pwd
+0=auth
+1=company
+2=employee
+3=jobs
+4=settings
+5=candidate
+NODE_HOME=/DEV/devops/BE/codedeploy
+cd $NODE_HOME/backend_service/0 && npm run prod && npm run prod && npm run prod && sleep 10 
+cd $NODE_HOME/backend_service/1 && npm run prod && npm run prod && npm run prod && sleep 10 
+cd $NODE_HOME/backend_service/2 && npm run prod && npm run prod && npm run prod && sleep 10 
+cd $NODE_HOME/backend_service/3 && npm run prod && npm run prod && npm run prod && sleep 10 
+cd $NODE_HOME/backend_service/4 && npm run prod && npm run prod && npm run prod && sleep 10 
+cd $NODE_HOME/backend_service/5 && npm run prod && npm run prod && npm run prod && sleep 10 
+netstat -nlpt |grep :400[0-5]
+pm2 status
+pm2 logs

@@ -1,0 +1,26 @@
+version: 0.0 
+os: linux 
+files: 
+  - source: /
+    destination: /DEV/devops/BE/codedeploy/stagelocation
+hooks: 
+  ApplicationStop: 
+    - location: devops/scripts/stop_be_node
+      timeout: 300 
+      runas: root
+  BeforeInstall: 
+    - location: devops/scripts/prepare_be
+      timeout: 300
+      runas: root
+  Install: 
+    - location: devops/scripts/install_nodemodules
+      timeout: 300
+      runas: root 	  
+  AfterInstall: 
+    - location: devops/scripts/after_install
+      timeout: 300
+      runas: root 
+  ApplicationStart: 
+    - location: devops/scripts/start_node
+      timeout: 300 
+      runas: root
