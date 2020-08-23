@@ -7,9 +7,9 @@ pwd
 4=settings
 5=candidate
 NODE_HOME=/DEV/devops/BE/codedeploy
-cd $NODE_HOME/backend_service/0 && ls -l
-cd $NODE_HOME/backend_service/1 && ls -l
-cd $NODE_HOME/backend_service/2 && ls -l
-cd $NODE_HOME/backend_service/3 && ls -l
-cd $NODE_HOME/backend_service/4 && ls -l
-cd $NODE_HOME/backend_service/5 && ls -l
+cd $NODE_HOME/backend_service/$0 && ls -l
+cd $NODE_HOME/backend_service/$1 && ls -l
+cd $NODE_HOME/backend_service/$2 && ls -l
+cd $NODE_HOME/backend_service/$3 && ls -l
+cd $NODE_HOME/backend_service/$4 && ls -l
+cd $NODE_HOME/backend_service/$5 && ls -l
