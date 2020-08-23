@@ -25,6 +25,21 @@ export const createEmployee = (_body) => {
                 }
                 return !!err
             }
+            const getEmailQuery = {
+                name: 'get-email',
+                text: employeeQuery.getEmail,
+                values: [_body.email],
+            }
+            database().query(getEmailQuery, (error, results) => {
+                if (error) {
+                    reject({ code: 400, message: "Error in database connection.", data:{} });
+                    return;
+                }
+                if(results.rowCount >=1)
+                {
+                    reject({ code: 400, message: "Email Already exists.", data:{} });
+                    return;  
+                }
             client.query('BEGIN', err => {
                 if (shouldAbort(err)) return
                 const createCompanyQuery = {
@@ -32,24 +47,6 @@ export const createEmployee = (_body) => {
                     text: employeeQuery.createCompany,
                     values: [_body.companyName, _body.company_website, _body.companySizeId, currentTime],
                 }
-                
-                const getEmailQuery = {
-                    name: 'get-email',
-                    text: employeeQuery.getEmail,
-                    values: [_body.email],
-                }
-                database().query(getEmailQuery, (error, results) => {
-                    if (error) {
-                        reject({ code: 400, message: "Error in database connection.", data:{} });
-                        return;
-                    }
-                    if(results.rowCount >=1)
-                    {
-                        reject({ code: 400, message: "Email Already exists.", data:{} });
-                        return;  
-                    }
-                    
-                });
                 client.query(createCompanyQuery, (err, res) => {
                     if (shouldAbort(err)) return
                     const companyId = res.rows[0].company_id
@@ -107,5 +104,6 @@ export const createEmployee = (_body) => {
                 })
             })
         })
+    })
     })
 }
