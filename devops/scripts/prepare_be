@@ -3,5 +3,5 @@ NODE_HOME=/DEV/devops/BE/codedeploy/node
 STAGE_PATH=/DEV/devops/BE/codedeploy/stagelocation
 rm -rf $NODE_HOME/*
 ls -l $NODE_HOME
-mv $STAGE_PATH/* $NODE_HOME/
+cp -r $STAGE_PATH/* $NODE_HOME/
 ls -l $NODE_HOME
