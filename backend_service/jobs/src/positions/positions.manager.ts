@@ -111,7 +111,7 @@ export const fetchPositionDetails = (_body) => {
                     experienceLevel: step.experience_level,
                     document: step.job_document,
                     positionName: step.position_name,
-                    location: step.location_name,
+                    locationName: step.location_name,
                     createdOn: step.created_on,
                     jobDescription: step.job_description,
                     hiringStepId: step.position_hiring_step_id,
