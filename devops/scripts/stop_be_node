@@ -10,14 +10,12 @@ settings=5
 
 netstat -nlpt |grep :400[0-5]
 # stop BE node services running on 4000 , 4001, 4002, 4003, 4004 and 40005
-#fuser -k -n tcp 4000
-#fuser -k -n tcp 4001
-pm2 stop $auth
-pm2 stop $candidate
-pm2 stop $company
-pm2 stop $employee
-pm2 stop $jobs
-pm2 stop $settings
+fuser -k -n tcp 4000
+fuser -k -n tcp 4001
+fuser -k -n tcp 4002
+fuser -k -n tcp 4003
+fuser -k -n tcp 4004
+fuser -k -n tcp 4005
 echo "netstat -nlpt |grep :400[0-5]"
 netstat -nlpt |grep :400[0-5]
 rm -rf $STAGE_PATH
