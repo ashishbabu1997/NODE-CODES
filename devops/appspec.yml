@@ -12,7 +12,7 @@ hooks:
     - location: devops/scripts/prepare_be.sh
       timeout: 300
       runas: root
-   AfterInstall: 
+  AfterInstall: 
     - location: devops/scripts/install_nodemodules.sh
       timeout: 300
       runas: root 
