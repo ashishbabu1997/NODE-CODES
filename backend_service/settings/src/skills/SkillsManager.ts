@@ -1,12 +1,12 @@
 import skillsQuery from './query/SkillsQuery';
 import database from '../common/database/database';
 
-export const getCompanySkills = () => {
+export const getCompanySkills = (_body) => {
     return new Promise((resolve, reject) => {
         const query = {
             name: 'fetch-skills',
             text: skillsQuery.getSkills,
-            values: [],
+            values: [_body.jobCategoryId],
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -24,7 +24,7 @@ export const createNewSkills = (_body) => {
         const query = {
             name: 'create-services',
             text: skillsQuery.createSkills,
-            values: [_body.skillName, currentTime],
+            values: [_body.skillName, currentTime,_body.jobCategoryId],
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -42,7 +42,7 @@ export const updateComppanySkills = (_body) => {
         const query = {
             name: 'update-sevices',
             text: skillsQuery.updateSkills,
-            values: [_body.skillName, currentTime, _body.skillId],
+            values: [_body.skillName, currentTime, _body.skillId,_body.jobCategoryId],
         }
         database().query(query, (error, results) => {
             if (error) {

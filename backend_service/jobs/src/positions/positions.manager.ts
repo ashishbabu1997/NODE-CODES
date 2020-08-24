@@ -36,7 +36,7 @@ export const createCompanyPositions = async (_body) => {
                     values: [_body.positionName, _body.locationName, _body.developerCount, _body.companyId,
                     _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document, _body.contractPeriodId,
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
-                    _body.userId, _body.userId, currentTime, currentTime]
+                    _body.userId, _body.userId, currentTime, currentTime, _body.jobCategoryId]
                 }
                 const companyPositionResponse = await client.query(addCompanyPositionsQuery);
                 const positionId = companyPositionResponse.rows[0].position_id
@@ -117,6 +117,7 @@ export const fetchPositionDetails = (_body) => {
                     hiringStepId: step.position_hiring_step_id,
                     hiringStepName: step.hiring_step_name,
                     hiringStepDescription: step.description,
+                    jobCategoryId: step.job_category_id,
                     hiringStages: [],
                     skills: []
                 }
@@ -214,7 +215,7 @@ export const updateCompanyPositions = async (_body) => {
                     text: positionsQuery.updatePositionFirst,
                     values: [_body.positionName, _body.locationName, _body.developerCount,
                     _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document,
-                    _body.userId, currentTime, positionId, _body.companyId]
+                    _body.userId, currentTime, positionId, _body.companyId, _body.jobCategoryId]
                 }
                 await client.query(updateCompanyPositionsFirstQuery);
                 const updateCompanyPositionsSecondQuery = {
@@ -316,36 +317,35 @@ export const publishCompanyPositions = async (_body) => {
         })
     })
 }
-export const closeJobStatus= (_body) => {
+export const closeJobStatus = (_body) => {
     return new Promise((resolve, reject) => {
-          const currentTime = Math.floor(Date.now()/1000);
-          const positionQuery = {
-              name: 'close-job-status',
-              text:positionsQuery.closeJobs ,
-              values: [currentTime,_body.positionId],
-            }
-          database().query(positionQuery, (error, results) => {
-          if (error) {
-              console.log(error)
-              reject({ code: 400, message: "Error in database connection.", data:{} });
-              return;
-              }
-          const jobReceivedQuery = {
-                name: 'close-job-status',
-                text:positionsQuery.closeJobReceived ,
-                values: [currentTime,_body.positionId],
-              }
-          database().query(jobReceivedQuery, (error, results) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        const positionQuery = {
+            name: 'close-job-status',
+            text: positionsQuery.closeJobs,
+            values: [currentTime, _body.positionId],
+        }
+        database().query(positionQuery, (error, results) => {
             if (error) {
                 console.log(error)
-                reject({ code: 400, message: "Error in database connection.", data:{} });
+                reject({ code: 400, message: "Error in database connection.", data: {} });
                 return;
             }
-            else {
-                resolve({ code: 200, message: "Job status closed", data: {} });
+            const jobReceivedQuery = {
+                name: 'close-job-status',
+                text: positionsQuery.closeJobReceived,
+                values: [currentTime, _body.positionId],
+            }
+            database().query(jobReceivedQuery, (error, results) => {
+                if (error) {
+                    console.log(error)
+                    reject({ code: 400, message: "Error in database connection.", data: {} });
+                    return;
+                }
+                else {
+                    resolve({ code: 200, message: "Job status closed", data: {} });
                 }
             })
-       })
-      })
-  }
-  
+        })
+    })
+}
