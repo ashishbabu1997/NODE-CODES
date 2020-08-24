@@ -67,7 +67,6 @@ export default Joi.object().keys({
     }),
     supportingDocument: Joi.string().allow('').error(errors => {
         errors.forEach(err => {
-            console.log(err)
             switch (err.code) {
                 case "string.base":
                     err.message = "Supporting document must be a string"
