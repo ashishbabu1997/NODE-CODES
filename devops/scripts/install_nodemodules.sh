@@ -1,22 +1,15 @@
 #!/bin/bash
 pwd
-
-NODE_PATH=/DEV/devops/BE/codedeploy
-cd $NODE_PATH/backend_service/auth
-npm insatll
-sleep 30                   
-cd $NODE_PATH/backend_service/company 
-npm insatll
-sleep 30                   
-cd $NODE_PATH/backend_service/employee
-npm insatll                   
-sleep 30
-cd $NODE_PATH/backend_service/jobs
-npm insatll                   
-sleep 30
-cd $NODE_PATH/backend_service/settings
-npm insatll                   
-sleep 30
-cd $NODE_PATH/backend_service/candidate
-npm insatll
-sleep 30
+NODE_PATH=/DEV/devops/BE/codedeploy/backend_service
+cd $NODE_PATH/auth && npm install && sleep 10                   
+cd $NODE_PATH/company && npm install && sleep 10  
+cd $NODE_PATH/employee && npm install && sleep 10 
+cd $NODE_PATH/jobs && npm install && sleep 10 
+cd $NODE_PATH/settings  && npm install && sleep 10 
+cd $NODE_PATH/candidate  && npm install && sleep 10 
+cd $NODE_PATH/auth && ls -l
+cd $NODE_PATH/company && ls -l
+cd $NODE_PATH/employee && ls -l
+cd $NODE_PATH/jobs && ls -l
+cd $NODE_PATH/settings && ls -l
+cd $NODE_PATH/candidate && ls -l
