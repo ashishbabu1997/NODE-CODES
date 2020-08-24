@@ -88,7 +88,7 @@ export const createEmployee = (_body) => {
                                           return;
                                         }
                                 })
-                                var textFormat=config.text.firstLine+config.nextLine+config.text.secondLine+config.nextLine+config.text.thirdLine+config.nextLine+password+config.nextLine
+                                var textFormat=config.text.firstLine+config.nextLine+config.text.secondLine+config.nextLine+config.text.thirdLine+config.nextLine+config.text.password+password+config.nextLine+config.text.fourthLine+config.nextLine+config.text.fifthLine
                                 sendMail(mailId, subject, textFormat, function (err, data) {
                                     if (err) {
                                       console.log(err)
