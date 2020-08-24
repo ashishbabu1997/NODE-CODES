@@ -5,22 +5,22 @@ files:
     destination: /DEV/devops/BE/codedeploy
 hooks: 
   ApplicationStop: 
-    - location: devops/scripts/stop_be_node
+    - location: devops/scripts/stop_be_node.sh
       timeout: 300 
       runas: root
   BeforeInstall: 
-    - location: devops/scripts/prepare_be
+    - location: devops/scripts/prepare_be.sh
       timeout: 300
       runas: root
   Install: 
-    - location: devops/scripts/install_nodemodules
+    - location: devops/scripts/install_nodemodules.sh
       timeout: 300
       runas: root 	  
   AfterInstall: 
-    - location: devops/scripts/after_install
+    - location: devops/scripts/after_install.sh
       timeout: 300
       runas: root 
   ApplicationStart: 
-    - location: devops/scripts/start_node
+    - location: devops/scripts/start_node.sh
       timeout: 300 
       runas: root
