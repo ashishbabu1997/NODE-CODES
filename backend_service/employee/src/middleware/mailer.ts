@@ -10,12 +10,12 @@ const transporter = nodemailer.createTransport({
         pass: config.mail.password
     }
 })
-export const sendMail = (email, subject, text, callback) => {
+export const sendMail = (email, subject, html, callback) => {
     const mailOptions = {
         from: config.mail.user, 
         to: email, 
         subject,
-        text
+        html
     };
     
     transporter.sendMail(mailOptions, function (err, data) {
