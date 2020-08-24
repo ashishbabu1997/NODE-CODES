@@ -2,7 +2,7 @@ version: 0.0
 os: linux 
 files: 
   - source: /
-    destination: /DEV/devops/BE/codedeploy/stagelocation
+    destination: /DEV/devops/BE/codedeploy
 hooks: 
   ApplicationStop: 
     - location: devops/scripts/stop_be_node

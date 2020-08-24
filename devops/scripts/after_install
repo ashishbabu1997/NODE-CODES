@@ -1,10 +1,10 @@
 #!/bin/bash
 pwd
 
-NODE_HOME=/DEV/devops/BE/deploy/node
-cd $NODE_HOME/backend_service/auth && ls -l
-cd $NODE_HOME/backend_service/company && ls -l
-cd $NODE_HOME/backend_service/employee && ls -l
-cd $NODE_HOME/backend_service/jobs && ls -l
-cd $NODE_HOME/backend_service/settings && ls -l
-cd $NODE_HOME/backend_service/candidate && ls -l
+NODE_PATH=/DEV/devops/BE/codedeploy
+cd $NODE_PATH/backend_service/auth && ls -l
+cd $NODE_PATH/backend_service/company && ls -l
+cd $NODE_PATH/backend_service/employee && ls -l
+cd $NODE_PATH/backend_service/jobs && ls -l
+cd $NODE_PATH/backend_service/settings && ls -l
+cd $NODE_PATH/backend_service/candidate && ls -l

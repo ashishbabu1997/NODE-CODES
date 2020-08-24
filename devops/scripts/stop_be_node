@@ -1,10 +1,10 @@
 #!/bin/bash
-STAGE_PATH=/DEV/devops/BE/codedeploy/stagelocation
-ls -l $STAGE_PATH
+NODE_PATH=/DEV/devops/BE/codedeploy
+ls -l $NODE_PATH
 pwd
 netstat -nlpt |grep :400[0-5]
 # stop BE node services running on 4000 , 4001, 4002, 4003, 4004 and 40005
-
+/usr/local/bin/pm2 stop default
 echo "netstat -nlpt |grep :400[0-5]"
 netstat -nlpt |grep :400[0-5]
-#rm -rf $STAGE_PATH
+rm -rf $NODE_PATH
