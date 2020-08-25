@@ -18,7 +18,7 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    description: Joi.string().required().error(function (errors) {
+    description: Joi.string().allow('').error(function (errors) {
         errors.forEach(function (err) {
             switch (err.code) {
                 case "any.required":
@@ -34,12 +34,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    logo: Joi.string().required().error(function (errors) {
+    logo: Joi.string().allow('').error(function (errors) {
         errors.forEach(function (err) {
             switch (err.code) {
-                case "any.required":
-                    err.message = "logo  should not be empty!";
-                    break;
                 case "string.base":
                     err.message = "logo should be string";
                     break;
@@ -50,12 +47,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    coverPage: Joi.string().required().error(function (errors) {
+    coverPage: Joi.string().allow('').error(function (errors) {
         errors.forEach(function (err) {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Cover Page  should not be empty!";
-                    break;
                 case "string.base":
                     err.message = "Cover Page should be string";
                     break;
@@ -66,12 +60,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    tagline: Joi.string().required().error(function (errors) {
+    tagline: Joi.string().allow('').error(function (errors) {
         errors.forEach(function (err) {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Tagline  should not be empty!";
-                    break;
                 case "string.base":
                     err.message = "Tagline should be string";
                     break;
@@ -82,46 +73,46 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    facebookId: Joi.string().error(function (errors) {
-        errors.forEach(function (err) {
-            switch (err.code) {
-                case "string.base":
-                    err.message = "Facebook Id must be a string of charectors";
-                    break;
-                default:
-                    err.message = "Invalid Facebook Id";
-                    break;
-            }
-        });
-        return errors;
-    }),
-    instagramId: Joi.string().error(function (errors) {
-        errors.forEach(function (err) {
-            switch (err.code) {
-                case "string.base":
-                    err.message = "Instagram Id must be a string of charectors";
-                    break;
-                default:
-                    err.message = "Invalid Instagram Id";
-                    break;
-            }
-        });
-        return errors;
-    }),
-    twitterId: Joi.string().error(function (errors) {
-        errors.forEach(function (err) {
-            switch (err.code) {
-                case "string.base":
-                    err.message = "Twitter Id must be a string of charactors";
-                    break;
-                default:
-                    err.message = "Invalid Twitter Id";
-                    break;
-            }
-        });
-        return errors;
-    }),
-    linkedinId: Joi.string().error(function (errors) {
+    // facebookId: Joi.string().error(function (errors) {
+    //     errors.forEach(function (err) {
+    //         switch (err.code) {
+    //             case "string.base":
+    //                 err.message = "Facebook Id must be a string of charectors";
+    //                 break;
+    //             default:
+    //                 err.message = "Invalid Facebook Id";
+    //                 break;
+    //         }
+    //     });
+    //     return errors;
+    // }),
+    // instagramId: Joi.string().error(function (errors) {
+    //     errors.forEach(function (err) {
+    //         switch (err.code) {
+    //             case "string.base":
+    //                 err.message = "Instagram Id must be a string of charectors";
+    //                 break;
+    //             default:
+    //                 err.message = "Invalid Instagram Id";
+    //                 break;
+    //         }
+    //     });
+    //     return errors;
+    // }),
+    // twitterId: Joi.string().error(function (errors) {
+    //     errors.forEach(function (err) {
+    //         switch (err.code) {
+    //             case "string.base":
+    //                 err.message = "Twitter Id must be a string of charactors";
+    //                 break;
+    //             default:
+    //                 err.message = "Invalid Twitter Id";
+    //                 break;
+    //         }
+    //     });
+    //     return errors;
+    // }),
+    linkedinId: Joi.string().allow('').error(function (errors) {
         errors.forEach(function (err) {
             switch (err.code) {
                 case "string.base":
