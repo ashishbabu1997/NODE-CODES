@@ -25,7 +25,6 @@ export const get_Details = (_body) => {
                 // "instagramId": response.instagramId === null ? '' : response.instagramId,
                 // "twitterId": response.twitterId === null ? '' : response.twitterId,
                 "linkedinId": response.linkedinId === null ? '' : response.linkedinId,
-                "profilePercentage":response.profilePercentage === null? '' :response.profilePercentage
             }
             resolve({ code: 200, message: "Profile listed successfully", data: { Profile: responseData } });
         })

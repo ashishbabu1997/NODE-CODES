@@ -43,7 +43,7 @@ export const addPassword = (_body) => {
                                 token: `Bearer ${token}`,
                               companyId: value.companyId, companyName: value.companyName, companyLogo: value.companyLogo,
                               email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,
-                              masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile,profilePercentage: value.profilePercentage
+                              masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile
                             }});
                       }
                     }
