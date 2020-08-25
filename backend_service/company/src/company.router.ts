@@ -5,6 +5,7 @@ import certificationRouter from './certifications/certifications.route';
 import employeeRouter from './employee/employee.route';
 import companyProfileRouter from './profile/companyProfile.router'
 import * as express from 'express';
+import profilePercentageRouter from './profilePercentage/profilePercentage.route'
 const router = express.Router();
 
 router
@@ -12,7 +13,9 @@ router
     .use(`/api/${AppConfig.version}/company/services`, serviceRouter)
     .use(`/api/${AppConfig.version}/company/certifications`, certificationRouter)
     .use(`/api/${AppConfig.version}/company/companyProfile`,companyProfileRouter)
-    .use(`/api/${AppConfig.version}/company/employee`, employeeRouter);
+    .use(`/api/${AppConfig.version}/company/employee`, employeeRouter)
+    .use(`/api/${AppConfig.version}/company/profilePercentage`, profilePercentageRouter);
+
 
 export default router;
 
