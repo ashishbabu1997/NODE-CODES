@@ -39,7 +39,7 @@ export const createEmployee = (_body) => {
         const query = {
             name: 'add-employee',
             text: employeeQuery.addEmploye,
-            values: [_body.firstName, _body.lastName, _body.companyId, _body.email, _body.roleId, currentTime, _body.empId,true,_body.document],
+            values: [_body.firstName, _body.lastName, _body.companyId, _body.email, _body.roleId, currentTime, _body.contactNumber,true,_body.document],
         }
         database().query(query, (error, results) => {
             if (error) {
