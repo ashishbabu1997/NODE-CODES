@@ -113,7 +113,7 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    company_website: Joi.string().required().error(errors => {
+    company_website: Joi.string().required().regex( /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/i).error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
