@@ -19,8 +19,8 @@ export const sendLink = (_body) => {
           reject({ code: 400, message: "Database connection Error !!!!", data:  {} });
           return;
         }
-      var link="https://devauth.ellow.ai/email/"+token
-      const subject="ELLOW RESET PASSWORD LINK"
+      var link="http://localhost:3000/passwordset/"+token
+      const subject="ellow.ai RESET PASSWORD LINK"
       const text="Click on the link to reset your password : "
       sendMail(_body.email, subject,text+link, function(err,data) {
                 if (err) {

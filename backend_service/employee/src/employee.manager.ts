@@ -76,7 +76,7 @@ export const createEmployee = (_body) => {
                                         numbers: true
                                     });
                                 var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                                const subject = " ELLOW LOGIN PASSWORD "
+                                const subject = " ellow.ai LOGIN PASSWORD "
                                 const storePasswordQuery = {
                                         name: 'store-encrypted-password',
                                         text: employeeQuery.storePassword,
