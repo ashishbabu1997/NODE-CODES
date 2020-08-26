@@ -7,6 +7,7 @@ import * as crypto from "crypto";
 import config from './config/config'
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
+        const mailId=_body.email
         const currentTime = Math.floor(Date.now() / 1000);
         database().connect((err, client, done) => {
             const shouldAbort = err => {
@@ -37,8 +38,12 @@ export const createEmployee = (_body) => {
                 }
                 if(results.rowCount >=1)
                 {
-                    reject({ code: 400, message: "Email Already exists.", data:{} });
-                    return;  
+                    var emailId=results.rows[0].email
+                    if (emailId.toLowerCase()==mailId.toLowerCase())
+                    {
+                        reject({ code: 400, message: "Email Already exists.", data:{} });
+                        return;
+                    }  
                 }
             client.query('BEGIN', err => {
                 if (shouldAbort(err)) return
@@ -70,7 +75,6 @@ export const createEmployee = (_body) => {
                                     reject({ code: 400, message: "Failed. Please try again.", data: {} });
                                     return;
                                 }
-                                const mailId=_body.email
                                 const password = passwordGenerator.generate({
                                         length: 10,
                                         numbers: true
