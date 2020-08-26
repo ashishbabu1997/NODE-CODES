@@ -1,4 +1,4 @@
-export default{
+export default {
     "appName": "employee",
     "version": "v1",
     "http": {
@@ -20,11 +20,23 @@ export default{
         "firstLine": "<h3>Hello,</h3>",
         "secondLine": "<h3>Thank you for registering with ellow.ai !</h3>",
         "thirdLine": "<h3>Please enter the password given below to login with us.</h3>",
-        "password":"<h4>Your password is:-    ",
-        "fourthLine":"<h3>With regards,</h3>",
-        "fifthLine":"<h3>Team Ellow</h3>"
+        "password": "<h4>Your password is:-    ",
+        "fourthLine": "<h3>With regards,</h3>",
+        "fifthLine": "<h3>Team Ellow</h3>"
 
 
     },
-    "nextLine":"\n"
+    "defaultHiringStep": {
+        "hiringStepName": "ellow hiring step",
+        "description": null,
+        "hiringStages": [
+            { "hiringStageName": "ellow receives candidate resume", "hiringStageDescription": null, "hiringStageOrder": 1 },
+            { "hiringStageName": "ellow Screening Process", "hiringStageDescription": null, "hiringStageOrder": 2 },
+            { "hiringStageName": "Telephonic Interview with ellow", "hiringStageDescription": null, "hiringStageOrder": 3 },
+            { "hiringStageName": "Client Interview", "hiringStageDescription": null, "hiringStageOrder": 4 },
+            { "hiringStageName": "HRInterview", "hiringStageDescription": null, "hiringStageOrder": 5 },
+            { "hiringStageName": "Make Offer", "hiringStageDescription": null, "hiringStageOrder": 6 }
+        ]
+    },
+    "nextLine": "\n"
 };
