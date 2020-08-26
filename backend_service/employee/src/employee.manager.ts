@@ -8,6 +8,7 @@ import config from './config/config'
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
         const mailId=_body.email
+        const loweremailId=mailId.toLowerCase()
         const currentTime = Math.floor(Date.now() / 1000);
         database().connect((err, client, done) => {
             const shouldAbort = err => {
@@ -29,7 +30,7 @@ export const createEmployee = (_body) => {
             const getEmailQuery = {
                 name: 'get-email',
                 text: employeeQuery.getEmail,
-                values: [_body.email],
+                values: [loweremailId],
             }
             database().query(getEmailQuery, (error, results) => {
                 if (error) {
@@ -39,11 +40,12 @@ export const createEmployee = (_body) => {
                 if(results.rowCount >=1)
                 {
                     var emailId=results.rows[0].email
-                    if (emailId.toLowerCase()==mailId.toLowerCase())
+                    if (emailId.toLowerCase()==loweremailId)
                     {
                         reject({ code: 400, message: "Email Already exists.", data:{} });
                         return;
-                    }  
+                    }
+                
                 }
             client.query('BEGIN', err => {
                 if (shouldAbort(err)) return
@@ -58,7 +60,7 @@ export const createEmployee = (_body) => {
                     const createEmployeeQuery = {
                         name: 'createEmployee',
                         text: employeeQuery.createEmployee,
-                        values: [_body.firstName, _body.lastName,_body.email, _body.accountType, companyId, _body.telephoneNumber, _body.roleId, currentTime,true],
+                        values: [_body.firstName, _body.lastName,loweremailId, _body.accountType, companyId, _body.telephoneNumber, _body.roleId, currentTime,true],
                     }
                     client.query(createEmployeeQuery, (err, res) => {
                         if (shouldAbort(err)) return
@@ -84,7 +86,7 @@ export const createEmployee = (_body) => {
                                 const storePasswordQuery = {
                                         name: 'store-encrypted-password',
                                         text: employeeQuery.storePassword,
-                                        values: [hashedPassword,mailId],
+                                        values: [hashedPassword,loweremailId],
                                 }
                                 database().query(storePasswordQuery, (error, results) => {
                                         if (error) {
