@@ -63,7 +63,7 @@ export const createCompanyPositions = async (_body) => {
                 const length = hiringStages.length;
                 hiringStages.forEach((element, i) => {
                     const end = i != length - 1 ? "," : ";"
-                    hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.hiringStageOrder + "," + element.coordinatorId + "," + currentTime + "," + currentTime + ")" + end
+                    hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.hiringStageOrder + "," + currentTime + "," + currentTime + ")" + end
                 });
                 const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
                 await client.query(addPositionHiringStagesQuery)
@@ -180,7 +180,7 @@ export const editCompanyPositionHiringSteps = (_body) => {
                     const length = hiringStages.length;
                     hiringStages.forEach((element, i) => {
                         const end = i != length - 1 ? "," : ""
-                        hiringStageValues = hiringStageValues + "(" + element.hiringStageId + ",'" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + element.hiringStageOrder + "," + element.coordinatorId + "," + currentTime + ")" + end
+                        hiringStageValues = hiringStageValues + "(" + element.hiringStageId + ",'" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + element.hiringStageOrder + "," + currentTime + ")" + end
                     });
                     const query = positionsQuery.editPositionHiringStagesStart + hiringStageValues + positionsQuery.editPositionHiringStagesEnd
                     console.log(query)
@@ -264,7 +264,7 @@ export const updateCompanyPositions = async (_body) => {
                 const length = hiringStages.length;
                 hiringStages.forEach((element, i) => {
                     const end = i != length - 1 ? "," : ";"
-                    hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.hiringStageOrder + "," + element.coordinatorId + "," + currentTime + "," + currentTime + ")" + end
+                    hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.hiringStageOrder + "," + currentTime + "," + currentTime + ")" + end
                 });
                 const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
                 await client.query(addPositionHiringStagesQuery)
