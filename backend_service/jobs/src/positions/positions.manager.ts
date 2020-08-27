@@ -252,21 +252,20 @@ export const updateCompanyPositions = async (_body) => {
                     resolve({ code: 200, message: "Position updated successfully", data: { positionId } });
                     return;
                 }
-                const addPositionHiringStepQuery = {
-                    name: 'add-position-hiring-steps',
-                    text: positionsQuery.addPositionSteps,
-                    values: [positionId, _body.hiringStepName, _body.description, currentTime, currentTime],
+                const editPositionHiringStepQuery = {
+                    name: 'edit-position-hiring-steps',
+                    text: positionsQuery.editPositionHiringSteps,
+                    values: [_body.hiringStepId, _body.hiringStepName, _body.description, currentTime],
                 }
-                const res = await client.query(addPositionHiringStepQuery)
+                const res = await client.query(editPositionHiringStepQuery)
                 const hiringStages = _body.hiringStages;
-                const positionHiringStepId = res.rows[0].position_hiring_step_id;
                 let hiringStageValues = ''
                 const length = hiringStages.length;
                 hiringStages.forEach((element, i) => {
-                    const end = i != length - 1 ? "," : ";"
-                    hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.hiringStageOrder + "," + currentTime + "," + currentTime + ")" + end
+                    const end = i != length - 1 ? "," : ""
+                    hiringStageValues = hiringStageValues + "(" + element.hiringStageId + ",'" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + element.hiringStageOrder + "," + currentTime + ")" + end
                 });
-                const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
+                const addPositionHiringStagesQuery = positionsQuery.editPositionHiringStagesStart + hiringStageValues + positionsQuery.editPositionHiringStagesEnd
                 await client.query(addPositionHiringStagesQuery)
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Position updated successfully", data: { positionId } });
