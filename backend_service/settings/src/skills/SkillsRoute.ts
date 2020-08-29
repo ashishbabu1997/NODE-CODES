@@ -9,8 +9,8 @@ const router = express.Router();
 router
     .get('/', getSkills)
     .post('/', addSkills)
-    .put('/', updateSkills)
-    .delete('/:skillId', deleteSkills)
+    // .put('/', updateSkills)
+    // .delete('/:skillId', deleteSkills)
 
 export default router;
 
