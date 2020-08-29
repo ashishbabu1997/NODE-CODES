@@ -26,7 +26,35 @@ export const createCompanyCertifications = (_body) => {
             text: certificationQuery.addCompanyCertifications,
             values: [_body.companyId, _body.certificationId, _body.certificationNumber, _body.logo, _body.document, currentTime, _body.certificationType],
         }
-        database().query(query, (error, results) => {
+        const getprofilePercentge = {
+            name: 'get-profile-percentge',
+            text: certificationQuery.getProfilePercentage,
+            values: [_body.companyId],
+        }
+        database().query(getprofilePercentge, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed to fetch profile percentage", data: {} });
+                return;
+            }
+            else
+            {
+                const profilePercentage=results.rows[0].profilePercentage
+                var count=profilePercentage+25
+                
+            }
+        const updateProfile = {
+            name: 'profile-percentage-update',
+            text: certificationQuery.updateProfilePercentage,
+            values: [count,_body.companyId],
+        }
+        database().query(updateProfile, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed to update profile percentage", data: {} });
+                return;
+            }
+        })
+    })
+    database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
@@ -63,6 +91,34 @@ export const deleteCompanyCertifications = (_body) => {
             text: certificationQuery.deleteCompanyCertifications,
             values: [currentTime, parseInt(_body.companycertificationId)],
         }
+        const getprofilePercentge = {
+            name: 'get-profile-percentge',
+            text: certificationQuery.getProfilePercentage,
+            values: [_body.companyId],
+        }
+        database().query(getprofilePercentge, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed to fetch profile percentage", data: {} });
+                return;
+            }
+            else
+            {
+                const profilePercentage=results.rows[0].profilePercentage
+                var count=profilePercentage-25
+                
+            }
+        const updateProfile = {
+            name: 'profile-percentage-update',
+            text: certificationQuery.updateProfilePercentage,
+            values: [count,_body.companyId],
+        }
+        database().query(updateProfile, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed to update profile percentage", data: {} });
+                return;
+            }
+        })
+    })
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
