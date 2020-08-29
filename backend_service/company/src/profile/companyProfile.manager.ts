@@ -32,28 +32,66 @@ export const get_Details = (_body) => {
 }
 export const update_Details = (_body) => {
     return new Promise((resolve, reject) => {
-            if (_body.logo==''&& _body.coverPage==''&&_body.linkedinId==''&&_body.tagline=='')
-            {
-                var count=50;
-
+        const query = {
+            name: 'get-account-type',
+            text: companyQuery.getAccountType,
+            values: [_body.companyId],
+        }
+        database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed to access profile. Please try again.", data: {} });
+                return;
             }
-            else if(_body.logo==''||_body.coverPage==''||_body.linkedinId==''||_body.tagline=='')
+            const accountType=results.rows[0].accountType
+            if (accountType == 1)
             {
-                var count=90
-                if((_body.logo==''&& _body.coverPage=='') ||(_body.logo==''&&_body.linkedinId=='')||(_body.logo==''&&_body.tagline=='')||(_body.coverPage==''&& _body.linkedinId=='')||(_body.coverPage==''&&_body.tagline=='')||(_body.linkedinId==''&&_body.tagline==''))
-                {   
-                    var count=75;
-                    // if(_body.logo!=''||_body.coverPage!=''||_body.linkedinId!=''||_body.tagline!='')
-                    if((_body.logo==''&& _body.coverPage==''&&_body.linkedinId=='')||(_body.logo==''&&_body.linkedinId==''&&_body.tagline=='')||(_body.tagline==''&&_body.coverPage==''&&_body.linkedinId=='')||(_body.tagline==''&&_body.coverPage==''&&_body.logo==''))
+                    if (_body.logo==''&& _body.coverPage==''&&_body.linkedinId==''&&_body.tagline=='')
                     {
-                        var count=65;
+                        var count=50;
+
+                    }
+                    else if(_body.logo==''||_body.coverPage==''||_body.linkedinId==''||_body.tagline=='')
+                    {
+                        var count=90
+                        if((_body.logo==''&& _body.coverPage=='') ||(_body.logo==''&&_body.linkedinId=='')||(_body.logo==''&&_body.tagline=='')||(_body.coverPage==''&& _body.linkedinId=='')||(_body.coverPage==''&&_body.tagline=='')||(_body.linkedinId==''&&_body.tagline==''))
+                        {   
+                            var count=75;
+                            if((_body.logo==''&& _body.coverPage==''&&_body.linkedinId=='')||(_body.logo==''&&_body.linkedinId==''&&_body.tagline=='')||(_body.tagline==''&&_body.coverPage==''&&_body.linkedinId=='')||(_body.tagline==''&&_body.coverPage==''&&_body.logo==''))
+                            {
+                                var count=65;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var count=100
                     }
                 }
-            }
             else
-            {
-                var count=100
-            }
+                {
+                    if (_body.logo==''&& _body.coverPage==''&&_body.linkedinId==''&&_body.tagline=='')
+                    {
+                        var count=25;
+
+                    }
+                    else if(_body.logo==''||_body.coverPage==''||_body.linkedinId==''||_body.tagline=='')
+                    {
+                        var count=40
+                        if((_body.logo==''&& _body.coverPage=='') ||(_body.logo==''&&_body.linkedinId=='')||(_body.logo==''&&_body.tagline=='')||(_body.coverPage==''&& _body.linkedinId=='')||(_body.coverPage==''&&_body.tagline=='')||(_body.linkedinId==''&&_body.tagline==''))
+                        {   
+                            var count=35;
+                            if((_body.logo==''&& _body.coverPage==''&&_body.linkedinId=='')||(_body.logo==''&&_body.linkedinId==''&&_body.tagline=='')||(_body.tagline==''&&_body.coverPage==''&&_body.linkedinId=='')||(_body.tagline==''&&_body.coverPage==''&&_body.logo==''))
+                            {
+                                var count=30;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var count=50
+                    }
+
+                }
         console.log(count)
         const currentTime = Math.floor(Date.now() / 1000);
         const query = {
@@ -68,6 +106,8 @@ export const update_Details = (_body) => {
                 return;
             } 
             resolve({ code: 200, message: "Profile updated successfully", data: {} });
+        })
+
         })
     })
 }

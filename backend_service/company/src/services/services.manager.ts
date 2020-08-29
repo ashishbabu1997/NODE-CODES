@@ -1,5 +1,6 @@
 import servicesQuery from './query/services.query';
 import database from '../common/database/database';
+import { getProfilePercentage } from '../profilePercentage/profilePercentage.controller';
 
 export const fetchCompanyServices = (_body) => {
     return new Promise((resolve, reject) => {
@@ -140,16 +141,53 @@ export const createCompanyServices = (_body) => {
                     values: [_body.supportingDocument, _body.companyId],
                 }
                 await client.query(addSupportDocumentQuery);
-                await client.query('COMMIT')
-                resolve({ code: 200, message: "Services added successfully", data: {} });
-            } catch (e) {
-                await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
+                const getprofilePercentge = {
+                    name: 'get-profile-percentge',
+                    text: servicesQuery.getProfilePercentage,
+                    values: [_body.companyId],
+                }
+                database().query(getprofilePercentge, (error, results) => {
+                    if (error) {
+                        reject({ code: 400, message: "Failed to fetch profile percentage", data: {} });
+                        return;
+                    }
+                    else
+                    {
+                        const profilePercentage=results.rows[0].profilePercentage
+                        if(_body.supportingDocument=='')
+                        {
+                            var count=profilePercentage+20
+                        }
+                        else
+                        {
+                             var count=profilePercentage+25
+                        }
+                    }
+                const updateProfile = {
+                    name: 'profile-percentage-update',
+                    text: servicesQuery.updateProfilePercentage,
+                    values: [count,_body.companyId],
+                }
+                database().query(updateProfile, (error, results) => {
+                    if (error) {
+                        reject({ code: 400, message: "Failed to update profile percentage", data: {} });
+                        return;
+                    }
+                })
+            })
+
+        await client.query('COMMIT')
+        resolve({ code: 200, message: "Services added successfully", data: {} });
+    } catch (e) {
+        await client.query('ROLLBACK')
+        console.log(e);
+        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+    } finally {
                 client.release();
             }
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
-        })
+})().catch(e => {
+        console.log(e)
+        reject({ code: 400, message: "Failed. Please try again.", data: {} })
     })
+})
 }

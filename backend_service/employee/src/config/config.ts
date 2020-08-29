@@ -20,9 +20,9 @@ export default {
         "firstLine": "<h3>Hello,</h3>",
         "secondLine": "<h3>Thank you for registering with ellow.ai !</h3>",
         "thirdLine": "<h3>Please enter the password given below to login with us.</h3>",
-        "password": "<h4>Your password is:-    ",
+        "password": "<h3>Your password is:-    ",
         "fourthLine": "<h3>With regards,</h3>",
-        "fifthLine": "<h3>Team Ellow</h3>"
+        "fifthLine": "<h3>Team ellow.ai</h3>"
 
 
     },
