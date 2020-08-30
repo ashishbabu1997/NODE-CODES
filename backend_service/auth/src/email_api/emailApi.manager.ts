@@ -8,7 +8,7 @@ const subject="Your OTP is";
 export const sendOtp = (_body) => {
   return new Promise((resolve, reject) => {
     const otp = otpGenerator.generate(6, { upperCase: false, specialChars: false, alphabets:false });
-    var textFormat=config.text.firstLine+config.nextLine+config.text.secondLine+config.nextLine+config.text.thirdLine+config.nextLine+otp+config.nextLine+config.text.fourthLine
+    var textFormat=config.text.firstLine+config.nextLine+config.nextLine+config.text.thirdLine+config.nextLine+otp+config.nextLine+config.text.fourthLine
     const checkStatusQuery = {
       name: 'checkStatus',
       text: Query.checkStatus,
