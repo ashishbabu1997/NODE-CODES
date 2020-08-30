@@ -4,6 +4,7 @@ import {Promise} from 'es6-promise'
 import {sendMail} from '../middlewares/mailer'
 import Query from './query/query';
 import database from '../common/database/database';
+import config from '../config/config'
 export const sendLink = (_body) => {
   return new Promise((resolve, reject) => {
     const checkEMail = {
@@ -31,17 +32,17 @@ export const sendLink = (_body) => {
           reject({ code: 400, message: "Database connection Error !!!!", data:  {} });
           return;
         }
-        var link="http://localhost:3000/passwordset/"+token
+        var link=_body.host+"/passwordset/"+token
         const subject="ellow.ai RESET PASSWORD LINK"
-        const text="Click on the link to reset your password : "
-        sendMail(_body.email, subject,text+link, function(err,data) {
+        var textFormat = config.text.firstLine + config.nextLine + config.text.thirdLine + config.nextLine + config.text.link + link + config.nextLine + config.text.fourthLine + config.nextLine + config.text.fifthLine
+        sendMail(_body.email, subject,textFormat, function(err,data) {
                 if (err) {
                   console.log("........Email ERROR:.........",err)
                   reject({ code: 400, message: "Cannot send email", data:{}});
                   return;
                 }
                 console.log('Email sent successfully');
-                resolve({ code: 200, message: "Token  has sent to your email successfully", data:{} });
+                resolve({ code: 200, message: "A Link to reset your password has been sent to your email successfully", data:{} });
             });
           })
       }

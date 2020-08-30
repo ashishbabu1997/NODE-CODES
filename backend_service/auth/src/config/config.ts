@@ -17,10 +17,12 @@ export default {
         "password": "fqlroidzaxmlhgml",
     },
     "text": {
-        "firstLine": "Hello,",
-        "secondLine": "Thank you for registering with ellow.ai !",
-        "thirdLine": "Please enter the following OTP to verify your email:-",
-        "fourthLine": "This OTP is valid for 1 minute",
+        "firstLine": "<h3>Hello,</h3>",
+        "thirdLine": "<h3>Please click the link below to reset your password</h3>",
+        "link": "<h3>Your link is:-    ",
+        "fourthLine": "<h3>With regards,</h3>",
+        "fifthLine": "<h3>Team ellow.ai</h3>"
+
 
     },
     "nextLine":"\n",
