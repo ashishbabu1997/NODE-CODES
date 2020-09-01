@@ -6,12 +6,12 @@ export const getCandidateDetails = (_body) => {
         const currentTime = Math.floor(Date.now() / 1000);
         const query = {
                 name: 'get-candidate-details',
-                text: candidateQuery.listCandidateDetails,
+                text: candidateQuery.list,
                 values: [_body.candidateId],
             }
             database().query(query, (error, results) => {
                 if (error) {
-                    reject({ code: 400, message: "Failed to save to database", data: {} });
+                    reject({ code: 400, message: "Database Error", data: {} });
                     return;
                 }
                 resolve({ code: 200, message: "Candidate details listed successfully", data: {candidate:results.rows} });
@@ -25,7 +25,6 @@ export const listCandidatesDetails = (_body) => {
             {
                  selectQuery =selectQuery +" "+"AND ((LOWER(c.candidate_name) LIKE '%" +_body.filter.toLowerCase() +"%') " + "OR (LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
             }
-            console.log(selectQuery)
             const listquery = {
                 name: 'list-candidates',
                 text:selectQuery,
@@ -34,7 +33,7 @@ export const listCandidatesDetails = (_body) => {
             database().query(listquery, (error, results) => {
                 if (error) {
                     console.log(error, "eror")
-                    reject({ code: 400, message: "Failed to save to the database", data: {} });
+                    reject({ code: 400, message: "Database Error", data: {} });
                     return;
                 }
                 resolve({ code: 200, message: "Candidates listed successfully", data: { Candidates: results.rows } });
