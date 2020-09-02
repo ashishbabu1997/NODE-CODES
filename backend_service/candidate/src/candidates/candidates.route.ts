@@ -3,5 +3,5 @@ import * as express from 'express';
 const router = express.Router();
 router
     .get('candidateDetails/:candidateId',candidateDetails)
-    .get('listCandidates/',listCandidates)
+    .get('/listCandidates',listCandidates)
 export default router;
