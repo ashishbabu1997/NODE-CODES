@@ -14,7 +14,26 @@ export const getCandidateDetails = (_body) => {
                     reject({ code: 400, message: "Database Error", data: {} });
                     return;
                 }
-                resolve({ code: 200, message: "Candidate details listed successfully", data: {candidate:results.rows} });
+                const candidates=results.rows
+                let result = {};
+                candidates.forEach(step => {
+                    result= {
+                        candidateName: step.candidateName,
+                        companyName: step.companyName,
+                        positionName: step.positionName,
+                        description: step.description,
+                        coverNote: step.coverNote,
+                        resume: step.resume,
+                        rate: step.rate,
+                        phoneNumber: step.phoneNumber,
+                        label: step.label,
+                        emailAddress: step.emailAddress,
+                        status: step.status,
+                        candidateStatus: step.candidateStatus,
+                        jobReceivedId: step.jobReceivedId
+                    }
+                resolve({ code: 200, message: "Candidate details listed successfully", data:{candidate:result} });
+                })
             })
         })
     }
