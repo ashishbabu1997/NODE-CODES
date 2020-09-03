@@ -1,5 +1,5 @@
 import AppConfig from './config/config';
-import adminRouter from './admin/admin.route';
+import adminRouter from './admins/admin.route';
 import * as express from 'express';
 const router = express.Router();
 router

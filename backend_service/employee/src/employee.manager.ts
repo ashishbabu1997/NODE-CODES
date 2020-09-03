@@ -3,7 +3,7 @@ import database from './common/database/database';
 import { sendMail } from './middleware/mailer'
 import * as passwordGenerator from 'generate-password'
 import { Promise } from 'es6-promise'
-import * as crypto from "crypto";
+// import * as crypto from "crypto";
 import config from './config/config'
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
@@ -58,7 +58,7 @@ export const createEmployee = (_body) => {
                         const createEmployeeQuery = {
                             name: 'createEmployee',
                             text: employeeQuery.createEmployee,
-                            values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, _body.roleId, currentTime, true],
+                            values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, _body.roleId, currentTime],
                         }
                         client.query(createEmployeeQuery, (err, res) => {
                             if (shouldAbort(err)) return
@@ -95,31 +95,6 @@ export const createEmployee = (_body) => {
                                                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                                                 return;
                                             }
-                                            const password = passwordGenerator.generate({
-                                                length: 10,
-                                                numbers: true
-                                            });
-                                            var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                                            const subject = " ellow.ai LOGIN PASSWORD "
-                                            const storePasswordQuery = {
-                                                name: 'store-encrypted-password',
-                                                text: employeeQuery.storePassword,
-                                                values: [hashedPassword, loweremailId],
-                                            }
-                                            database().query(storePasswordQuery, (error, results) => {
-                                                if (error) {
-                                                    console.log(error)
-                                                    return;
-                                                }
-                                            })
-                                            var textFormat = config.text.firstLine + config.nextLine + config.text.secondLine + config.nextLine + config.text.thirdLine + config.nextLine + config.text.password + password + config.nextLine + config.text.fourthLine + config.nextLine + config.text.fifthLine
-                                            sendMail(mailId, subject, textFormat, function (err, data) {
-                                                if (err) {
-                                                    console.log(err)
-                                                    return;
-                                                }
-                                                console.log('A password has send to your email !!!');
-                                            });
                                             done()
                                             resolve({ code: 200, message: "Employee added successfully", data: {} });
                                         })

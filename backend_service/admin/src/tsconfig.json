@@ -7,7 +7,7 @@
       "allowJs": true
     },
     "include": [
-      "*.ts", "candidates/candidates.route.ts", "candidates/candidates.controller.ts"
+      "*.ts", "admin/admin.route.ts", "admin/admin.controller.ts"
     ],
     "exclude": [
       "node_modules"
