@@ -19,7 +19,7 @@ export default {
     "text": {
         "firstLine": "<h3>Hello,</h3>",
         "thirdLine": "<h3>Please click the link below to reset your password</h3>",
-        "link": "<h3>Your link is:-    ",
+        "link": "<h3>Your link is:-</h3>",
         "fourthLine": "<h3>With regards,</h3>",
         "fifthLine": "<h3>Team ellow.ai</h3>"
 
