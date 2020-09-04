@@ -92,7 +92,9 @@ export const listUsersDetails = (_body) => {
                         return;
                     }
                 })
-                var textFormat = config.text.firstLine + config.nextLine + config.text.secondLine + config.nextLine + config.text.thirdLine + config.nextLine + config.text.password + password + config.nextLine + config.text.fourthLine + config.nextLine + config.text.fifthLine
+                var desc=_body.description
+                var description=desc.fontsize(3).bold()
+                var textFormat = config.text.firstLine + config.nextLine + config.text.secondLine + config.nextLine + description+config.nextLine+config.text.thirdLine + config.nextLine + config.text.password + password + config.nextLine + config.text.fourthLine + config.nextLine + config.text.fifthLine
                 sendMail(_body.email, subject, textFormat, function (err, data) {
                     if (err) {
                         console.log(err)
@@ -117,8 +119,10 @@ export const listUsersDetails = (_body) => {
                         return;
                     }
                 })
+                var desc=_body.description
+                var description=desc.fontsize(3).bold()
                 var subject="ellow.ai ACCOUNT REJECTION MAIL "
-                var textFormat = config.rejectText.firstLine + config.nextLine + config.rejectText.secondLine + config.nextLine + config.rejectText.thirdLine + config.nextLine + config.rejectText.fourthLine + config.nextLine + config.rejectText.fifthLine
+                var textFormat = config.rejectText.firstLine + config.nextLine + config.rejectText.secondLine + config.nextLine+description+config.nextLine+config.rejectText.thirdLine + config.nextLine + config.rejectText.fourthLine + config.nextLine + config.rejectText.fifthLine
                 sendMail(_body.email, subject, textFormat, function (err, data) {
                     if (err) {
                         console.log(err)
