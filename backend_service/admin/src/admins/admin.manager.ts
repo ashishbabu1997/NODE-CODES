@@ -15,7 +15,8 @@ export const listUsersDetails = (_body) => {
             }
             const listquery = {
                 name: 'list-candidates',
-                text:selectQuery
+                text:selectQuery,
+                values:[false]
             }
             database().query(listquery, (error, results) => {
                 if (error) {
@@ -62,7 +63,7 @@ export const listUsersDetails = (_body) => {
             if (_body.decisionValue==1)
             {
                 const adminApprovalQuery = {
-                    name: 'list-candidates',
+                    name: 'admin-panel',
                     text:admineQuery.clearanceQuery,
                     values:[_body.employeeId,true]
                 }
@@ -104,6 +105,18 @@ export const listUsersDetails = (_body) => {
             }
             else
             {
+                const adminApprovalQuery = {
+                    name: 'admin-panel',
+                    text:admineQuery.clearanceQuery,
+                    values:[_body.employeeId,null]
+                }
+                database().query(adminApprovalQuery, (error, results) => {
+                    if (error) {
+                        console.log(error)
+                        reject({ code: 400, message: "Database Error", data: {} });
+                        return;
+                    }
+                })
                 var subject="ellow.ai ACCOUNT REJECTION MAIL "
                 var textFormat = config.rejectText.firstLine + config.nextLine + config.rejectText.secondLine + config.nextLine + config.rejectText.thirdLine + config.nextLine + config.rejectText.fourthLine + config.nextLine + config.rejectText.fifthLine
                 sendMail(_body.email, subject, textFormat, function (err, data) {
