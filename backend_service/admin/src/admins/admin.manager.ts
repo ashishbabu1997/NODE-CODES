@@ -16,7 +16,7 @@ export const listUsersDetails = (_body) => {
             const listquery = {
                 name: 'list-candidates',
                 text:selectQuery,
-                values:[false]
+                values:[false,null]
             }
             database().query(listquery, (error, results) => {
                 if (error) {
@@ -65,7 +65,7 @@ export const listUsersDetails = (_body) => {
                 const adminApprovalQuery = {
                     name: 'admin-panel',
                     text:admineQuery.clearanceQuery,
-                    values:[_body.employeeId,true]
+                    values:[_body.employeeId,true,1]
                 }
                 database().query(adminApprovalQuery, (error, results) => {
                     if (error) {
@@ -110,7 +110,7 @@ export const listUsersDetails = (_body) => {
                 const adminApprovalQuery = {
                     name: 'admin-panel',
                     text:admineQuery.clearanceQuery,
-                    values:[_body.employeeId,null]
+                    values:[_body.employeeId,false,0]
                 }
                 database().query(adminApprovalQuery, (error, results) => {
                     if (error) {
