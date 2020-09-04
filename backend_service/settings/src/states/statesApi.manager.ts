@@ -1,8 +1,8 @@
 import config from '../config/config'
-export const listStates = ()=> {
+export const listStates = (_body)=> {
     return new Promise((resolve, reject) => {
-            // const states=config.states
-            // const result = states.filter(state => state.countryId =_body.countryId);
-            resolve({ code: 200, message: "States listed Succesfully", data: { states: config.states } });
+            const states=config.states
+            const result = states.filter(state => state.countryId =_body.countryId);
+            resolve({ code: 200, message: "States listed Succesfully", data: { states: result } });
     });
 }
