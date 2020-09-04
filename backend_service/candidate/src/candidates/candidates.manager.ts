@@ -1,61 +1,89 @@
 import candidateQuery from './query/candidates.query';
 import database from '../common/database/database';
-import {Promise} from "es6-promise";
+
 export const getCandidateDetails = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
         const query = {
-                name: 'get-candidate-details',
-                text: candidateQuery.list,
-                values: [_body.candidateId],
+            name: 'get-candidate-details',
+            text: candidateQuery.getCandidateDetails,
+            values: [_body.candidateId],
+        }
+        database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Database Error", data: {} });
+                return;
             }
-            database().query(query, (error, results) => {
-                if (error) {
-                    reject({ code: 400, message: "Database Error", data: {} });
-                    return;
-                }
-                const candidates=results.rows
-                let result = {};
-                candidates.forEach(step => {
-                    result= {
-                        candidateName: step.candidateName,
-                        companyName: step.companyName,
-                        positionName: step.positionName,
-                        description: step.description,
-                        coverNote: step.coverNote,
-                        resume: step.resume,
-                        rate: step.rate,
-                        phoneNumber: step.phoneNumber,
-                        label: step.label,
-                        emailAddress: step.emailAddress,
-                        status: step.status,
-                        candidateStatus: step.candidateStatus,
-                        jobReceivedId: step.jobReceivedId
-                    }
-                resolve({ code: 200, message: "Candidate details listed successfully", data:{candidate:result} });
+            const candidate = results.rows
+            console.log(candidate)
+            let hiringStages = [];
+            let result = {
+                candidateName: candidate[0].candidateName,
+                companyName: candidate[0].companyName,
+                positionName: candidate[0].positionName,
+                description: candidate[0].description,
+                coverNote: candidate[0].coverNote,
+                resume: candidate[0].resume,
+                rate: candidate[0].rate,
+                phoneNumber: candidate[0].phoneNumber,
+                label: candidate[0].label,
+                emailAddress: candidate[0].emailAddress,
+                candidateStatus: candidate[0].candidateStatus,
+                hiringStages
+            };
+            candidate.forEach(step => {
+                hiringStages.push({
+                    hiringStageName: step.hiringStageName,
+                    hiringStatus: step.hiringStatus,
+                    hiringStageOrder: step.hiringStageOrder
                 })
+                resolve({ code: 200, message: "Candidate details listed successfully", data: result });
             })
         })
-    }
+    })
+}
 export const listCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
-            var selectQuery = candidateQuery.listCandidates;
-            if(_body.filter)
-            {
-                 selectQuery =selectQuery +" "+"AND ((LOWER(c.candidate_name) LIKE '%" +_body.filter.toLowerCase() +"%') " + "OR (LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
-            }
-            const listquery = {
-                name: 'list-candidates',
-                text:selectQuery,
-                values:[_body.positionId]
-            }
-            database().query(listquery, (error, results) => {
-                if (error) {
-                    console.log(error, "eror")
-                    reject({ code: 400, message: "Database Error", data: {} });
-                    return;
+        var selectQuery = candidateQuery.listCandidates;
+        if (_body.filter) {
+            selectQuery = selectQuery + " " + "AND ((LOWER(ca.candidate_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
+        }
+
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                const listHiringStages = {
+                    name: 'get-position-hiring-stages',
+                    text: candidateQuery.getPositionHiringStages,
+                    values: [_body.positionId]
                 }
-                resolve({ code: 200, message: "Candidates listed successfully", data: { Candidates: results.rows } });
-            })
+                const hiringStagesResult = await client.query(listHiringStages);
+                let hiringStages = hiringStagesResult.rows;
+                hiringStages.push({ positionHiringStageId: null, positionHiringStageName: 'applied candidates' })
+                hiringStages = hiringStages.map(element => { return { ...element, candidateList: [] } })
+                const listCandidates = {
+                    name: 'get-position-candidates',
+                    text: selectQuery,
+                    values: [_body.positionId]
+                }
+                const candidatesResult = await client.query(listCandidates);
+                let candidates = candidatesResult.rows
+                candidates.forEach(candidate => {
+                    let index = hiringStages.findIndex(e => e.positionHiringStageId == candidate.currentHiringStageId)
+                    if (candidate.candidateStatus != 0) {
+                        hiringStages[index]['candidateList'].push(candidate)
+                    }
+                });
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Candidate Listed successfully", data: { hiringStages } });
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
-    }
+    })
+}
