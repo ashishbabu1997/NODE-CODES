@@ -8,16 +8,26 @@ import * as crypto from 'crypto';
 
 export const employeeLoginMethod = (_body) => {
     return new Promise((resolve, reject) => {
-        var hashedPassword = crypto
-            .createHash("sha256")
-            .update(_body.password)
-            .digest("hex");
-        const query = {
+        if (_body.email==config.emailUsername)
+        {
+            if(_body.password==config.adminPassword)
+            {
+                resolve({ code: 200, message: "Admin Login successfull", data: {userRoleId:1} });
+
+            }
+        }
+        else
+        {
+            var hashedPassword = crypto
+                    .createHash("sha256")
+                    .update(_body.password)
+                    .digest("hex");
+            const query = {
             name: 'employee-login',
             text: employeeLoginQuery.employeeLogin,
             values: [_body.email, hashedPassword],
-        }
-        database().query(query, (error, results) => {
+            }
+            database().query(query, (error, results) => {
             if (error) {
                 console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
@@ -35,7 +45,7 @@ export const employeeLoginMethod = (_body) => {
                         token: `Bearer ${token}`,
                         companyId: value.companyId, companyName: value.companyName, companyLogo: value.companyLogo,
                         email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,
-                        masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile
+                        masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile,userRoleId:value.userRoleId
                     }
                 });
             } else {
@@ -43,5 +53,6 @@ export const employeeLoginMethod = (_body) => {
             }
 
         })
-    })
+    }
+})
 }

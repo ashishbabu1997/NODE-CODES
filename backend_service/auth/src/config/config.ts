@@ -25,6 +25,8 @@ export default {
 
 
     },
+    "emailUsername":"no-reply@ellow.ai",
+    "adminPassword":"admin@ellow",
     "nextLine":"\n",
     "jwtSecretKey": "elL0wA!",
     "timeLimit":65

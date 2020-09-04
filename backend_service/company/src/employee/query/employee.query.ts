@@ -1,4 +1,4 @@
 export default {
     getemployees: "SELECT * FROM employee WHERE company_id  = $1 AND status = true ",
-    addEmploye:"INSERT INTO employee(firstname, lastname, company_id, email, role_id, created_on, contact_number,status,documents) VALUES ($1, $2, $3, $4, $5,$6,$7,$8,$9)"
+    addEmploye:"INSERT INTO employee(firstname, lastname, company_id, email, role_id, created_on, contact_number,status,documents,user_role_id) VALUES ($1, $2, $3, $4, $5,$6,$7,$8,$9,$10)"
 }
