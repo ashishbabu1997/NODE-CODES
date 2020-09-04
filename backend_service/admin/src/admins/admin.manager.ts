@@ -16,13 +16,14 @@ export const listUsersDetails = (_body) => {
             const listquery = {
                 name: 'list-candidates',
                 text:selectQuery,
-                values:[false,null]
+                values:[false,2]
             }
             database().query(listquery, (error, results) => {
                 if (error) {
                     reject({ code: 400, message: "Database Error", data: {} });
                     return;
                 }
+                console.log(results.rowCount)
                 resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows } });
             })
         })
