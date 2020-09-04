@@ -5,19 +5,8 @@ import config from '../config/config';
 import * as crypto from 'crypto';
 
 
-
 export const employeeLoginMethod = (_body) => {
     return new Promise((resolve, reject) => {
-        if (_body.email==config.emailUsername)
-        {
-            if(_body.password==config.adminPassword)
-            {
-                resolve({ code: 200, message: "Admin Login successfull", data: {userRoleId:1} });
-
-            }
-        }
-        else
-        {
             var hashedPassword = crypto
                     .createHash("sha256")
                     .update(_body.password)
@@ -51,8 +40,6 @@ export const employeeLoginMethod = (_body) => {
             } else {
                 reject({ code: 400, message: "Invalid email or password", data: {} });
             }
-
         })
-    }
 })
 }
