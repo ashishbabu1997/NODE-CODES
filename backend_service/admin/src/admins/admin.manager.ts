@@ -92,9 +92,9 @@ export const listUsersDetails = (_body) => {
                         return;
                     }
                 })
-                var desc=_body.description
-                var description=desc.fontsize(3).bold()
-                var textFormat = config.text.firstLine + config.nextLine + config.text.secondLine + config.nextLine + description+config.nextLine+config.text.thirdLine + config.nextLine + config.text.password + password + config.nextLine + config.text.fourthLine + config.nextLine + config.text.fifthLine
+                // var desc=_body.description
+                // var description=desc.fontsize(3).bold()
+                var textFormat = config.text.firstLine + config.nextLine + config.text.secondLine + config.nextLine+config.text.thirdLine + config.nextLine + config.text.password + password + config.nextLine + config.text.fourthLine + config.nextLine + config.text.fifthLine
                 sendMail(_body.email, subject, textFormat, function (err, data) {
                     if (err) {
                         console.log(err)
