@@ -2,7 +2,7 @@ import {listStates} from './statesApi.manager';
 import sendResponse from '../common/response/response';
 
 export const getStatesList = (req, res) => {
-    const body = req.body;
+    const body = req.params;
     listStates(body).then((response: any) => {
         sendResponse(res, response.code, 1,201, response.message, response.data)
     }).catch(error => {
