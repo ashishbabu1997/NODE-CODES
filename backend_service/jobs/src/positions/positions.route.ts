@@ -1,4 +1,4 @@
-import { editPositionHiringSteps, getPositionDetails, createPositions, getPositions, updatePositions, publishPositions,closeJob } from './positions.controller';
+import { editPositionHiringSteps, getPositionDetails, createPositions, getPositions, updatePositions, publishPositions,closeJob,getCompanyNames } from './positions.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addPositionSchema from './schemas/addPositionSchema';
@@ -10,6 +10,7 @@ const router = express.Router();
 
 router
     .get('/', getPositions)
+    .get('/companyNames',getCompanyNames)
     .post('/', createPositions)
     .put('/', updatePositions)
     .get('/:positionId', getPositionDetails)

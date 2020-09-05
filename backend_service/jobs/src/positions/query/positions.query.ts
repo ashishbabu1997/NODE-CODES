@@ -18,6 +18,7 @@ export default {
     deletePositionSkills: `delete from job_skills where position_id  = $1 and status = true  and skill_id = any($2)`,
     changePositionStatus: `UPDATE positions SET job_status = 6, updated_on = $2 WHERE position_id = $1 and status = true`,
     closeJobs: 'UPDATE positions SET job_status=8,updated_on=$1 WHERE position_id=$2 ',
-    closeJobReceived: 'UPDATE job_received SET job_received_status=8,updated_on=$1 WHERE position_id=$2 '
+    closeJobReceived: 'UPDATE job_received SET job_received_status=8,updated_on=$1 WHERE position_id=$2 ',
+    getNames:'SELECT company_name from company'
 
 } 

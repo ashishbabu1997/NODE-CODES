@@ -350,3 +350,22 @@ export const closeJobStatus = (_body) => {
         })
     })
 }
+export const getCompanies = () => {
+    return new Promise((resolve, reject) => {
+        const CompanyQuery = {
+            name: 'get-company-names',
+            text: positionsQuery.getNames,
+            values: [],
+        }
+        database().query(CompanyQuery, (error, results) => {
+            if (error) {
+                console.log(error)
+                reject({ code: 400, message: "Error in database connection.", data: {} });
+                return;
+            }
+            resolve({ code: 200, message: "Companies listed successfully", data:{companies:results.rows} });
+
+            
+        })
+    })
+}
