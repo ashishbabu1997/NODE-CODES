@@ -59,7 +59,7 @@ export const listCandidatesDetails = (_body) => {
                 }
                 const hiringStagesResult = await client.query(listHiringStages);
                 let hiringStages = hiringStagesResult.rows;
-                hiringStages.push({ positionHiringStageId: null, positionHiringStageName: 'applied candidates' })
+                // hiringStages.push({ positionHiringStageId: null, positionHiringStageName: 'applied candidates' })
                 hiringStages = hiringStages.map(element => { return { ...element, candidateList: [] } })
                 const listCandidates = {
                     name: 'get-position-candidates',
@@ -68,14 +68,19 @@ export const listCandidatesDetails = (_body) => {
                 }
                 const candidatesResult = await client.query(listCandidates);
                 let candidates = candidatesResult.rows
+                let allCandidates = [];
                 candidates.forEach(candidate => {
                     let index = hiringStages.findIndex(e => e.positionHiringStageId == candidate.currentHiringStageId)
-                    if (candidate.candidateStatus != 0) {
-                        hiringStages[index]['candidateList'].push(candidate)
+                    let candidateIndex = allCandidates.findIndex(c => c.candidateId == candidate.candidateId)
+                    if (candidate.candidateStatus != 0 && candidate.currentHiringStageId != null) {
+                        hiringStages[index]['candidateList'].push(candidate);
+                    }
+                    if (candidate.candidateStatus != 0 && candidateIndex == -1) {
+                        allCandidates.push(candidate);
                     }
                 });
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Candidate Listed successfully", data: { hiringStages } });
+                resolve({ code: 200, message: "Candidate Listed successfully", data: { hiringStages, allCandidates } });
             } catch (e) {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
