@@ -22,7 +22,7 @@ export const getAllJobReceived = (_body) => {
         const query = {
             name: 'get-AllActivePositions',
             text: selectQuery,
-            values:[_body.companyId]
+            values: [_body.companyId]
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -46,7 +46,7 @@ export const getJobReceivedByJobReceivedId = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs: results.rows } });
+            resolve({ code: 200, message: "Job Received listed successfully", data: results.rows });
         })
     })
 }
@@ -121,7 +121,7 @@ export const saveCandidateProfile = (_body) => {
                 const updateCompanyJobStatusQuery = {
                     name: 'update-company-job-status',
                     text: jobReceivedQuery.updateCompanyJobStatus,
-                    values: [_body.candidates[0].jobReceivedId, _body.candidates[0].companyId, currentTime,status],
+                    values: [_body.candidates[0].jobReceivedId, _body.candidates[0].companyId, currentTime, status],
                 }
                 await client.query(updateCompanyJobStatusQuery);
                 await client.query('COMMIT');
