@@ -23,7 +23,7 @@ export default {
     changePositionStatus: `UPDATE positions SET job_status = 6, updated_on = $2 WHERE position_id = $1 and status = true`,
     closeJobs: 'UPDATE positions SET job_status=8,updated_on=$1 WHERE position_id=$2 ',
     closeJobReceived: 'UPDATE job_received SET job_received_status=8,updated_on=$1 WHERE position_id=$2 ',
-    getNames:'SELECT company_id,company_name from company',
+    getNames:'SELECT company_id as "companyId",company_name as "companyName" from company WHERE status=true',
     getCompanyName:'SELECT company_name as "companyName" FROM company WHERE company_id=$1'
 
 } 

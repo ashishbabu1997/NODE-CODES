@@ -3,44 +3,38 @@ import database from '../common/database/database';
 
 export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
+        var queryText;
+        var queryValues;
         const orderBy = {
             "position": "position_id"
         }
         if(_body.companyId)
         {
-            const query = {
-            name: 'id-fetch-company-positions',
-            text: _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearchWithId : positionsQuery.getCompanyPositionsASCWithId)
-                : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearchWithId : positionsQuery.getCompanyPositionsDESCWithId),
-            values:_body.searchKey != '' ? [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset],
-            }
-            database().query(query, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                return;
-            }
-            resolve({ code: 200, message: "Positions listed successfully", data: { positions: results.rows } });
-        })
+            queryText=_body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearchWithId : positionsQuery.getCompanyPositionsASCWithId): (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearchWithId : positionsQuery.getCompanyPositionsDESCWithId)
+            queryValues=_body.searchKey != '' ? [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset]
+
         }
         else
         {
-            const query = {
-                name: 'fetch-company-positions',
-                text: _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearch : positionsQuery.getCompanyPositionsASC)
-                    : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearch : positionsQuery.getCompanyPositionsDESC),
-                values:_body.searchKey != '' ? [ orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [orderBy[_body.sortBy], _body.limit, _body.offset],
+            queryText=_body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearch : positionsQuery.getCompanyPositionsASC)
+            : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearch : positionsQuery.getCompanyPositionsDESC)
+            queryValues=_body.searchKey != '' ? [ orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [orderBy[_body.sortBy], _body.limit, _body.offset]
+
+        }
+        const query = {
+            name: 'id-fetch-company-positions',
+            text: queryText,
+            values:queryValues
             }
+            console.log(query)
             database().query(query, (error, results) => {
             if (error) {
-                console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
             resolve({ code: 200, message: "Positions listed successfully", data: { positions: results.rows } });
         })
 
-        }
-        
     })
 }
 
