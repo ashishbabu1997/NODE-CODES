@@ -59,6 +59,13 @@ export const createCompanyPositions = async (_body) => {
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
                     _body.userId, _body.userId, currentTime, currentTime, _body.jobCategoryId]
                 }
+                const getCompanyNameQuery={
+                    name:'get-company-name',
+                    text:positionsQuery.getCompanyName,
+                    values:_body.companyId
+                }
+                const getCompanyNameResponse=await client.query(getCompanyNameQuery);
+                const companyName=getCompanyNameResponse.rows[0].companyName
                 const companyPositionResponse = await client.query(addCompanyPositionsQuery);
                 const positionId = companyPositionResponse.rows[0].position_id
                 const addJobSkillsQuery = {
@@ -69,7 +76,7 @@ export const createCompanyPositions = async (_body) => {
                 await client.query(addJobSkillsQuery)
                 if (_body.flag == 0) {
                     await client.query('COMMIT');
-                    resolve({ code: 200, message: "Positions created successfully", data: { positionId } });
+                    resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyName } });
                     return;
                 }
                 const addPositionHiringStepQuery = {
