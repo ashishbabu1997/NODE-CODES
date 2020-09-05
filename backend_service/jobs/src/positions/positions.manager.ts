@@ -6,14 +6,31 @@ export const getCompanyPositions = (_body) => {
         const orderBy = {
             "position": "position_id"
         }
-        const query = {
-            name: 'fetch-company-positions',
-            text: _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearch : positionsQuery.getCompanyPositionsASC)
-                : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearch : positionsQuery.getCompanyPositionsDESC),
+        if(_body.companyId)
+        {
+            const query = {
+            name: 'id-fetch-company-positions',
+            text: _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearchWithId : positionsQuery.getCompanyPositionsASCWithId)
+                : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearchWithId : positionsQuery.getCompanyPositionsDESCWithId),
             values:_body.searchKey != '' ? [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset],
+            }
+            database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                return;
+            }
+            resolve({ code: 200, message: "Positions listed successfully", data: { positions: results.rows } });
+        })
         }
-        console.log(query)
-        database().query(query, (error, results) => {
+        else
+        {
+            const query = {
+                name: 'fetch-company-positions',
+                text: _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearch : positionsQuery.getCompanyPositionsASC)
+                    : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearch : positionsQuery.getCompanyPositionsDESC),
+                values:_body.searchKey != '' ? [ orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [orderBy[_body.sortBy], _body.limit, _body.offset],
+            }
+            database().query(query, (error, results) => {
             if (error) {
                 console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
@@ -21,6 +38,9 @@ export const getCompanyPositions = (_body) => {
             }
             resolve({ code: 200, message: "Positions listed successfully", data: { positions: results.rows } });
         })
+
+        }
+        
     })
 }
 
