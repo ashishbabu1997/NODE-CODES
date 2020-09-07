@@ -46,7 +46,7 @@ export const getJobReceivedByJobReceivedId = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Job Received listed successfully", data: results.rows });
+            resolve({ code: 200, message: "Job Received listed successfully", data: results.rows[0] });
         })
     })
 }
