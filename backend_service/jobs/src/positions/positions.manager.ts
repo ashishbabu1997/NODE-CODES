@@ -302,7 +302,7 @@ export const updateCompanyPositions = async (_body) => {
                 const addPositionHiringStagesQuery = positionsQuery.editPositionHiringStagesStart + hiringStageValues + positionsQuery.editPositionHiringStagesEnd
                 await client.query(addPositionHiringStagesQuery)
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Position updated successfully", data: { positionId } });
+                resolve({ code: 200, message: "Position updated successfully", data: { positionId,companyName } });
             } catch (e) {
                 await client.query('ROLLBACK')
                 console.log(e)
