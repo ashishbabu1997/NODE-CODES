@@ -29,30 +29,11 @@ export const getCompanyPositions = (_body) => {
             console.log(query)
             database().query(query, (error, results) => {
             if (error) {
+                console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            // var candidatesCounts
-            var steps=results.rows
-            // var count=results.rowCount
-            // for(var i=0;i<count;i++)
-            // {
-            //     const candidateCountQuery = {
-            //         name: 'candidates-count',
-            //         text: positionsQuery.candidatesCount,
-            //         values:[results.rows[i].positionId]
-            //         }
-            //         console.log(candidateCountQuery)
-            //         database().query(candidateCountQuery, (error, res) => {
-            //         if (error) {
-            //             reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            //             return;
-            //         }
-            //         console.log(res.rowCount)
-            //         var candidate_countcount=res.rows[0].candidateCount;
-            //          // steps[i][candidatesCounts]:candidate_countcount;
-            //     })
-            // }
+            var steps=results.rows 
             resolve({ code: 200, message: "Positions listed successfully", data: { positions: steps } })
         })
 
