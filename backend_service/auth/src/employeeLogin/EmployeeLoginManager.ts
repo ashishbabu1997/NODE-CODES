@@ -33,7 +33,7 @@ export const employeeLoginMethod = (_body) => {
                     code: 200, message: "Login successful", data: {
                         token: `Bearer ${token}`,
                         companyId: value.companyId, companyName: value.companyName, companyLogo: value.companyLogo,
-                        email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,
+                        email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,employeeId:value.employeeId,
                         masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile,userRoleId:value.userRoleId
                     }
                 });

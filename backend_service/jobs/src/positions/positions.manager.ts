@@ -141,6 +141,8 @@ export const fetchPositionDetails = (_body) => {
                     hiringStepDescription: step.description,
                     jobCategoryId: step.job_category_id,
                     jobCategoryName: step.job_category_name,
+                    companyId:step.company_id,
+                    companyName:step.company_name,
                     hiringStages: [],
                     skills: []
                 }
