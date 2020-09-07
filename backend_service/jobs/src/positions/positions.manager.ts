@@ -32,7 +32,28 @@ export const getCompanyPositions = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Positions listed successfully", data: { positions: results.rows } });
+            // var candidatesCounts
+            var steps=results.rows
+            // var count=results.rowCount
+            // for(var i=0;i<count;i++)
+            // {
+            //     const candidateCountQuery = {
+            //         name: 'candidates-count',
+            //         text: positionsQuery.candidatesCount,
+            //         values:[results.rows[i].positionId]
+            //         }
+            //         console.log(candidateCountQuery)
+            //         database().query(candidateCountQuery, (error, res) => {
+            //         if (error) {
+            //             reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            //             return;
+            //         }
+            //         console.log(res.rowCount)
+            //         var candidate_countcount=res.rows[0].candidateCount;
+            //          // steps[i][candidatesCounts]:candidate_countcount;
+            //     })
+            // }
+            resolve({ code: 200, message: "Positions listed successfully", data: { positions: steps } })
         })
 
     })
@@ -56,7 +77,7 @@ export const createCompanyPositions = async (_body) => {
                 const getCompanyNameQuery={
                     name:'get-company-name',
                     text:positionsQuery.getCompanyName,
-                    values:_body.companyId
+                    values:[_body.companyId]
                 }
                 const getCompanyNameResponse=await client.query(getCompanyNameQuery);
                 const companyName=getCompanyNameResponse.rows[0].companyName
