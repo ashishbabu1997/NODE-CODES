@@ -96,16 +96,12 @@ export const saveCandidateProfile = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                var myArray = _body.candidates;
-                var candidates = new Array();
-                for (var i in myArray) {
-                    var tempArray = new Array();
-                    for (var key in myArray[i]) {
-                        tempArray.push(myArray[i][key]);
-                    }
-                    tempArray.push(_body.candidateStatus);
-                    candidates.push(tempArray);
-                }
+                const candidatesArray = _body.candidates;
+                let candidates = candidatesArray.map(c => {
+                    return [c.candidateFirstName, c.candidateLastName, c.companyId, c.jobReceivedId, c.coverNote,
+                    c.rate, c.billingTypeId, c.currencyTypeId, c.email, c.phoneNumber, c.resume, c.positionId,
+                        currentTime, currentTime, c.candidateStatus]
+                })
                 const saveCandidateQuery = {
                     name: 'add-Profile',
                     text: format(jobReceivedQuery.addProfile, candidates),
@@ -125,7 +121,7 @@ export const saveCandidateProfile = (_body) => {
                 }
                 await client.query(updateCompanyJobStatusQuery);
                 await client.query('COMMIT');
-                resolve({ code: 200, message: "Position published successfully", data: {} });
+                resolve({ code: 200, message: "Candidate profiles added", data: {} });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
