@@ -12,7 +12,7 @@ router
     .get('/getById', getJobReceivedById)
     .put('/', validate(schemaFlag), updateFlag)
     .put('/reject', validate(schemaReject), updateReject)
-    .post('/', validate(addProfileSchema),saveOrSubmitProfile)
-    .get('/profile/', getProfile)
+    .post('/',saveOrSubmitProfile)
+    .get('/profile', getProfile)
 
 export default router;
