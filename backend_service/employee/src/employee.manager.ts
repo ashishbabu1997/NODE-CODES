@@ -38,10 +38,24 @@ export const createEmployee = (_body) => {
                     return;
                 }
                 if (results.rowCount >= 1) {
-                    var emailId = results.rows[0].email
-                    if (emailId.toLowerCase() == loweremailId) {
-                        reject({ code: 400, message: "Email Already exists.", data: {} });
-                        return;
+                    var adminStatus = results.rows[0].admin_approve_status
+                    var emailId=results.rows[0].email
+                    if (emailId == loweremailId) {
+                        if (adminStatus==2)
+                        {
+                            reject({ code: 400,statusCode:406, message: "Your account is held for admins approval", data: {} });
+                            return;
+                        }
+                        else if(adminStatus==1)
+                        {
+                            reject({ code: 400,statusCode:407, message: "Your are a registered", data: {} });
+                            return;
+                        }
+                        else if(adminStatus==0)
+                        {
+                            reject({ code: 400,statusCode:408, message: "This account is rejected by our admin panel", data: {} });
+                            return;
+                        }
                     }
 
                 }
