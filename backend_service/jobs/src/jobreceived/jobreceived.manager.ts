@@ -29,6 +29,7 @@ export const getAllJobReceived = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
+            console.log(results.rows)
             resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs: results.rows } });
         })
     })
