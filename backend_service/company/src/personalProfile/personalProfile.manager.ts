@@ -6,16 +6,17 @@ export const getCompanyDetails = (_body) => {
     const query = {
             name: 'get-EmployeesByCompanyId',
             text: profileQuery.getProfiles,
-            values: [parseInt(_body.companyId),_body.serviceId],
+            values: [parseInt(_body.companyId)],
         }
+        
         database().query(query, (error, results) => {
             if (error) {
                 console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            console.log(results.rows)
             resolve({ code: 200, message: "Employees listed successfully", data: { Employees: results.rows } });
-        })
+        
     })
+})
 }
