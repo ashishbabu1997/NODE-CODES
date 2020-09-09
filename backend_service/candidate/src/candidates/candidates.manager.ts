@@ -17,8 +17,8 @@ export const getCandidateDetails = (_body) => {
             console.log(candidate)
             let hiringStages = [];
             let result = {
-                candidateName: candidate[0].candidateName,
-                companyName: candidate[0].companyName,
+                candidateFirstName: candidate[0].candidatFirstName,
+                companyLastName: candidate[0].companyLastName,
                 positionName: candidate[0].positionName,
                 description: candidate[0].description,
                 coverNote: candidate[0].coverNote,
