@@ -13,8 +13,7 @@ export const getCandidateDetails = (_body) => {
                 reject({ code: 400, message: "Database Error", data: {} });
                 return;
             }
-            const candidate = results.rows
-            console.log(candidate)
+            const candidate = results.rows;
             let hiringStages = [];
             let result = {
                 candidateFirstName: candidate[0].candidatFirstName,
@@ -23,7 +22,9 @@ export const getCandidateDetails = (_body) => {
                 description: candidate[0].description,
                 coverNote: candidate[0].coverNote,
                 resume: candidate[0].resume,
-                rate: candidate[0].rate,
+                rate: _body.userRoleId == 1 ? candidate[0].ellowRate : candidate[0].rate,
+                billingType: candidate[0].billingTypeId,
+                currencyTypeId: candidate[0].currencyTypeId,
                 phoneNumber: candidate[0].phoneNumber,
                 label: candidate[0].label,
                 emailAddress: candidate[0].emailAddress,
@@ -45,17 +46,18 @@ export const listCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.listCandidates;
         if (_body.filter) {
-            selectQuery = selectQuery + " " + "AND ((LOWER(ca.candidate_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
+            selectQuery = selectQuery + " " + "AND ((LOWER(ca.candidate_first_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
         }
 
         (async () => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
+                const [adminHiringStages, adminApprovedCandidates] = _body.userRoleId == 1 ? [1, 0] : [0, 1];
                 const listHiringStages = {
                     name: 'get-position-hiring-stages',
                     text: candidateQuery.getPositionHiringStages,
-                    values: [_body.positionId]
+                    values: [_body.positionId, adminHiringStages]
                 }
                 const hiringStagesResult = await client.query(listHiringStages);
                 let hiringStages = hiringStagesResult.rows;
@@ -64,7 +66,7 @@ export const listCandidatesDetails = (_body) => {
                 const listCandidates = {
                     name: 'get-position-candidates',
                     text: selectQuery,
-                    values: [_body.positionId]
+                    values: [_body.positionId, adminApprovedCandidates]
                 }
                 const candidatesResult = await client.query(listCandidates);
                 let candidates = candidatesResult.rows
@@ -82,6 +84,7 @@ export const listCandidatesDetails = (_body) => {
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { hiringStages, allCandidates } });
             } catch (e) {
+                console.log(e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             } finally {
