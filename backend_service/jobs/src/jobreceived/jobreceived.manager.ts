@@ -111,9 +111,10 @@ export const saveCandidateProfile = (_body) => {
                 const query = {
                     name: 'get-total-candidate-count',
                     text: jobReceivedQuery.getTotalCountOfCandidatesSubmitted,
-                    values: [_body.candidates[0].jobReceivedId, _body.candidates[0].companyId],
+                    values: [_body.candidates[0].positionId, _body.candidates[0].companyId],
                 }
                 const response = await client.query(query);
+                console.log(response)
                 const status = (response.rows[0].developerCount - response.rows[0].candidateCount) <= 0 ? 3 : 9
                 const updateCompanyJobStatusQuery = {
                     name: 'update-company-job-status',
