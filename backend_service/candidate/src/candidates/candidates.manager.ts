@@ -22,15 +22,15 @@ export const getCandidateDetails = (_body) => {
                 description: candidate[0].description,
                 coverNote: candidate[0].coverNote,
                 resume: candidate[0].resume,
-                rate: _body.userRoleId == 1 ? candidate[0].ellowRate : candidate[0].rate,
+                rate: _body.userRoleId == 1 ? candidate[0].rate : candidate[0].ellowRate,
                 billingType: candidate[0].billingTypeId,
                 currencyTypeId: candidate[0].currencyTypeId,
                 phoneNumber: candidate[0].phoneNumber,
                 label: candidate[0].label,
                 emailAddress: candidate[0].emailAddress,
-                candidateStatus: candidate[0].candidateStatus,
                 hiringStages
             };
+            _body.userRoleId == 1 && (result['ellowRate'] = candidate[0].ellowRate)
             candidate.forEach(step => {
                 hiringStages.push({
                     hiringStageName: step.hiringStageName,
@@ -46,7 +46,7 @@ export const listCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.listCandidates;
         if (_body.filter) {
-            selectQuery = selectQuery + " " + "AND ((LOWER(ca.candidate_first_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
+            selectQuery = selectQuery + " " + "AND ((LOWER(ca.candidate_first_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR ((LOWER(ca.candidate_last_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
         }
 
         (async () => {
@@ -61,7 +61,6 @@ export const listCandidatesDetails = (_body) => {
                 }
                 const hiringStagesResult = await client.query(listHiringStages);
                 let hiringStages = hiringStagesResult.rows;
-                // hiringStages.push({ positionHiringStageId: null, positionHiringStageName: 'applied candidates' })
                 hiringStages = hiringStages.map(element => { return { ...element, candidateList: [] } })
                 const listCandidates = {
                     name: 'get-position-candidates',
