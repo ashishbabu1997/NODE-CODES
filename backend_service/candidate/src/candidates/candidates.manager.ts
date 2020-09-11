@@ -20,6 +20,7 @@ export const getCandidateDetails = (_body) => {
             let result = {
                 candidateFirstName: candidate[0].candidateFirstName,
                 candidateLastName: candidate[0].candidateLastName,
+                companyName:candidate[0].companyName,
                 positionName: candidate[0].positionName,
                 description: candidate[0].description,
                 coverNote: candidate[0].coverNote,
