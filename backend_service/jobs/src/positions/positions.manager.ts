@@ -55,6 +55,7 @@ export const createCompanyPositions = async (_body) => {
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
                     _body.userId, _body.userId, currentTime, currentTime, _body.jobCategoryId]
                 }
+                console.log(addCompanyPositionsQuery)
                 const getCompanyNameQuery={
                     name:'get-company-name',
                     text:positionsQuery.getCompanyName,
