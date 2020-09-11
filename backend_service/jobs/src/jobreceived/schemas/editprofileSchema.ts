@@ -1,6 +1,22 @@
 import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({
+    candidateId: Joi.number().required().error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "any.required":
+                    err.message = "Candidate ID should not be empty!";
+                    break;
+                case "number.base":
+                    err.message = "Candidate ID must be a number"
+                    break;
+                default:
+                    err.message = "Invalid candidateID"
+                    break;
+            }
+        });
+        return errors;
+    }),
     firstName: Joi.string().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
