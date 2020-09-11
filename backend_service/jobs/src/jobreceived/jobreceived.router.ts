@@ -13,7 +13,8 @@ router
     .put('/', validate(schemaFlag), updateFlag)
     .put('/reject', validate(schemaReject), updateReject)
     .post('/',saveOrSubmitProfile)
-    .put('/editProfiles',validate(editprofileSchema),editProfile)
+    .put('/editProfiles',editProfile)
     .get('/profile', getProfile)
 
 export default router;
+// validate(editprofileSchema)

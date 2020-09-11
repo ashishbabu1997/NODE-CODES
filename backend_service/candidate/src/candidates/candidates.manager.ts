@@ -106,6 +106,7 @@ export const candidateClearance = (_body) => {
         var candidateCompanyName;
         var candidateQueries;
         var makeOffer;
+        var value;
         const getCandidateName = {
             name: 'get-candidate-names',
             text:candidateQuery.getCandidateNames,
@@ -128,12 +129,14 @@ export const candidateClearance = (_body) => {
             {
                 adminApproveStatus=1
                 comment=_body.comment
+                value=[_body.candidateId,adminApproveStatus,comment,_body.elowRate,makeOffer]
                 candidateQueries=candidateQuery.candidateSuperAdminApprovalQuery
             }
             else if(_body.userRoleId==2)
             {
                 adminApproveStatus=1;
                 comment=_body.comment;
+                value=[_body.candidateId,adminApproveStatus,comment,makeOffer]
                 candidateQueries=candidateQuery.candidateAdminApprovalQuery
                 subj="Candidate Approval Mail";
                 textFormat=config.approvalMail.firstLine+config.nextLine+candidateFirstName+" "+"from"+" "+candidateCompanyName+config.approvalMail.secondLine+config.nextLine+config.approvalMail.thirdLine+config.nextLine+config.approvalMail.fourthLine
@@ -156,12 +159,14 @@ export const candidateClearance = (_body) => {
             {
                 adminApproveStatus=0
                 comment=_body.comment
+                value=[_body.candidateId,adminApproveStatus,comment,_body.elowRate,makeOffer]
                 candidateQueries=candidateQuery.candidateSuperAdminApprovalQuery
             }
             else if(_body.userRoleId==2)
             {
                 adminApproveStatus=0;
                 comment=_body.comment;
+                value=[_body.candidateId,adminApproveStatus,comment,makeOffer]
                 candidateQueries=candidateQuery.candidateAdminApprovalQuery
                 subj="Candidate Rejection Mail";
                 textFormat=config.rejectionMail.firstLine+config.nextLine+candidateFirstName+" "+"from"+" "+candidateCompanyName+config.rejectionMail.secondLine+config.nextLine+config.rejectionMail.thirdLine+config.nextLine+config.rejectionMail.fourthLine
@@ -177,12 +182,13 @@ export const candidateClearance = (_body) => {
 
         }
         const candidateApprovalQuery = {
-            name: 'admin-panel',
+            name: 'admin',
             text:candidateQueries,
-            values:[_body.candidateId,adminApproveStatus,comment,_body.elowRate,makeOffer]
+            values:value
         }
         database().query(candidateApprovalQuery, (error, results) => {
             if (error) {
+                console.log(error)
                 reject({ code: 400, message: "Database Error", data: {} });
                 return;
             }

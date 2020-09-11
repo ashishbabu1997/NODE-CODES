@@ -53,11 +53,18 @@ export const getProfile = (req, res) => {
         sendResponse(res, error.code, 0,400, error.message, error.data)
     })
 }
+// export const editProfile = (req, res) => {
+//     const body = req.body;
+//     console.log("Hai")
+//     editCandidateDetails(body).then((response: any) => {
+//         console.log(response)
+//         sendResponse(res, response.code, 1,202, response.message, response.data)
+//     }).catch(error => {
+//         sendResponse(res, error.code, 0,402, error.message, error.data)
+//     })
+// }
 export const editProfile = (req, res) => {
     const body = req.body;
-    editCandidateDetails(body).then((response: any) => {
-        sendResponse(res, response.code, 1,200, response.message, response.data)
-    }).catch(error => {
-        sendResponse(res, error.code, 0,400, error.message, error.data)
-    })
+    editCandidateDetails(body).then((response: any) => sendResponse(res, response.code, 1,202, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0,402, error.message, error.data))
 }

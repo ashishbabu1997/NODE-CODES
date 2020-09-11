@@ -89,6 +89,25 @@ export const updateIsRejectForJobReceived = (_body) => {
         })
     })
 }
+export const editCandidateDetails = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        console.log(currentTime)
+        const editQuery = {
+            name: 'update-JobReceived-reject',
+            text: jobReceivedQuery.editDetailsCandidate,
+            values: [_body.candidateId,_body.firstName._body.lastName,_body.email,_body.phoneNumber,_body.rate,_body.billingTypeId,_body.resume,_body.currencyTypeId,_body.coverNote]
+        }
+        database().query(editQuery, (error, results) => {
+            if (error) {
+                console.log(editQuery)
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                return;
+            }
+            resolve({ code: 200, message: "Candidate profile updated successfully", data: {} });
+        })
+    })
+}
 
 export const saveCandidateProfile = (_body) => {
     return new Promise((resolve, reject) => {
@@ -136,24 +155,7 @@ export const saveCandidateProfile = (_body) => {
         })
     })
 }
-export const editCandidateDetails = (_body) => {
-    return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
-        const editQuery = {
-            name: 'update-JobReceived-reject',
-            text: jobReceivedQuery.editDetailsCandidate,
-            values: [_body.candidateId,_body.firstName._body.lastName,_body.email,_body.phoneNumber,_body.rate,_body.billingTypeId,_body.resume,_body.currencyTypeId,_body.coverNote]
-        }
 
-        database().query(editQuery, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                return;
-            }
-            resolve({ code: 200, message: "Candidate profile successfully", data: {} });
-        })
-    })
-}
 
 export const getProfileByCompanyId = (_body) => {
     return new Promise((resolve, reject) => {
