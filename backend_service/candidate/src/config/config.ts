@@ -29,5 +29,17 @@ export default {
         "secondLine": "   has been rejected by the admin company !</h3>",
         "thirdLine": "<h3>With regards,</h3>",
         "fourthLine": "<h3>Team ellow.ai</h3>"
+    },
+    "space":" ",
+    "break":"<br>",
+    "RequestText":{
+        "firstLine": "has been requested to schedule an interview with the candidate whose details are as follows",
+        "secondLine": "Name:",
+        "thirdLine": "Position:",
+        "fourthLine": "Email Address:",
+        "fifthLine": "Phone Number:",
+        "sixthLine": "Description:"
+
+
     }
 }
