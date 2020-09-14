@@ -96,7 +96,7 @@ export const editCandidateDetails = (_body) => {
         const editQuery = {
             name: 'update-JobReceived-reject',
             text: jobReceivedQuery.editDetailsCandidate,
-            values: [_body.candidateId,_body.firstName,_body.lastName,_body.email,_body.phoneNumber,_body.rate,_body.billingTypeId,_body.resume,_body.currencyTypeId,_body.coverNote]
+            values: [_body.candidateId, _body.firstName, _body.lastName, _body.email, _body.phoneNumber, _body.rate, _body.billingTypeId, _body.resume, _body.currencyTypeId, _body.coverNote, _body.candidateStatus]
         }
         database().query(editQuery, (error, results) => {
             if (error) {
