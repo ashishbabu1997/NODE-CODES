@@ -24,7 +24,7 @@ export const createCompanyLocations = (_body) => {
         const query = {
             name: 'add-company-locations',
             text: locationQuery.addCompanyLocations,
-            values: [_body.companyId, _body.companyAddress, _body.countryId],
+            values: [_body.companyId, _body.streetAddress1,_body.streetAddress2,_body.zipCode,_body.city,_body.stateId, _body.countryId],
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -43,7 +43,7 @@ export const updateCompanyLocations = (_body) => {
         const query = {
             name: 'update-company-locations',
             text: locationQuery.updateCompanyLocations,
-            values: [_body.companyAddress, _body.countryId, _body.locationId]
+            values: [ _body.streetAddress1,_body.streetAddress2,_body.zipCode,_body.city,_body.stateId, _body.countryId, _body.locationId]
         }
         database().query(query, (error, results) => {
             if (error) {

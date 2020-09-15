@@ -130,14 +130,14 @@ export const candidateClearance = (_body) => {
             candidateFirstName = firstName.fontsize(3).bold()
             candidateCompanyName = companyName.fontsize(3).bold()
             if (_body.decisionValue == 1) {
-                makeOffer = 1
                 if (_body.userRoleId == 1) {
                     adminApproveStatus = 1
                     comment = _body.comment
-                    value = [_body.candidateId, adminApproveStatus, comment, _body.elowRate, makeOffer]
+                    value = [_body.candidateId, adminApproveStatus, comment, _body.elowRate]
                     candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
                 }
                 else if (_body.userRoleId == 2) {
+                    makeOffer = 1
                     adminApproveStatus = 1;
                     comment = _body.comment;
                     value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
@@ -161,7 +161,7 @@ export const candidateClearance = (_body) => {
                 if (_body.userRoleId == 1) {
                     adminApproveStatus = 0
                     comment = _body.comment
-                    value = [_body.candidateId, adminApproveStatus, comment, _body.elowRate, makeOffer]
+                    value = [_body.candidateId, adminApproveStatus, comment, _body.elowRate]
                     candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
                 }
                 else if (_body.userRoleId == 2) {
