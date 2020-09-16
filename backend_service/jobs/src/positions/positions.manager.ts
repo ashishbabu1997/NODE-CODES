@@ -149,6 +149,7 @@ export const fetchPositionDetails = (_body) => {
             let result = {};
             hiringSteps.forEach(step => {
                 result = {
+                    assessmentTraits: step.assessmentTraits,
                     maxBudget: step.max_budget,
                     minBudget: step.min_budget,
                     billingType: step.billing_type,
