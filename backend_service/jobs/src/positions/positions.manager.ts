@@ -8,32 +8,30 @@ export const getCompanyPositions = (_body) => {
         const orderBy = {
             "position": "position_id"
         }
-        if(_body.companyId)
-        {
-            queryText=_body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearchWithId : positionsQuery.getCompanyPositionsASCWithId): (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearchWithId : positionsQuery.getCompanyPositionsDESCWithId)
-            queryValues=_body.searchKey != '' ? [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset]
+        if (_body.companyId) {
+            queryText = _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearchWithId : positionsQuery.getCompanyPositionsASCWithId) : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearchWithId : positionsQuery.getCompanyPositionsDESCWithId)
+            queryValues = _body.searchKey != '' ? [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset]
 
         }
-        else
-        {
-            queryText=_body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearch : positionsQuery.getCompanyPositionsASC)
-            : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearch : positionsQuery.getCompanyPositionsDESC)
-            queryValues=_body.searchKey != '' ? [ orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [orderBy[_body.sortBy], _body.limit, _body.offset]
+        else {
+            queryText = _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearch : positionsQuery.getCompanyPositionsASC)
+                : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearch : positionsQuery.getCompanyPositionsDESC)
+            queryValues = _body.searchKey != '' ? [orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [orderBy[_body.sortBy], _body.limit, _body.offset]
 
         }
         const query = {
             name: 'id-fetch-company-positions',
             text: queryText,
-            values:queryValues
-            }
-            console.log(query)
-            database().query(query, (error, results) => {
+            values: queryValues
+        }
+        console.log(query)
+        database().query(query, (error, results) => {
             if (error) {
                 console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            var steps=results.rows 
+            var steps = results.rows
             resolve({ code: 200, message: "Positions listed successfully", data: { positions: steps } })
         })
 
@@ -56,13 +54,13 @@ export const createCompanyPositions = async (_body) => {
                     _body.userId, _body.userId, currentTime, currentTime, _body.jobCategoryId]
                 }
                 console.log(addCompanyPositionsQuery)
-                const getCompanyNameQuery={
-                    name:'get-company-name',
-                    text:positionsQuery.getCompanyName,
-                    values:[_body.companyId]
+                const getCompanyNameQuery = {
+                    name: 'get-company-name',
+                    text: positionsQuery.getCompanyName,
+                    values: [_body.companyId]
                 }
-                const getCompanyNameResponse=await client.query(getCompanyNameQuery);
-                const companyName=getCompanyNameResponse.rows[0].companyName
+                const getCompanyNameResponse = await client.query(getCompanyNameQuery);
+                const companyName = getCompanyNameResponse.rows[0].companyName
                 const companyPositionResponse = await client.query(addCompanyPositionsQuery);
                 const positionId = companyPositionResponse.rows[0].position_id
                 const addJobSkillsQuery = {
@@ -73,7 +71,7 @@ export const createCompanyPositions = async (_body) => {
                 await client.query(addJobSkillsQuery)
                 if (_body.flag == 0) {
                     await client.query('COMMIT');
-                    resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyName } });
+                    resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
                     return;
                 }
                 const addPositionHiringStepQuery = {
@@ -92,6 +90,31 @@ export const createCompanyPositions = async (_body) => {
                 });
                 const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
                 await client.query(addPositionHiringStagesQuery)
+                const assessmentTraits = _body.assessmentTraits;
+                const getPositionAssessmentTraitsQuery = {
+                    name: 'get-position-assessment-traits-old',
+                    text: positionsQuery.getAssessmentTraitOld,
+                    values: [positionId]
+                }
+                const previousData = await client.query(getPositionAssessmentTraitsQuery);
+                console.log(previousData)
+                if (previousData.rows.length > 0) {
+                    const assessmentTraitsOld = previousData.rows;
+                    const deletedAssessmentTraits = assessmentTraitsOld.filter(e => assessmentTraits.indexOf(e) == -1);
+                    const deletedAssessmentTraitsQuery = {
+                        name: 'delete-company-services',
+                        text: positionsQuery.deleteAssessmentTraits,
+                        values: [positionId, deletedAssessmentTraits],
+                    }
+                    await client.query(deletedAssessmentTraitsQuery);
+                }
+                const addAssessmentTraitsQuery = {
+                    name: 'create-assessment-traits',
+                    text: positionsQuery.addAssessmentTraits,
+                    values: [positionId, assessmentTraits, currentTime, currentTime],
+                }
+                let x = await client.query(addAssessmentTraitsQuery);
+                console.log(x)
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Positions created successfully", data: { positionId } });
             } catch (e) {
@@ -126,6 +149,7 @@ export const fetchPositionDetails = (_body) => {
             let result = {};
             hiringSteps.forEach(step => {
                 result = {
+                    assessmentTraits: step.assessmentTraits,
                     maxBudget: step.max_budget,
                     minBudget: step.min_budget,
                     billingType: step.billing_type,
@@ -144,8 +168,8 @@ export const fetchPositionDetails = (_body) => {
                     hiringStepDescription: step.description,
                     jobCategoryId: step.job_category_id,
                     jobCategoryName: step.job_category_name,
-                    companyId:step.company_id,
-                    companyName:step.company_name,
+                    companyId: step.company_id,
+                    companyName: step.company_name,
                     hiringStages: [],
                     skills: []
                 }
@@ -245,13 +269,13 @@ export const updateCompanyPositions = async (_body) => {
                     _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document,
                     _body.userId, currentTime, positionId, _body.companyId, _body.jobCategoryId]
                 }
-                const getCompanyNameQuery={
-                    name:'get-company-name',
-                    text:positionsQuery.getCompanyName,
-                    values:[_body.companyId]
+                const getCompanyNameQuery = {
+                    name: 'get-company-name',
+                    text: positionsQuery.getCompanyName,
+                    values: [_body.companyId]
                 }
-                const getCompanyNameResponse=await client.query(getCompanyNameQuery);
-                const companyName=getCompanyNameResponse.rows[0].companyName
+                const getCompanyNameResponse = await client.query(getCompanyNameQuery);
+                const companyName = getCompanyNameResponse.rows[0].companyName
                 await client.query(updateCompanyPositionsFirstQuery);
                 const updateCompanyPositionsSecondQuery = {
                     name: 'update-company-positions-second',
@@ -284,7 +308,7 @@ export const updateCompanyPositions = async (_body) => {
                 await client.query(deleteJobSkillsQuery)
                 if (_body.flag == 0) {
                     await client.query('COMMIT');
-                    resolve({ code: 200, message: "Position updated successfully", data: { positionId,companyName } });
+                    resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
                     return;
                 }
                 const editPositionHiringStepQuery = {
@@ -302,8 +326,33 @@ export const updateCompanyPositions = async (_body) => {
                 });
                 const addPositionHiringStagesQuery = positionsQuery.editPositionHiringStagesStart + hiringStageValues + positionsQuery.editPositionHiringStagesEnd
                 await client.query(addPositionHiringStagesQuery)
+                const assessmentTraits = _body.assessmentTraits;
+                const getPositionAssessmentTraitsQuery = {
+                    name: 'get-position-assessment-traits-old',
+                    text: positionsQuery.getAssessmentTraitOld,
+                    values: [positionId]
+                }
+                const previousData = await client.query(getPositionAssessmentTraitsQuery);
+                console.log(previousData)
+                if (previousData.rows.length > 0) {
+                    const assessmentTraitsOld = previousData.rows;
+                    const deletedAssessmentTraits = assessmentTraitsOld.filter(e => assessmentTraits.indexOf(e) == -1);
+                    const deletedAssessmentTraitsQuery = {
+                        name: 'delete-company-services',
+                        text: positionsQuery.deleteAssessmentTraits,
+                        values: [positionId, deletedAssessmentTraits],
+                    }
+                    await client.query(deletedAssessmentTraitsQuery);
+                }
+                const addAssessmentTraitsQuery = {
+                    name: 'create-assessment-traits',
+                    text: positionsQuery.addAssessmentTraits,
+                    values: [positionId, assessmentTraits, currentTime, currentTime],
+                }
+                let x = await client.query(addAssessmentTraitsQuery);
+                console.log(x)
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Position updated successfully", data: { positionId,companyName } });
+                resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
             } catch (e) {
                 await client.query('ROLLBACK')
                 console.log(e)
@@ -396,9 +445,9 @@ export const getCompanies = () => {
                 reject({ code: 400, message: "Error in database connection.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Companies listed successfully", data:{companies:results.rows} });
+            resolve({ code: 200, message: "Companies listed successfully", data: { companies: results.rows } });
 
-            
+
         })
     })
 }
