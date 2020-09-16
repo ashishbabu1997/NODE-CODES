@@ -1,18 +1,29 @@
 import locationQuery from './query/locations.query';
 import database from '../common/database/database';
-
+import config from '../config/config'
 export const fetchCompanyLocations = (_body) => {
     return new Promise((resolve, reject) => {
         const query = {
             name: 'fetch-company-locations',
             text: locationQuery.getCompanyLocations,
-            values: [parseInt(_body.companyId)],
+            values: [_body.companyId],
         }
         database().query(query, (error, results) => {
             if (error) {
+                console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
+            const countryId=results.rows[0].countryId
+            const stateId=results.rows[0].stateId
+            const states=config.states
+            const countries=config.countries
+            const stateResult = states.filter(state=>state.id ==stateId);    
+            const stateName=stateResult[0].name 
+            const countryResult = countries.filter(country=>country.id ==countryId);    
+            const countryName=countryResult[0].name
+            results.rows[0].country=countryName
+            results.rows[0].state=stateName
             resolve({ code: 200, message: "Locations listed successfully", data: { locations: results.rows } });
         })
     })
@@ -28,6 +39,7 @@ export const createCompanyLocations = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
+                console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
