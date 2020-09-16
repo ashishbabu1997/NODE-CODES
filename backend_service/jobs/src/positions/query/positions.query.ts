@@ -23,8 +23,10 @@ export default {
     changePositionStatus: `UPDATE positions SET job_status = 6, updated_on = $2 WHERE position_id = $1 and status = true`,
     closeJobs: 'UPDATE positions SET job_status=8,updated_on=$1 WHERE position_id=$2 ',
     closeJobReceived: 'UPDATE job_received SET job_received_status=8,updated_on=$1 WHERE position_id=$2 ',
-    getNames:'SELECT company_id as "companyId",company_name as "companyName" from company WHERE status=true',
-    getCompanyName:'SELECT company_name as "companyName" FROM company WHERE company_id=$1',
-    candidatesCount:'SELECT COUNT(*) as "candidateCount" FROM candidate WHERE position_id=$1'
-
+    getNames: 'SELECT company_id as "companyId",company_name as "companyName" from company WHERE status=true',
+    getCompanyName: 'SELECT company_name as "companyName" FROM company WHERE company_id=$1',
+    candidatesCount: 'SELECT COUNT(*) as "candidateCount" FROM candidate WHERE position_id=$1',
+    getAssessmentTraitOld: `SELECT pr.review_name as "reviewName",pr.position_review_id as "positionReviewId" from position_review pr WHERE pr.position_id = $1 AND pr.status = true`,
+    deleteAssessmentTraits: `delete from position_review where position_id  = $1 and status = true  and position_review_id = any($2)`,
+    addAssessmentTraits: `INSERT into position_review (position_id  ,review_name,created_on,updated_on ) values ($1, unnest ($2::varchar[]),$3,$4) ON CONFLICT ON CONSTRAINT position_review_position_id_review_name_status_key DO NOTHING`
 } 

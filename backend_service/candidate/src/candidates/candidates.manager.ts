@@ -18,6 +18,8 @@ export const getCandidateDetails = (_body) => {
             const candidate = results.rows;
             let hiringStages = [];
             let result = {
+                makeOffer: candidate[0].makeOffer,
+                adminApproveStatus: candidate[0].adminApproveStatus,
                 candidateFirstName: candidate[0].candidateFirstName,
                 candidateLastName: candidate[0].candidateLastName,
                 companyName: candidate[0].companyName,
@@ -214,36 +216,36 @@ export const interviewRequestFunction = (_body) => {
                 return;
             }
         })
-            const candidateDetails = {
-                name: 'insert-make-offer-status',
-                text: candidateQuery.getInterviewDetails,
-                values: [_body.candidateId,_body.companyId],
+        const candidateDetails = {
+            name: 'insert-make-offer-status',
+            text: candidateQuery.getInterviewDetails,
+            values: [_body.candidateId, _body.companyId],
+        }
+        database().query(candidateDetails, (error, result) => {
+            if (error) {
+                console.log(error);
+                reject({ code: 400, message: "Database Error", data: {} });
+                return;
             }
-            database().query(candidateDetails, (error, result) => {
-                if (error) {
-                    console.log(error);
-                    reject({ code: 400, message: "Database Error", data: {} });
+            var interviewDetails = result.rows
+            var hirerCompanyName = interviewDetails[0].hirerCompanyName.toUpperCase()
+            var hirerCompanyNameHtml = hirerCompanyName.fontsize(3).bold()
+            var candidateFirstName = interviewDetails[0].candidateFirstName.fontsize(3).bold()
+            var positionName = interviewDetails[0].positionName.fontsize(3).bold()
+            var email = interviewDetails[0].emailAddress.fontsize(3).bold()
+            var phoneNumber = interviewDetails[0].phoneNumber.fontsize(3).bold()
+            var description = interviewDetails[0].description.fontsize(3).bold()
+            var subject = "Request for Interview from " + hirerCompanyName;
+            var textFormat = hirerCompanyNameHtml + config.space + config.RequestText.firstLine.fontsize(3).bold() + config.break + config.RequestText.secondLine.fontsize(3).bold() + config.space + candidateFirstName + config.break + config.RequestText.thirdLine.fontsize(3).bold() + config.space + positionName + config.break + config.RequestText.fourthLine.fontsize(3).bold() + config.space + email + config.break + config.RequestText.fifthLine.fontsize(3).bold() + config.space + phoneNumber + config.break + config.RequestText.sixthLine.fontsize(3).bold() + config.space + description
+            sendMail(config.adminEmail, subject, textFormat, function (err, data) {
+                if (err) {
+                    console.log(err)
+                    reject({ code: 400, message: "Email Error", data: {} });
                     return;
                 }
-                var interviewDetails=result.rows
-                var hirerCompanyName=interviewDetails[0].hirerCompanyName.toUpperCase()
-                var hirerCompanyNameHtml=hirerCompanyName.fontsize(3).bold()
-                var candidateFirstName=interviewDetails[0].candidateFirstName.fontsize(3).bold()
-                var positionName=interviewDetails[0].positionName.fontsize(3).bold()
-                var email=interviewDetails[0].emailAddress.fontsize(3).bold()
-                var phoneNumber=interviewDetails[0].phoneNumber.fontsize(3).bold()
-                var description=interviewDetails[0].description.fontsize(3).bold()
-                var subject = "Request for Interview from "+hirerCompanyName;
-                var textFormat=hirerCompanyNameHtml+config.space+config.RequestText.firstLine.fontsize(3).bold()+config.break+config.RequestText.secondLine.fontsize(3).bold()+config.space+candidateFirstName+config.break+config.RequestText.thirdLine.fontsize(3).bold()+config.space+positionName+config.break+config.RequestText.fourthLine.fontsize(3).bold()+config.space+email+config.break+config.RequestText.fifthLine.fontsize(3).bold()+config.space+phoneNumber+config.break+config.RequestText.sixthLine.fontsize(3).bold()+config.space+description
-                sendMail(config.adminEmail, subject, textFormat, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Email Error", data: {} });
-                            return;
-                        }
-                 });
-                 resolve({ code: 200, message: "Interview request has been sent successfully", data: {} });
-                })
+            });
+            resolve({ code: 200, message: "Interview request has been sent successfully", data: {} });
         })
-    
+    })
+
 }
