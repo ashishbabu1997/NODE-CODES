@@ -161,8 +161,8 @@ export const candidateClearance = (_body) => {
                 if (_body.userRoleId == 1) {
                     adminApproveStatus = 0
                     comment = _body.comment
-                    value = [_body.candidateId, adminApproveStatus, comment, _body.elowRate]
-                    candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
+                    value = [_body.candidateId, adminApproveStatus, comment]
+                    candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
                 }
                 else if (_body.userRoleId == 2) {
                     adminApproveStatus = 0;
