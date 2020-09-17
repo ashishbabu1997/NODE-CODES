@@ -312,21 +312,22 @@ export const updateCompanyPositions = async (_body) => {
                     resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
                     return;
                 }
-                const editPositionHiringStepQuery = {
-                    name: 'edit-position-hiring-steps',
-                    text: positionsQuery.editPositionHiringSteps,
-                    values: [_body.hiringStepId, _body.hiringStepName, _body.description, currentTime],
-                }
-                const res = await client.query(editPositionHiringStepQuery)
-                const hiringStages = _body.hiringStages;
-                let hiringStageValues = ''
-                const length = hiringStages.length;
-                hiringStages.forEach((element, i) => {
-                    const end = i != length - 1 ? "," : ""
-                    hiringStageValues = hiringStageValues + "(" + element.hiringStageId + ",'" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + element.hiringStageOrder + "," + currentTime + ")" + end
-                });
-                const addPositionHiringStagesQuery = positionsQuery.editPositionHiringStagesStart + hiringStageValues + positionsQuery.editPositionHiringStagesEnd
-                await client.query(addPositionHiringStagesQuery)
+                // const editPositionHiringStepQuery = {
+                //     name: 'edit-position-hiring-steps',
+                //     text: positionsQuery.editPositionHiringSteps,
+                //     values: [_body.hiringStepId, _body.hiringStepName, _body.description, currentTime],
+                // }
+                // const res = await client.query(editPositionHiringStepQuery)
+                // console.log(res)
+                // const hiringStages = _body.hiringStages;
+                // let hiringStageValues = ''
+                // const length = hiringStages.length;
+                // hiringStages.forEach((element, i) => {
+                //     const end = i != length - 1 ? "," : ""
+                //     hiringStageValues = hiringStageValues + "(" + element.hiringStageId + ",'" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + element.hiringStageOrder + "," + currentTime + ")" + end
+                // });
+                // const addPositionHiringStagesQuery = positionsQuery.editPositionHiringStagesStart + hiringStageValues + positionsQuery.editPositionHiringStagesEnd
+                // await client.query(addPositionHiringStagesQuery)
                 const assessmentTraits = _body.assessmentTraits;
                 const getPositionAssessmentTraitsQuery = {
                     name: 'get-position-assessment-traits-old',
@@ -334,6 +335,7 @@ export const updateCompanyPositions = async (_body) => {
                     values: [positionId]
                 }
                 const previousData = await client.query(getPositionAssessmentTraitsQuery);
+                console.log(previousData,"sadas")
                 if (previousData.rows.length > 0) {
                     const assessmentTraitsOld = previousData.rows;
                     const deletedAssessmentTraits = assessmentTraitsOld.filter(e => assessmentTraits.indexOf(e) == -1).map(item => { return item.positionReviewId });

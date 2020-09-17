@@ -100,7 +100,7 @@ export const editCandidateDetails = (_body) => {
         }
         database().query(editQuery, (error, results) => {
             if (error) {
-                console.log(editQuery)
+                console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
