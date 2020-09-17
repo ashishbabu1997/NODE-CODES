@@ -66,12 +66,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    phoneNumber: Joi.number().required().error(errors => {
+    phoneNumber: Joi.number().allow('').error(errors => {
         errors.forEach(err => {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Phone Number should not be empty!";
-                    break;
                 case "number.base":
                     err.message = "Phone Number must be a number"
                     break;
@@ -82,12 +79,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    rate: Joi.number().required().error(errors => {
+    rate: Joi.number().allow('').error(errors => {
         errors.forEach(err => {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Rate should not be empty!";
-                    break;
                 case "number.base":
                     err.message = "Rate must be a number"
                     break;

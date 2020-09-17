@@ -15,6 +15,7 @@ export const getCompanyDetails = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
+            console.log(results)
             resolve({ code: 200, message: "Employees listed successfully", data: { Employees: results.rows } });
         
     })
