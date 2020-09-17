@@ -16,7 +16,7 @@ router
     .use(`/api/${AppConfig.version}/company/companyProfile`,companyProfileRouter)
     .use(`/api/${AppConfig.version}/company/employee`, employeeRouter)
     .use(`/api/${AppConfig.version}/company/profilePercentage`, profilePercentageRouter)
-    .use(`/api/${AppConfig.version}/company/perdonalProfile`, personaProfileRouter);
+    .use(`/api/${AppConfig.version}/company/personalProfile`, personaProfileRouter);
 
 
 
