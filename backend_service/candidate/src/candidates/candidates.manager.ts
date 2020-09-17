@@ -258,3 +258,36 @@ export const interviewRequestFunction = (_body) => {
     })
 
 }
+
+export const addCandidateReview = (_body) => {
+    return new Promise((resolve, reject) => {
+        const data = _body.assessmentTraits;
+        const currentTime = Math.floor(Date.now() / 1000);
+        let promise = [];
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                data.forEach(element => {
+                    const candidateDetails = {
+                        name: 'update-candidate-review',
+                        text: candidateQuery.updateCandidateReview,
+                        values: [_body.candidateId, element.positionReviewId, element.adminRating, element.adminComments, currentTime],
+                    }
+                    promise.push(client.query(candidateDetails));
+                });
+                const results = await Promise.all(promise);
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Candidate Listed successfully", data: {} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
