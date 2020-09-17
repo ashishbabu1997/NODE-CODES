@@ -17,6 +17,7 @@ export const getCandidateDetails = (_body) => {
             }
             const candidate = results.rows;
             let hiringStages = [];
+            let assessmentTraits = [];
             let result = {
                 makeOffer: candidate[0].makeOffer,
                 adminApproveStatus: candidate[0].adminApproveStatus,
@@ -33,7 +34,8 @@ export const getCandidateDetails = (_body) => {
                 phoneNumber: candidate[0].phoneNumber,
                 label: candidate[0].label,
                 emailAddress: candidate[0].emailAddress,
-                hiringStages
+                hiringStages,
+                assessmentTraits
             };
             _body.userRoleId == 1 && (result['ellowRate'] = candidate[0].ellowRate)
             candidate.forEach(step => {
@@ -42,8 +44,15 @@ export const getCandidateDetails = (_body) => {
                     hiringStatus: step.hiringStatus,
                     hiringStageOrder: step.hiringStageOrder
                 })
-                resolve({ code: 200, message: "Candidate details listed successfully", data: result });
+                let index = assessmentTraits.findIndex(e => e.positionReviewId == step.positionReviewId)
+                index == -1 && assessmentTraits.push({
+                    reviewName: step.reviewName,
+                    positionReviewId: step.positionReviewId,
+                    adminRating: step.adminRating,
+                    adminComments: step.adminComments
+                })
             })
+            resolve({ code: 200, message: "Candidate details listed successfully", data: result });
         })
     })
 }
