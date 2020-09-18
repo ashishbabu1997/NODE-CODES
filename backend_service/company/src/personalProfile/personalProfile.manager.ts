@@ -26,6 +26,8 @@ export const getCompanyDetails = (_body) => {
                     companySize: data[0].companySize,
                     services: data[0].services,
                     skills: data[0].skills,
+                    companyLogo: data[0].companyLogo,
+                    companyCoverPage: data[0].companyCoverPage,
                     locations
                 }
                 data.forEach(element => {
