@@ -12,16 +12,19 @@ export const getCandidateDetails = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
+    console.log(error)
                 reject({ code: 400, message: "Database Error", data: {} });
                 return;
             }
+            const candidate = results.rows;
+            const  positionId = candidate[0].positionId
+            console.log(positionId)
             const getCandidateAssessmentTraitsQuery = {
                 name: 'get-candidate-assessmentTraits',
                 text: candidateQuery.getAssessmentTraits,
-                values: [_body.candidateId],
+                values: [_body.candidateId,positionId],
             }
             database().query(getCandidateAssessmentTraitsQuery, (error, value) => {
-                const candidate = results.rows;
                 let hiringStages = [];
                 let assessmentTraits = value.rows
                 let result = {
