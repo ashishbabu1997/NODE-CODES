@@ -15,44 +15,45 @@ export const getCandidateDetails = (_body) => {
                 reject({ code: 400, message: "Database Error", data: {} });
                 return;
             }
-            const candidate = results.rows;
-            let hiringStages = [];
-            let assessmentTraits = [];
-            let result = {
-                makeOffer: candidate[0].makeOffer,
-                adminApproveStatus: candidate[0].adminApproveStatus,
-                candidateFirstName: candidate[0].candidateFirstName,
-                candidateLastName: candidate[0].candidateLastName,
-                companyName: candidate[0].companyName,
-                positionName: candidate[0].positionName,
-                description: candidate[0].description,
-                coverNote: candidate[0].coverNote,
-                resume: candidate[0].resume,
-                rate: _body.userRoleId == 1 ? candidate[0].rate : candidate[0].ellowRate,
-                billingType: candidate[0].billingTypeId,
-                currencyTypeId: candidate[0].currencyTypeId,
-                phoneNumber: candidate[0].phoneNumber,
-                label: candidate[0].label,
-                emailAddress: candidate[0].emailAddress,
-                hiringStages,
-                assessmentTraits
-            };
-            _body.userRoleId == 1 && (result['ellowRate'] = candidate[0].ellowRate)
-            candidate.forEach(step => {
-                hiringStages.push({
-                    hiringStageName: step.hiringStageName,
-                    hiringStatus: step.hiringStatus,
-                    hiringStageOrder: step.hiringStageOrder
+            const getCandidateAssessmentTraitsQuery = {
+                name: 'get-candidate-assessmentTraits',
+                text: candidateQuery.getAssessmentTraits,
+                values: [_body.candidateId],
+            }
+            database().query(getCandidateAssessmentTraitsQuery, (error, value) => {
+                const candidate = results.rows;
+                let hiringStages = [];
+                let assessmentTraits = value.rows
+                let result = {
+                    makeOffer: candidate[0].makeOffer,
+                    adminApproveStatus: candidate[0].adminApproveStatus,
+                    candidateFirstName: candidate[0].candidateFirstName,
+                    candidateLastName: candidate[0].candidateLastName,
+                    companyName: candidate[0].companyName,
+                    positionName: candidate[0].positionName,
+                    description: candidate[0].description,
+                    coverNote: candidate[0].coverNote,
+                    resume: candidate[0].resume,
+                    rate: _body.userRoleId == 1 ? candidate[0].rate : candidate[0].ellowRate,
+                    billingType: candidate[0].billingTypeId,
+                    currencyTypeId: candidate[0].currencyTypeId,
+                    phoneNumber: candidate[0].phoneNumber,
+                    label: candidate[0].label,
+                    emailAddress: candidate[0].emailAddress,
+                    hiringStages,
+                    assessmentTraits
+                };
+                _body.userRoleId == 1 && (result['ellowRate'] = candidate[0].ellowRate)
+                candidate.forEach(step => {
+                    console.log(step)
+                    hiringStages.push({
+                        hiringStageName: step.hiringStageName,
+                        hiringStatus: step.hiringStatus,
+                        hiringStageOrder: step.hiringStageOrder
+                    })
                 })
-                let index = assessmentTraits.findIndex(e => e.positionReviewId == step.positionReviewId)
-                index == -1 && assessmentTraits.push({
-                    reviewName: step.reviewName,
-                    positionReviewId: step.positionReviewId,
-                    adminRating: step.adminRating,
-                    adminComments: step.adminComments
-                })
+                resolve({ code: 200, message: "Candidate details listed successfully", data: result });
             })
-            resolve({ code: 200, message: "Candidate details listed successfully", data: result });
         })
     })
 }
