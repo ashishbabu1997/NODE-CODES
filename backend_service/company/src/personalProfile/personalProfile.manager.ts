@@ -9,7 +9,7 @@ export const getCompanyDetails = (_body) => {
             text: profileQuery.getProfiles,
             values: [parseInt(_body.companyId)],
         }
-
+        
         database().query(query, (error, results) => {
             if (error) {
                 console.log(error)
@@ -36,7 +36,7 @@ export const getCompanyDetails = (_body) => {
                         addressLine2: element.addressLine2,
                         zipCode: element.zipCode,
                         city: element.city,
-                        country: config.countries.find(e => e.id == element.countryId).name
+                        country: element.countryId!==null?config.countries.find(e => e.id == element.countryId).name:""
                     })
                 });
             }
