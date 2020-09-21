@@ -69,29 +69,45 @@ export const update_Details = (_body) => {
                 }
             else
                 {
-                    if (_body.logo==''&& _body.coverPage==''&&_body.linkedinId==''&&_body.tagline=='')
-                    {
-                        var count=25;
-
+                    const profilequery = {
+                        name: 'get-account-type',
+                        text: companyQuery.getProfilePercentage,
+                        values: [_body.companyId],
                     }
-                    else if(_body.logo==''||_body.coverPage==''||_body.linkedinId==''||_body.tagline=='')
-                    {
-                        var count=40
-                        if((_body.logo==''&& _body.coverPage=='') ||(_body.logo==''&&_body.linkedinId=='')||(_body.logo==''&&_body.tagline=='')||(_body.coverPage==''&& _body.linkedinId=='')||(_body.coverPage==''&&_body.tagline=='')||(_body.linkedinId==''&&_body.tagline==''))
-                        {   
-                            var count=35;
-                            if((_body.logo==''&& _body.coverPage==''&&_body.linkedinId=='')||(_body.logo==''&&_body.linkedinId==''&&_body.tagline=='')||(_body.tagline==''&&_body.coverPage==''&&_body.linkedinId=='')||(_body.tagline==''&&_body.coverPage==''&&_body.logo==''))
+                database().query(profilequery, (error, results) => {
+                    if (error) {
+                            reject({ code: 400, message: "Failed to access profile. Please try again.", data: {} });
+                            return;
+                    }
+                    else{
+                        const profilePercentage=results.rows[0].profilePercentage
+                        if (profilePercentage<=50)
+                        {
+                            if (_body.logo==''&& _body.coverPage==''&&_body.linkedinId==''&&_body.tagline=='')
                             {
-                                var count=30;
+                                var count=profilePercentage+25;
+
+                            }
+                            else if(_body.logo==''||_body.coverPage==''||_body.linkedinId==''||_body.tagline=='')
+                            {
+                                var count=profilePercentage+40
+                                if((_body.logo==''&& _body.coverPage=='') ||(_body.logo==''&&_body.linkedinId=='')||(_body.logo==''&&_body.tagline=='')||(_body.coverPage==''&& _body.linkedinId=='')||(_body.coverPage==''&&_body.tagline=='')||(_body.linkedinId==''&&_body.tagline==''))
+                                {   
+                                    var count=profilePercentage+35;
+                                    if((_body.logo==''&& _body.coverPage==''&&_body.linkedinId=='')||(_body.logo==''&&_body.linkedinId==''&&_body.tagline=='')||(_body.tagline==''&&_body.coverPage==''&&_body.linkedinId=='')||(_body.tagline==''&&_body.coverPage==''&&_body.logo==''))
+                                    {
+                                        var count=profilePercentage+30;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var count=profilePercentage+50
                             }
                         }
                     }
-                    else
-                    {
-                        var count=50
-                    }
-
-                }
+                })
+            }
         console.log(count)
         const currentTime = Math.floor(Date.now() / 1000);
         const query = {
