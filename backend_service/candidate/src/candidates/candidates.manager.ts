@@ -37,7 +37,7 @@ export const getCandidateDetails = (_body) => {
                     description: candidate[0].description,
                     coverNote: candidate[0].coverNote,
                     resume: candidate[0].resume,
-                    rate: _body.userRoleId == 1 ? candidate[0].rate : candidate[0].ellowRate,
+                    rate: _body.userRoleId == 1 ? candidate[0].ellowRate : candidate[0].rate,
                     billingType: candidate[0].billingTypeId,
                     currencyTypeId: candidate[0].currencyTypeId,
                     phoneNumber: candidate[0].phoneNumber,
