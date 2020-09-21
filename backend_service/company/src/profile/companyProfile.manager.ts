@@ -32,6 +32,7 @@ export const get_Details = (_body) => {
 }
 export const update_Details = (_body) => {
     return new Promise((resolve, reject) => {
+        var count;
         const query = {
             name: 'get-account-type',
             text: companyQuery.getAccountType,
@@ -47,26 +48,27 @@ export const update_Details = (_body) => {
             {
                     if (_body.logo==''&& _body.coverPage==''&&_body.linkedinId==''&&_body.tagline=='')
                     {
-                        var count=50;
+                         count=50;
 
                     }
                     else if(_body.logo==''||_body.coverPage==''||_body.linkedinId==''||_body.tagline=='')
                     {
-                        var count=90
+                         count=90
                         if((_body.logo==''&& _body.coverPage=='') ||(_body.logo==''&&_body.linkedinId=='')||(_body.logo==''&&_body.tagline=='')||(_body.coverPage==''&& _body.linkedinId=='')||(_body.coverPage==''&&_body.tagline=='')||(_body.linkedinId==''&&_body.tagline==''))
                         {   
-                            var count=75;
+                            count=75;
                             if((_body.logo==''&& _body.coverPage==''&&_body.linkedinId=='')||(_body.logo==''&&_body.linkedinId==''&&_body.tagline=='')||(_body.tagline==''&&_body.coverPage==''&&_body.linkedinId=='')||(_body.tagline==''&&_body.coverPage==''&&_body.logo==''))
                             {
-                                var count=65;
+                                 count=65;
                             }
                         }
                     }
                     else
                     {
-                        var count=100
+                         count=100
                     }
                 }
+        
             else
                 {
                     const profilequery = {
@@ -85,28 +87,29 @@ export const update_Details = (_body) => {
                         {
                             if (_body.logo==''&& _body.coverPage==''&&_body.linkedinId==''&&_body.tagline=='')
                             {
-                                var count=profilePercentage+25;
+                                 count=profilePercentage+25;
 
                             }
                             else if(_body.logo==''||_body.coverPage==''||_body.linkedinId==''||_body.tagline=='')
                             {
-                                var count=profilePercentage+40
+                                 count=profilePercentage+40
                                 if((_body.logo==''&& _body.coverPage=='') ||(_body.logo==''&&_body.linkedinId=='')||(_body.logo==''&&_body.tagline=='')||(_body.coverPage==''&& _body.linkedinId=='')||(_body.coverPage==''&&_body.tagline=='')||(_body.linkedinId==''&&_body.tagline==''))
                                 {   
-                                    var count=profilePercentage+35;
+                                     count=profilePercentage+35;
                                     if((_body.logo==''&& _body.coverPage==''&&_body.linkedinId=='')||(_body.logo==''&&_body.linkedinId==''&&_body.tagline=='')||(_body.tagline==''&&_body.coverPage==''&&_body.linkedinId=='')||(_body.tagline==''&&_body.coverPage==''&&_body.logo==''))
                                     {
-                                        var count=profilePercentage+30;
+                                        count=profilePercentage+30;
                                     }
                                 }
                             }
                             else
                             {
-                                var count=profilePercentage+50
+                                count=profilePercentage+50
                             }
                         }
                     }
                 })
+                
             }
         console.log(count)
         const currentTime = Math.floor(Date.now() / 1000);
@@ -124,6 +127,6 @@ export const update_Details = (_body) => {
             resolve({ code: 200, message: "Profile updated successfully", data: {} });
         })
 
-        })
+    }) 
     })
 }
