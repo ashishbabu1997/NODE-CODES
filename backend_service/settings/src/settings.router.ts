@@ -9,7 +9,7 @@ import SkillsRouter from './skills/SkillsRoute';
 import countryRouter from './countries/countryApi.route'
 import stateRouter from './states/statesApi.route'
 import jobCategoryRouter from './jobCategory/jobCategory.route'
-
+import assessmentTraitRouter from './assessmentTraits/assessmentTraitsRoute'
 import * as express from 'express';
 const router = express.Router();
 
@@ -24,6 +24,7 @@ router
     .use(`/api/${AppConfig.version}/settings/countries`, countryRouter)
     .use(`/api/${AppConfig.version}/settings/states`, stateRouter)
     .use(`/api/${AppConfig.version}/settings/jobCategory`, jobCategoryRouter)
+    .use(`/api/${AppConfig.version}/settings/assessmentTraits`, assessmentTraitRouter)
 
 export default router;
 
