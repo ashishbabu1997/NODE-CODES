@@ -43,6 +43,7 @@ export const getCandidateDetails = (_body) => {
                     phoneNumber: candidate[0].phoneNumber,
                     label: candidate[0].label,
                     emailAddress: candidate[0].emailAddress,
+                    assessmentComment: candidate[0].assessmentComment,
                     hiringStages,
                     assessmentTraits
                 };
@@ -272,17 +273,26 @@ export const addCandidateReview = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
+                const insertQuery = {
+                    name: 'insert-assessment-comment',
+                    text: candidateQuery.updateAssessmentComment,
+                    values: [_body.candidateId,_body.assessmentComment],
+                }
+                promise.push(client.query(insertQuery));
+
                 data.forEach(element => {
                     const candidateDetails = {
                         name: 'update-candidate-review',
                         text: candidateQuery.updateCandidateReview,
-                        values: [_body.candidateId, element.positionReviewId, element.adminRating, element.adminComments, currentTime],
+                        values: [_body.candidateId, element.positionReviewId, element.adminRating, currentTime],
                     }
                     promise.push(client.query(candidateDetails));
                 });
                 const results = await Promise.all(promise);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate Listed successfully", data: {} });
+
+                
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')

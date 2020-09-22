@@ -6,7 +6,8 @@ export const getCompanyPositions = (_body) => {
         var queryText;
         var queryValues;
         const orderBy = {
-            "position": "position_id"
+            "position": "position_id",
+            "createdOn":"created_on"
         }
         if (_body.companyId) {
             queryText = _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearchWithId : positionsQuery.getCompanyPositionsASCWithId) : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearchWithId : positionsQuery.getCompanyPositionsDESCWithId)
