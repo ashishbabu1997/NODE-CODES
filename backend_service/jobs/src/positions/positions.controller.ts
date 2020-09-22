@@ -63,7 +63,8 @@ export const closeJob = (req, res) => {
     })
 }
 export const getCompanyNames = (req, res) => {
-    getCompanies().then((response: any) => {
+    const body = req.query;
+    getCompanies(body).then((response: any) => {
         sendResponse(res, response.code, 1,201, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0,401, error.message, error.data)

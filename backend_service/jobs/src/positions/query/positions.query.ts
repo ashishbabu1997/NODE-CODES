@@ -23,7 +23,7 @@ export default {
     changePositionStatus: `UPDATE positions SET job_status = 6, updated_on = $2 WHERE position_id = $1 AND status = true`,
     closeJobs: 'UPDATE positions SET job_status=8,updated_on=$1 WHERE position_id=$2 ',
     closeJobReceived: 'UPDATE job_received SET job_received_status=8,updated_on=$1 WHERE position_id=$2 ',
-    getNames: 'SELECT company_id as "companyId",company_name as "companyName" from company WHERE status=true',
+    getNames: 'SELECT DISTINCT c.company_id as "companyId",c.company_name as "companyName" from company c left join employee e on  c.company_id=e.company_id WHERE c.status=true and e.account_type=$1 OR e.account_type=3 ORDER BY c.company_name',
     getCompanyName: 'SELECT company_name as "companyName" FROM company WHERE company_id=$1',
     candidatesCount: 'SELECT COUNT(*) as "candidateCount" FROM candidate WHERE position_id=$1',
     getAssessmentTraitOld: `SELECT pr.review_name as "reviewName",pr.position_review_id as "positionReviewId" from position_review pr WHERE pr.position_id = $1 AND pr.status = true`,
