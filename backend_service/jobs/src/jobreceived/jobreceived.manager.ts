@@ -159,19 +159,41 @@ export const saveCandidateProfile = (_body) => {
 
 export const getProfileByCompanyId = (_body) => {
     return new Promise((resolve, reject) => {
-        const query = {
-            name: 'get-ProfileByCompanyId',
-            text: jobReceivedQuery.getProfile,
-            values: [parseInt(_body.companyId), parseInt(_body.jobReceivedId)]
-        }
+        if(_body.companyId)
+        {
+            const query = {
+                     name: 'get-ProfileByCompanyId',
+                    text: jobReceivedQuery.getProfile,
+                    values: [parseInt(_body.companyId), parseInt(_body.jobReceivedId)]
+            }
 
-        database().query(query, (error, results) => {
+            database().query(query, (error, results) => {
             if (error) {
                 console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
             resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
-        })
+            })
+        }
+        else
+        {
+
+            const listJobCandidatesQuery = {
+                name: 'get-Profile',
+               text: jobReceivedQuery.getProfileByJobReceived,
+               values: [parseInt(_body.jobReceivedId)]
+       }
+
+       database().query(listJobCandidatesQuery, (error, results) => {
+       if (error) {
+           console.log(error)
+           reject({ code: 400, message: "Failed. Please try again.", data: {} });
+           return;
+       }
+       resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
+       })
+        }   
+
     })
 }
