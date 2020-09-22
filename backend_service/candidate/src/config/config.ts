@@ -11,10 +11,10 @@ export default {
         "password": "DevD8u5er",
         "port": 5432
     },
-    "adminEmail":"ashish.babu@ellow.ai",
+    "adminEmail":"ashish.babu@ellow.io",
     "mail": {
         "service": "gmail",
-        "user": "no-reply@ellow.ai",
+        "user": "no-reply@ellow.io",
         "password": "fqlroidzaxmlhgml"
     },
     "nextLine":"\n",
@@ -28,7 +28,7 @@ export default {
         "firstLine": "<h3>Hello,",
         "secondLine": "   has been rejected by the admin company !</h3>",
         "thirdLine": "<h3>With regards,</h3>",
-        "fourthLine": "<h3>Team ellow.ai</h3>"
+        "fourthLine": "<h3>Team ellow.io</h3>"
     },
     "space":" ",
     "break":"<br>",
