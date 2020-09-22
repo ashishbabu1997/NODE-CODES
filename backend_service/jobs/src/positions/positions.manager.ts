@@ -434,12 +434,14 @@ export const closeJobStatus = (_body) => {
         })
     })
 }
-export const getCompanies = () => {
+export const getCompanies = (_body) => {
     return new Promise((resolve, reject) => {
+        console.log("accountType : ",_body.accountType);
+        
         const CompanyQuery = {
             name: 'get-company-names',
             text: positionsQuery.getNames,
-            values: [],
+            values: [_body.accountType],
         }
         database().query(CompanyQuery, (error, results) => {
             if (error) {
