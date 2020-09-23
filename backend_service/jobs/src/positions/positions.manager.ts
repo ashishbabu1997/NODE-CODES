@@ -202,6 +202,7 @@ export const fetchPositionDetails = (_body) => {
                     )
                 result['hiringStages'] = groupedHiringStages;
                 result['skills'] = skills;
+                result['positionId'] = _body.positionId;
             })
             resolve({ code: 200, message: "Fetched position details successfully", data: result });
         })

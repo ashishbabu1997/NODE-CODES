@@ -106,8 +106,17 @@ export const listCandidatesDetails = (_body) => {
                         allCandidates.push(candidate);
                     }
                 });
+
+                const getJobReceivedId = {
+                    name: 'get-jobreceived-id',
+                    text: candidateQuery.getJobReceivedId,
+                    values: [_body.positionId]
+                }
+                const jobReceivedIdResult = await client.query(getJobReceivedId);
+                var jobReceivedId = jobReceivedIdResult.rows[0]['job_received_id'];
+                
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Candidate Listed successfully", data: { companyName, positionName, hiringStages, allCandidates } });
+                resolve({ code: 200, message: "Candidate Listed successfully", data: { companyName, positionName, jobReceivedId,hiringStages, allCandidates } });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
