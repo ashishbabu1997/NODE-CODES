@@ -1,5 +1,6 @@
 import positionsQuery from './query/positions.query';
 import database from '../common/database/database';
+import { createNotification } from '../common/notifications/notifications';
 
 export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
@@ -7,40 +8,37 @@ export const getCompanyPositions = (_body) => {
         var queryValues;
         const orderBy = {
             "position": 'p.position_id',
-            "positionName":'p.position_name',
-            "createdOn":'p.created_on',
-            "candidateCount":'"candidateCount"',
-            "resourceCount":'p.developer_count',
-            "companyName":'c.company_name'
+            "positionName": 'p.position_name',
+            "createdOn": 'p.created_on',
+            "candidateCount": '"candidateCount"',
+            "resourceCount": 'p.developer_count',
+            "companyName": 'c.company_name'
         }
 
-        var sort = ' ORDER BY '+ orderBy[_body.sortBy] + ' '+_body.sortType + ' LIMIT '+_body.limit + ' OFFSET ' + _body.offset;
-        
-        if(_body.userRoleId == 1)
-        {
+        var sort = ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType + ' LIMIT ' + _body.limit + ' OFFSET ' + _body.offset;
+
+        if (_body.userRoleId == 1) {
             queryText = positionsQuery.getCompanyPositionsForAdmin + sort;
             queryValues = [_body.companyId,'%' + _body.searchKey + '%']
         }
-        else
-        {
+        else {
             queryText = positionsQuery.getCompanyPositionsForBuyer + sort;
-            queryValues = [_body.companyId,'%' + _body.searchKey + '%']
+            queryValues = [_body.companyId, '%' + _body.searchKey + '%']
         }
 
-        
+
         const query = {
             name: 'id-fetch-company-positions',
             text: queryText,
             values: queryValues
         }
-        console.log(query)
         database().query(query, (error, results) => {
             if (error) {
                 console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            var steps = results.rows            
+            var steps = results.rows
             resolve({ code: 200, message: "Positions listed successfully", data: { positions: steps } })
         })
 
@@ -62,7 +60,6 @@ export const createCompanyPositions = async (_body) => {
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
                     _body.userId, _body.userId, currentTime, currentTime, _body.jobCategoryId]
                 }
-                console.log(addCompanyPositionsQuery)
                 const getCompanyNameQuery = {
                     name: 'get-company-name',
                     text: positionsQuery.getCompanyName,
@@ -84,22 +81,22 @@ export const createCompanyPositions = async (_body) => {
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
                     return;
                 }
-                const addPositionHiringStepQuery = {
-                    name: 'add-position-hiring-steps',
-                    text: positionsQuery.addPositionSteps,
-                    values: [positionId, _body.hiringStepName, _body.description, currentTime, currentTime],
-                }
-                const res = await client.query(addPositionHiringStepQuery)
-                const hiringStages = _body.hiringStages;
-                const positionHiringStepId = res.rows[0].position_hiring_step_id;
-                let hiringStageValues = ''
-                const length = hiringStages.length;
-                hiringStages.forEach((element, i) => {
-                    const end = i != length - 1 ? "," : ";"
-                    hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.hiringStageOrder + "," + currentTime + "," + currentTime + ")" + end
-                });
-                const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
-                await client.query(addPositionHiringStagesQuery)
+                // const addPositionHiringStepQuery = {
+                //     name: 'add-position-hiring-steps',
+                //     text: positionsQuery.addPositionSteps,
+                //     values: [positionId, _body.hiringStepName, _body.description, currentTime, currentTime],
+                // }
+                // const res = await client.query(addPositionHiringStepQuery)
+                // const hiringStages = _body.hiringStages;
+                // const positionHiringStepId = res.rows[0].position_hiring_step_id;
+                // let hiringStageValues = ''
+                // const length = hiringStages.length;
+                // hiringStages.forEach((element, i) => {
+                //     const end = i != length - 1 ? "," : ";"
+                //     hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.hiringStageOrder + "," + currentTime + "," + currentTime + ")" + end
+                // });
+                // const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
+                // await client.query(addPositionHiringStagesQuery)
                 const assessmentTraits = _body.assessmentTraits;
                 const getPositionAssessmentTraitsQuery = {
                     name: 'get-position-assessment-traits-old',
@@ -107,7 +104,6 @@ export const createCompanyPositions = async (_body) => {
                     values: [positionId]
                 }
                 const previousData = await client.query(getPositionAssessmentTraitsQuery);
-                console.log(previousData)
                 if (previousData.rows.length > 0) {
                     const assessmentTraitsOld = previousData.rows;
                     const deletedAssessmentTraits = assessmentTraitsOld.filter(e => assessmentTraits.indexOf(e) == -1);
@@ -124,11 +120,9 @@ export const createCompanyPositions = async (_body) => {
                     values: [positionId, assessmentTraits, currentTime, currentTime],
                 }
                 let x = await client.query(addAssessmentTraitsQuery);
-                console.log(x)
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyId  } });
             } catch (e) {
-                console.log(e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             } finally {
@@ -177,7 +171,7 @@ export const fetchPositionDetails = (_body) => {
                     hiringStepName: step.hiring_step_name,
                     hiringStepDescription: step.description,
                     jobCategoryId: step.job_category_id,
-                    jobStatus:step.job_status,
+                    jobStatus: step.job_status,
                     jobCategoryName: step.job_category_name,
                     companyId: step.company_id,
                     companyName: step.company_name,
@@ -289,10 +283,7 @@ export const updateCompanyPositions = async (_body) => {
                 const getCompanyNameResponse = await client.query(getCompanyNameQuery);
                 const companyName = getCompanyNameResponse.rows[0].companyName
                 await client.query(updateCompanyPositionsFirstQuery);
-                console.log("updateCompanyPositionsSecondQuery : ",[_body.contractPeriodId,
-                    _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
-                    _body.userId, currentTime, positionId, _body.companyId]);
-                
+
                 const updateCompanyPositionsSecondQuery = {
                     name: 'update-company-positions-second',
                     text: positionsQuery.updatePositionSecond,
@@ -300,7 +291,7 @@ export const updateCompanyPositions = async (_body) => {
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
                     _body.userId, currentTime, positionId, _body.companyId]
                 }
-        
+
                 await client.query(updateCompanyPositionsSecondQuery);
                 const getJobSkillsQuery = {
                     name: 'get-job-skills',
@@ -351,7 +342,8 @@ export const updateCompanyPositions = async (_body) => {
                     values: [positionId]
                 }
                 const previousData = await client.query(getPositionAssessmentTraitsQuery);
-                // console.log(previousData,"sadas")
+
+                console.log(previousData,"sadas")
                 if (previousData.rows.length > 0) {
                     const assessmentTraitsOld = previousData.rows;
                     const deletedAssessmentTraits = assessmentTraitsOld.filter(e => assessmentTraits.indexOf(e) == -1).map(item => { return item.positionReviewId });
@@ -404,10 +396,21 @@ export const publishCompanyPositions = async (_body) => {
                     text: positionsQuery.addPositionToJob,
                     values: [positionId, currentTime],
                 }
-                await client.query(addPositionToJobReceivedQuery);
+                const data = await client.query(addPositionToJobReceivedQuery);
+                const jobReceivedId = data.rows[0].job_received_id
+                const getNotificationDetailsQuery = {
+                    name: 'get-notification-details',
+                    text: positionsQuery.getNotificationDetails,
+                    values: [positionId]
+                }
+                const details = await client.query(getNotificationDetailsQuery);
                 await client.query('COMMIT');
+                const { companyId, companyName } = details.rows[0];
+                const message = `A new position has been created by ${companyName}.`
+                await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position' })
                 resolve({ code: 200, message: "Position published successfully", data: {} });
             } catch (e) {
+                console.log(e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             } finally {
@@ -452,8 +455,8 @@ export const closeJobStatus = (_body) => {
 }
 export const getCompanies = (_body) => {
     return new Promise((resolve, reject) => {
-        console.log("accountType : ",_body.accountType);
-        
+        console.log("accountType : ", _body.accountType);
+
         const CompanyQuery = {
             name: 'get-company-names',
             text: positionsQuery.getNames,

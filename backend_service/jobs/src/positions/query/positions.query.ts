@@ -9,7 +9,7 @@ export default {
     editPositionHiringSteps: `UPDATE position_hiring_steps SET hiring_step_name=$2, description=$3,updated_on=$4 WHERE position_hiring_step_id=$1;`,
     editPositionHiringStagesStart: `update position_hiring_stages as phsg set hiring_stage_order = c.hiring_stage_order, hiring_stage_name = c.hiring_stage_name , description = c.description, updated_on = c.updated_on from ( values `,
     editPositionHiringStagesEnd: `) as c (hiring_stage_id,hiring_stage_name,description, hiring_stage_order,updated_on) WHERE c.hiring_stage_id = phsg.position_hiring_stage_id`,
-    addPositionToJob: `INSERT into job_received (position_id,job_received_status,created_on,updated_on) VALUES ($1,1,$2,$2)`,
+    addPositionToJob: `INSERT into job_received (position_id,job_received_status,created_on,updated_on) VALUES ($1,1,$2,$2) RETURNING job_received_id; `,
     updatePositionFirst: `UPDATE positions SET position_name = $1, location_name = $2, developer_count = $3, allow_remote = $4, experience_level = $5, job_description = $6, job_document = $7, updated_by = $8, updated_on = $9 ,job_category_id = $12 WHERE position_id = $10 AND company_id = $11 AND status = true`,
     updatePositionSecond: `UPDATE positions SET contract_period = $1, currency_type_id = $2, billing_type = $3, min_budget = $4, max_budget = $5 , hiring_step_id = $6, updated_by = $7, updated_on = $8 WHERE position_id = $9 AND  company_id = $10 AND status = true`,
     getPositionSkillsOld: `SELECT ARRAY(SELECT skill_id from job_skills WHERE position_id  = $1 AND status = true) AS skills from company WHERE company_id = $2 AND status = true;`,
@@ -22,5 +22,6 @@ export default {
     candidatesCount: 'SELECT COUNT(*) as "candidateCount" FROM candidate WHERE position_id=$1',
     getAssessmentTraitOld: `SELECT pr.review_name as "reviewName",pr.position_review_id as "positionReviewId" from position_review pr WHERE pr.position_id = $1 AND pr.status = true`,
     deleteAssessmentTraits: `delete from position_review WHERE position_id  = $1 AND status = true  AND position_review_id = any($2)`,
-    addAssessmentTraits: `INSERT into position_review (position_id  ,review_name,created_on,updated_on ) values ($1, unnest ($2::varchar[]),$3,$4) ON CONFLICT ON CONSTRAINT position_review_position_id_review_name_status_key DO NOTHING`
+    addAssessmentTraits: `INSERT into position_review (position_id  ,review_name,created_on,updated_on ) values ($1, unnest ($2::varchar[]),$3,$4) ON CONFLICT ON CONSTRAINT position_review_position_id_review_name_status_key DO NOTHING`,
+    getNotificationDetails: `select p.company_id as "companyId", c.company_name as "companyName"from positions p left join company c on c.company_id = p.company_id where p.position_id = $1 and p.status = true`
 } 
