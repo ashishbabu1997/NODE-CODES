@@ -140,5 +140,73 @@ export default Joi.object().keys({
             }
         });
         return errors;
-    })
+    }),
+    accountType: Joi.number().required().error(function (errors) {
+        errors.forEach(function (err) {
+            console.log(err);
+            switch (err.code) {
+                case "any.required":
+                    err.message = "Account Type  should not be empty!";
+                    break;
+                case "string.base":
+                    err.message = "Account Type should be a number";
+                    break;
+                default:
+                    err.message = "Invalid account type";
+                    break;
+            }
+        });
+        return errors;
+    }),
+    roleId: Joi.number().required().error(function (errors) {
+        errors.forEach(function (err) {
+            console.log(err);
+            switch (err.code) {
+                case "any.required":
+                    err.message = "roleIdL should not be empty!";
+                    break;
+                case "string.base":
+                    err.message = "roleId should be a number";
+                    break;
+                default:
+                    err.message = "Invalid roleId ";
+                    break;
+            }
+        });
+        return errors;
+    }),
+    companySizeId: Joi.number().required().error(function (errors) {
+        errors.forEach(function (err) {
+            console.log(err);
+            switch (err.code) {
+                case "any.required":
+                    err.message = "companySizeId should not be empty!";
+                    break;
+                case "string.base":
+                    err.message = "companySizeId should be a number";
+                    break;
+                default:
+                    err.message = "Invalid companySizeId ";
+                    break;
+            }
+        });
+        return errors;
+    }),
+    website: Joi.string().required().error(function (errors) {
+        errors.forEach(function (err) {
+            console.log(err);
+            switch (err.code) {
+                case "any.required":
+                    err.message = "website should not be empty!";
+                    break;
+                case "string.base":
+                    err.message = "website must be a string";
+                    break;
+                default:
+                    err.message = "Invalidwebsite";
+                    break;
+            }
+        });
+        return errors;
+    }),
 });

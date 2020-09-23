@@ -21,6 +21,10 @@ export const get_Details = (_body) => {
                 "logo": response.logo === null ? '' : response.logo,
                 "coverPage": response.coverPage === null ? '' : response.coverPage,
                 "tagline": response.tagline === null ? '' : response.tagline,
+                "accountType":response.accountType === null ? '' : response.accountType,
+                "roleId":response.roleId === null ? '' : response.roleId,
+                "companySizeId":response.companySizeId === null ? '' : response.companySizeId,
+                "website":response.website === null ? '' : response.website,
                 // "facebookId": response.facebookId === null ? '' : response.facebookId,
                 // "instagramId": response.instagramId === null ? '' : response.instagramId,
                 // "twitterId": response.twitterId === null ? '' : response.twitterId,
@@ -33,17 +37,7 @@ export const get_Details = (_body) => {
 export const update_Details = (_body) => {
     return new Promise((resolve, reject) => {
         var count;
-        const query = {
-            name: 'get-account-type',
-            text: companyQuery.getAccountType,
-            values: [_body.companyId],
-        }
-        database().query(query, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed to access profile. Please try again.", data: {} });
-                return;
-            }
-            const accountType=results.rows[0].accountType
+        const accountType=_body.accountType
             if (accountType == 1)
             {
                     if (_body.logo==''&& _body.coverPage==''&&_body.linkedinId==''&&_body.tagline=='')
@@ -111,12 +105,11 @@ export const update_Details = (_body) => {
                 })
                 
             }
-        console.log(count)
         const currentTime = Math.floor(Date.now() / 1000);
         const query = {
             name: 'update_details',
             text: companyQuery.updateProfileDetails,
-            values: [_body.profileUrl, _body.description, _body.logo, _body.coverPage, _body.tagline,_body.linkedinId,count, parseInt(_body.companyId)]
+            values: [_body.profileUrl, _body.description, _body.logo, _body.coverPage, _body.tagline,_body.linkedinId,count, parseInt(_body.companyId),_body.accountType,_body.roleId,_body.website,_body.companySizeId]
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -128,5 +121,4 @@ export const update_Details = (_body) => {
         })
 
     }) 
-    })
 }
