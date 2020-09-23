@@ -64,7 +64,7 @@ export const createEmployee = (_body) => {
                     const createCompanyQuery = {
                         name: 'createCompany',
                         text: employeeQuery.createCompany,
-                        values: [_body.companyName, _body.company_website, _body.companySizeId, currentTime],
+                        values: [_body.companyName, currentTime],
                     }
                     client.query(createCompanyQuery, (err, res) => {
                         if (shouldAbort(err)) return
@@ -72,7 +72,7 @@ export const createEmployee = (_body) => {
                         const createEmployeeQuery = {
                             name: 'createEmployee',
                             text: employeeQuery.createEmployee,
-                            values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, _body.roleId, currentTime,2,false,2],
+                            values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime,2,false,2],
                         }
                         client.query(createEmployeeQuery, (err, res) => {
                             if (shouldAbort(err)) return
