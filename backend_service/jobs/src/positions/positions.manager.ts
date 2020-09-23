@@ -19,7 +19,7 @@ export const getCompanyPositions = (_body) => {
         if(_body.userRoleId == 1)
         {
             queryText = positionsQuery.getCompanyPositionsForAdmin + sort;
-            queryValues = ['%' + _body.searchKey + '%']
+            queryValues = [_body.companyId,'%' + _body.searchKey + '%']
         }
         else
         {
@@ -72,6 +72,7 @@ export const createCompanyPositions = async (_body) => {
                 const companyName = getCompanyNameResponse.rows[0].companyName
                 const companyPositionResponse = await client.query(addCompanyPositionsQuery);
                 const positionId = companyPositionResponse.rows[0].position_id
+                const companyId = _body.companyId
                 const addJobSkillsQuery = {
                     name: 'add-job-skills',
                     text: positionsQuery.addJobSkills,
@@ -125,7 +126,7 @@ export const createCompanyPositions = async (_body) => {
                 let x = await client.query(addAssessmentTraitsQuery);
                 console.log(x)
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Positions created successfully", data: { positionId } });
+                resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyId  } });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
