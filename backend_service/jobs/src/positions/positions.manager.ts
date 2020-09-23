@@ -6,20 +6,27 @@ export const getCompanyPositions = (_body) => {
         var queryText;
         var queryValues;
         const orderBy = {
-            "position": "position_id",
-            "createdOn":"created_on"
+            "position": 'p.position_id',
+            "positionName":'p.position_name',
+            "createdOn":'p.created_on',
+            "candidateCount":'"candidateCount"',
+            "resourceCount":'p.developer_count'
         }
-        if (_body.companyId) {
-            queryText = _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearchWithId : positionsQuery.getCompanyPositionsASCWithId) : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearchWithId : positionsQuery.getCompanyPositionsDESCWithId)
-            queryValues = _body.searchKey != '' ? [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [parseInt(_body.companyId), orderBy[_body.sortBy], _body.limit, _body.offset]
 
+        var sort = ' ORDER BY '+ orderBy[_body.sortBy] + ' '+_body.sortType + ' LIMIT '+_body.limit + ' OFFSET ' + _body.offset;
+        
+        if(_body.userRoleId == 1)
+        {
+            queryText = positionsQuery.getCompanyPositionsForAdmin + sort;
+            queryValues = ['%' + _body.searchKey + '%']
         }
-        else {
-            queryText = _body.sortType == 'ASC' ? (_body.searchKey != '' ? positionsQuery.getCompanyPositionsASCSearch : positionsQuery.getCompanyPositionsASC)
-                : (_body.searchKey != '' ? positionsQuery.getCompanyPositionsDESCSearch : positionsQuery.getCompanyPositionsDESC)
-            queryValues = _body.searchKey != '' ? [orderBy[_body.sortBy], _body.limit, _body.offset, '%' + _body.searchKey + '%'] : [orderBy[_body.sortBy], _body.limit, _body.offset]
+        else
+        {
+            queryText = positionsQuery.getCompanyPositionsForBuyer + sort;
+            queryValues = [_body.companyId,'%' + _body.searchKey + '%']
+        }
 
-        }
+        
         const query = {
             name: 'id-fetch-company-positions',
             text: queryText,
@@ -32,7 +39,7 @@ export const getCompanyPositions = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            var steps = results.rows
+            var steps = results.rows            
             resolve({ code: 200, message: "Positions listed successfully", data: { positions: steps } })
         })
 
@@ -279,6 +286,10 @@ export const updateCompanyPositions = async (_body) => {
                 const getCompanyNameResponse = await client.query(getCompanyNameQuery);
                 const companyName = getCompanyNameResponse.rows[0].companyName
                 await client.query(updateCompanyPositionsFirstQuery);
+                console.log("updateCompanyPositionsSecondQuery : ",[_body.contractPeriodId,
+                    _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
+                    _body.userId, currentTime, positionId, _body.companyId]);
+                
                 const updateCompanyPositionsSecondQuery = {
                     name: 'update-company-positions-second',
                     text: positionsQuery.updatePositionSecond,
@@ -286,6 +297,7 @@ export const updateCompanyPositions = async (_body) => {
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
                     _body.userId, currentTime, positionId, _body.companyId]
                 }
+        
                 await client.query(updateCompanyPositionsSecondQuery);
                 const getJobSkillsQuery = {
                     name: 'get-job-skills',
@@ -336,7 +348,7 @@ export const updateCompanyPositions = async (_body) => {
                     values: [positionId]
                 }
                 const previousData = await client.query(getPositionAssessmentTraitsQuery);
-                console.log(previousData,"sadas")
+                // console.log(previousData,"sadas")
                 if (previousData.rows.length > 0) {
                     const assessmentTraitsOld = previousData.rows;
                     const deletedAssessmentTraits = assessmentTraitsOld.filter(e => assessmentTraits.indexOf(e) == -1).map(item => { return item.positionReviewId });
