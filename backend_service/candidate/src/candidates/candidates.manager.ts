@@ -130,102 +130,109 @@ export const listCandidatesDetails = (_body) => {
         })
     })
 }
+
 export const candidateClearance = (_body) => {
     return new Promise((resolve, reject) => {
-        var adminApproveStatus;
-        var comment;
-        var subj;
-        var textFormat;
-        var candidateFirstName;
-        var candidateCompanyName;
-        var candidateQueries;
-        var makeOffer;
-        var value;
-        const getCandidateName = {
-            name: 'get-candidate-names',
-            text: candidateQuery.getCandidateNames,
-            values: [_body.candidateId]
-        }
-        database().query(getCandidateName, (error, results) => {
-            if (error) {
-                console.log(error)
-                reject({ code: 400, message: "Database Error", data: {} });
-                return;
-            }
-            var firstName = results.rows[0].firstName
-            var companyName = results.rows[0].companyName
-            candidateFirstName = firstName.fontsize(3).bold()
-            candidateCompanyName = companyName.fontsize(3).bold()
-            if (_body.decisionValue == 1) {
-                if (_body.userRoleId == 1) {
-                    adminApproveStatus = 1
-                    comment = _body.comment
-                    value = [_body.candidateId, adminApproveStatus, comment, _body.ellowRate]
-                    candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                var adminApproveStatus;
+                var comment;
+                var subj;
+                var textFormat;
+                var candidateQueries;
+                var makeOffer;
+                var value;
+                const getCandidateName = {
+                    name: 'get-candidate-names',
+                    text: candidateQuery.getCandidateNames,
+                    values: [_body.candidateId]
                 }
-                else if (_body.userRoleId == 2) {
-                    makeOffer = 1
-                    adminApproveStatus = 1;
-                    comment = _body.comment;
-                    value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
-                    candidateQueries = candidateQuery.candidateAdminApprovalQuery
-                    subj = "Candidate Approval Mail";
-                    textFormat = config.approvalMail.firstLine + config.nextLine + candidateFirstName + " " + "from" + " " + candidateCompanyName + config.approvalMail.secondLine + config.nextLine + config.approvalMail.thirdLine + config.nextLine + config.approvalMail.fourthLine
-                    console.log(textFormat)
-                    sendMail(config.adminEmail, subj, textFormat, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Database Error", data: {} });
-                            return;
-                        }
-                        console.log('Admin Approval Mail has been sent !!!');
-                    });
-                }
+                const results = await client.query(getCandidateName);
+                const candidateDetails = results.rows[0];
+                const { firstName, lastName, positionId, jobReceivedId, companyName, positionName } = candidateDetails;
+                let message = ``
+                let candidateFirstName = firstName.fontsize(3).bold()
+                let candidateCompanyName = companyName.fontsize(3).bold()
+                if (_body.decisionValue == 1) {
+                    if (_body.userRoleId == 1) {
+                        adminApproveStatus = 1
+                        comment = _body.comment
+                        value = [_body.candidateId, adminApproveStatus, comment, _body.ellowRate]
+                        candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
+                    }
+                    else if (_body.userRoleId == 2) {
+                        message = `${firstName + ' ' + lastName} from ${companyName} has been selected for the position ${positionName}`;
+                        makeOffer = 1
+                        adminApproveStatus = 1;
+                        comment = _body.comment;
+                        value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
+                        candidateQueries = candidateQuery.candidateAdminApprovalQuery
+                        subj = "Candidate Approval Mail";
+                        textFormat = config.approvalMail.firstLine + config.nextLine + candidateFirstName + " " + "from" + " " + candidateCompanyName + config.approvalMail.secondLine + config.nextLine + config.approvalMail.thirdLine + config.nextLine + config.approvalMail.fourthLine
+                        console.log(textFormat)
+                        sendMail(config.adminEmail, subj, textFormat, function (err, data) {
+                            if (err) {
+                                console.log(err)
+                                reject({ code: 400, message: "Database Error", data: {} });
+                                return;
+                            }
+                            console.log('Admin Approval Mail has been sent !!!');
+                        });
+                    }
+                } else {
+                    if (_body.userRoleId == 1) {
+                        adminApproveStatus = 0
+                        comment = _body.comment
+                        value = [_body.candidateId, adminApproveStatus, comment]
+                        candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
+                    } else if (_body.userRoleId != 1) {
+                        message = `${firstName + ' ' + lastName} from ${companyName} has been rejected for the position ${positionName}`;
+                        makeOffer = 0
+                        adminApproveStatus = 0;
+                        comment = _body.comment;
+                        value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
+                        candidateQueries = candidateQuery.candidateAdminApprovalQuery
+                        subj = "Candidate Rejection Mail";
+                        textFormat = config.rejectionMail.firstLine + config.nextLine + candidateFirstName + " " + "from" + " " + candidateCompanyName + config.rejectionMail.secondLine + config.nextLine + config.rejectionMail.thirdLine + config.nextLine + config.rejectionMail.fourthLine
+                        sendMail(config.adminEmail, subj, textFormat, function (err, data) {
+                            if (err) {
+                                console.log(err)
+                                reject({ code: 400, message: "Database Error", data: {} });
+                                return;
+                            }
+                            console.log('Candidate Rejection Mail has been sent !!!');
+                        });
+                    }
 
-            }
-            else {
-                makeOffer = 0
-                if (_body.userRoleId == 1) {
-                    adminApproveStatus = 0
-                    comment = _body.comment
-                    value = [_body.candidateId, adminApproveStatus, comment]
-                    candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
                 }
-                else if (_body.userRoleId == 2) {
-                    adminApproveStatus = 0;
-                    comment = _body.comment;
-                    value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
-                    candidateQueries = candidateQuery.candidateAdminApprovalQuery
-                    subj = "Candidate Rejection Mail";
-                    textFormat = config.rejectionMail.firstLine + config.nextLine + candidateFirstName + " " + "from" + " " + candidateCompanyName + config.rejectionMail.secondLine + config.nextLine + config.rejectionMail.thirdLine + config.nextLine + config.rejectionMail.fourthLine
-                    sendMail(config.adminEmail, subj, textFormat, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Database Error", data: {} });
-                            return;
-                        }
-                        console.log('Candidate Rejection Mail has been sent !!!');
-                    });
+                const candidateApprovalQuery = {
+                    name: 'admin',
+                    text: candidateQueries,
+                    values: value
                 }
-
+                await client.query(candidateApprovalQuery);
+                await client.query('COMMIT');
+                _body.userRoleId != 1 && await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
+                sendMail(config.adminEmail, subj, textFormat, (err, data) => {
+                    if (err) {
+                        console.log(err)
+                        reject({ code: 400, message: "Database Error", data: {} });
+                        return;
+                    }
+                    resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
+                });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
             }
-            const candidateApprovalQuery = {
-                name: 'admin',
-                text: candidateQueries,
-                values: value
-            }
-            database().query(candidateApprovalQuery, (error, results) => {
-                if (error) {
-                    console.log(error)
-                    reject({ code: 400, message: "Database Error", data: {} });
-                    return;
-                }
-                resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
-
-                // resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows } });
-            })
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
-
     })
 }
 
@@ -254,11 +261,11 @@ export const interviewRequestFunction = (_body) => {
                 await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' })
                 var hirerCompanyName = interviewDetails[0].hirerCompanyName.toUpperCase()
                 var hirerCompanyNameHtml = hirerCompanyName.fontsize(3).bold()
-                candidateFirstName = interviewDetails[0].candidateFirstName=== null ? '':interviewDetails[0].candidateFirstName.fontsize(3).bold()
-                var positionName = interviewDetails[0].positionName=== null ? '':interviewDetails[0].positionName.fontsize(3).bold()
-                var email = interviewDetails[0].emailAddress=== null ? '':interviewDetails[0].emailAddress.fontsize(3).bold()
-                var phoneNumber = interviewDetails[0].phoneNumber=== null ? '':interviewDetails[0].phoneNumber.fontsize(3).bold()
-                var description = interviewDetails[0].description=== null ? '':interviewDetails[0].description.fontsize(3).bold()
+                candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName.fontsize(3).bold()
+                var positionName = interviewDetails[0].positionName === null ? '' : interviewDetails[0].positionName.fontsize(3).bold()
+                var email = interviewDetails[0].emailAddress === null ? '' : interviewDetails[0].emailAddress.fontsize(3).bold()
+                var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber.fontsize(3).bold()
+                var description = interviewDetails[0].description === null ? '' : interviewDetails[0].description.fontsize(3).bold()
                 var subject = "Request for Interview from " + hirerCompanyName;
                 var textFormat = hirerCompanyNameHtml + config.space + config.RequestText.firstLine.fontsize(3).bold() + config.break + config.RequestText.secondLine.fontsize(3).bold() + config.space + candidateFirstName + config.break + config.RequestText.thirdLine.fontsize(3).bold() + config.space + positionName + config.break + config.RequestText.fourthLine.fontsize(3).bold() + config.space + email + config.break + config.RequestText.fifthLine.fontsize(3).bold() + config.space + phoneNumber + config.break + config.RequestText.sixthLine.fontsize(3).bold() + config.space + description
                 sendMail(config.adminEmail, subject, textFormat, function (err, data) {

@@ -22,7 +22,7 @@ export default {
         "firstLine": "<h3>Hello,",
         "secondLine": "    has been approved by the admin company !</h3>",
         "thirdLine": "<h3>With regards,</h3>",
-        "fourthLine": "<h3>Team ellow.ai</h3>"
+        "fourthLine": "<h3>Team ellow.io</h3>"
     },
     "rejectionMail": {
         "firstLine": "<h3>Hello,",
