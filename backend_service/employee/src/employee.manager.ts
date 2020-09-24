@@ -113,7 +113,7 @@ export const createEmployee = (_body) => {
                                             var companyName=_body.companyName.fontsize(3).bold()
                                             var emailAddress=_body.email.fontsize(3).bold()
                                             var number=_body.telephoneNumber.fontsize(3).bold()
-                                            var textFormat = config.text.firstLine + config.nextLine + config.text.secondLine + config.nextLine+config.text.thirdLine + config.nextLine + config.text.name + config.colon + Name+ config.nextLine + config.text.companyName+config.nextLine+config.text.email+config.colon+emailAddress+config.nextLine+config.text.phone+config.colon+number + config.nextLine+config.text.fifthLine
+                                            var textFormat = config.text.firstLine + config.nextLine + config.text.secondLine + config.nextLine+config.text.thirdLine + config.nextLine + config.text.name.fontsize(3) + config.colon + Name+ config.nextLine + config.text.companyName.fontsize(3)+config.nextLine+config.text.email.fontsize(3)+config.colon+emailAddress+config.nextLine+config.text.phone.fontsize(3)+config.colon+number + config.nextLine+config.text.fifthLine
                                             sendMail(config.adminEmail, config.text.subject, textFormat, function (err, data) {
                                                     if (err) {
                                                             console.log(err)

@@ -1,6 +1,8 @@
 import positionsQuery from './query/positions.query';
 import database from '../common/database/database';
 import { createNotification } from '../common/notifications/notifications';
+import { sendMail } from '../middlewares/mailer'
+import config from '../config/config'
 
 export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
@@ -67,6 +69,9 @@ export const createCompanyPositions = async (_body) => {
                 }
                 const getCompanyNameResponse = await client.query(getCompanyNameQuery);
                 const companyName = getCompanyNameResponse.rows[0].companyName
+                const company=companyName.fontsize(3).bold()
+                const positionName=_body.positionName.fontsize(3).bold()
+                const locationName=_body.locationName.fontsize(3).bold()
                 const companyPositionResponse = await client.query(addCompanyPositionsQuery);
                 const positionId = companyPositionResponse.rows[0].position_id
                 const companyId = _body.companyId
@@ -78,6 +83,16 @@ export const createCompanyPositions = async (_body) => {
                 await client.query(addJobSkillsQuery)
                 if (_body.flag == 0) {
                     await client.query('COMMIT');
+                    var textFormat = config.text.firstLine + config.nextLine + config.text.secondLine + config.nextLine+config.text.thirdLine + config.nextLine + config.text.name.fontsize(3) + config.colon + company+ config.nextLine + config.text.positionName.fontsize(3)+config.colon+positionName+config.nextLine+config.text.location.fontsize(3)+config.colon+locationName + config.nextLine+config.text.fifthLine
+                    sendMail(config.adminEmail, config.text.subject, textFormat, function (err, data) {
+                            if (err) {
+                                    console.log(err)
+                                    reject({ code: 400, message: "Database Error", data: {} });
+                                    return;
+                            }
+                            console.log('Notification mail to admin has been sent !!!');
+                            // resolve({ code: 200, message: "User Approval Successfull", data: {} });
+                    });   
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
                     return;
                 }
@@ -175,6 +190,7 @@ export const fetchPositionDetails = (_body) => {
                     jobCategoryName: step.job_category_name,
                     companyId: step.company_id,
                     companyName: step.company_name,
+                    companySize : step.company_size,
                     hiringStages: [],
                     skills: []
                 }

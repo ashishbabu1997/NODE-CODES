@@ -21,13 +21,11 @@ export default {
         "secondLine": "<h3>An apllication has been registered with us!</h3>",
         "thirdLine": "<h3>Given below are the applicant's details</h3>",
         "subject":"Customer Registration Notification",
-        "name":"Name<",
+        "name":"Name",
         "companyName":"Company Name",
         "email":"Email Address",
         "phone":"Telephone Number",
-        "fifthLine": "Team ellow.io"
-
-
+        "fifthLine": "<h3>Team ellow.io</h3>"
     },
     "defaultHiringStep": {
         "hiringStepName": "ellow hiring step",

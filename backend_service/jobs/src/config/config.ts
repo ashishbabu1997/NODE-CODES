@@ -10,5 +10,25 @@ export default {
         "database": "devdb",
         "password": "DevD8u5er",
         "port":5432
-    }
+    },
+    "mail": {
+        "service": "gmail",
+        "user": "no-reply@ellow.io",
+        "password": "fqlroidzaxmlhgml"
+    },
+    "text": {
+        "firstLine": "<h3>Hello,</h3>",
+        "secondLine": "<h3>A position has been created by a company!</h3>",
+        "thirdLine": "<h3>Given below are the details</h3>",
+        "subject":"Position Creation Notification",
+        "name":"Company Name",
+        "positionName":"Position Name",
+        "location":"Location Name",
+        "fifthLine": "<h3>Team ellow.io</h3>"
+
+
+    },
+    "nextLine": "\n",
+    "adminEmail":"ashish.babu@ellow.io",
+    "colon":":"
 }
