@@ -256,7 +256,7 @@ export const interviewRequestFunction = (_body) => {
                 var hirerCompanyNameHtml = hirerCompanyName.fontsize(3).bold()
                 candidateFirstName = interviewDetails[0].candidateFirstName=== null ? '':interviewDetails[0].candidateFirstName.fontsize(3).bold()
                 var positionName = interviewDetails[0].positionName=== null ? '':interviewDetails[0].positionName.fontsize(3).bold()
-                var email = interviewDetails[0].emailAddress=== null ? '':interviewDetails[0].positionName.fontsize(3).bold()
+                var email = interviewDetails[0].emailAddress=== null ? '':interviewDetails[0].emailAddress.fontsize(3).bold()
                 var phoneNumber = interviewDetails[0].phoneNumber=== null ? '':interviewDetails[0].phoneNumber.fontsize(3).bold()
                 var description = interviewDetails[0].description=== null ? '':interviewDetails[0].description.fontsize(3).bold()
                 var subject = "Request for Interview from " + hirerCompanyName;
