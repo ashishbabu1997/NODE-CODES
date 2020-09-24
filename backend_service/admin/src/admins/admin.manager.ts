@@ -80,7 +80,7 @@ export const listUsersDetails = (_body) => {
                     numbers: true
                 });
                 var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                const subject = " ellow.ai LOGIN PASSWORD "
+                const subject = " ellow.io LOGIN PASSWORD "
                 const storePasswordQuery = {
                     name: 'store-encrypted-password',
                     text: admineQuery.storePassword,
@@ -122,7 +122,7 @@ export const listUsersDetails = (_body) => {
                 })
                 var desc=_body.description
                 var description=desc.fontsize(3).bold()
-                var subject="ellow.ai ACCOUNT REJECTION MAIL "
+                var subject="ellow.io ACCOUNT REJECTION MAIL "
                 var textFormat = config.rejectText.firstLine + config.nextLine + config.rejectText.secondLine + config.nextLine+description+config.nextLine+config.rejectText.thirdLine + config.nextLine + config.rejectText.fourthLine + config.nextLine + config.rejectText.fifthLine
                 sendMail(_body.email, subject, textFormat, function (err, data) {
                     if (err) {
