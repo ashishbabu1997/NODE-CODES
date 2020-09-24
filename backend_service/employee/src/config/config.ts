@@ -18,11 +18,14 @@ export default {
     },
     "text": {
         "firstLine": "<h3>Hello,</h3>",
-        "secondLine": "<h3>Thank you for registering with ellow.io !</h3>",
-        "thirdLine": "<h3>Please enter the password given below to login with us.</h3>",
-        "password": "<h3>Your password is:-    ",
-        "fourthLine": "<h3>With regards,</h3>",
-        "fifthLine": "<h3>Team ellow.io</h3>"
+        "secondLine": "<h3>An apllication has been registered with us!</h3>",
+        "thirdLine": "<h3>Given below are the applicant's details</h3>",
+        "subject":"Customer Registration Notification",
+        "name":"Name<",
+        "companyName":"Company Name",
+        "email":"Email Address",
+        "phone":"Telephone Number",
+        "fifthLine": "Team ellow.io"
 
 
     },
@@ -38,5 +41,7 @@ export default {
             { "hiringStageName": "Make Offer", "hiringStageDescription": null, "hiringStageOrder": 6 }
         ]
     },
-    "nextLine": "\n"
+    "nextLine": "\n",
+    "adminEmail":"ashish.babu@ellow.io",
+    "colon":":"
 };

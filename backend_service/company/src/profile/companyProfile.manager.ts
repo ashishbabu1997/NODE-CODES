@@ -24,7 +24,7 @@ export const get_Details = (_body) => {
                 "accountType":response.accountType === null ? '' : response.accountType,
                 "roleId":response.roleId === null ? '' : response.roleId,
                 "companySizeId":response.companySizeId === null ? '' : response.companySizeId,
-                "website":response.website === null ? '' : response.website,
+                "company_website":response.website === null ? '' : response.website,
                 // "facebookId": response.facebookId === null ? '' : response.facebookId,
                 // "instagramId": response.instagramId === null ? '' : response.instagramId,
                 // "twitterId": response.twitterId === null ? '' : response.twitterId,
