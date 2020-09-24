@@ -11,7 +11,7 @@ export default {
         "password": "DevD8u5er",
         "port": 5432
     },
-    "adminEmail":"ashish.babu@ellow.io",
+    "adminEmail":"jjoseph@ellow.io",
     "mail": {
         "service": "gmail",
         "user": "no-reply@ellow.io",
