@@ -190,6 +190,7 @@ export const fetchPositionDetails = (_body) => {
                     jobCategoryName: step.job_category_name,
                     companyId: step.company_id,
                     companyName: step.company_name,
+                    companySize : step.company_size,
                     hiringStages: [],
                     skills: []
                 }
