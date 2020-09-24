@@ -242,7 +242,7 @@ export const interviewRequestFunction = (_body) => {
                 }
                 await client.query(insertQuery);
                 const candidateDetails = {
-                    name: 'insert-make-offer-status',
+                    name: 'get-interview-details',
                     text: candidateQuery.getInterviewDetails,
                     values: [_body.candidateId, _body.companyId],
                 }
