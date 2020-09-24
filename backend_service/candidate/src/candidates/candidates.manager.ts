@@ -254,11 +254,11 @@ export const interviewRequestFunction = (_body) => {
                 await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' })
                 var hirerCompanyName = interviewDetails[0].hirerCompanyName.toUpperCase()
                 var hirerCompanyNameHtml = hirerCompanyName.fontsize(3).bold()
-                candidateFirstName = interviewDetails[0].candidateFirstName.fontsize(3).bold()
-                var positionName = interviewDetails[0].positionName.fontsize(3).bold()
-                var email = interviewDetails[0].emailAddress.fontsize(3).bold()
-                var phoneNumber = interviewDetails[0].phoneNumber.fontsize(3).bold()
-                var description = interviewDetails[0].description.fontsize(3).bold()
+                candidateFirstName = interviewDetails[0].candidateFirstName=== null ? '':interviewDetails[0].candidateFirstName.fontsize(3).bold()
+                var positionName = interviewDetails[0].positionName=== null ? '':interviewDetails[0].positionName.fontsize(3).bold()
+                var email = interviewDetails[0].emailAddress=== null ? '':interviewDetails[0].positionName.fontsize(3).bold()
+                var phoneNumber = interviewDetails[0].phoneNumber=== null ? '':interviewDetails[0].phoneNumber.fontsize(3).bold()
+                var description = interviewDetails[0].description=== null ? '':interviewDetails[0].description.fontsize(3).bold()
                 var subject = "Request for Interview from " + hirerCompanyName;
                 var textFormat = hirerCompanyNameHtml + config.space + config.RequestText.firstLine.fontsize(3).bold() + config.break + config.RequestText.secondLine.fontsize(3).bold() + config.space + candidateFirstName + config.break + config.RequestText.thirdLine.fontsize(3).bold() + config.space + positionName + config.break + config.RequestText.fourthLine.fontsize(3).bold() + config.space + email + config.break + config.RequestText.fifthLine.fontsize(3).bold() + config.space + phoneNumber + config.break + config.RequestText.sixthLine.fontsize(3).bold() + config.space + description
                 sendMail(config.adminEmail, subject, textFormat, function (err, data) {
