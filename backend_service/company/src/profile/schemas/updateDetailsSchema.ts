@@ -192,7 +192,7 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    website: Joi.string().required().error(function (errors) {
+    company_website: Joi.string().required().error(function (errors) {
         errors.forEach(function (err) {
             console.log(err);
             switch (err.code) {
