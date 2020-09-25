@@ -93,5 +93,18 @@ export default Joi.object().keys({
             }
         });
         return errors;
+    }),
+    contactNumber: Joi.string().error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "string.base":
+                    err.message = "Contact Number must be a string"
+                    break;
+                default:
+                    err.message = "Invalid Contact Number"
+                    break;
+            }
+        });
+        return errors;
     })
 });
