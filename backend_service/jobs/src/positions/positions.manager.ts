@@ -352,7 +352,7 @@ export const updateCompanyPositions = async (_body) => {
                 console.log(previousData,"sadas")
                 if (previousData.rows.length > 0) {
                     const assessmentTraitsOld = previousData.rows;
-                    const deletedAssessmentTraits = assessmentTraitsOld.filter(e => assessmentTraits.indexOf(e) == -1).map(item => { return item.positionReviewId });
+                    const deletedAssessmentTraits = assessmentTraitsOld.filter(e => assessmentTraits.indexOf(e.reviewName) == -1).map(item => { return item.positionReviewId });
                     const deletedAssessmentTraitsQuery = {
                         name: 'delete-company-services',
                         text: positionsQuery.deleteAssessmentTraits,
