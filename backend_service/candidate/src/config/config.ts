@@ -17,17 +17,17 @@ export default {
         "user": "sales@ellow.io",
         "password": "yteinevvuuchtmvb"
     },
-    "nextLine":"\n",
+    "nextLine":"<br>",
     "approvalMail": {
         "firstLine": "Hello,",
         "secondLine": "    has been approved by the admin company !</h3>",
-        "thirdLine": "<h3>With regards,</h3>",
+        "thirdLine": "With regards,",
         "fourthLine": "Team ellow.io"
     },
     "rejectionMail": {
-        "firstLine": ">Hello,",
+        "firstLine": "Hello,",
         "secondLine": "   has been rejected by the admin company !</h3>",
-        "thirdLine": "<h3>With regards,</h3>",
+        "thirdLine": "With regards",
         "fourthLine": "Team ellow.io"
     },
     "space":" ",

@@ -17,18 +17,18 @@ export default {
         "password": "yteinevvuuchtmvb"
     },
     "text": {
-        "firstLine": ">Hello,",
+        "firstLine": "Hello,",
         "secondLine": "<h3>A position has been created by a company!</h3>",
         "thirdLine": "<h3>Given below are the details</h3>",
         "subject":"Position Creation Notification",
         "name":"Company Name",
         "positionName":"Position Name",
-        "location":"Location Name",
+        "fourthLine":"With regards,",
         "fifthLine": "Team ellow.io"
 
 
     },
-    "nextLine": "\n",
+    "nextLine": "<br>",
     "adminEmail":"deena.s@ellow.io",
     "colon":":"
 }

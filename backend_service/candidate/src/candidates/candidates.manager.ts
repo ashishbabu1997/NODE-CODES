@@ -163,14 +163,14 @@ export const candidateClearance = (_body) => {
                         candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
                     }
                     else if (_body.userRoleId == 2) {
-                        message = `${firstName + ' ' + lastName} from ${companyName} has been selected for the position ${positionName}`;
+                        message = `${firstName + ' ' + lastName} from ${companyName} has been selected for the position:- ${positionName}`;
                         makeOffer = 1
                         adminApproveStatus = 1;
                         comment = _body.comment;
                         value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Approval Mail";
-                        textFormat = config.approvalMail.firstLine.fontsize(3).bold() + config.nextLine + message.fontsize(3).bold()+config.nextLine+config.RequestText.fourthLine.fontsize(3).bold()
+                        textFormat = config.approvalMail.firstLine.fontsize(3).bold() + config.nextLine + message.fontsize(3).bold()+config.nextLine+config.approvalMail.thirdLine.fontsize(3).bold()+config.nextLine+config.approvalMail.fourthLine.fontsize(3).bold()
                         console.log(textFormat)
                         sendMail(config.adminEmail, subj, textFormat, function (err, data) {
                             if (err) {
@@ -188,14 +188,14 @@ export const candidateClearance = (_body) => {
                         value = [_body.candidateId, adminApproveStatus, comment]
                         candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
                     } else if (_body.userRoleId != 1) {
-                        message = `${firstName + ' ' + lastName} from ${companyName} has been rejected for the position ${positionName}`;
+                        message = `${firstName + ' ' + lastName} from ${companyName} has been rejected for the position:- ${positionName}`;
                         makeOffer = 0
                         adminApproveStatus = 1;
                         comment = _body.comment;
                         value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Rejection Mail";
-                        textFormat = config.rejectionMail.firstLine.fontsize(3).bold() + config.nextLine + message.fontsize(3).bold()+config.nextLine+config.RequestText.fourthLine.fontsize(3).bold()
+                        textFormat = config.rejectionMail.firstLine.fontsize(3).bold() + config.nextLine + message.fontsize(3).bold()+config.nextLine+config.rejectionMail.thirdLine.fontsize(3).bold()+config.nextLine+config.rejectionMail.fourthLine.fontsize(3).bold()
                         sendMail(config.adminEmail, subj, textFormat, function (err, data) {
                             if (err) {
                                 console.log(err)

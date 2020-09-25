@@ -417,7 +417,7 @@ export const publishCompanyPositions = async (_body) => {
                 const message = `A new position named ${positionName} has been created by ${companyName}.`
                 await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position' })
                 var subject='New position notification'
-                var texFormat=config.text.firstLine.fontsize(3).bold()+config.nextLine+message.fontsize(3).bold()+config.nextLine+config.text.fifthLine.fontsize(3).bold()
+                var texFormat=config.text.firstLine.fontsize(3).bold()+config.nextLine+message.fontsize(3).bold()+config.nextLine+config.text.fourthLine.fontsize(3).bold()+config.nextLine+config.text.fifthLine.fontsize(3).bold()
                 sendMail(config.adminEmail, subject,texFormat, function (err, data) {
                     if (err) {
                             console.log(err)
