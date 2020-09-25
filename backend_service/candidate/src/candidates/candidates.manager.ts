@@ -170,7 +170,7 @@ export const candidateClearance = (_body) => {
                         value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Approval Mail";
-                        textFormat = config.approvalMail.firstLine + config.nextLine + candidateFirstName + " " + "from" + " " + candidateCompanyName + config.approvalMail.secondLine + config.nextLine + config.approvalMail.thirdLine + config.nextLine + config.approvalMail.fourthLine
+                        textFormat = config.approvalMail.firstLine.fontsize(3).bold() + config.nextLine + message.fontsize(3).bold()+config.nextLine+config.RequestText.fourthLine.fontsize(3).bold()
                         console.log(textFormat)
                         sendMail(config.adminEmail, subj, textFormat, function (err, data) {
                             if (err) {
@@ -195,7 +195,7 @@ export const candidateClearance = (_body) => {
                         value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Rejection Mail";
-                        textFormat = config.rejectionMail.firstLine + config.nextLine + candidateFirstName + " " + "from" + " " + candidateCompanyName + config.rejectionMail.secondLine + config.nextLine + config.rejectionMail.thirdLine + config.nextLine + config.rejectionMail.fourthLine
+                        textFormat = config.rejectionMail.firstLine.fontsize(3).bold() + config.nextLine + message.fontsize(3).bold()+config.nextLine+config.RequestText.fourthLine.fontsize(3).bold()
                         sendMail(config.adminEmail, subj, textFormat, function (err, data) {
                             if (err) {
                                 console.log(err)
@@ -215,14 +215,14 @@ export const candidateClearance = (_body) => {
                 await client.query(candidateApprovalQuery);
                 await client.query('COMMIT');
                 _body.userRoleId != 1 && await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
-                sendMail(config.adminEmail, subj, textFormat, (err, data) => {
-                    if (err) {
-                        console.log(err)
-                        reject({ code: 400, message: "Database Error", data: {} });
-                        return;
-                    }
+                // sendMail(config.adminEmail, subj, textFormat, (err, data) => {
+                //     if (err) {
+                //         console.log(err)
+                //         reject({ code: 400, message: "Database Error", data: {} });
+                //         return;
+                //     }
                     resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
-                });
+                // });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')

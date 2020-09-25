@@ -14,21 +14,21 @@ export default {
     "adminEmail":"deena.s@ellow.io",
     "mail": {
         "service": "gmail",
-        "user": "no-reply@ellow.io",
-        "password": "fqlroidzaxmlhgml"
+        "user": "sales@ellow.io",
+        "password": "yteinevvuuchtmvb"
     },
     "nextLine":"\n",
     "approvalMail": {
-        "firstLine": "<h3>Hello,",
+        "firstLine": "Hello,",
         "secondLine": "    has been approved by the admin company !</h3>",
         "thirdLine": "<h3>With regards,</h3>",
-        "fourthLine": "<h3>Team ellow.io</h3>"
+        "fourthLine": "Team ellow.io"
     },
     "rejectionMail": {
-        "firstLine": "<h3>Hello,",
+        "firstLine": ">Hello,",
         "secondLine": "   has been rejected by the admin company !</h3>",
         "thirdLine": "<h3>With regards,</h3>",
-        "fourthLine": "<h3>Team ellow.io</h3>"
+        "fourthLine": "Team ellow.io"
     },
     "space":" ",
     "break":"<br>",

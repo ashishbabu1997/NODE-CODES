@@ -23,5 +23,5 @@ export default {
     getAssessmentTraitOld: `SELECT pr.review_name as "reviewName",pr.position_review_id as "positionReviewId" from position_review pr WHERE pr.position_id = $1 AND pr.status = true`,
     deleteAssessmentTraits: `delete from position_review WHERE position_id  = $1 AND status = true  AND position_review_id = any($2)`,
     addAssessmentTraits: `INSERT into position_review (position_id  ,review_name,created_on,updated_on ) values ($1, unnest ($2::varchar[]),$3,$4) ON CONFLICT ON CONSTRAINT position_review_position_id_review_name_status_key DO NOTHING`,
-    getNotificationDetails: `select p.company_id as "companyId", c.company_name as "companyName"from positions p left join company c on c.company_id = p.company_id where p.position_id = $1 and p.status = true`
+    getNotificationDetails: `select p.company_id as "companyId",p.position_name as "positionName", c.company_name as "companyName"from positions p left join company c on c.company_id = p.company_id where p.position_id = $1 and p.status = true`
 } 

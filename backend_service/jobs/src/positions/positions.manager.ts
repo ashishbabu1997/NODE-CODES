@@ -82,17 +82,7 @@ export const createCompanyPositions = async (_body) => {
                 }
                 await client.query(addJobSkillsQuery)
                 if (_body.flag == 0) {
-                    await client.query('COMMIT');
-                    var textFormat = config.text.firstLine + config.nextLine + config.text.secondLine + config.nextLine+config.text.thirdLine + config.nextLine + config.text.name.fontsize(3) + config.colon + company+ config.nextLine + config.text.positionName.fontsize(3)+config.colon+positionName+config.nextLine+config.text.location.fontsize(3)+config.colon+locationName + config.nextLine+config.text.fifthLine
-                    sendMail(config.adminEmail, config.text.subject, textFormat, function (err, data) {
-                            if (err) {
-                                    console.log(err)
-                                    reject({ code: 400, message: "Database Error", data: {} });
-                                    return;
-                            }
-                            console.log('Notification mail to admin has been sent !!!');
-                            // resolve({ code: 200, message: "User Approval Successfull", data: {} });
-                    });   
+                    await client.query('COMMIT'); 
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
                     return;
                 }
@@ -421,9 +411,21 @@ export const publishCompanyPositions = async (_body) => {
                 }
                 const details = await client.query(getNotificationDetailsQuery);
                 await client.query('COMMIT');
-                const { companyId, companyName } = details.rows[0];
-                const message = `A new position has been created by ${companyName}.`
+
+                const { companyId, companyName,positionName } = details.rows[0];
+                const message = `A new position named ${positionName} has been created by ${companyName}.`
                 await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position' })
+                var subject='New position notification'
+                var texFormat=config.text.firstLine.fontsize(3).bold()+config.nextLine+message.fontsize(3).bold()+config.nextLine+config.text.fifthLine.fontsize(3).bold()
+                sendMail(config.adminEmail, subject,texFormat, function (err, data) {
+                    if (err) {
+                            console.log(err)
+                            reject({ code: 400, message: "Database Error", data: {} });
+                            return;
+                    }
+                    console.log('Notification mail to admin has been sent !!!');
+                    // resolve({ code: 200, message: "User Approval Successfull", data: {} });
+            });
                 resolve({ code: 200, message: "Position published successfully", data: {} });
             } catch (e) {
                 console.log(e)
