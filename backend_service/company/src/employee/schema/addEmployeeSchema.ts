@@ -81,22 +81,6 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    contactNumber: Joi.string().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                    err.message = "Contact Number should not be empty";
-                    break;
-                case "string.base":
-                    err.message = "Contact Number must be a string"
-                    break;
-                default:
-                    err.message = "Invalid Contact Number"
-                    break;
-            }
-        });
-        return errors;
-    }),
     document: Joi.string().allow('').error(errors => {
         errors.forEach(err => {
             switch (err.code) {
