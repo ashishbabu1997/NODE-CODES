@@ -190,7 +190,7 @@ export const candidateClearance = (_body) => {
                     } else if (_body.userRoleId != 1) {
                         message = `${firstName + ' ' + lastName} from ${companyName} has been rejected for the position ${positionName}`;
                         makeOffer = 0
-                        adminApproveStatus = 0;
+                        adminApproveStatus = 1;
                         comment = _body.comment;
                         value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
