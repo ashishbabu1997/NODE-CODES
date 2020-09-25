@@ -18,7 +18,7 @@ export default {
     },
     "text": {
         "firstLine": "<h3>Hello,</h3>",
-        "secondLine": "<h3>An apllication has been registered with us!</h3>",
+        "secondLine": "<h3>An applicant has been registered with us!</h3>",
         "thirdLine": "<h3>Given below are the applicant's details</h3>",
         "subject":"Customer Registration Notification",
         "name":"Name",
@@ -39,7 +39,7 @@ export default {
             { "hiringStageName": "Make Offer", "hiringStageDescription": null, "hiringStageOrder": 6 }
         ]
     },
-    "nextLine": "\n",
+    "nextLine": "<br>",
     "adminEmail":"deena.s@ellow.io",
     "colon":":"
 };
