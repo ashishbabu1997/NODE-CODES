@@ -94,7 +94,7 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    contactNumber: Joi.string().error(errors => {
+    contactNumber: Joi.string().allow('').error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "string.base":
