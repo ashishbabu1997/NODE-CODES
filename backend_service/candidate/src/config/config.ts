@@ -33,7 +33,7 @@ export default {
     "space":" ",
     "break":"<br>",
     "RequestText":{
-        "firstLine": "has been requested to schedule an interview with the candidate whose details are as follows",
+        "firstLine": "has been requested to schedule an interview for a candidate with the below details",
         "secondLine": "Name:",
         "thirdLine": "Position:",
         "fourthLine": "Email Address:",

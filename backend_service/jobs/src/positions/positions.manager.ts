@@ -415,9 +415,12 @@ export const publishCompanyPositions = async (_body) => {
 
                 const { companyId, companyName,positionName } = details.rows[0];
                 const message = `A new position named ${positionName} has been created by ${companyName}.`
+                var cName=companyName.fontsize(3).bold()
+                var cpName=positionName.fontsize(3).bold()
+                var msg= 'A new position named'+' '+cpName+' '+'has been created by'+' '+cName
                 await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position' })
                 var subject='New position notification'
-                var texFormat=config.text.firstLine.fontsize(3).bold()+config.nextLine+message.fontsize(3).bold()+config.nextLine+config.text.fourthLine.fontsize(3).bold()+config.nextLine+config.text.fifthLine.fontsize(3).bold()
+                var texFormat=config.text.firstLine+config.nextLine+msg+config.nextLine+config.text.fourthLine+config.nextLine+config.text.fifthLine
                 sendMail(config.adminEmail, subject,texFormat, function (err, data) {
                     if (err) {
                             console.log(err)
