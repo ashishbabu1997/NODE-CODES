@@ -7,7 +7,7 @@
       "allowJs": true
     },
     "include": [
-      "*.ts", "employee/employee.route.ts", "employee/employee.controller.ts"
+      "*.ts", "employee/employee.route.ts", "employee/employee.controller.ts",".env"
     ],
     "exclude": [
       "node_modules"
