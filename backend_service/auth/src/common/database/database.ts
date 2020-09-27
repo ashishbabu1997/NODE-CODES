@@ -1,5 +1,14 @@
 import {Pool} from 'pg';
-import config from '../../config/config';
+import * as dotenv from 'dotenv'
+dotenv.config()
 export default () => {
-    return new Pool(config.db);
+    return new Pool({
+        "user": process.env.USER,
+        "host": process.env.HOST,
+        "database": process.env.DATABASE,
+        "password": process.env.PASSWORD,
+        "port":process.env.PORT
+    });
 }
+
+

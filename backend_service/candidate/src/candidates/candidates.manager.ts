@@ -164,16 +164,14 @@ export const candidateClearance = (_body) => {
                     }
                     else if (_body.userRoleId == 2) {
                         message = `${firstName + ' ' + lastName} from ${companyName} has been selected for the position:${positionName}`;
-                        var fName=firstName.toUpperCase()
-                        var lname=lastName.toUpperCase()
-                        var approveMessage=fName.fontsize(3).bold()+' '+lname.fontsize(3).bold()+' '+'from'+' '+companyName.fontsize(3).bold()+' '+'has been selected for the position'+' '+positionName.fontsize(3).bold()
+                        var approveMessage=firstName.fontsize(3).bold()+'  '+lastName.fontsize(3).bold()+'   '+'from'+'   '+companyName.fontsize(3).bold()+'   '+'has been selected for the position'+'   '+positionName.fontsize(3).bold()
                         makeOffer = 1
                         adminApproveStatus = 1;
                         comment = _body.comment;
                         value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Selection Mail";
-                        textFormat = config.approvalMail.firstLine + config.nextLine + approveMessage+config.nextLine+config.approvalMail.thirdLine+config.nextLine+config.approvalMail.fourthLine
+                        textFormat = config.approvalMail.firstLine + config.nextLine+config.nextLine + approveMessage+config.nextLine+config.nextLine+config.approvalMail.thirdLine+config.nextLine+config.approvalMail.fourthLine
                         console.log(textFormat)
                         sendMail(config.adminEmail, subj, textFormat, function (err, data) {
                             if (err) {
@@ -191,9 +189,7 @@ export const candidateClearance = (_body) => {
                         value = [_body.candidateId, adminApproveStatus, comment]
                         candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
                     } else if (_body.userRoleId != 1) {
-                        var fname=firstName.toUpperCase()
-                        var lName=lastName.toUpperCase()
-                        var rejectMessage=fname.fontsize(3).bold()+' '+lName.fontsize(3).bold()+' '+'from'+' '+companyName.fontsize(3).bold()+' '+'has been rejected for the position'+' '+positionName.fontsize(3).bold()
+                        var rejectMessage=firstName.fontsize(3).bold()+'   '+lastName.fontsize(3).bold()+'   '+'from'+'   '+companyName.fontsize(3).bold()+'   '+'has been rejected for the position'+'   '+positionName.fontsize(3).bold()
                         message = `${firstName + ' ' + lastName} from ${companyName} has been rejected for the position:- ${positionName}`;
                         makeOffer = 0
                         adminApproveStatus = 1;
@@ -201,7 +197,7 @@ export const candidateClearance = (_body) => {
                         value = [_body.candidateId, adminApproveStatus, comment, makeOffer]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Rejection Mail";
-                        textFormat = config.rejectionMail.firstLine+ config.nextLine + rejectMessage+config.nextLine+config.rejectionMail.thirdLine+config.nextLine+config.rejectionMail.fourthLine
+                        textFormat = config.rejectionMail.firstLine+ config.nextLine + config.nextLine+rejectMessage+config.nextLine+config.nextLine+config.rejectionMail.thirdLine+config.nextLine+config.rejectionMail.fourthLine
                         sendMail(config.adminEmail, subj, textFormat, function (err, data) {
                             if (err) {
                                 console.log(err)
@@ -271,9 +267,9 @@ export const interviewRequestFunction = (_body) => {
                 var positionName = interviewDetails[0].positionName === null ? '' : interviewDetails[0].positionName.fontsize(3).bold()
                 var email = interviewDetails[0].emailAddress === null ? '' : interviewDetails[0].emailAddress.fontsize(3).bold()
                 var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber.fontsize(3).bold()
-                var description = interviewDetails[0].description === null ? '' : interviewDetails[0].description.fontsize(3).bold()
+                // var description = interviewDetails[0].description === null ? '' : interviewDetails[0].description.fontsize(3).bold()
                 var subject = "Request for Interview from " + hirerCompanyName;
-                var textFormat = hirerCompanyNameHtml + config.space + config.RequestText.firstLine.fontsize(3).bold() + config.break + config.RequestText.secondLine.fontsize(3).bold() + config.space + candidateFirstName + config.break + config.RequestText.thirdLine.fontsize(3).bold() + config.space + positionName + config.break + config.RequestText.fourthLine.fontsize(3).bold() + config.space + email + config.break + config.RequestText.fifthLine.fontsize(3).bold() + config.space + phoneNumber + config.break + config.RequestText.sixthLine.fontsize(3).bold() + config.space + description
+                var textFormat = hirerCompanyNameHtml + config.space + config.RequestText.firstLine.fontsize(3).bold() + config.break + config.RequestText.secondLine.fontsize(3).bold() + config.space + candidateFirstName + config.break + config.RequestText.thirdLine.fontsize(3).bold() + config.space + positionName + config.break + config.RequestText.fourthLine.fontsize(3).bold() + config.space + email + config.break + config.RequestText.fifthLine.fontsize(3).bold() + config.space + phoneNumber + config.break + config.RequestText.sixthLine.fontsize(3).bold() + config.break+config.break+config.RequestText.seventhLine.fontsize(3).bold()+config.break+config.RequestText.eigthLine.fontsize(3).bold()
                 sendMail(config.adminEmail, subject, textFormat, function (err, data) {
                     if (err) {
                         console.log(err)

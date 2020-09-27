@@ -17,15 +17,16 @@ export default {
         "password": "yteinevvuuchtmvb"
     },
     "text": {
-        "firstLine": "<h3>Hello,</h3>",
-        "secondLine": "<h3>An applicant has been registered with us!</h3>",
-        "thirdLine": "<h3>Given below are the applicant's details</h3>",
+        "firstLine": "Hello,",
+        "secondLine": "An applicant has been registered with us!",
+        "thirdLine": "Given below are the applicant's details",
         "subject":"Customer Registration Notification",
         "name":"Name",
         "companyName":"Company Name",
         "email":"Email Address",
         "phone":"Telephone Number",
-        "fifthLine": "<h3>Team ellow.io</h3>"
+        "fifthLine": "With regards,",
+        "sixthLine":"Team ellow.io"
     },
     "defaultHiringStep": {
         "hiringStepName": "ellow hiring step",

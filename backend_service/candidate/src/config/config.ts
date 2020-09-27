@@ -38,7 +38,9 @@ export default {
         "thirdLine": "Position:",
         "fourthLine": "Email Address:",
         "fifthLine": "Phone Number:",
-        "sixthLine": "Description:"
+        "sixthLine": "Description:",
+        "seventhLine":"With regards,",
+        "eigthLine":"Team ellow.io"
 
 
     }

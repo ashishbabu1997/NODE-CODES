@@ -17,8 +17,10 @@ export const sendOtp = (_body) => {
       text: Query.checkStatus,
       values: [_body]
   }
+  console.log("Entering DB conectivity")
   database().query(checkStatusQuery, (error, results) => {
       if (error) {
+        console.log(error)
           reject({ code: 400, message: "Failed. Please try again.", data:  {} });
           return;
         }
