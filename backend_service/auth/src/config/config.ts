@@ -17,17 +17,16 @@ export default {
         "password": "yteinevvuuchtmvb",
     },
     "text": {
-        "firstLine": "<h3>Hello,</h3>",
-        "thirdLine": "<h3>Please click the link below to reset your password</h3>",
-        "link": "<h3>Your link is:-</h3>",
-        "fourthLine": "<h3>With regards,</h3>",
-        "fifthLine": "<h3>Team ellow.io</h3>"
+        "firstLine": "Hello,",
+        "thirdLine": "Please click the link below to reset your password",
+        "fourthLine": "With regards,",
+        "fifthLine": "Team ellow.io"
 
 
     },
     "emailUsername":"no-reply@ellow.io",
     "adminPassword":"admin@ellow",
-    "nextLine":"\n",
+    "nextLine":"<br>",
     "jwtSecretKey": "elL0wA!",
     "timeLimit":65
 }

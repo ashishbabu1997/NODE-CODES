@@ -34,7 +34,7 @@ export const sendLink = (_body) => {
         }
         var link=_body.host+"/passwordset/"+token
         const subject="ellow.ai RESET PASSWORD LINK"
-        var textFormat = config.text.firstLine + config.nextLine + config.text.thirdLine + config.nextLine + config.text.link + link + config.nextLine + config.text.fourthLine + config.nextLine + config.text.fifthLine
+        var textFormat = config.text.firstLine.fontsize(3).bold() + config.nextLine +config.nextLine+ config.text.thirdLine.fontsize(3).bold() + config.nextLine  + link + config.nextLine+config.nextLine + config.text.fourthLine.fontsize(3).bold() + config.nextLine + config.text.fifthLine.fontsize(3).bold()
         sendMail(_body.email, subject,textFormat, function(err,data) {
                 if (err) {
                   console.log("........Email ERROR:.........",err)

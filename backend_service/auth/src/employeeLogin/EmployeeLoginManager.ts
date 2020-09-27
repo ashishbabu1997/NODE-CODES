@@ -7,6 +7,7 @@ import * as crypto from 'crypto';
 
 export const employeeLoginMethod = (_body) => {
     return new Promise((resolve, reject) => {
+        var emailID=_body.email.toLowerCase()
             var hashedPassword = crypto
                     .createHash("sha256")
                     .update(_body.password)
@@ -14,7 +15,7 @@ export const employeeLoginMethod = (_body) => {
             const query = {
             name: 'employee-login',
             text: employeeLoginQuery.employeeLogin,
-            values: [_body.email, hashedPassword],
+            values: [emailID, hashedPassword],
             }
             database().query(query, (error, results) => {
             if (error) {

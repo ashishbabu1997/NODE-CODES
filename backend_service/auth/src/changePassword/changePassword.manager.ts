@@ -16,7 +16,7 @@ export const addNewPassword = (_body) => {
             database().query(query, (error, results) => {
             if (error || results.rows[0]===undefined) {
                 console.log(error)
-                reject({ code: 400, message: "Your current password or email is incorrect", data: {} });
+                reject({ code: 400, message: "Your current password  is incorrect", data: {} });
                 return;
             }
             if (_body.newPassword == _body.confirmPassword)
