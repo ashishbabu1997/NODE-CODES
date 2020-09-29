@@ -16,7 +16,7 @@ router
     .get('/companyNames',validate(getCompanyNameSchema),getCompanyNames)
     .post('/', validate(addPositionSchema),createPositions)
     .put('/', validate(updatePositionSchema),updatePositions)
-    .get('/:positionId',validate(positionIdSchema), getPositionDetails)
+    .get('/:positionId',getPositionDetails)
     .put('/hiringSteps', validate(editPositionHiringStepSchema), editPositionHiringSteps)
     .post('/publish', validate(positionIdSchema), publishPositions)
     .post('/close',validate(positionIdSchema),closeJob)
