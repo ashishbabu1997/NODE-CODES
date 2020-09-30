@@ -120,7 +120,7 @@ export const saveCandidateProfile = (_body) => {
                 let candidates = candidatesArray.map(c => {
                     return [c.candidateFirstName, c.candidateLastName, c.companyId, c.jobReceivedId, c.coverNote,
                     c.rate, c.billingTypeId, c.currencyTypeId, c.email, c.phoneNumber, c.resume, c.positionId,
-                        currentTime, currentTime, c.candidateStatus]
+                        currentTime, currentTime,c.userId,c.userId, c.candidateStatus]
                 })
                 const saveCandidateQuery = {
                     name: 'add-Profile',
@@ -138,7 +138,7 @@ export const saveCandidateProfile = (_body) => {
                 const updateCompanyJobStatusQuery = {
                     name: 'update-company-job-status',
                     text: jobReceivedQuery.updateCompanyJobStatus,
-                    values: [_body.candidates[0].jobReceivedId, _body.candidates[0].companyId, currentTime, status],
+                    values: [_body.candidates[0].jobReceivedId,status, _body.candidates[0].companyId,_body.candidates[0].userId, currentTime],
                 }
                 await client.query(updateCompanyJobStatusQuery);
                 await client.query('COMMIT');
