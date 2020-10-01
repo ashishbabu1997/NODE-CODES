@@ -444,13 +444,13 @@ export const publishCompanyPositions = async (_body) => {
         })
     })
 }
-export const closeJobStatus = (_body) => {
+export const changeJobStatus = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
         const positionQuery = {
-            name: 'close-job-status',
-            text: positionsQuery.closeJobs,
-            values: [currentTime, _body.positionId],
+            name: 'change-job-status',
+            text: positionsQuery.changeJobStatus,
+            values: [currentTime, _body.positionId,_body.jobStatus],
         }
         database().query(positionQuery, (error, results) => {
             if (error) {
@@ -459,9 +459,9 @@ export const closeJobStatus = (_body) => {
                 return;
             }
             const jobReceivedQuery = {
-                name: 'close-job-status',
-                text: positionsQuery.closeJobReceived,
-                values: [currentTime, _body.positionId],
+                name: 'change-job-received-status',
+                text: positionsQuery.changeJobReceivedStatus,
+                values: [currentTime, _body.positionId,_body.jobStatus],
             }
             database().query(jobReceivedQuery, (error, results) => {
                 if (error) {
@@ -470,7 +470,7 @@ export const closeJobStatus = (_body) => {
                     return;
                 }
                 else {
-                    resolve({ code: 200, message: "Job status closed", data: {} });
+                    resolve({ code: 200, message: "Job status changed", data: {} });
                 }
             })
         })

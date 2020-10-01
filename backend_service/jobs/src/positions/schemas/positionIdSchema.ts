@@ -16,5 +16,21 @@ export default Joi.object().keys({
             }
         });
         return errors;
+    }),
+    jobStatus: Joi.number().required().error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "any.required":
+                    err.message = "Job Status should not be empty!";
+                    break;
+                case "number.base":
+                    err.message = "Job Status must be a number"
+                    break;
+                default:
+                    err.message = "Invalid Job Status"
+                    break;
+            }
+        });
+        return errors;
     })
 });

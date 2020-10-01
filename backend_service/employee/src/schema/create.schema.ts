@@ -78,7 +78,7 @@ export default Joi.object().keys({
     //     });
     //     return errors;
     // }),
-    email: Joi.string().required().error(function (errors) {
+    email: Joi.string().email({ tlds: { allow: false } }).required().error(function (errors) {
         errors.forEach(function (err) {
             switch (err.code) {
                 case "any.required":
@@ -142,4 +142,4 @@ export default Joi.object().keys({
     //     });
     //     return errors;
     // })
-});
+}).unknown(true);

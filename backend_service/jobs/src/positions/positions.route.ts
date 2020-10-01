@@ -1,4 +1,4 @@
-import { editPositionHiringSteps, getPositionDetails, createPositions, getPositions, updatePositions, publishPositions,closeJob,getCompanyNames } from './positions.controller';
+import { editPositionHiringSteps, getPositionDetails, createPositions, getPositions, updatePositions, publishPositions,changePositionStatus,getCompanyNames } from './positions.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addPositionSchema from './schemas/addPositionSchema';
@@ -19,6 +19,6 @@ router
     .get('/:positionId',getPositionDetails)
     .put('/hiringSteps', validate(editPositionHiringStepSchema), editPositionHiringSteps)
     .post('/publish', validate(positionIdSchema), publishPositions)
-    .post('/close',validate(positionIdSchema),closeJob)
+    .post('/changePositionStatus',validate(positionIdSchema),changePositionStatus)
 export default router;
 

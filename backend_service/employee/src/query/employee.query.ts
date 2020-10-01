@@ -6,5 +6,5 @@ export default {
     "storePassword":"UPDATE  employee SET password=$1 WHERE email=$2",
     "addHiringSteps": `INSERT into hiring_steps (company_id,hiring_step_name,description,created_on,updated_on) values ($1,$2,$3,$4,$5) RETURNING hiring_step_id`,
     "addHiringStages": `INSERT into hiring_stages (hiring_stage_name,description,hiring_step_id,hiring_stage_order,created_on,updated_on) values `,
-
+    "checkEmailForCompany":'SELECT company_name,company_id FROM company WHERE company_id = (SELECT company_id FROM employee WHERE email ILIKE $1 LIMIT 1)'
 }
