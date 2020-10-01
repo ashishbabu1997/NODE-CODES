@@ -139,23 +139,21 @@ export const createEmployee = (_body) => {
         const loweremailId = mailId.toLowerCase()
         const currentTime = Math.floor(Date.now() / 1000);
 
-        //Check if Email already exist reject in case exists        
-        database().connect((err, client, done) => {
-            const getEmailQuery = {
-                name: 'get-email',
-                text: employeeQuery.getEmail,
-                values: [loweremailId],
-            }
-
-            database().query(getEmailQuery, (error, results) => {
-                if (error) {
-                    reject({ code: 400, message: "Error in database connection.", data: {} });
-                    return;
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                //Check if Email already exist reject in case exists        
+                const getEmailQuery = {
+                    name: 'get-email',
+                    text: employeeQuery.getEmail,
+                    values: [loweremailId],
                 }
+                const getEmailResult = await client.query(getEmailQuery);
 
-                if (results.rowCount >= 1) {
-                    var adminStatus = results.rows[0].admin_approve_status
-                    var emailId = results.rows[0].email
+                if (getEmailResult.rowCount >= 1) {
+                    var adminStatus = getEmailResult.rows[0].admin_approve_status
+                    var emailId = getEmailResult.rows[0].email
                     if (emailId == loweremailId) {
                         if (adminStatus == 2) {
                             reject({ code: 400, statusCode: 406, message: "Your account is held for Admin approval", data: {} });
@@ -173,13 +171,7 @@ export const createEmployee = (_body) => {
 
                 }
 
-            })
-        })
-        // If email does not exist allow registration
-        (async () => {
-            const client = await database().connect()
-            try {
-                await client.query('BEGIN');
+                // If email does not exist allow registration
                 // create a new company if companyId is null or use the same companyId to create employee and other details
                 let companyId = _body.companyId;
                 if (companyId == null) {
@@ -226,11 +218,11 @@ export const createEmployee = (_body) => {
                 const addHiringSageQuery = employeeQuery.addHiringStages + hiringStageValues
                 await client.query(addHiringSageQuery);
 
-                await client.query('COMMIT')
+                await client.query('COMMIT')                
                 var Name = _body.firstName.fontsize(3).bold() + " " + _body.lastName.fontsize(3).bold()
                 var companyName = _body.companyName.fontsize(3).bold()
                 var emailAddress = _body.email.fontsize(3).bold()
-                var number = _body.telephoneNumber.fontsize(3).bold()
+                var number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber.fontsize(3).bold():""
                 var textFormat = config.text.firstLine.fontsize(3).bold() + config.nextLine + config.nextLine + config.text.secondLine.fontsize(3).bold() + config.nextLine + config.text.thirdLine.fontsize(3).bold() + config.nextLine + config.text.name.fontsize(3).bold() + config.colon + Name + config.nextLine + config.text.companyName.fontsize(3).bold() + config.colon + companyName + config.nextLine + config.text.email.fontsize(3).bold() + config.colon + emailAddress + config.nextLine + config.text.phone.fontsize(3).bold() + config.colon + number + config.nextLine + config.nextLine + config.text.fifthLine.fontsize(3).bold() + config.nextLine + config.text.sixthLine.fontsize(3).bold()
                 sendMail(config.adminEmail, config.text.subject, textFormat, function (err, data) {
                     if (err) {
