@@ -28,7 +28,8 @@ export const employeeLoginMethod = (_body) => {
                 const value = data[0];
                 const token = jwt.sign({
                     employeeId: value.employeeId.toString(),
-                    companyId: value.companyId.toString()
+                    companyId: value.companyId.toString(),
+                    userRoleId:value.userRoleId.toString()
                 }, config.jwtSecretKey, { expiresIn: '24h' });
                 resolve({
                     code: 200, message: "Login successful", data: {
