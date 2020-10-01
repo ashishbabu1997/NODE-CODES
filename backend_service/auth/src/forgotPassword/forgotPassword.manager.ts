@@ -7,10 +7,11 @@ import database from '../common/database/database';
 import config from '../config/config'
 export const sendLink = (_body) => {
   return new Promise((resolve, reject) => {
+    var lowerEmail=_body.email.toLowerCase()
     const checkEMail = {
       name: 'check-email',
       text: Query.checkEmail,
-      values: [_body.email]
+      values: [lowerEmail]
     }
     database().query(checkEMail, (error, results) => {
       if (error) {
@@ -19,7 +20,9 @@ export const sendLink = (_body) => {
         }
       else if(results.rowCount==1)
       {
-        var payload = { email:_body.email}
+        var payload = { email:lowerEmail,
+                        userRoleId:results.rows[0].userRoleId
+                      }
         var secret = jwtConfig.jwtSecretKey
         var token = jwt.encode(payload, secret);
         const insertTokenQuery = {
@@ -35,7 +38,7 @@ export const sendLink = (_body) => {
         var link=_body.host+"/passwordset/"+token
         const subject="ellow.ai RESET PASSWORD LINK"
         var textFormat = config.text.firstLine.fontsize(3).bold() + config.nextLine +config.nextLine+ config.text.thirdLine.fontsize(3).bold() + config.nextLine  + link + config.nextLine+config.nextLine + config.text.fourthLine.fontsize(3).bold() + config.nextLine + config.text.fifthLine.fontsize(3).bold()
-        sendMail(_body.email, subject,textFormat, function(err,data) {
+        sendMail(lowerEmail, subject,textFormat, function(err,data) {
                 if (err) {
                   console.log("........Email ERROR:.........",err)
                   reject({ code: 400, message: "Cannot send email", data:{}});
