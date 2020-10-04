@@ -6,7 +6,7 @@ echo "netstat -nlpt |grep :400[0-5]"
 netstat -nlpt |grep :400[0-5]
 # stop BE node services running on 4000 , 4001, 4002, 4003, 4004 and 40005
 echo "/usr/local/bin/pm2 stop default"
-pm2 stop default
+pm2 stop admin auth candidate company employee jobs settings
 echo "netstat -nlpt |grep :400[0-5]"
 netstat -nlpt |grep :400[0-5]
 rm -rf $NODE_PATH
