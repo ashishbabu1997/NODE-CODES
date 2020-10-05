@@ -2,7 +2,7 @@ import employeeQuery from './query/employee.query';
 import database from './common/database/database';
 import { sendMail } from './middleware/mailer'
 import * as passwordGenerator from 'generate-password'
-// import * as crypto from "crypto";
+import * as crypto from "crypto";
 import config from './config/config'
 // export const createEmployee2 = (_body) => {
 //     return new Promise((resolve, reject) => {
@@ -174,6 +174,7 @@ export const createEmployee = (_body) => {
                 // If email does not exist allow registration
                 // create a new company if companyId is null or use the same companyId to create employee and other details
                 let companyId = _body.companyId;
+                let adminApproveStatus=1,approvalStatus=true;
                 if (companyId == null) {
                     const createCompanyQuery = {
                         name: 'createCompany',
@@ -181,15 +182,17 @@ export const createEmployee = (_body) => {
                         values: [_body.companyName, currentTime],
                     }
                     const result = await client.query(createCompanyQuery);
-                    companyId = result.rows[0].company_id
+                    companyId = result.rows[0].company_id;
+                    adminApproveStatus=2;
+                    approvalStatus=false;
                 }
-                // create Employee with above companyId and user entered datas
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
-                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime, 2, false, 2],
+                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus],
                 }
                 await client.query(createEmployeeQuery);
+                
                 // create an entry in settings table later used for company preferences like currency
                 const createSettingsQuery = {
                     name: 'createSettings',
@@ -218,6 +221,31 @@ export const createEmployee = (_body) => {
                 const addHiringSageQuery = employeeQuery.addHiringStages + hiringStageValues
                 await client.query(addHiringSageQuery);
 
+                if(approvalStatus)
+                {
+                    const password = passwordGenerator.generate({
+                        length: 10,
+                        numbers: true
+                    });
+                    var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                    const subject = " ellow.io LOGIN PASSWORD "
+                    const storePasswordQuery = {
+                        name: 'store-encrypted-password',
+                        text: employeeQuery.storePassword,
+                        values: [hashedPassword,loweremailId],
+                    }
+                    await client.query(storePasswordQuery);
+
+                    var textFormat = config.usertext.firstLine + config.nextLine + config.usertext.secondLine + config.nextLine+config.usertext.thirdLine + config.nextLine + config.usertext.password + password + config.nextLine + config.usertext.fourthLine + config.nextLine + config.usertext.fifthLine
+                    sendMail(loweremailId, subject, textFormat, function (err, data) {
+                        if (err) {
+                            console.log(err)
+                            reject({ code: 400, message: "Database Error", data: {} });
+                            return;
+                        }
+                    });
+                }
+
                 await client.query('COMMIT')                
                 var Name = _body.firstName.fontsize(3).bold() + " " + _body.lastName.fontsize(3).bold()
                 var companyName = _body.companyName.fontsize(3).bold()
@@ -233,6 +261,7 @@ export const createEmployee = (_body) => {
                     console.log('Notification mail to admin has been sent !!!');
                     // resolve({ code: 200, message: "User Approval Successfull", data: {} });
                 });
+
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
                 console.log(e)
@@ -257,7 +286,7 @@ export const checkCompanyByWorkMail = (_body) => {
         const query = {
             name: 'add-employee',
             text: employeeQuery.checkEmailForCompany,
-            values: ['%' + workMailExtension],
+            values: ['%@' + workMailExtension],
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -267,8 +296,9 @@ export const checkCompanyByWorkMail = (_body) => {
             var companyDetails = null;
             if (Array.isArray(results.rows) && results.rows.length) {
                 companyDetails = {
-                    companyId: parseInt(results.rows[0].company_id),
-                    companyName: results.rows[0].company_name
+                    companyId:parseInt(results.rows[0].company_id),
+                    companyName:results.rows[0].company_name,
+                    adminApproveStatus:results.rows[0].admin_approve_status
                 }
             }
             resolve({ code: 200, message: "Company Details", data: companyDetails });
