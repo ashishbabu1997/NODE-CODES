@@ -1,18 +1,39 @@
 import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({
-    skills: Joi.array().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case 'array.base':
-                    err.message = 'Skills must be an Array';
-                    break;
-                default:
-                    err.message = 'Invalid skills'
-                    break;
-            }
+    skills: Joi.object().keys({
+        topRatedSkill: Joi.array().required().error(errors => {
+            errors.forEach(err => {
+                switch (err.code) {
+                    case "any.required":
+                        err.message = "Top Rated Skill must be present in skills !";
+                        break;
+                    case 'array.base':
+                        err.message = 'Top Rated Skill must be an Array';
+                        break;
+                    default:
+                        err.message = 'Invalid Top Rated Skill'
+                        break;
+                }
+            })
+            return errors;
+        }),
+        otherSkill: Joi.array().required().error(errors => {
+            errors.forEach(err => {
+                switch (err.code) {
+                    case "any.required":
+                        err.message = "Other Skill must be present in skills !";
+                        break;
+                    case 'array.base':
+                        err.message = 'Other Skill must be an Array';
+                        break;
+                    default:
+                        err.message = 'Invalid Other Skill'
+                        break;
+                }
+            })
+            return errors;
         })
-        return errors;
     }),
     companyId: Joi.number().required().error(errors => {
         errors.forEach(err => {
@@ -150,22 +171,6 @@ export default Joi.object().keys({
                     break;
                 default:
                     err.message = "Invalid currency type id"
-                    break;
-            }
-        });
-        return errors;
-    }),
-    billingType: Joi.number().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                    err.message = "Billing type should not be empty!";
-                    break;
-                case "number.base":
-                    err.message = "Billing type must be a number"
-                    break;
-                default:
-                    err.message = "Invalid billing type"
                     break;
             }
         });

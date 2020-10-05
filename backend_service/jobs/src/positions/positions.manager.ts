@@ -75,12 +75,29 @@ export const createCompanyPositions = async (_body) => {
                 const companyPositionResponse = await client.query(addCompanyPositionsQuery);
                 const positionId = companyPositionResponse.rows[0].position_id
                 const companyId = _body.companyId
-                const addJobSkillsQuery = {
-                    name: 'add-job-skills',
-                    text: positionsQuery.addJobSkills,
-                    values: [positionId, _body.skills, currentTime, currentTime],
+
+                let tSkill = _body.skills["topRatedSkill"].map(a => a.skillId);
+                let oSkill = _body.skills["otherSkill"].map(a => a.skillId);
+
+                if(tSkill.length>0)
+                {
+                    const addTopSkillsQuery = {
+                        name: 'add-top-job-skills',
+                        text: positionsQuery.addJobSkills,
+                        values: [positionId, tSkill,true, currentTime],
+                    }
+                    await client.query(addTopSkillsQuery);
                 }
-                await client.query(addJobSkillsQuery)
+                if(oSkill.length>0)
+                {
+                    const addOtherSkillsQuery = {
+                        name: 'add-other-job-skills',
+                        text: positionsQuery.addJobSkills,
+                        values: [positionId, oSkill,false, currentTime],
+                    }
+                    await client.query(addOtherSkillsQuery);
+                }
+                
                 if (_body.flag == 0) {
                     await client.query('COMMIT'); 
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
@@ -156,6 +173,7 @@ export const fetchPositionDetails = (_body) => {
             let groupedHiringStages = [];
             let skills = [];
             let result = {};
+            let topRatedSkill=[],otherSkill=[];
             hiringSteps.forEach(step => {
                 result = {
                     assessmentTraits: step.assessmentTraits,
@@ -195,17 +213,28 @@ export const fetchPositionDetails = (_body) => {
                             hiringStageOrder: step.hiring_stage_order,
                         }
                     )
+
                 if (step.skill_id != null && skills.findIndex(({ skillId }) => skillId === step.skill_id) === -1)
-                    step.skill_id != null && skills.push(
+                {
+                    step.top_rated_skill?
+                    topRatedSkill.push(
                         {
                             skillId: step.skill_id,
                             skillName: step.skill_name
                         }
-                    )
+                    ):
+                    otherSkill.push(
+                        {
+                            skillId: step.skill_id,
+                            skillName: step.skill_name
+                        }
+                    );
+                }
+                    
                 result['hiringStages'] = groupedHiringStages;
-                result['skills'] = skills;
                 result['positionId'] = _body.positionId;
             })
+            result['skills'] = {topRatedSkill,otherSkill};
             resolve({ code: 200, message: "Fetched position details successfully", data: result });
         })
     });
@@ -301,27 +330,41 @@ export const updateCompanyPositions = async (_body) => {
                 }
 
                 await client.query(updateCompanyPositionsSecondQuery);
-                const getJobSkillsQuery = {
-                    name: 'get-job-skills',
-                    text: positionsQuery.getPositionSkillsOld,
-                    values: [positionId, _body.companyId],
-                }
-                const skillsResponse = await client.query(getJobSkillsQuery);
-                const oldSkills = skillsResponse.rows.length > 0 ? skillsResponse.rows[0].skills : [];
-                const skills = _body.skills;
-                const deletedSkills = oldSkills.filter(e => skills.indexOf(e) == -1);
-                const addJobSkillsQuery = {
-                    name: 'add-job-skills',
-                    text: positionsQuery.addJobSkills,
-                    values: [positionId, skills, currentTime, currentTime],
-                }
-                await client.query(addJobSkillsQuery);
+                let tSkill = _body.skills["topRatedSkill"].map(a => a.skillId);
+                let oSkill = _body.skills["otherSkill"].map(a => a.skillId);
+                let skillSet = tSkill.concat(oSkill);
+                
                 const deleteJobSkillsQuery = {
                     name: 'delete-job-skills',
                     text: positionsQuery.deletePositionSkills,
-                    values: [positionId, deletedSkills],
-                }
+                    values: [positionId, skillSet],
+                }                
                 await client.query(deleteJobSkillsQuery)
+
+                if(tSkill.length>0)
+                {
+                    const addTopSkillsQuery = {
+                        name: 'add-top-job-skills',
+                        text: positionsQuery.addJobSkills,
+                        values: [positionId, tSkill,true, currentTime],
+                    }
+                    console.log("addTopSkill : ",addTopSkillsQuery);
+                    
+                    await client.query(addTopSkillsQuery);
+
+                }
+                if(oSkill.length>0)
+                {
+                    const addOtherSkillsQuery = {
+                        name: 'add-other-job-skills',
+                        text: positionsQuery.addJobSkills,
+                        values: [positionId, oSkill,false, currentTime],
+                    }
+                    console.log("addOtherSkill : ",addOtherSkillsQuery);
+
+                    await client.query(addOtherSkillsQuery);
+                }
+            
                 if (_body.flag == 0) {
                     await client.query('COMMIT');
                     resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
