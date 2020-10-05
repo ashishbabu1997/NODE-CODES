@@ -3,7 +3,7 @@ import sendResponse from '../common/response/response';
 
 // Fetch locations of a company
 export const getlocations = (req, res) => {
-    const body = req.params;
+    const body = req.query;
     console.log(body)
     fetchCompanyLocations(body).then((response: any) => sendResponse(res, response.code, 1,200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0,400, error.message, error.data))
