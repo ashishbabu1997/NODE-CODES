@@ -6,6 +6,7 @@ import getCompanyNameSchema from './schemas/getCompanyNameSchema';
 import getPositionSchema from './schemas/getPositionsSchema';
 import updatePositionSchema from './schemas/updatePositionSchema';
 import positionIdSchema from './schemas/positionIdSchema';
+import jobStatusSchema from './schemas/jobStatusSchema';
 import editPositionHiringStepSchema from './schemas/editPositionHiringStepSchema';
 
 const router = express.Router();
@@ -19,6 +20,6 @@ router
     .get('/:positionId',getPositionDetails)
     .put('/hiringSteps', validate(editPositionHiringStepSchema), editPositionHiringSteps)
     .post('/publish', validate(positionIdSchema), publishPositions)
-    .post('/changePositionStatus',validate(positionIdSchema),changePositionStatus)
+    .post('/changePositionStatus',validate(jobStatusSchema),changePositionStatus)
 export default router;
 
