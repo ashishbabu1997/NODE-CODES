@@ -160,7 +160,7 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    currencyTypeId: Joi.number().required().error(errors => {
+    currencyTypeId: Joi.number().allow('').error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
