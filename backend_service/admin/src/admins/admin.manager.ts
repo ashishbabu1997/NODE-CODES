@@ -137,31 +137,3 @@ export const listUsersDetails = (_body) => {
             }       
     })
 }
-export const deletePositions = (_body) => {
-    return new Promise((resolve, reject) => {
-            const getMailAddress = {
-                name: 'list-candidates',
-                text:admineQuery.getEmailAddress,
-                values:[_body.position_id]
-            }
-            database().query(getMailAddress, (error, results) => {
-                if (error) {
-                    reject({ code: 400, message: "Database Error", data: {} });
-                    return;
-                }
-                var positionName=results.rows[0].positionName
-                var emailAddress=results.rows[0].email
-                var mainText="The position named"+" "+positionName+" "+"which you have created has been deleted by our Admin Panel"
-                var textFormat=config.PositionText.firstLine.fontsize(3).bold()+config.nextLine+mainText.fontsize(3).bold()+config.nextLine+config.PositionText.secondLine.fontsize(3).bold()+config.nextLine+config.nextLine+config.PositionText.thirdLine.fontsize(3).bold()+config.nextLine+config.PositionText.fourthLine.fontsize(3).bold()
-                sendMail(emailAddress, config.PositionText.subject, textFormat, function (err, data) {
-                    if (err) {
-                        console.log(err)
-                        return;
-                    }
-                    console.log('Admin has deleted the position!!!');
-                    resolve({ code: 200, message: "Position deletion successfull", data: {} });
-
-                });
-            })
-        })
-    }

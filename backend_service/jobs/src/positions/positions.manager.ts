@@ -538,3 +538,68 @@ export const getCompanies = (_body) => {
         })
     })
 }
+
+
+export const deletePositions = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                const positionId = _body.positionId;
+                
+                const currentTime = Math.floor(Date.now() / 1000);
+                const updateStatus=false;
+                const updatePositionStatus = {
+                    name: 'change-positionstatus',
+                    text:positionsQuery.updatePositionStatus,
+                    values:[positionId,currentTime,updateStatus]
+                }
+                await client.query(updatePositionStatus);
+
+                const updateJobReceivedStatus = {
+                    name: 'change-JobReceivedStatus',
+                    text:positionsQuery.updateJobReceivedStatus,
+                    values:[positionId,currentTime,updateStatus]
+                }
+                let result = await client.query(updateJobReceivedStatus);
+                let jobReceivedId = result.rows[0].job_received_id;
+
+                const updateCompanyJobStatus = {
+                    name: 'change-CompanyJobStatus',
+                    text:positionsQuery.updateCompanyJobStatus,
+                    values:[jobReceivedId,currentTime,updateStatus]
+                }
+
+                const getMailAddress = {
+                    name: 'fetch-emailaddress',
+                    text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
+                    values:[positionId]
+                }
+                var employeeData = await client.query(getMailAddress);                
+                var positionName=employeeData.rows[0].position_name
+                var emailAddress=employeeData.rows[0].email
+                await client.query('COMMIT');
+
+                var mainText="The position named"+" "+positionName+" "+"which you have created has been deleted by our Admin Panel"
+                var textFormat=config.PositionText.firstLine.fontsize(3)+config.nextLine+mainText.fontsize(3)+config.nextLine+config.PositionText.secondLine.fontsize(3)+config.nextLine+config.nextLine+config.PositionText.thirdLine.fontsize(3)+config.nextLine+config.PositionText.fourthLine.fontsize(3)
+                sendMail(emailAddress, config.PositionText.subject, textFormat, function (err, data) {
+                    if (err) {
+                        console.log(err)
+                        return;
+                    }
+                    resolve({ code: 200, message: "Position deletion successfull", data: {} });
+
+                });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+        })
+    }

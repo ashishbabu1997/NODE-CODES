@@ -28,6 +28,13 @@ export default {
 
 
     },
+    "PositionText": {
+        "subject":"Position Deletion Alert",
+        "firstLine": "Hi,",
+        "secondLine": "For queries contact us at sales@ellow.io",
+        "thirdLine": "With regards,",
+        "fourthLine": "Team ellow.io"
+    },
     "nextLine": "<br>",
     "adminEmail":"deena.s@ellow.io",
     "colon":":"
