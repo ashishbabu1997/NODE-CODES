@@ -29,7 +29,16 @@ export default {
 
 
     },
-    "nextLine": "\n",
+    "PositionText": {
+        "subject":"Position Deletion Alert",
+        "firstLine": "Sorry,",
+        "secondLine": "Please contact us at sales@ellow.io",
+        "thirdLine": "With regards,",
+        "fourthLine": "Team ellow.io"
+
+
+    },
+    "nextLine": "<br>",
     "mail": {
         "service": "gmail",
         "user": "no-reply@ellow.io",

@@ -1,4 +1,4 @@
-import {  listUsersDetails,getUserDetails,clearance} from './admin.manager';
+import {  listUsersDetails,getUserDetails,clearance,deletePositions} from './admin.manager';
 import sendResponse from '../common/response/response';
 export const listUsers = (req, res) => {
     const body = req.query;
@@ -15,3 +15,9 @@ export const adminPanel = (req, res) => {
     clearance(body).then((response: any) => sendResponse(res, response.code, 1,200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0,400, error.message, error.data))
 }
+export const positionDeletion = (req, res) => {
+    const body = req.query;
+    deletePositions(body).then((response: any) => sendResponse(res, response.code, 1,200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0,400, error.message, error.data))
+}
+
