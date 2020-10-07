@@ -27,15 +27,11 @@ export const getCandidateDetails = (_body) => {
             }
             database().query(getCandidateAssessmentTraitsQuery, (error, value) => {
                 let hiringStages = [];
-                let assessmentTraits = value.rows
-                console.log("assessmentTraits : ",assessmentTraits);
-                
+                let assessmentTraits = value.rows                
                 if(_body.admin!=1 && Array.isArray(assessmentTraits) && assessmentTraits.length>0)
                 {
                     let flag=false;
                     assessmentTraits.forEach(element => {
-                        console.log("element : ",element.adminRating);
-
                         element.adminRating!=null && element.adminRating>0?flag=true:"";
                     });
                     if(!flag)

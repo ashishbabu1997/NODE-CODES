@@ -587,11 +587,12 @@ export const deletePositions = (_body) => {
                 sendMail(emailAddress, config.PositionText.subject, textFormat, function (err, data) {
                     if (err) {
                         console.log(err)
+                        reject({ code: 400, message: "Mailer Error.", data: {} });
                         return;
                     }
-                    resolve({ code: 200, message: "Position deletion successfull", data: {} });
 
                 });
+                resolve({ code: 200, message: "Position deletion successfull", data: {} });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
