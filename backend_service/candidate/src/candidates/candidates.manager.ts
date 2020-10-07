@@ -169,7 +169,7 @@ export const candidateClearance = (_body) => {
                     if (_body.userRoleId == 1) {
                         adminApproveStatus = 1
                         comment = _body.comment
-                        value = [_body.candidateId, adminApproveStatus, comment, _body.ellowRate,_body.userId]
+                        value = [_body.candidateId, adminApproveStatus, comment, _body.ellowRate,_body.employeeId]
                         candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
                     }
                     else if (_body.userRoleId == 2) {
@@ -178,7 +178,7 @@ export const candidateClearance = (_body) => {
                         makeOffer = 1
                         adminApproveStatus = 1;
                         comment = _body.comment;
-                        value = [_body.candidateId, adminApproveStatus, comment, makeOffer,_body.userId]
+                        value = [_body.candidateId, adminApproveStatus, comment, makeOffer,_body.employeeId]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Selection Mail";
                         textFormat = config.approvalMail.firstLine + config.nextLine+config.nextLine + approveMessage+config.nextLine+config.nextLine+config.approvalMail.thirdLine+config.nextLine+config.approvalMail.fourthLine
@@ -196,7 +196,7 @@ export const candidateClearance = (_body) => {
                     if (_body.userRoleId == 1) {
                         adminApproveStatus = 0
                         comment = _body.comment
-                        value = [_body.candidateId, adminApproveStatus, comment,_body.userId]
+                        value = [_body.candidateId, adminApproveStatus, comment,_body.employeeId]
                         candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
                     } else if (_body.userRoleId != 1) {
                         var rejectMessage=firstName.fontsize(3).bold()+'   '+lastName.fontsize(3).bold()+'   '+'from'+'   '+companyName.fontsize(3).bold()+'   '+'has been rejected for the position'+'   '+positionName.fontsize(3).bold()
@@ -204,7 +204,7 @@ export const candidateClearance = (_body) => {
                         makeOffer = 0
                         adminApproveStatus = 1;
                         comment = _body.comment;
-                        value = [_body.candidateId, adminApproveStatus, comment, makeOffer,_body.userId]
+                        value = [_body.candidateId, adminApproveStatus, comment, makeOffer,_body.employeeId]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Rejection Mail";
                         textFormat = config.rejectionMail.firstLine+ config.nextLine + config.nextLine+rejectMessage+config.nextLine+config.nextLine+config.rejectionMail.thirdLine+config.nextLine+config.rejectionMail.fourthLine
@@ -257,7 +257,7 @@ export const interviewRequestFunction = (_body) => {
                 const insertQuery = {
                     name: 'insert-make-offer-status',
                     text: candidateQuery.insertMakeOfferStatus,
-                    values: [_body.candidateId,_body.userId],
+                    values: [_body.candidateId,_body.employeeId],
                 }
                 await client.query(insertQuery);
                 const candidateDetails = {

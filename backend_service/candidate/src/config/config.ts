@@ -42,6 +42,7 @@ export default {
         "seventhLine":"With regards,",
         "eigthLine":"Team ellow.io"
 
+    },
+    "jwtSecretKey": "elL0wA!",
 
-    }
 }
