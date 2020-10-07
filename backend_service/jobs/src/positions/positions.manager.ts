@@ -14,7 +14,8 @@ export const getCompanyPositions = (_body) => {
             "createdOn": 'p.created_on',
             "candidateCount": '"candidateCount"',
             "resourceCount": 'p.developer_count',
-            "companyName": 'c.company_name'
+            "companyName": 'c.company_name',
+            "updatedOn":'p.updated_on'
         }
 
         var sort = ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType + ' LIMIT ' + _body.limit + ' OFFSET ' + _body.offset;
