@@ -21,5 +21,5 @@ router
     .put('/hiringSteps', validate(editPositionHiringStepSchema), editPositionHiringSteps)
     .post('/publish', validate(positionIdSchema), publishPositions)
     .post('/changePositionStatus',validate(jobStatusSchema),changePositionStatus)
-    .get('/deletePosition/:positionId',positionDeletion)
+    .post('/deletePosition',validate(positionIdSchema),positionDeletion)
 export default router;

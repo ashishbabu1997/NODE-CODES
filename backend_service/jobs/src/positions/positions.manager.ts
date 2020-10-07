@@ -76,8 +76,8 @@ export const createCompanyPositions = async (_body) => {
                 const positionId = companyPositionResponse.rows[0].position_id
                 const companyId = _body.companyId
 
-                let tSkill = _body.skills["topRatedSkill"].map(a => a.skillId);
-                let oSkill = _body.skills["otherSkill"].map(a => a.skillId);
+                let tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
+                let oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];
 
                 if(tSkill.length>0)
                 {
@@ -330,8 +330,9 @@ export const updateCompanyPositions = async (_body) => {
                 }
 
                 await client.query(updateCompanyPositionsSecondQuery);
-                let tSkill = _body.skills["topRatedSkill"].map(a => a.skillId);
-                let oSkill = _body.skills["otherSkill"].map(a => a.skillId);
+                let tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
+                let oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];
+
                 let skillSet = tSkill.concat(oSkill);
                 
                 const deleteJobSkillsQuery = {

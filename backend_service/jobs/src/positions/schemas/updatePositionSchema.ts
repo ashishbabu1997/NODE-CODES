@@ -1,40 +1,6 @@
 import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({
-    skills: Joi.object().keys({
-        topRatedSkill: Joi.array().required().error(errors => {
-            errors.forEach(err => {
-                switch (err.code) {
-                    case "any.required":
-                        err.message = "Top Rated Skill must be present in skills !";
-                        break;
-                    case 'array.base':
-                        err.message = 'Top Rated Skill must be an Array';
-                        break;
-                    default:
-                        err.message = 'Invalid Top Rated Skill'
-                        break;
-                }
-            })
-            return errors;
-        }),
-        otherSkill: Joi.array().required().error(errors => {
-            errors.forEach(err => {
-                switch (err.code) {
-                    case "any.required":
-                        err.message = "Other Skill must be present in skills !";
-                        break;
-                    case 'array.base':
-                        err.message = 'Other Skill must be an Array';
-                        break;
-                    default:
-                        err.message = 'Invalid Other Skill'
-                        break;
-                }
-            })
-            return errors;
-        })
-    }),
     companyId: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {

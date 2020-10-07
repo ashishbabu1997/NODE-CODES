@@ -28,6 +28,21 @@ export const getCandidateDetails = (_body) => {
             database().query(getCandidateAssessmentTraitsQuery, (error, value) => {
                 let hiringStages = [];
                 let assessmentTraits = value.rows
+                console.log("assessmentTraits : ",assessmentTraits);
+                
+                if(_body.admin!=1 && Array.isArray(assessmentTraits) && assessmentTraits.length>0)
+                {
+                    let flag=false;
+                    assessmentTraits.forEach(element => {
+                        console.log("element : ",element.adminRating);
+
+                        element.adminRating!=null && element.adminRating>0?flag=true:"";
+                    });
+                    if(!flag)
+                    {
+                        assessmentTraits=null;
+                    }
+                }
                 let result = {
                     makeOffer: candidate[0].makeOffer,
                     adminApproveStatus: candidate[0].adminApproveStatus,
@@ -51,7 +66,6 @@ export const getCandidateDetails = (_body) => {
                 };
                 _body.userRoleId == 1 && (result['ellowRate'] = candidate[0].ellowRate)
                 candidate.forEach(step => {
-                    console.log(step)
                     hiringStages.push({
                         hiringStageName: step.hiringStageName,
                         hiringStatus: step.hiringStatus,

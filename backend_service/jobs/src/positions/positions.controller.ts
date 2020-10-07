@@ -63,7 +63,7 @@ export const changePositionStatus = (req, res) => {
     })
 }
 export const positionDeletion = (req, res) => {    
-    const body = req.params;
+    const body = req.body;
     deletePositions(body).then((response: any) => sendResponse(res, response.code, 1,201, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0,401, error.message, error.data))
 }
