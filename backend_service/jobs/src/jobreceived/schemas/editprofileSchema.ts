@@ -17,6 +17,38 @@ export default Joi.object().keys({
         });
         return errors;
     }),
+    companyId: Joi.number().required().error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "any.required":
+                    err.message = "Company ID should not be empty!";
+                    break;
+                case "number.base":
+                    err.message = "Company ID must be a number"
+                    break;
+                default:
+                    err.message = "Invalid Company ID"
+                    break;
+            }
+        });
+        return errors;
+    }),
+    candidateStatus:Joi.number().required().error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "any.required":
+                    err.message = "Candidate Status should not be empty!";
+                    break;
+                case "number.base":
+                    err.message = "Candidate Status must be a number"
+                    break;
+                default:
+                    err.message = "Invalid Candidate Status"
+                    break;
+            }
+        });
+        return errors;
+    }),
     firstName: Joi.string().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
@@ -28,65 +60,6 @@ export default Joi.object().keys({
                     break;
                 default:
                     err.message = "Invalid Firstname"
-                    break;
-            }
-        });
-        return errors;
-    }),
-    lastName: Joi.string().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                    err.message = "Lastname should not be empty";
-                    break;
-                case "string.base":
-                    err.message = "Lastname must be a string"
-                    break;
-                default:
-                    err.message = "Invalid Lastname"
-                    break;
-            }
-        });
-        return errors;
-    }),
-  
-    email: Joi.string().required().email({ minDomainSegments: 2 }).error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                    err.message = "Email should not be empty";
-                    break;
-                case "string.base":
-                    err.message = "Email must be a string"
-                    break;
-                default:
-                    err.message = "Invalid Email"
-                    break;
-            }
-        });
-        return errors;
-    }),
-    phoneNumber: Joi.number().allow('').error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "number.base":
-                    err.message = "Phone Number must be a number"
-                    break;
-                default:
-                    err.message = "Invalid Phone Number"
-                    break;
-            }
-        });
-        return errors;
-    }),
-    rate: Joi.number().allow('').error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "number.base":
-                    err.message = "Rate must be a number"
-                    break;
-                default:
-                    err.message = "Invalid Rate"
                     break;
             }
         });
@@ -108,22 +81,6 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    resume: Joi.string().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                    err.message = "Resume should not be empty";
-                    break;
-                case "string.base":
-                    err.message = "Resume must be a string"
-                    break;
-                default:
-                    err.message = "Invalid Resume"
-                    break;
-            }
-        });
-        return errors;
-    }),
     currencyTypeId: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
@@ -134,26 +91,10 @@ export default Joi.object().keys({
                     err.message = "Currency Type ID must be a number"
                     break;
                 default:
-                    err.message = "Currency Billing Type ID"
-                    break;
-            }
-        });
-        return errors;
-    }),
-    coverNote: Joi.string().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                    err.message = "Cover note should not be empty";
-                    break;
-                case "string.base":
-                    err.message = "Cover note must be a string"
-                    break;
-                default:
-                    err.message = "Invalid Cover note"
+                    err.message = "Invalid Currency Type ID"
                     break;
             }
         });
         return errors;
     })
-});
+}).unknown(true);

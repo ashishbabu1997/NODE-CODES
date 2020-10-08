@@ -99,12 +99,12 @@ export const listUsersDetails = (_body) => {
                 sendMail(_body.email, subject, textFormat, function (err, data) {
                     if (err) {
                         console.log(err)
-                        reject({ code: 400, message: "Database Error", data: {} });
+                        reject({ code: 400, message: "Mailer Error", data: {} });
                         return;
                     }
                     console.log('A password has been send to your email !!!');
-                    resolve({ code: 200, message: "User Approval Successfull", data: {} });
                 });
+                resolve({ code: 200, message: "User Approval Successfull", data: {} });
             }
             else
             {
@@ -127,12 +127,13 @@ export const listUsersDetails = (_body) => {
                 sendMail(_body.email, subject, textFormat, function (err, data) {
                     if (err) {
                         console.log(err)
+                        reject({ code: 400, message: "Mailer Error", data: {} });
                         return;
                     }
                     console.log('An admin rejection message has been sent to your email!!!');
-                    resolve({ code: 200, message: "User Rejection Successfull", data: {} });
-
                 });
+                resolve({ code: 200, message: "User Rejection Successfull", data: {} });
+
 
             }       
     })

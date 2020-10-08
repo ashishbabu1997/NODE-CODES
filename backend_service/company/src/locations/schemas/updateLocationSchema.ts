@@ -117,4 +117,4 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-});
+}).unknown(true);

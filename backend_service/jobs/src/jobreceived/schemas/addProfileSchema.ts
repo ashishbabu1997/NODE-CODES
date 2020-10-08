@@ -2,33 +2,33 @@ import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({
     candidates: Joi.array().items(Joi.object({
-        candidatename : Joi.string().required().error(errors => {
+        candidateFirstName : Joi.string().required().error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
                     case "any.required":
-                        err.message = "Candidate name should not be empty";
+                        err.message = "candidate FirstName should not be empty";
                         break;
                     case "string.base":
-                        err.message = "Candidate name must be a string"
+                        err.message = "Candidate FirstName must be a string"
                         break;
                     default:
-                        err.message = "Invalid Candidate name"
+                        err.message = "Invalid Candidate FirstName"
                         break;
                 }
             });
             return errors;
         }),
-        companyId : Joi.number().required().error(errors => {
+        candidateStatus : Joi.number().required().error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
                     case "any.required":
-                        err.message = "Company Id should not be empty!";
+                        err.message = "Candidate Status should not be empty!";
                         break;
                     case "number.base":
-                        err.message = "Company Id must be a number"
+                        err.message = "Candidate Status must be a number"
                         break;
                     default:
-                        err.message = "Invalid Company Id"
+                        err.message = "Invalid Candidate Status"
                         break;
                 }
             });
@@ -50,50 +50,37 @@ export default Joi.object().keys({
             });
             return errors;
         }), 
-        coverNote : Joi.string().error(errors => {
-                errors.forEach(err => {
-                    switch (err.code) {
-                       case "string.base":
-                            err.message = "Position name must be a string"
-                            break;
-                        default:
-                            err.message = "Invalid position name"
-                            break;
-                    }
-                });
-                return errors;
-            }),
-            rate : Joi.number().required().error(errors => {
+        companyId : Joi.number().required().error(errors => {
+            errors.forEach(err => {
+                switch (err.code) {
+                    case "any.required":
+                        err.message = "Company Id should not be empty!";
+                        break;
+                    case "number.base":
+                        err.message = "Company Id must be a number"
+                        break;
+                    default:
+                        err.message = "Invalid job Company Id"
+                        break;
+                }
+            });
+            return errors;
+        }), 
+        positionId : Joi.number().required().error(errors => {
                 errors.forEach(err => {
                     switch (err.code) {
                         case "any.required":
-                            err.message = "rate should not be empty!";
+                            err.message = "Position Id should not be empty!";
                             break;
                         case "number.base":
-                            err.message = "rate must be a number"
+                            err.message = "Position Id must be a number"
                             break;
                         default:
-                            err.message = "Invalid rate"
+                            err.message = "Invalid Position Id"
                             break;
                     }
                 });
                 return errors;
             })
-    }) ),
-    candidateStatus : Joi.number().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                    err.message = "candidate Status should not be empty";
-                    break;
-                case "number.base":
-                    err.message = "candidate Status must be a number"
-                    break;
-                default:
-                    err.message = "Invalid candidate Status"
-                    break;
-            }
-        });
-        return errors;
-    })
-});
+    }).unknown(true) ),
+}).unknown(true);

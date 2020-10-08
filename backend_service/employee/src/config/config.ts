@@ -28,6 +28,14 @@ export default {
         "fifthLine": "With regards,",
         "sixthLine":"Team ellow.io"
     },
+    "usertext": {
+        "firstLine": "<h3>Hello,</h3>",
+        "secondLine": "<h3>Thank you for registering with ellow.io !</h3>",
+        "thirdLine": "<h3>Please enter the password given below to login with us.</h3>",
+        "password": "<h3>Your password is:-    ",
+        "fourthLine": "<h3>With regards,</h3>",
+        "fifthLine": "<h3>Team ellow.io</h3>"
+    },
     "defaultHiringStep": {
         "hiringStepName": "ellow hiring step",
         "description": null,

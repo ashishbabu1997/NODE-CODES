@@ -14,7 +14,8 @@ export const getCompanyPositions = (_body) => {
             "createdOn": 'p.created_on',
             "candidateCount": '"candidateCount"',
             "resourceCount": 'p.developer_count',
-            "companyName": 'c.company_name'
+            "companyName": 'c.company_name',
+            "updatedOn":'p.updated_on'
         }
 
         var sort = ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType + ' LIMIT ' + _body.limit + ' OFFSET ' + _body.offset;
@@ -75,12 +76,29 @@ export const createCompanyPositions = async (_body) => {
                 const companyPositionResponse = await client.query(addCompanyPositionsQuery);
                 const positionId = companyPositionResponse.rows[0].position_id
                 const companyId = _body.companyId
-                const addJobSkillsQuery = {
-                    name: 'add-job-skills',
-                    text: positionsQuery.addJobSkills,
-                    values: [positionId, _body.skills, currentTime, currentTime],
+
+                let tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
+                let oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];
+
+                if(tSkill.length>0)
+                {
+                    const addTopSkillsQuery = {
+                        name: 'add-top-job-skills',
+                        text: positionsQuery.addJobSkills,
+                        values: [positionId, tSkill,true, currentTime],
+                    }
+                    await client.query(addTopSkillsQuery);
                 }
-                await client.query(addJobSkillsQuery)
+                if(oSkill.length>0)
+                {
+                    const addOtherSkillsQuery = {
+                        name: 'add-other-job-skills',
+                        text: positionsQuery.addJobSkills,
+                        values: [positionId, oSkill,false, currentTime],
+                    }
+                    await client.query(addOtherSkillsQuery);
+                }
+                
                 if (_body.flag == 0) {
                     await client.query('COMMIT'); 
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
@@ -156,6 +174,7 @@ export const fetchPositionDetails = (_body) => {
             let groupedHiringStages = [];
             let skills = [];
             let result = {};
+            let topRatedSkill=[],otherSkill=[];
             hiringSteps.forEach(step => {
                 result = {
                     assessmentTraits: step.assessmentTraits,
@@ -182,6 +201,7 @@ export const fetchPositionDetails = (_body) => {
                     companyName: step.company_name,
                     companySize : step.company_size,
                     companyLogo : step.company_logo,
+                    companyLinkedinId: step.company_linkedin_id,
                     hiringStages: [],
                     skills: []
                 }
@@ -194,17 +214,28 @@ export const fetchPositionDetails = (_body) => {
                             hiringStageOrder: step.hiring_stage_order,
                         }
                     )
+
                 if (step.skill_id != null && skills.findIndex(({ skillId }) => skillId === step.skill_id) === -1)
-                    step.skill_id != null && skills.push(
+                {
+                    step.top_rated_skill?
+                    topRatedSkill.push(
                         {
                             skillId: step.skill_id,
                             skillName: step.skill_name
                         }
-                    )
+                    ):
+                    otherSkill.push(
+                        {
+                            skillId: step.skill_id,
+                            skillName: step.skill_name
+                        }
+                    );
+                }
+                    
                 result['hiringStages'] = groupedHiringStages;
-                result['skills'] = skills;
                 result['positionId'] = _body.positionId;
             })
+            result['skills'] = {topRatedSkill,otherSkill};
             resolve({ code: 200, message: "Fetched position details successfully", data: result });
         })
     });
@@ -300,27 +331,42 @@ export const updateCompanyPositions = async (_body) => {
                 }
 
                 await client.query(updateCompanyPositionsSecondQuery);
-                const getJobSkillsQuery = {
-                    name: 'get-job-skills',
-                    text: positionsQuery.getPositionSkillsOld,
-                    values: [positionId, _body.companyId],
-                }
-                const skillsResponse = await client.query(getJobSkillsQuery);
-                const oldSkills = skillsResponse.rows.length > 0 ? skillsResponse.rows[0].skills : [];
-                const skills = _body.skills;
-                const deletedSkills = oldSkills.filter(e => skills.indexOf(e) == -1);
-                const addJobSkillsQuery = {
-                    name: 'add-job-skills',
-                    text: positionsQuery.addJobSkills,
-                    values: [positionId, skills, currentTime, currentTime],
-                }
-                await client.query(addJobSkillsQuery);
+                let tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
+                let oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];
+
+                let skillSet = tSkill.concat(oSkill);
+                
                 const deleteJobSkillsQuery = {
                     name: 'delete-job-skills',
                     text: positionsQuery.deletePositionSkills,
-                    values: [positionId, deletedSkills],
-                }
+                    values: [positionId, skillSet],
+                }                
                 await client.query(deleteJobSkillsQuery)
+
+                if(tSkill.length>0)
+                {
+                    const addTopSkillsQuery = {
+                        name: 'add-top-job-skills',
+                        text: positionsQuery.addJobSkills,
+                        values: [positionId, tSkill,true, currentTime],
+                    }
+                    console.log("addTopSkill : ",addTopSkillsQuery);
+                    
+                    await client.query(addTopSkillsQuery);
+
+                }
+                if(oSkill.length>0)
+                {
+                    const addOtherSkillsQuery = {
+                        name: 'add-other-job-skills',
+                        text: positionsQuery.addJobSkills,
+                        values: [positionId, oSkill,false, currentTime],
+                    }
+                    console.log("addOtherSkill : ",addOtherSkillsQuery);
+
+                    await client.query(addOtherSkillsQuery);
+                }
+            
                 if (_body.flag == 0) {
                     await client.query('COMMIT');
                     resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
@@ -443,13 +489,13 @@ export const publishCompanyPositions = async (_body) => {
         })
     })
 }
-export const closeJobStatus = (_body) => {
+export const changeJobStatus = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
         const positionQuery = {
-            name: 'close-job-status',
-            text: positionsQuery.closeJobs,
-            values: [currentTime, _body.positionId],
+            name: 'change-job-status',
+            text: positionsQuery.changeJobStatus,
+            values: [currentTime, _body.positionId,_body.jobStatus],
         }
         database().query(positionQuery, (error, results) => {
             if (error) {
@@ -458,9 +504,9 @@ export const closeJobStatus = (_body) => {
                 return;
             }
             const jobReceivedQuery = {
-                name: 'close-job-status',
-                text: positionsQuery.closeJobReceived,
-                values: [currentTime, _body.positionId],
+                name: 'change-job-received-status',
+                text: positionsQuery.changeJobReceivedStatus,
+                values: [currentTime, _body.positionId,_body.jobStatus],
             }
             database().query(jobReceivedQuery, (error, results) => {
                 if (error) {
@@ -469,7 +515,7 @@ export const closeJobStatus = (_body) => {
                     return;
                 }
                 else {
-                    resolve({ code: 200, message: "Job status closed", data: {} });
+                    resolve({ code: 200, message: "Job status changed", data: {} });
                 }
             })
         })
@@ -477,8 +523,6 @@ export const closeJobStatus = (_body) => {
 }
 export const getCompanies = (_body) => {
     return new Promise((resolve, reject) => {
-        console.log("accountType : ", _body.accountType);
-
         const CompanyQuery = {
             name: 'get-company-names',
             text: positionsQuery.getNames,
@@ -496,3 +540,69 @@ export const getCompanies = (_body) => {
         })
     })
 }
+
+
+export const deletePositions = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                const positionId = _body.positionId;
+                
+                const currentTime = Math.floor(Date.now() / 1000);
+                const updateStatus=false;
+                const updatePositionStatus = {
+                    name: 'change-positionstatus',
+                    text:positionsQuery.updatePositionStatus,
+                    values:[positionId,currentTime,updateStatus]
+                }
+                await client.query(updatePositionStatus);
+
+                const updateJobReceivedStatus = {
+                    name: 'change-JobReceivedStatus',
+                    text:positionsQuery.updateJobReceivedStatus,
+                    values:[positionId,currentTime,updateStatus]
+                }
+                let result = await client.query(updateJobReceivedStatus);
+                let jobReceivedId = result.rows[0].job_received_id;
+
+                const updateCompanyJobStatus = {
+                    name: 'change-CompanyJobStatus',
+                    text:positionsQuery.updateCompanyJobStatus,
+                    values:[jobReceivedId,currentTime,updateStatus]
+                }
+
+                const getMailAddress = {
+                    name: 'fetch-emailaddress',
+                    text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
+                    values:[positionId]
+                }
+                var employeeData = await client.query(getMailAddress);                
+                var positionName=employeeData.rows[0].position_name
+                var emailAddress=employeeData.rows[0].email
+                await client.query('COMMIT');
+
+                var mainText="The position named"+" "+positionName+" "+"which you have created has been deleted by our Admin Panel"
+                var textFormat=config.PositionText.firstLine.fontsize(3)+config.nextLine+mainText.fontsize(3)+config.nextLine+config.PositionText.secondLine.fontsize(3)+config.nextLine+config.nextLine+config.PositionText.thirdLine.fontsize(3)+config.nextLine+config.PositionText.fourthLine.fontsize(3)
+                sendMail(emailAddress, config.PositionText.subject, textFormat, function (err, data) {
+                    if (err) {
+                        console.log(err)
+                        reject({ code: 400, message: "Mailer Error.", data: {} });
+                        return;
+                    }
+
+                });
+                resolve({ code: 200, message: "Position deletion successfull", data: {} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+        })
+    }

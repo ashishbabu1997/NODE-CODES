@@ -29,7 +29,8 @@ export default {
 
 
     },
-    "nextLine": "\n",
+   
+    "nextLine": "<br>",
     "mail": {
         "service": "gmail",
         "user": "no-reply@ellow.io",
