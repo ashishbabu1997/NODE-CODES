@@ -36,6 +36,6 @@ export default {
         "fourthLine": "Team ellow.io"
     },
     "nextLine": "<br>",
-    "adminEmail":"deena.s@ellow.io",
+    "adminEmail":"jjoseph@ellow.io",
     "colon":":"
 }

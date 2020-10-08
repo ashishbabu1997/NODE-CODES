@@ -49,6 +49,6 @@ export default {
         ]
     },
     "nextLine": "<br>",
-    "adminEmail":"deena.s@ellow.io",
+    "adminEmail":"jjoseph@ellow.io",
     "colon":":"
 };
