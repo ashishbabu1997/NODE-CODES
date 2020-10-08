@@ -515,7 +515,35 @@ export const changeJobStatus = (_body) => {
                     return;
                 }
                 else {
-                    resolve({ code: 200, message: "Job status changed", data: {} });
+                        if (_body.jobStatus==6)
+                        {
+                            const getMailAddress = {
+                                name: 'fetch-emailaddress',
+                                text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
+                                values:[_body.positionId]
+                            }
+                            database().query(getMailAddress, (error, results) => {
+                                if (error) {
+                                    console.log(error)
+                                    reject({ code: 400, message: "Error in database connection.", data: {} });
+                                    return;
+                                }          
+                                var positionName=results.rows[0].position_name
+                                var emailAddress=results.rows[0].email
+                                var mainText="The position named"+" "+positionName+" "+"which was deleted earlier by the admin, has been reopened by our Admin Panel"
+                                var textFormat=config.PositionText.firstLine.fontsize(3)+config.nextLine+mainText.fontsize(3)+config.nextLine+config.PositionText.secondLine.fontsize(3)+config.nextLine+config.nextLine+config.PositionText.thirdLine.fontsize(3)+config.nextLine+config.PositionText.fourthLine.fontsize(3)
+                                sendMail(emailAddress, config.PositionText.subject, textFormat, function (err, data) {
+                                    if (err) {
+                                        console.log(err)
+                                        reject({ code: 400, message: "Mailer Error.", data: {} });
+                                        return;
+                                    }
+            
+                                });
+                                resolve({ code: 200, message: "Job status changed", data: {} });
+                            })
+                        }
+                        resolve({ code: 200, message: "Job status changed", data: {} });
                 }
             })
         })
