@@ -13,5 +13,5 @@ router
     .get('/listCandidates', jwtAuth, setData(), listCandidates)
     .post('/candidateApproveReject',jwtAuth, setData(),validate(approveRejectSchema),approveRejectCandidates)
     .post('/requestForInterview',jwtAuth, setData(),validate(interviewRequestSchema),interviewRequest)
-    .post('/review',candidateReview)
+    .post('/review',jwtAuth, setData(),candidateReview)
 export default router;
