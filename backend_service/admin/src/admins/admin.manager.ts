@@ -28,6 +28,32 @@ export const listUsersDetails = (_body) => {
             })
         })
     }
+
+    export const allUsersList = (_body) => {
+        return new Promise((resolve, reject) => {
+                var selectQuery = admineQuery.allRegisteredUsersList;
+                if(_body.filter)
+                {
+                     selectQuery =selectQuery +" "+"AND LOWER(p.company_name) LIKE '%" +_body.filter.toLowerCase() +"%'";
+                }
+                var orderBy = ' ORDER BY p.created_on DESC';
+                selectQuery = selectQuery + orderBy;
+
+                const listquery = {
+                    name: 'list-candidates',
+                    text:selectQuery,
+                }
+                database().query(listquery, (error, results) => {
+                    if (error) {
+                        reject({ code: 400, message: "Database Error", data: {} });
+                        return;
+                    }
+                    console.log(results.rowCount)
+                    resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows } });
+                })
+            })
+        }
+
     export const getUserDetails = (_body) => {
         return new Promise((resolve, reject) => {
                 const userInfo = {
