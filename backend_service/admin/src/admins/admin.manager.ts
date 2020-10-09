@@ -15,8 +15,7 @@ export const listUsersDetails = (_body) => {
             }
             const listquery = {
                 name: 'list-candidates',
-                text:selectQuery,
-                values:[false,null]
+                text:selectQuery
             }
             database().query(listquery, (error, results) => {
                 if (error) {
