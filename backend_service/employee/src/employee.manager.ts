@@ -155,7 +155,7 @@ export const createEmployee = (_body) => {
                     var adminStatus = getEmailResult.rows[0].admin_approve_status
                     var emailId = getEmailResult.rows[0].email
                     if (emailId == loweremailId) {
-                        if (adminStatus == 2) {
+                        if (adminStatus == 2 || adminStatus == null) {
                             reject({ code: 400, statusCode: 406, message: "Your account is held for Admin approval", data: {} });
                             return;
                         }
@@ -183,7 +183,7 @@ export const createEmployee = (_body) => {
                     }
                     const result = await client.query(createCompanyQuery);
                     companyId = result.rows[0].company_id;
-                    adminApproveStatus=2;
+                    adminApproveStatus=null;
                     approvalStatus=false;
                 }
                 const createEmployeeQuery = {
