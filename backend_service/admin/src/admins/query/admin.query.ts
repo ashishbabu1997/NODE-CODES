@@ -3,5 +3,6 @@ export default {
     listUsers:'SELECT e.firstname as "firstName",e.lastname as "lastName",e.employee_id as "employeeId",e.email as "email",e.telephone_number as "phoneNumber",p.company_name as "companyName",p.company_website as "companyWebsite" FROM employee e INNER JOIN company p ON p.company_id=e.company_id WHERE e.status=false AND e.admin_approve_status is NULL',
     allRegisteredUsersList:'SELECT e.firstname as "firstName", e.lastname as "lastName", e.employee_id as "employeeId", e.email as "email", e.admin_approve_status as "adminApproveStatus", e.telephone_number as "phoneNumber", e.account_type as "accountType", p.company_name as "companyName", p.company_website as "companyWebsite" FROM employee e INNER JOIN company p ON p.company_id = e.company_id WHERE e.admin_approve_status IS NOT NULL',
     clearanceQuery:'UPDATE employee SET status=$2,admin_approve_status=$3 WHERE employee_id=$1',
+    approveEmployeeQuery:'UPDATE employee SET status=true,admin_approve_status=1,password=$2 WHERE employee_id=$1 RETURNING email',
     storePassword:"UPDATE  employee SET password=$1 WHERE email=$2",
 }
