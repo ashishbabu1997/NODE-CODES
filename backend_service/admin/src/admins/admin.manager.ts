@@ -4,7 +4,8 @@ import { sendMail } from '../middleware/mailer'
 import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
 import config from '../config/config'
-
+import * as handlebars from 'handlebars'
+import * as fs from 'fs'
 export const listUsersDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = admineQuery.listUsers;
@@ -83,7 +84,17 @@ export const getUserDetails = (_body) => {
 }
 export const clearance = (_body) => {
     return new Promise((resolve, reject) => {
-
+        var readHTMLFile = function(path, callback) {
+            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                if (err) {
+                    throw err;
+                    callback(err);
+                }
+                else {
+                    callback(null, html);
+                }
+            });
+          };
         const currentTime = Math.floor(Date.now() / 1000);
         (async () => {
             const client = await database().connect()
@@ -104,16 +115,21 @@ export const clearance = (_body) => {
                     }
                     var approveResult = await client.query(adminApprovalQuery);
                     var email = approveResult.rows[0].email;
-
                     const subject = " ellow.io LOGIN PASSWORD "
-                    var textFormat = config.text.firstLine + config.nextLine + config.text.secondLine + config.nextLine + config.text.thirdLine + config.nextLine + config.text.password + password + config.nextLine + config.text.fourthLine + config.nextLine + config.text.fifthLine
-                    sendMail(email, subject, textFormat, function (err, data) {
+                    readHTMLFile('emailTemplates/adminApproveText.html', function(err, html) {
+                        var template = handlebars.compile(html);
+                        var replacements = {
+                             loginPassword: password
+                        };
+                        var htmlToSend = template(replacements);
+                    sendMail(email, subject, htmlToSend, function (err, data) {
                         if (err) {
                             console.log(err)
                             reject({ code: 400, message: "Mailer Error", data: {} });
                             return;
                         }
                     });
+                })
                     await client.query('COMMIT'); 
                     resolve({ code: 200, message: "User Approval Successfull", data: {} });
                 }
@@ -126,16 +142,21 @@ export const clearance = (_body) => {
                     await client.query(adminRejectQuery);
 
                     var desc = _body.description
-                    var description = desc.fontsize(3).bold()
                     var subject = "ellow.io ACCOUNT REJECTION MAIL "
-                    var textFormat = config.rejectText.firstLine + config.nextLine + config.rejectText.secondLine + config.nextLine + description + config.nextLine + config.rejectText.thirdLine + config.nextLine + config.rejectText.fourthLine + config.nextLine + config.rejectText.fifthLine
-                    sendMail(email, subject, textFormat, function (err, data) {
+                    readHTMLFile('emailTemplates/adminRejectText.html', function(err, html) {
+                        var template = handlebars.compile(html);
+                        var replacements = {
+                             description: desc
+                        };
+                        var htmlToSend = template(replacements);
+                    sendMail(email, subject, htmlToSend, function (err, data) {
                         if (err) {
                             console.log(err)
                             reject({ code: 400, message: "Mailer Error", data: {} });
                             return;
                         }
                     });
+                })
                     await client.query('COMMIT'); 
                     resolve({ code: 200, message: "User Rejection Successfull", data: {} });
                 }
