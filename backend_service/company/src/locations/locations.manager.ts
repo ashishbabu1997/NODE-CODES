@@ -3,7 +3,7 @@ import database from '../common/database/database';
 import config from '../config/config'
 export const fetchCompanyLocations = (_body) => {
     return new Promise((resolve, reject) => {
-        let result={}
+        let result = {}
         const query = {
             name: 'fetch-company-locations',
             text: locationQuery.getCompanyLocations,
@@ -15,19 +15,18 @@ export const fetchCompanyLocations = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            for (var i=0;i<results.rowCount;i++)
-            {
-                
-                const cntryId=results.rows[i].countryId
-                const stId=results.rows[i].stateId
-                const states=config.states
-                const countries=config.countries
-                const stateResult = states.filter(state=>state.id ==stId);    
-                const stateName=stateResult[0].name 
-                const countryResult = countries.filter(country=>country.id ==cntryId);    
-                const countryName=countryResult[0].name
-                results.rows[i].country=countryName
-                results.rows[i].state=stateName
+            for (var i = 0; i < results.rowCount; i++) {
+
+                const cntryId = results.rows[i].countryId
+                const stId = results.rows[i].stateId
+                const states = config.states
+                const countries = config.countries
+                const stateResult = states.filter(state => state.id == stId);
+                const stateName = stateResult[0].name
+                const countryResult = countries.filter(country => country.id == cntryId);
+                const countryName = countryResult[0].name
+                results.rows[i].country = countryName
+                results.rows[i].state = stateName
             }
             resolve({ code: 200, message: "Locations listed successfully", data: { locations: results.rows } });
         })
@@ -40,7 +39,7 @@ export const createCompanyLocations = (_body) => {
         const query = {
             name: 'add-company-locations',
             text: locationQuery.addCompanyLocations,
-            values: [_body.companyId, _body.streetAddress1,_body.streetAddress2,_body.zipCode,_body.city,_body.stateId, _body.countryId],
+            values: [_body.companyId, _body.streetAddress1, _body.streetAddress2, _body.zipCode, _body.city, _body.stateId, _body.countryId],
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -60,7 +59,7 @@ export const updateCompanyLocations = (_body) => {
         const query = {
             name: 'update-company-locations',
             text: locationQuery.updateCompanyLocations,
-            values: [ _body.streetAddress1,_body.streetAddress2,_body.zipCode,_body.city,_body.stateId, _body.countryId, _body.locationId]
+            values: [_body.streetAddress1, _body.streetAddress2, _body.zipCode, _body.city, _body.stateId, _body.countryId, _body.locationId, _body.companyId]
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -78,7 +77,7 @@ export const deleteCompanyLocations = (_body) => {
         const query = {
             name: 'delete-company-locations',
             text: locationQuery.deleteCompanyLocations,
-            values: [_body.locationId]
+            values: [_body.locationId, _body.companyId]
         }
         database().query(query, (error, results) => {
             if (error) {

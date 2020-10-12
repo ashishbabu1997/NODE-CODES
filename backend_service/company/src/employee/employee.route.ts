@@ -3,12 +3,14 @@ import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addEmployeeSchema from './schema/addEmployeeSchema';
 import listEmployeeSchema from './schema/listEmployeeSchema';
+import { jwtAuth } from '../middlewares/jwtAuthenticate';
+import setData from '../middlewares/setData';
 
 const router = express.Router();
 
 router
-    .get('/', validate(listEmployeeSchema), getEmployee)
-    .post('/',validate(addEmployeeSchema), addEmployee)
+    .get('/', jwtAuth, setData(), validate(listEmployeeSchema), getEmployee)
+    .post('/', jwtAuth, setData(), validate(addEmployeeSchema), addEmployee)
 
 export default router;
 

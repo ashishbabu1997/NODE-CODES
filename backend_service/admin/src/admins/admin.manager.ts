@@ -56,7 +56,7 @@ export const getUserDetails = (_body) => {
         const userInfo = {
             name: 'user-Details',
             text: admineQuery.retrieveUserInfo,
-            values: [_body.employeeId]
+            values: [_body.selectedEmployeeId]
         }
         database().query(userInfo, (error, results) => {
             if (error) {
