@@ -3,7 +3,8 @@ import database from '../common/database/database';
 import { sendMail } from '../middlewares/mailer'
 import config from '../config/config';
 import { createNotification } from '../common/notifications/notifications';
-
+import * as handlebars from 'handlebars'
+import * as fs from 'fs'
 export const getCandidateDetails = (_body) => {
     return new Promise((resolve, reject) => {
         const query = {
@@ -147,6 +148,17 @@ export const candidateClearance = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
+                var readHTMLFile = function(path, callback) {
+                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                        if (err) {
+                            throw err;
+                            callback(err);
+                        }
+                        else {
+                            callback(null, html);
+                        }
+                    });
+                  };
                 var adminApproveStatus;
                 var comment;
                 var subj;
@@ -181,9 +193,16 @@ export const candidateClearance = (_body) => {
                         value = [_body.candidateId, adminApproveStatus, comment, makeOffer,_body.employeeId]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Selection Mail";
-                        textFormat = config.approvalMail.firstLine + config.nextLine+config.nextLine + approveMessage+config.nextLine+config.nextLine+config.approvalMail.thirdLine+config.nextLine+config.approvalMail.fourthLine
-                        console.log(textFormat)
-                        sendMail(config.adminEmail, subj, textFormat, function (err, data) {
+                        readHTMLFile('emailTemplates/selectionMailText.html', function(err, html) {
+                            var template = handlebars.compile(html);
+                            var replacements = {
+                                 fName: firstName,
+                                 lName:lastName,
+                                 cName:companyName,
+                                 pName:positionName
+                            };
+                            var htmlToSend = template(replacements);
+                        sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
                             if (err) {
                                 console.log(err)
                                 reject({ code: 400, message: "Database Error", data: {} });
@@ -191,6 +210,7 @@ export const candidateClearance = (_body) => {
                             }
                             console.log('Admin Approval Mail has been sent !!!');
                         });
+                    })
                     }
                 } else {
                     if (_body.userRoleId == 1) {
@@ -200,15 +220,23 @@ export const candidateClearance = (_body) => {
                         candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
                     } else if (_body.userRoleId != 1) {
                         var rejectMessage=firstName.fontsize(3).bold()+'   '+lastName.fontsize(3).bold()+'   '+'from'+'   '+companyName.fontsize(3).bold()+'   '+'has been rejected for the position'+'   '+positionName.fontsize(3).bold()
-                        message = `${firstName + ' ' + lastName} from ${companyName} has been rejected for the position:- ${positionName}`;
+                        message = `${firstName + ' ' + lastName} from ${companyName} has been rejected for the position ${positionName}`;
                         makeOffer = 0
                         adminApproveStatus = 1;
                         comment = _body.comment;
                         value = [_body.candidateId, adminApproveStatus, comment, makeOffer,_body.employeeId]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Rejection Mail";
-                        textFormat = config.rejectionMail.firstLine+ config.nextLine + config.nextLine+rejectMessage+config.nextLine+config.nextLine+config.rejectionMail.thirdLine+config.nextLine+config.rejectionMail.fourthLine
-                        sendMail(config.adminEmail, subj, textFormat, function (err, data) {
+                        readHTMLFile('emailTemplates/rejectionMailText.html', function(err, html) {
+                            var template = handlebars.compile(html);
+                            var replacements = {
+                                 fName: firstName,
+                                 lName:lastName,
+                                 cName:companyName,
+                                 pName:positionName
+                            };
+                            var htmlToSend = template(replacements);
+                        sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
                             if (err) {
                                 console.log(err)
                                 reject({ code: 400, message: "Database Error", data: {} });
@@ -216,6 +244,7 @@ export const candidateClearance = (_body) => {
                             }
                             console.log('Candidate Rejection Mail has been sent !!!');
                         });
+                    })
                     }
 
                 }
@@ -254,6 +283,17 @@ export const interviewRequestFunction = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
+                var readHTMLFile = function(path, callback) {
+                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                        if (err) {
+                            throw err;
+                            callback(err);
+                        }
+                        else {
+                            callback(null, html);
+                        }
+                    });
+                  };
                 const insertQuery = {
                     name: 'insert-make-offer-status',
                     text: candidateQuery.insertMakeOfferStatus,
@@ -272,21 +312,32 @@ export const interviewRequestFunction = (_body) => {
                 const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}.`
                 await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' })
                 var hirerCompanyName = interviewDetails[0].hirerCompanyName.toUpperCase()
-                var hirerCompanyNameHtml = hirerCompanyName.fontsize(3).bold()
-                candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName.fontsize(3).bold()
-                var positionName = interviewDetails[0].positionName === null ? '' : interviewDetails[0].positionName.fontsize(3).bold()
-                var email = interviewDetails[0].emailAddress === null ? '' : interviewDetails[0].emailAddress.fontsize(3).bold()
-                var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber.fontsize(3).bold()
+                candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName
+                candidateLastName = interviewDetails[0].candidateLastName === null ? '' : interviewDetails[0].candidateLastName
+                var positionName = interviewDetails[0].positionName === null ? '' : interviewDetails[0].positionName
+                var email = interviewDetails[0].emailAddress === null ? '' : interviewDetails[0].emailAddress
+                var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber
                 // var description = interviewDetails[0].description === null ? '' : interviewDetails[0].description.fontsize(3).bold()
                 var subject = "Request for Interview from " + hirerCompanyName;
-                var textFormat = hirerCompanyNameHtml + config.space + config.RequestText.firstLine.fontsize(3).bold() + config.break + config.RequestText.secondLine.fontsize(3).bold() + config.space + candidateFirstName + config.break + config.RequestText.thirdLine.fontsize(3).bold() + config.space + positionName + config.break + config.RequestText.fourthLine.fontsize(3).bold() + config.space + email + config.break + config.RequestText.fifthLine.fontsize(3).bold() + config.space + phoneNumber + config.break + config.RequestText.sixthLine.fontsize(3).bold() + config.break+config.break+config.RequestText.seventhLine.fontsize(3).bold()+config.break+config.RequestText.eigthLine.fontsize(3).bold()
-                sendMail(config.adminEmail, subject, textFormat, function (err, data) {
+                readHTMLFile('emailTemplates/interviewRequestMailText.html', function(err, html) {
+                    var template = handlebars.compile(html);
+                    var replacements = {
+                         hirerName: hirerCompanyName,
+                         firstName:candidateFirstName,
+                         lastName:candidateLastName,
+                         position:positionName,
+                         emailId:email,
+                         telephoneNumber:phoneNumber
+                    };
+                    var htmlToSend = template(replacements);
+                sendMail(config.adminEmail, subject, htmlToSend, function (err, data) {
                     if (err) {
                         console.log(err)
                         reject({ code: 400, message: "Email Error", data: {} });
                         return;
                     }
                 });
+            })
                 resolve({ code: 200, message: "Interview request has been sent successfully", data: {} });
             } catch (e) {
                 console.log(e)
