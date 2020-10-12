@@ -11,7 +11,6 @@ const router = express.Router();
 
 
 router
-
     .get('/',jwtAuth, setData(), validate(getJobReceivedSchema),getJobReceived)
     .get('/getById',jwtAuth, setData(), validate(getJobReceivedByIdSchema),getJobReceivedById)
     .put('/', jwtAuth, setData(),validate(schemaFlag), updateFlag)
@@ -19,8 +18,5 @@ router
     .post('/',jwtAuth, setData(),validate(addProfileSchema),saveOrSubmitProfile)
     .put('/editProfiles',jwtAuth, setData(),validate(editprofileSchema),editProfile)
     .get('/profile',jwtAuth, setData(), getProfile)
-
-
-
 export default router;
 // validate(editprofileSchema)
