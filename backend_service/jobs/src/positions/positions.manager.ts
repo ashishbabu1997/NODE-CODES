@@ -58,15 +58,15 @@ export const createCompanyPositions = async (_body) => {
                 const addCompanyPositionsQuery = {
                     name: 'add-company-positions',
                     text: positionsQuery.addCompanyPositions,
-                    values: [_body.positionName, _body.locationName, _body.developerCount, _body.companyId,
+                    values: [_body.positionName, _body.locationName, _body.developerCount, _body.positionCreatedCompanyId,
                     _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document, _body.contractPeriodId,
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
-                    _body.userId, _body.userId, currentTime, currentTime, _body.jobCategoryId]
+                    _body.employeeId, _body.employeeId, currentTime, currentTime, _body.jobCategoryId]
                 }
                 const getCompanyNameQuery = {
                     name: 'get-company-name',
                     text: positionsQuery.getCompanyName,
-                    values: [_body.companyId]
+                    values: [_body.positionCreatedCompanyId]
                 }
                 const getCompanyNameResponse = await client.query(getCompanyNameQuery);
                 const companyName = getCompanyNameResponse.rows[0].companyName
@@ -75,7 +75,7 @@ export const createCompanyPositions = async (_body) => {
                 const locationName=_body.locationName.fontsize(3).bold()
                 const companyPositionResponse = await client.query(addCompanyPositionsQuery);
                 const positionId = companyPositionResponse.rows[0].position_id
-                const companyId = _body.companyId
+                const companyId = _body.positionCreatedCompanyId
 
                 let tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
                 let oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];
@@ -311,12 +311,12 @@ export const updateCompanyPositions = async (_body) => {
                     text: positionsQuery.updatePositionFirst,
                     values: [_body.positionName, _body.locationName, _body.developerCount,
                     _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document,
-                    _body.userId, currentTime, positionId, _body.companyId, _body.jobCategoryId]
+                    _body.employeeId, currentTime, positionId, _body.positionCreatedCompanyId, _body.jobCategoryId]
                 }
                 const getCompanyNameQuery = {
                     name: 'get-company-name',
                     text: positionsQuery.getCompanyName,
-                    values: [_body.companyId]
+                    values: [_body.positionCreatedCompanyId]
                 }
                 const getCompanyNameResponse = await client.query(getCompanyNameQuery);
                 const companyName = getCompanyNameResponse.rows[0].companyName
@@ -327,7 +327,7 @@ export const updateCompanyPositions = async (_body) => {
                     text: positionsQuery.updatePositionSecond,
                     values: [_body.contractPeriodId,
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
-                    _body.userId, currentTime, positionId, _body.companyId]
+                    _body.employeeId, currentTime, positionId, _body.positionCreatedCompanyId]
                 }
 
                 await client.query(updateCompanyPositionsSecondQuery);

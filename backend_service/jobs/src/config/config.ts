@@ -4,6 +4,8 @@ export default {
     "http": {
         "port": 4003
     },
+    "jwtSecretKey": "elL0wA!",
+
     "db": {
         "user": "devdb_user",
         "host": "52.66.51.51",
