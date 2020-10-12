@@ -36,7 +36,7 @@ export const getJobReceivedByIdSchema =  Joi.object().keys({
         });
         return errors;
     }),
-    sellerCompanyId: Joi.number().required().error(errors => {
+    companyId: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
