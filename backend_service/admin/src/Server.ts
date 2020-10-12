@@ -3,6 +3,7 @@ import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import AppConfig from './config/config';
 import router from './admin.router';
+import configurePassport from './config/passportJwtConfig';
 
 const app = express();
 app.use(cors());
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
+configurePassport();
 app.use('/', router);
 
 app.listen(AppConfig.http.port, () => {
