@@ -104,45 +104,6 @@ export const createCompanyPositions = async (_body) => {
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
                     return;
                 }
-                // const addPositionHiringStepQuery = {
-                //     name: 'add-position-hiring-steps',
-                //     text: positionsQuery.addPositionSteps,
-                //     values: [positionId, _body.hiringStepName, _body.description, currentTime, currentTime],
-                // }
-                // const res = await client.query(addPositionHiringStepQuery)
-                // const hiringStages = _body.hiringStages;
-                // const positionHiringStepId = res.rows[0].position_hiring_step_id;
-                // let hiringStageValues = ''
-                // const length = hiringStages.length;
-                // hiringStages.forEach((element, i) => {
-                //     const end = i != length - 1 ? "," : ";"
-                //     hiringStageValues = hiringStageValues + "('" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + positionHiringStepId + "," + element.hiringStageOrder + "," + currentTime + "," + currentTime + ")" + end
-                // });
-                // const addPositionHiringStagesQuery = positionsQuery.addPositionHiringStages + hiringStageValues
-                // await client.query(addPositionHiringStagesQuery)
-                const assessmentTraits = _body.assessmentTraits;
-                const getPositionAssessmentTraitsQuery = {
-                    name: 'get-position-assessment-traits-old',
-                    text: positionsQuery.getAssessmentTraitOld,
-                    values: [positionId]
-                }
-                const previousData = await client.query(getPositionAssessmentTraitsQuery);
-                if (previousData.rows.length > 0) {
-                    const assessmentTraitsOld = previousData.rows;
-                    const deletedAssessmentTraits = assessmentTraitsOld.filter(e => assessmentTraits.indexOf(e) == -1);
-                    const deletedAssessmentTraitsQuery = {
-                        name: 'delete-company-services',
-                        text: positionsQuery.deleteAssessmentTraits,
-                        values: [positionId, deletedAssessmentTraits],
-                    }
-                    await client.query(deletedAssessmentTraitsQuery);
-                }
-                const addAssessmentTraitsQuery = {
-                    name: 'create-assessment-traits',
-                    text: positionsQuery.addAssessmentTraits,
-                    values: [positionId, assessmentTraits, currentTime, currentTime],
-                }
-                let x = await client.query(addAssessmentTraitsQuery);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyId  } });
             } catch (e) {
@@ -177,7 +138,6 @@ export const fetchPositionDetails = (_body) => {
             let topRatedSkill=[],otherSkill=[];
             hiringSteps.forEach(step => {
                 result = {
-                    assessmentTraits: step.assessmentTraits,
                     maxBudget: step.max_budget,
                     minBudget: step.min_budget,
                     billingType: step.billing_type,
@@ -205,15 +165,6 @@ export const fetchPositionDetails = (_body) => {
                     hiringStages: [],
                     skills: []
                 }
-                if (step.position_hiring_stage_id != null && groupedHiringStages.findIndex(({ hiringStageId }) => hiringStageId === step.position_hiring_stage_id) === -1)
-                    groupedHiringStages.push(
-                        {
-                            hiringStageId: step.position_hiring_stage_id,
-                            hiringStageName: step.hiring_stage_name,
-                            hiringStageDescription: step.position_hiring_stage_description,
-                            hiringStageOrder: step.hiring_stage_order,
-                        }
-                    )
 
                 if (step.skill_id != null && skills.findIndex(({ skillId }) => skillId === step.skill_id) === -1)
                 {
@@ -232,70 +183,12 @@ export const fetchPositionDetails = (_body) => {
                     );
                 }
                     
-                result['hiringStages'] = groupedHiringStages;
                 result['positionId'] = _body.positionId;
             })
             result['skills'] = {topRatedSkill,otherSkill};
             resolve({ code: 200, message: "Fetched position details successfully", data: result });
         })
     });
-}
-
-export const editCompanyPositionHiringSteps = (_body) => {
-    return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
-
-        database().connect((err, client, done) => {
-            const shouldAbort = err => {
-                if (err) {
-                    console.error('Error in transaction', err.stack)
-                    client.query('ROLLBACK', err => {
-                        if (err) {
-                            console.error('Error rolling back client', err.stack)
-                            reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                            return;
-                        }
-                        done();
-                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
-
-                    })
-                }
-                return !!err
-            }
-            client.query('BEGIN', err => {
-                if (shouldAbort(err)) return
-                const editHiringStepQuery = {
-                    name: 'edit-position-hiring-steps',
-                    text: positionsQuery.editPositionHiringSteps,
-                    values: [_body.hiringStepId, _body.hiringStepName, _body.description, currentTime],
-                }
-                client.query(editHiringStepQuery, (err, res) => {
-                    if (shouldAbort(err)) return
-                    const hiringStages = _body.hiringStages;
-                    let hiringStageValues = ''
-                    const length = hiringStages.length;
-                    hiringStages.forEach((element, i) => {
-                        const end = i != length - 1 ? "," : ""
-                        hiringStageValues = hiringStageValues + "(" + element.hiringStageId + ",'" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + element.hiringStageOrder + "," + currentTime + ")" + end
-                    });
-                    const query = positionsQuery.editPositionHiringStagesStart + hiringStageValues + positionsQuery.editPositionHiringStagesEnd
-                    console.log(query)
-                    client.query(query, (err, res) => {
-                        if (shouldAbort(err)) return
-                        client.query('COMMIT', err => {
-                            if (err) {
-                                console.error('Error committing transaction', err.stack)
-                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                                return;
-                            }
-                            done()
-                            resolve({ code: 200, message: "Position hiring step updated successfully", data: {} });
-                        })
-                    })
-                })
-            })
-        })
-    })
 }
 
 export const updateCompanyPositions = async (_body) => {
@@ -372,48 +265,7 @@ export const updateCompanyPositions = async (_body) => {
                     resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
                     return;
                 }
-                // const editPositionHiringStepQuery = {
-                //     name: 'edit-position-hiring-steps',
-                //     text: positionsQuery.editPositionHiringSteps,
-                //     values: [_body.hiringStepId, _body.hiringStepName, _body.description, currentTime],
-                // }
-                // const res = await client.query(editPositionHiringStepQuery)
-                // console.log(res)
-                // const hiringStages = _body.hiringStages;
-                // let hiringStageValues = ''
-                // const length = hiringStages.length;
-                // hiringStages.forEach((element, i) => {
-                //     const end = i != length - 1 ? "," : ""
-                //     hiringStageValues = hiringStageValues + "(" + element.hiringStageId + ",'" + element.hiringStageName + "','" + element.hiringStageDescription + "'," + element.hiringStageOrder + "," + currentTime + ")" + end
-                // });
-                // const addPositionHiringStagesQuery = positionsQuery.editPositionHiringStagesStart + hiringStageValues + positionsQuery.editPositionHiringStagesEnd
-                // await client.query(addPositionHiringStagesQuery)
-                const assessmentTraits = _body.assessmentTraits;
-                const getPositionAssessmentTraitsQuery = {
-                    name: 'get-position-assessment-traits-old',
-                    text: positionsQuery.getAssessmentTraitOld,
-                    values: [positionId]
-                }
-                const previousData = await client.query(getPositionAssessmentTraitsQuery);
 
-                console.log(previousData,"sadas")
-                if (previousData.rows.length > 0) {
-                    const assessmentTraitsOld = previousData.rows;
-                    const deletedAssessmentTraits = assessmentTraitsOld.filter(e => assessmentTraits.indexOf(e.reviewName) == -1).map(item => { return item.positionReviewId });
-                    const deletedAssessmentTraitsQuery = {
-                        name: 'delete-company-services',
-                        text: positionsQuery.deleteAssessmentTraits,
-                        values: [positionId, deletedAssessmentTraits],
-                    }
-                    await client.query(deletedAssessmentTraitsQuery);
-                }
-                const addAssessmentTraitsQuery = {
-                    name: 'create-assessment-traits',
-                    text: positionsQuery.addAssessmentTraits,
-                    values: [positionId, assessmentTraits, currentTime, currentTime],
-                }
-                let x = await client.query(addAssessmentTraitsQuery);
-                console.log(x)
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
             } catch (e) {

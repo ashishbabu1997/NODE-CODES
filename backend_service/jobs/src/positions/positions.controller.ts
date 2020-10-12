@@ -28,15 +28,6 @@ export const getPositionDetails = (req, res) => {
     })
 }
 
-export const editPositionHiringSteps = (req, res) => {
-    const body = req.body;
-    editCompanyPositionHiringSteps(body).then((response: any) => {
-        sendResponse(res, response.code, 1,202, response.message, response.data)
-    }).catch(error => {
-        sendResponse(res, error.code, 0,402, error.message, error.data)
-    })
-}
-
 export const updatePositions = (req, res) => {
     const body = req.body;
     updateCompanyPositions(body).then((response: any) => {

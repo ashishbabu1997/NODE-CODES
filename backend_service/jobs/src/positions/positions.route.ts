@@ -1,4 +1,4 @@
-import { editPositionHiringSteps, getPositionDetails,positionDeletion, createPositions, getPositions, updatePositions, publishPositions,changePositionStatus,getCompanyNames } from './positions.controller';
+import { getPositionDetails,positionDeletion, createPositions, getPositions, updatePositions, publishPositions,changePositionStatus,getCompanyNames } from './positions.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addPositionSchema from './schemas/addPositionSchema';
@@ -7,7 +7,6 @@ import getPositionSchema from './schemas/getPositionsSchema';
 import updatePositionSchema from './schemas/updatePositionSchema';
 import positionIdSchema from './schemas/positionIdSchema';
 import jobStatusSchema from './schemas/jobStatusSchema';
-import editPositionHiringStepSchema from './schemas/editPositionHiringStepSchema';
 
 const router = express.Router();
 
@@ -18,7 +17,6 @@ router
     .post('/', validate(addPositionSchema),createPositions)
     .put('/', validate(updatePositionSchema),updatePositions)
     .get('/:positionId',getPositionDetails)
-    .put('/hiringSteps', validate(editPositionHiringStepSchema), editPositionHiringSteps)
     .post('/publish', validate(positionIdSchema), publishPositions)
     .post('/changePositionStatus',validate(jobStatusSchema),changePositionStatus)
     .post('/deletePosition',validate(positionIdSchema),positionDeletion)
