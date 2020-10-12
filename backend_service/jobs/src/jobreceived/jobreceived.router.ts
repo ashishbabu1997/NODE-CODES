@@ -11,6 +11,7 @@ const router = express.Router();
 
 
 router
+<<<<<<< HEAD
     .get('/',jwtAuth, setData(), validate(getJobReceivedSchema),getJobReceived)
     .get('/getById',jwtAuth, setData(), validate(getJobReceivedByIdSchema),getJobReceivedById)
     .put('/', jwtAuth, setData(),validate(schemaFlag), updateFlag)
@@ -18,6 +19,15 @@ router
     .post('/',jwtAuth, setData(),validate(addProfileSchema),saveOrSubmitProfile)
     .put('/editProfiles',jwtAuth, setData(),validate(editprofileSchema),editProfile)
     .get('/profile',jwtAuth, setData(), getProfile)
+=======
+    .get('/', validate(getJobReceivedSchema),getJobReceived)
+    .get('/getById', validate(getJobReceivedByIdSchema),getJobReceivedById)
+    .put('/', validate(schemaFlag), updateFlag)
+    .put('/reject', validate(schemaReject), updateReject)
+    .post('/',validate(addProfileSchema),saveOrSubmitProfile)
+    .put('/editProfiles',validate(editprofileSchema),editProfile)
+    .get('/profile', getProfile)
+>>>>>>> parent of 4f9d780... Revert "Merge branch 'develop' into feature/tokenForCandidates"
 
 export default router;
 // validate(editprofileSchema)

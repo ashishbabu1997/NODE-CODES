@@ -4,6 +4,8 @@ import { sendMail } from './middleware/mailer'
 import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
 import config from './config/config'
+import * as handlebars from 'handlebars'
+import * as fs from 'fs'
 // export const createEmployee2 = (_body) => {
 //     return new Promise((resolve, reject) => {
 //         const mailId = _body.email
@@ -143,6 +145,17 @@ export const createEmployee = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
+                var readHTMLFile = function(path, callback) {
+                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                        if (err) {
+                            throw err;
+                            callback(err);
+                        }
+                        else {
+                            callback(null, html);
+                        }
+                    });
+                  };
                 //Check if Email already exist reject in case exists        
                 const getEmailQuery = {
                     name: 'get-email',
@@ -155,7 +168,7 @@ export const createEmployee = (_body) => {
                     var adminStatus = getEmailResult.rows[0].admin_approve_status
                     var emailId = getEmailResult.rows[0].email
                     if (emailId == loweremailId) {
-                        if (adminStatus == 2) {
+                        if (adminStatus == 2 || adminStatus == null) {
                             reject({ code: 400, statusCode: 406, message: "Your account is held for Admin approval", data: {} });
                             return;
                         }
@@ -183,7 +196,7 @@ export const createEmployee = (_body) => {
                     }
                     const result = await client.query(createCompanyQuery);
                     companyId = result.rows[0].company_id;
-                    adminApproveStatus=2;
+                    adminApproveStatus=null;
                     approvalStatus=false;
                 }
                 const createEmployeeQuery = {
@@ -235,24 +248,37 @@ export const createEmployee = (_body) => {
                         values: [hashedPassword,loweremailId],
                     }
                     await client.query(storePasswordQuery);
-
-                    var textFormat = config.usertext.firstLine + config.nextLine + config.usertext.secondLine + config.nextLine+config.usertext.thirdLine + config.nextLine + config.usertext.password + password + config.nextLine + config.usertext.fourthLine + config.nextLine + config.usertext.fifthLine
-                    sendMail(loweremailId, subject, textFormat, function (err, data) {
+                    readHTMLFile('emailTemplates/newUserText.html', function(err, html) {
+                        var template = handlebars.compile(html);
+                        var replacements = {
+                             loginPassword:password
+                        };
+                        var htmlToSend = template(replacements);
+                    sendMail(loweremailId, subject, htmlToSend, function (err, data) {
                         if (err) {
                             console.log(err)
-                            reject({ code: 400, message: "Database Error", data: {} });
+                            reject({ code: 400, message: "Mailer Error", data: {} });
                             return;
                         }
                     });
+                })
                 }
 
                 await client.query('COMMIT')                
-                var Name = _body.firstName.fontsize(3).bold() + " " + _body.lastName.fontsize(3).bold()
-                var companyName = _body.companyName.fontsize(3).bold()
-                var emailAddress = _body.email.fontsize(3).bold()
-                var number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber.fontsize(3).bold():""
-                var textFormat = config.text.firstLine.fontsize(3).bold() + config.nextLine + config.nextLine + config.text.secondLine.fontsize(3).bold() + config.nextLine + config.text.thirdLine.fontsize(3).bold() + config.nextLine + config.text.name.fontsize(3).bold() + config.colon + Name + config.nextLine + config.text.companyName.fontsize(3).bold() + config.colon + companyName + config.nextLine + config.text.email.fontsize(3).bold() + config.colon + emailAddress + config.nextLine + config.text.phone.fontsize(3).bold() + config.colon + number + config.nextLine + config.nextLine + config.text.fifthLine.fontsize(3).bold() + config.nextLine + config.text.sixthLine.fontsize(3).bold()
-                sendMail(config.adminEmail, config.text.subject, textFormat, function (err, data) {
+                var Name = _body.firstName + " " + _body.lastName
+                var companyName = _body.companyName
+                var emailAddress = _body.email
+                var number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
+                readHTMLFile('emailTemplates/applicationText.html', function(err, html) {
+                    var template = handlebars.compile(html);
+                    var replacements = {
+                         applicantName:Name,
+                         company:companyName,
+                         email:emailAddress,
+                         phoneNumber:number
+                    };
+                    var htmlToSend = template(replacements);
+                sendMail(config.adminEmail, config.text.subject, htmlToSend, function (err, data) {
                     if (err) {
                         console.log(err)
                         reject({ code: 400, message: "Database Error", data: {} });
@@ -261,6 +287,7 @@ export const createEmployee = (_body) => {
                     console.log('Notification mail to admin has been sent !!!');
                     // resolve({ code: 200, message: "User Approval Successfull", data: {} });
                 });
+            })
 
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
