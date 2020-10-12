@@ -23,6 +23,8 @@
     "fs": "0.0.1-security",
     "handlebars": "^4.7.6",
     "nodemailer": "^6.4.11",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "pg": "^8.2.1",
     "pg-format": "^1.0.4",
     "pm2": "^4.4.0"

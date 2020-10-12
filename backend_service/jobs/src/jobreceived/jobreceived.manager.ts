@@ -40,7 +40,7 @@ export const getJobReceivedByJobReceivedId = (_body) => {
         const query = {
             name: 'get-JobReceivedByJobReceivedId',
             text: jobReceivedQuery.getJobReceivedById,
-            values: [parseInt(_body.jobReceivedId), parseInt(_body.sellerCompanyId)]
+            values: [parseInt(_body.jobReceivedId), parseInt(_body.companyId)]
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -58,7 +58,7 @@ export const updateflagForJobReceived = (_body) => {
         const query = {
             name: 'update-position-flag',
             text: jobReceivedQuery.updateFlag,
-            values: [_body.jobReceivedId, _body.companyId, _body.flag, _body.userId, currentTime]
+            values: [_body.jobReceivedId, _body.companyId, _body.flag, _body.employeeId, currentTime]
         }
 
         database().query(query, (error, results) => {
@@ -77,7 +77,7 @@ export const updateIsRejectForJobReceived = (_body) => {
         const query = {
             name: 'update-JobReceived-reject',
             text: jobReceivedQuery.updateReject,
-            values: [_body.jobReceivedId, _body.companyId, _body.reject, _body.userId, currentTime]
+            values: [_body.jobReceivedId, _body.companyId, _body.reject, _body.employeeId, currentTime]
         }
 
         database().query(query, (error, results) => {
@@ -96,7 +96,7 @@ export const editCandidateDetails = (_body) => {
         const editQuery = {
             name: 'update-JobReceived-reject',
             text: jobReceivedQuery.editDetailsCandidate,
-            values: [_body.candidateId, _body.firstName, _body.lastName, _body.email, _body.phoneNumber, _body.rate, _body.billingTypeId, _body.resume, _body.currencyTypeId, _body.coverNote, _body.candidateStatus,_body.companyId]
+            values: [_body.candidateId, _body.firstName, _body.lastName, _body.email, _body.phoneNumber, _body.rate, _body.billingTypeId, _body.resume, _body.currencyTypeId, _body.coverNote, _body.candidateStatus,_body.candidateCreateCompanyId]
         }
         database().query(editQuery, (error, results) => {
             if (error) {
@@ -118,9 +118,9 @@ export const saveCandidateProfile = (_body) => {
                 await client.query('BEGIN');
                 const candidatesArray = _body.candidates;
                 let candidates = candidatesArray.map(c => {
-                    return [c.candidateFirstName, c.candidateLastName, c.companyId, c.jobReceivedId, c.coverNote,
+                    return [c.candidateFirstName, c.candidateLastName, c.candidateCreateCompanyId, c.jobReceivedId, c.coverNote,
                     c.rate, c.billingTypeId, c.currencyTypeId, c.email, c.phoneNumber, c.resume, c.positionId,
-                        currentTime, currentTime,c.userId,c.userId, c.candidateStatus]
+                        currentTime, currentTime,c.employeeId,c.employeeId, c.candidateStatus]
                 })
                 const saveCandidateQuery = {
                     name: 'add-Profile',
@@ -130,7 +130,7 @@ export const saveCandidateProfile = (_body) => {
                 const query = {
                     name: 'get-total-candidate-count',
                     text: jobReceivedQuery.getTotalCountOfCandidatesSubmitted,
-                    values: [_body.candidates[0].positionId, _body.candidates[0].companyId],
+                    values: [_body.candidates[0].positionId, _body.candidates[0].candidateCreateCompanyId],
                 }
                 const response = await client.query(query);
                 console.log(response)
@@ -138,7 +138,7 @@ export const saveCandidateProfile = (_body) => {
                 const updateCompanyJobStatusQuery = {
                     name: 'update-company-job-status',
                     text: jobReceivedQuery.updateCompanyJobStatus,
-                    values: [_body.candidates[0].jobReceivedId,status, _body.candidates[0].companyId,_body.candidates[0].userId, currentTime],
+                    values: [_body.candidates[0].jobReceivedId,status, _body.candidates[0].candidateCreateCompanyId,_body.candidates[0].employeeId, currentTime],
                 }
                 await client.query(updateCompanyJobStatusQuery);
                 await client.query('COMMIT');
@@ -184,7 +184,7 @@ export const getProfileByCompanyId = (_body) => {
                text: jobReceivedQuery.getProfileByJobReceived,
                values: [parseInt(_body.jobReceivedId)]
        }
-
+    //    awards ...!!
        database().query(listJobCandidatesQuery, (error, results) => {
        if (error) {
            console.log(error)
