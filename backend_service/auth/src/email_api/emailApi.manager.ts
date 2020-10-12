@@ -4,19 +4,6 @@ import  * as otpGenerator from "otp-generator"
 import {Promise} from 'es6-promise'
 import {sendMail} from '../middlewares/mailer'
 import config from '../config/config'
-import * as handlebars from 'handlebars'
-import * as fs from 'fs'
-var readHTMLFile = function(path, callback) {
-  fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-      if (err) {
-          throw err;
-          callback(err);
-      }
-      else {
-          callback(null, html);
-      }
-  });
-};
 const subject="Your OTP is";
 export const sendOtp = (_body) => {
   return new Promise((resolve, reject) => {
@@ -31,7 +18,6 @@ export const sendOtp = (_body) => {
       values: [_body]
   }
   console.log("Entering DB conectivity")
-  console.log(__dirname)
   database().query(checkStatusQuery, (error, results) => {
       if (error) {
         console.log(error)
@@ -46,18 +32,12 @@ export const sendOtp = (_body) => {
              text: Query.insertEmailOtp,
              values: [_body,otp,Time],
            }
-           readHTMLFile('emailTemplates/otpmail.html', function(err, html) {
-            var template = handlebars.compile(html);
-            var replacements = {
-                 otp: otp
-            };
-            var htmlToSend = template(replacements);
            database().query(insertQuery, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Error in database connection.", data:{} });
                 return;
             }
-            sendMail(_body,subject,htmlToSend, function(err,data) {
+            sendMail(_body, subject, textFormat, function(err,data) {
               if (err) {
                 console.log("........Email ERROR:.........",err)
                 reject({ code: 400, message: "Cannot send email", data:{}});
@@ -66,9 +46,7 @@ export const sendOtp = (_body) => {
               console.log('Email sent!!!');
               resolve({ code: 200, message: "OTP  has sent to your email successfully", data:{} });
             });
-
           })
-        })
          }
         else
         {

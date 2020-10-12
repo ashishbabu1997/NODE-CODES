@@ -5,21 +5,8 @@ import {sendMail} from '../middlewares/mailer'
 import Query from './query/query';
 import database from '../common/database/database';
 import config from '../config/config'
-import * as handlebars from 'handlebars'
-import * as fs from 'fs'
 export const sendLink = (_body) => {
   return new Promise((resolve, reject) => {
-    var readHTMLFile = function(path, callback) {
-      fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-          if (err) {
-              throw err;
-              callback(err);
-          }
-          else {
-              callback(null, html);
-          }
-      });
-    };
     var lowerEmail=_body.email.toLowerCase()
     const checkEMail = {
       name: 'check-email',
@@ -50,13 +37,8 @@ export const sendLink = (_body) => {
         }
         var link=_body.host+"/passwordset/"+token
         const subject="ellow.ai RESET PASSWORD LINK"
-        readHTMLFile('emailTemplates/forgotPasswordText.html', function(err, html) {
-          var template = handlebars.compile(html);
-          var replacements = {
-               resetLink: link
-          };
-          var htmlToSend = template(replacements);
-        sendMail(lowerEmail, subject,htmlToSend, function(err,data) {
+        var textFormat = config.text.firstLine.fontsize(3).bold() + config.nextLine +config.nextLine+ config.text.thirdLine.fontsize(3).bold() + config.nextLine  + link + config.nextLine+config.nextLine + config.text.fourthLine.fontsize(3).bold() + config.nextLine + config.text.fifthLine.fontsize(3).bold()
+        sendMail(lowerEmail, subject,textFormat, function(err,data) {
                 if (err) {
                   console.log("........Email ERROR:.........",err)
                   reject({ code: 400, message: "Cannot send email", data:{}});
@@ -65,7 +47,6 @@ export const sendLink = (_body) => {
                 console.log('Email sent successfully');
                 resolve({ code: 200, message: "A Link to reset your password has been sent to your email successfully", data:{} });
             });
-          })
           })
       }
       else

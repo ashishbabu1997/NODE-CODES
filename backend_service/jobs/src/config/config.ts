@@ -30,7 +30,7 @@ export default {
     },
     "PositionText": {
         "subject":"Position Deletion Alert",
-        "firstLine": "Hello,",
+        "firstLine": "Hi,",
         "secondLine": "For queries contact us at sales@ellow.io",
         "thirdLine": "With regards,",
         "fourthLine": "Team ellow.io"
