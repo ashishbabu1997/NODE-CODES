@@ -271,7 +271,7 @@ export const saveCandidateProfile = (_body) => {
                 const query = {
                     name: 'get-ProfileByCompanyId',
                     text: jobReceivedQuery.getProfile,
-                    values: [parseInt(_body.companyId), parseInt(_body.jobReceivedId)]
+                    values: [parseInt(_body.companyId), parseInt(_body.positionId)]
                 }
                 
                 database().query(query, (error, results) => {
