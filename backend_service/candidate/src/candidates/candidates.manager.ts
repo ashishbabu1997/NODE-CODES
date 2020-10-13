@@ -51,7 +51,7 @@ export const getCandidateDetails = (_body) => {
                 }
                 let skillResult = await client.query(getCandidateSkillsQuery);
 
-                skillResult.rows.array.forEach(step => {
+                skillResult.rows.forEach(step => {
                     if (step.skill_id != null)
                     {
                     step.topSkill?

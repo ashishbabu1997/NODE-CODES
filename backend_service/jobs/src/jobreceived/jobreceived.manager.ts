@@ -184,7 +184,7 @@ export const saveCandidateProfile = (_body) => {
                         text: format(jobReceivedQuery.addProfile, candidates),
                     }
                     var addCandidateResult = await client.query(saveCandidateQuery);
-                    let candidateId = addCandidateResult.rows[0].candidateId;
+                    let candidateId = addCandidateResult.rows[0].candidate_id;
                     if(![null,undefined,''].includes(_body.positionId))
                     {
                         const addPositionQuery = {
