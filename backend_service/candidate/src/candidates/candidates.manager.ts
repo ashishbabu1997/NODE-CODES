@@ -94,7 +94,7 @@ export const listCandidatesDetails = (_body) => {
                 }
                 const hiringStagesResult = await client.query(listHiringStages);
                 let hiringStages = hiringStagesResult.rows;
-
+                
                 const { companyName, positionName } = hiringStages[0];
                 hiringStages = hiringStages.map(element => { return { ...element, candidateList: [] } })
                 const listCandidates = {
@@ -104,7 +104,7 @@ export const listCandidatesDetails = (_body) => {
                 }
                 const candidatesResult = await client.query(listCandidates);
                 let candidates = candidatesResult.rows;
-
+                
                 console.log(companyName, "dasdas")
                 let allCandidates = [];
                 candidates.forEach(candidate => {
@@ -117,7 +117,7 @@ export const listCandidatesDetails = (_body) => {
                         allCandidates.push(candidate);
                     }
                 });
-
+                
                 const getJobReceivedId = {
                     name: 'get-jobreceived-id',
                     text: candidateQuery.getJobReceivedId,
@@ -125,7 +125,7 @@ export const listCandidatesDetails = (_body) => {
                 }
                 const jobReceivedIdResult = await client.query(getJobReceivedId);
                 var jobReceivedId = jobReceivedIdResult.rows[0]['job_received_id'];
-
+                
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { companyName, positionName, jobReceivedId, hiringStages, allCandidates } });
             } catch (e) {
@@ -217,7 +217,7 @@ export const candidateClearance = (_body) => {
                             console.log('Candidate Rejection Mail has been sent !!!');
                         });
                     }
-
+                    
                 }
                 const candidateApprovalQuery = {
                     name: 'admin',
@@ -233,7 +233,7 @@ export const candidateClearance = (_body) => {
                 //         reject({ code: 400, message: "Database Error", data: {} });
                 //         return;
                 //     }
-                    resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
+                resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
                 // });
             } catch (e) {
                 console.log(e)
@@ -257,29 +257,36 @@ export const interviewRequestFunction = (_body) => {
                 const insertQuery = {
                     name: 'insert-make-offer-status',
                     text: candidateQuery.insertMakeOfferStatus,
-                    values: [_body.candidateId,_body.userId],
+                    values: [_body.candidateId,_body.employeeId],
                 }
                 await client.query(insertQuery);
                 const candidateDetails = {
                     name: 'get-interview-details',
                     text: candidateQuery.getInterviewDetails,
-                    values: [_body.candidateId, _body.companyId],
+                    values: [_body.companyId,_body.candidateId, _body.positionId],
                 }
                 const result = await client.query(candidateDetails);
                 await client.query('COMMIT');
                 var interviewDetails = result.rows
-                let { positionId, jobReceivedId, candidateFirstName, candidateLastName } = interviewDetails[0];
+                
+                let {  jobReceivedId, candidateFirstName, candidateLastName } = interviewDetails[0];
+                
                 const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}.`
-                await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' })
+                await createNotification({ positionId:_body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' })
+                
                 var hirerCompanyName = interviewDetails[0].hirerCompanyName.toUpperCase()
                 var hirerCompanyNameHtml = hirerCompanyName.fontsize(3).bold()
+                
                 candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName.fontsize(3).bold()
+                
                 var positionName = interviewDetails[0].positionName === null ? '' : interviewDetails[0].positionName.fontsize(3).bold()
                 var email = interviewDetails[0].emailAddress === null ? '' : interviewDetails[0].emailAddress.fontsize(3).bold()
                 var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber.fontsize(3).bold()
+                
                 // var description = interviewDetails[0].description === null ? '' : interviewDetails[0].description.fontsize(3).bold()
                 var subject = "Request for Interview from " + hirerCompanyName;
                 var textFormat = hirerCompanyNameHtml + config.space + config.RequestText.firstLine.fontsize(3).bold() + config.break + config.RequestText.secondLine.fontsize(3).bold() + config.space + candidateFirstName + config.break + config.RequestText.thirdLine.fontsize(3).bold() + config.space + positionName + config.break + config.RequestText.fourthLine.fontsize(3).bold() + config.space + email + config.break + config.RequestText.fifthLine.fontsize(3).bold() + config.space + phoneNumber + config.break + config.RequestText.sixthLine.fontsize(3).bold() + config.break+config.break+config.RequestText.seventhLine.fontsize(3).bold()+config.break+config.RequestText.eigthLine.fontsize(3).bold()
+               
                 sendMail(config.adminEmail, subject, textFormat, function (err, data) {
                     if (err) {
                         console.log(err)
@@ -316,7 +323,7 @@ export const addCandidateReview = (_body) => {
                     values: [_body.candidateId, _body.assessmentComment],
                 }
                 promise.push(client.query(insertQuery));
-
+                
                 data.forEach(element => {
                     const candidateDetails = {
                         name: 'update-candidate-assesment-rating',
@@ -328,7 +335,7 @@ export const addCandidateReview = (_body) => {
                 const results = await Promise.all(promise);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });
-
+                
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
