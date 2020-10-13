@@ -5,41 +5,74 @@ import config from '../config/config';
 import { createNotification } from '../common/notifications/notifications';
 import * as handlebars from 'handlebars'
 import * as fs from 'fs'
+
+
 export const getCandidateDetails = (_body) => {
     return new Promise((resolve, reject) => {
-        const query = {
-            name: 'get-candidate-details',
-            text: candidateQuery.getCandidateDetails,
-            values: [_body.candidateId],
-        }
-        database().query(query, (error, results) => {
-            if (error) {
-                console.log(error)
-                reject({ code: 400, message: "Database Error", data: {} });
-                return;
-            }
-            const candidate = results.rows;
-            const positionId = candidate[0].positionId
-            console.log(positionId)
-            const getCandidateAssessmentTraitsQuery = {
-                name: 'get-candidate-assessmentTraits',
-                text: candidateQuery.getAssessmentTraits,
-                values: [_body.candidateId, positionId],
-            }
-            database().query(getCandidateAssessmentTraitsQuery, (error, value) => {
-                let hiringStages = [];
+        (async () => {
+            const client = await database().connect()
+            try {
+                let skills=null,topRatedSkill=[],otherSkill=[];
+
+                await client.query('BEGIN');
+                const listCandidateQuery = {
+                    name: 'get-candidate-details',
+                    text: candidateQuery.getCandidateDetails,
+                    values: [_body.candidateId],
+                }
+                let results = await client.query(listCandidateQuery);
+                const candidate = results.rows;
+                const positionId = candidate[0].positionId
+                console.log(positionId)
+                const getCandidateAssessmentTraitsQuery = {
+                    name: 'get-candidate-assessmentTraits',
+                    text: candidateQuery.getAssessmentTraits,
+                    values: [_body.candidateId],
+                }
+                let value = await client.query(getCandidateAssessmentTraitsQuery);
+
                 let assessmentTraits = value.rows                
                 if(_body.admin!=1 && Array.isArray(assessmentTraits) && assessmentTraits.length>0)
                 {
                     let flag=false;
                     assessmentTraits.forEach(element => {
-                        element.adminRating!=null && element.adminRating>0?flag=true:"";
+                        element.assessmentRating!=null && element.assessmentRating>0?flag=true:"";
                     });
                     if(!flag)
                     {
                         assessmentTraits=null;
                     }
                 }
+
+                const getCandidateSkillsQuery = {
+                    name: 'get-candidate-assessmentTraits',
+                    text: candidateQuery.getAssessmentTraits,
+                    values: [_body.candidateId],
+                }
+                let skillResult = await client.query(getCandidateSkillsQuery);
+
+                skillResult.rows.array.forEach(step => {
+                    if (step.skill_id != null)
+                    {
+                    step.topSkill?
+                    topRatedSkill.push(
+                        {
+                            skillId: step.skillId,
+                            skillName: step.skillName
+                        }
+                    ):
+                    otherSkill.push(
+                        {
+                            skillId: step.skillId,
+                            skillName: step.skillName
+                        }
+                    );
+                }
+                });
+
+                skills = {topRatedSkill,otherSkill};
+
+
                 let result = {
                     makeOffer: candidate[0].makeOffer,
                     adminApproveStatus: candidate[0].adminApproveStatus,
@@ -58,20 +91,24 @@ export const getCandidateDetails = (_body) => {
                     label: candidate[0].label,
                     emailAddress: candidate[0].emailAddress,
                     assessmentComment: candidate[0].assessmentComment,
-                    hiringStages,
-                    assessmentTraits
+                    assessmentTraits,
+                    skills
                 };
                 _body.userRoleId == 1 && (result['ellowRate'] = candidate[0].ellowRate)
-                candidate.forEach(step => {
-                    hiringStages.push({
-                        hiringStageName: step.hiringStageName,
-                        hiringStatus: step.hiringStatus,
-                        hiringStageOrder: step.hiringStageOrder
-                    })
-                })
-                resolve({ code: 200, message: "Candidate details listed successfully", data: result });
-            })
+                
+                resolve({ code: 200, message: "Candidate details listed successfully", data: result });                
+                await client.query('COMMIT')
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
+        
     })
 }
 export const listCandidatesDetails = (_body) => {
@@ -94,7 +131,7 @@ export const listCandidatesDetails = (_body) => {
                 }
                 const candidatesResult = await client.query(listCandidates);
                 let candidates = candidatesResult.rows;
-                                let allCandidates = [];
+                let allCandidates = [];
                 candidates.forEach(candidate => {
                     let candidateIndex = allCandidates.findIndex(c => c.candidateId == candidate.candidateId)
                     if (candidate.candidateStatus != 0 && candidateIndex == -1) {
@@ -128,7 +165,7 @@ export const listCandidatesDetails = (_body) => {
 export const candidateClearance = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
-
+        
         (async () => {
             const client = await database().connect()
             try {
@@ -143,7 +180,7 @@ export const candidateClearance = (_body) => {
                             callback(null, html);
                         }
                     });
-                  };
+                };
                 var adminApproveStatus;
                 var comment;
                 var subj;
@@ -181,21 +218,21 @@ export const candidateClearance = (_body) => {
                         readHTMLFile('emailTemplates/selectionMailText.html', function(err, html) {
                             var template = handlebars.compile(html);
                             var replacements = {
-                                 fName: firstName,
-                                 lName:lastName,
-                                 cName:companyName,
-                                 pName:positionName
+                                fName: firstName,
+                                lName:lastName,
+                                cName:companyName,
+                                pName:positionName
                             };
                             var htmlToSend = template(replacements);
-                        sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
-                            if (err) {
-                                console.log(err)
-                                reject({ code: 400, message: "Database Error", data: {} });
-                                return;
-                            }
-                            console.log('Admin Approval Mail has been sent !!!');
-                        });
-                    })
+                            sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
+                                if (err) {
+                                    console.log(err)
+                                    reject({ code: 400, message: "Database Error", data: {} });
+                                    return;
+                                }
+                                console.log('Admin Approval Mail has been sent !!!');
+                            });
+                        })
                     }
                 } else {
                     if (_body.userRoleId == 1) {
@@ -215,21 +252,21 @@ export const candidateClearance = (_body) => {
                         readHTMLFile('emailTemplates/rejectionMailText.html', function(err, html) {
                             var template = handlebars.compile(html);
                             var replacements = {
-                                 fName: firstName,
-                                 lName:lastName,
-                                 cName:companyName,
-                                 pName:positionName
+                                fName: firstName,
+                                lName:lastName,
+                                cName:companyName,
+                                pName:positionName
                             };
                             var htmlToSend = template(replacements);
-                        sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
-                            if (err) {
-                                console.log(err)
-                                reject({ code: 400, message: "Database Error", data: {} });
-                                return;
-                            }
-                            console.log('Candidate Rejection Mail has been sent !!!');
-                        });
-                    })
+                            sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
+                                if (err) {
+                                    console.log(err)
+                                    reject({ code: 400, message: "Database Error", data: {} });
+                                    return;
+                                }
+                                console.log('Candidate Rejection Mail has been sent !!!');
+                            });
+                        })
                     }
                     
                 }
@@ -242,7 +279,7 @@ export const candidateClearance = (_body) => {
                 await client.query('COMMIT');
                 _body.userRoleId != 1 && await createNotification({ positionId:_body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
                 resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
-
+                
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
@@ -272,7 +309,7 @@ export const interviewRequestFunction = (_body) => {
                             callback(null, html);
                         }
                     });
-                  };
+                };
                 const insertQuery = {
                     name: 'insert-make-offer-status',
                     text: candidateQuery.insertMakeOfferStatus,
@@ -304,22 +341,22 @@ export const interviewRequestFunction = (_body) => {
                 readHTMLFile('emailTemplates/interviewRequestMailText.html', function(err, html) {
                     var template = handlebars.compile(html);
                     var replacements = {
-                         hirerName: hirerCompanyName,
-                         firstName:candidateFirstName,
-                         lastName:candidateLastName,
-                         position:positionName,
-                         emailId:email,
-                         telephoneNumber:phoneNumber
+                        hirerName: hirerCompanyName,
+                        firstName:candidateFirstName,
+                        lastName:candidateLastName,
+                        position:positionName,
+                        emailId:email,
+                        telephoneNumber:phoneNumber
                     };
                     var htmlToSend = template(replacements);
-                sendMail(config.adminEmail, subject, htmlToSend, function (err, data) {
-                    if (err) {
-                        console.log(err)
-                        reject({ code: 400, message: "Email Error", data: {} });
-                        return;
-                    }
-                });
-            })
+                    sendMail(config.adminEmail, subject, htmlToSend, function (err, data) {
+                        if (err) {
+                            console.log(err)
+                            reject({ code: 400, message: "Email Error", data: {} });
+                            return;
+                        }
+                    });
+                })
                 resolve({ code: 200, message: "Interview request has been sent successfully", data: {} });
             } catch (e) {
                 console.log(e)
