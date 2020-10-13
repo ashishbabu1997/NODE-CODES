@@ -87,17 +87,6 @@ export const listCandidatesDetails = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                const adminHiringStages = _body.userRoleId == 1 ? 1 : 0;
-                const listHiringStages = {
-                    name: 'get-position-hiring-stages',
-                    text: candidateQuery.getPositionHiringStages,
-                    values: [_body.positionId, adminHiringStages]
-                }
-                const hiringStagesResult = await client.query(listHiringStages);
-                let hiringStages = hiringStagesResult.rows;
-                
-                const { companyName, positionName } = hiringStages[0];
-                hiringStages = hiringStages.map(element => { return { ...element, candidateList: [] } })
                 const listCandidates = {
                     name: 'get-position-candidates',
                     text: selectQuery,
@@ -105,15 +94,9 @@ export const listCandidatesDetails = (_body) => {
                 }
                 const candidatesResult = await client.query(listCandidates);
                 let candidates = candidatesResult.rows;
-                
-                console.log(companyName, "dasdas")
-                let allCandidates = [];
+                                let allCandidates = [];
                 candidates.forEach(candidate => {
-                    let index = hiringStages.findIndex(e => e.positionHiringStageId == candidate.currentHiringStageId)
                     let candidateIndex = allCandidates.findIndex(c => c.candidateId == candidate.candidateId)
-                    if (candidate.candidateStatus != 0 && candidate.currentHiringStageId != null) {
-                        hiringStages[index]['candidateList'].push(candidate);
-                    }
                     if (candidate.candidateStatus != 0 && candidateIndex == -1) {
                         allCandidates.push(candidate);
                     }
@@ -128,7 +111,7 @@ export const listCandidatesDetails = (_body) => {
                 var jobReceivedId = jobReceivedIdResult.rows[0]['job_received_id'];
                 
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Candidate Listed successfully", data: { companyName, positionName, jobReceivedId, hiringStages, allCandidates } });
+                resolve({ code: 200, message: "Candidate Listed successfully", data: { jobReceivedId, allCandidates } });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
