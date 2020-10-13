@@ -61,7 +61,7 @@ export const createCompanyPositions = async (_body) => {
                     text: positionsQuery.addCompanyPositions,
                     values: [_body.positionName, _body.locationName, _body.developerCount, _body.positionCreatedCompanyId,
                     _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document, _body.contractPeriodId,
-                    _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
+                    _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, 
                     _body.employeeId, _body.employeeId, currentTime, currentTime, _body.jobCategoryId]
                 }
                 const getCompanyNameQuery = {
@@ -132,12 +132,11 @@ export const fetchPositionDetails = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            const hiringSteps = results.rows;
-            let groupedHiringStages = [];
+            const queryResult = results.rows;
             let skills = [];
             let result = {};
             let topRatedSkill=[],otherSkill=[];
-            hiringSteps.forEach(step => {
+            queryResult.forEach(step => {
                 result = {
                     maxBudget: step.max_budget,
                     minBudget: step.min_budget,
@@ -152,9 +151,6 @@ export const fetchPositionDetails = (_body) => {
                     locationName: step.location_name,
                     createdOn: step.created_on,
                     jobDescription: step.job_description,
-                    hiringStepId: step.position_hiring_step_id,
-                    hiringStepName: step.hiring_step_name,
-                    hiringStepDescription: step.description,
                     jobCategoryId: step.job_category_id,
                     jobStatus: step.job_status,
                     jobCategoryName: step.job_category_name,
@@ -163,7 +159,6 @@ export const fetchPositionDetails = (_body) => {
                     companySize : step.company_size,
                     companyLogo : step.company_logo,
                     companyLinkedinId: step.company_linkedin_id,
-                    hiringStages: [],
                     skills: []
                 }
 
@@ -220,7 +215,7 @@ export const updateCompanyPositions = async (_body) => {
                     name: 'update-company-positions-second',
                     text: positionsQuery.updatePositionSecond,
                     values: [_body.contractPeriodId,
-                    _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
+                    _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget,
                     _body.employeeId, currentTime, positionId, _body.positionCreatedCompanyId]
                 }
 

@@ -7,7 +7,6 @@ import getPositionSchema from './schemas/getPositionsSchema';
 import updatePositionSchema from './schemas/updatePositionSchema';
 import positionIdSchema from './schemas/positionIdSchema';
 import jobStatusSchema from './schemas/jobStatusSchema';
-import editPositionHiringStepSchema from './schemas/editPositionHiringStepSchema';
 import { jwtAuth } from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
 const router = express.Router();
@@ -19,7 +18,6 @@ router
     .post('/',jwtAuth, setData(), validate(addPositionSchema),createPositions)
     .put('/', jwtAuth, setData(), validate(updatePositionSchema),updatePositions)
     .get('/:positionId', jwtAuth, setData(),getPositionDetails)
-    .put('/hiringSteps',  jwtAuth, setData(),validate(editPositionHiringStepSchema), editPositionHiringSteps)
     .post('/publish',jwtAuth, setData(), validate(positionIdSchema), publishPositions)
     .post('/changePositionStatus',jwtAuth, setData(),validate(jobStatusSchema),changePositionStatus)
     .post('/deletePosition',jwtAuth, setData(),validate(positionIdSchema),positionDeletion)

@@ -1,4 +1,4 @@
-import { editCompanyPositionHiringSteps, fetchPositionDetails,deletePositions, createCompanyPositions, getCompanyPositions, updateCompanyPositions, publishCompanyPositions, getCompanies, changeJobStatus } from './positions.manager';
+import {  fetchPositionDetails,deletePositions, createCompanyPositions, getCompanyPositions, updateCompanyPositions, publishCompanyPositions, getCompanies, changeJobStatus } from './positions.manager';
 import sendResponse from '../common/response/response';
 
 export const getPositions = (req, res) => {
