@@ -319,16 +319,15 @@ export const addCandidateReview = (_body) => {
 
                 data.forEach(element => {
                     const candidateDetails = {
-                        name: 'update-candidate-review',
-                        text: candidateQuery.updateCandidateReview,
-                        values: [_body.candidateId, element.positionReviewId, element.adminRating, currentTime],
+                        name: 'update-candidate-assesment-rating',
+                        text: candidateQuery.updateCandidateAssesment,
+                        values: [element.candidateAssesmentId, element.assessmentRating, _body.employeeId, currentTime],
                     }
                     promise.push(client.query(candidateDetails));
                 });
                 const results = await Promise.all(promise);
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Candidate Listed successfully", data: {} });
-
+                resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });
 
             } catch (e) {
                 console.log(e)
