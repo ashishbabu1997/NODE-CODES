@@ -143,6 +143,8 @@ export const listCandidatesDetails = (_body) => {
 
 export const candidateClearance = (_body) => {
     return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+
         (async () => {
             const client = await database().connect()
             try {
@@ -157,11 +159,11 @@ export const candidateClearance = (_body) => {
                 const getCandidateName = {
                     name: 'get-candidate-names',
                     text: candidateQuery.getCandidateNames,
-                    values: [_body.candidateId]
+                    values: [_body.candidateId,_body.positionId]
                 }
                 const results = await client.query(getCandidateName);
                 const candidateDetails = results.rows[0];
-                const { firstName, lastName, positionId, jobReceivedId, companyName, positionName } = candidateDetails;
+                const { firstName, lastName, jobReceivedId, companyName, positionName } = candidateDetails;
                 let message = ``
                 let candidateFirstName = firstName.fontsize(3).bold()
                 let candidateCompanyName = companyName.fontsize(3).bold()
@@ -169,7 +171,7 @@ export const candidateClearance = (_body) => {
                     if (_body.userRoleId == 1) {
                         adminApproveStatus = 1
                         comment = _body.comment
-                        value = [_body.candidateId, adminApproveStatus, comment, _body.ellowRate,_body.userId]
+                        value = [_body.candidateId,_body.positionId, adminApproveStatus, comment, _body.ellowRate,_body.employeeId,currentTime]
                         candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
                     }
                     else if (_body.userRoleId == 2) {
@@ -178,7 +180,7 @@ export const candidateClearance = (_body) => {
                         makeOffer = 1
                         adminApproveStatus = 1;
                         comment = _body.comment;
-                        value = [_body.candidateId, adminApproveStatus, comment, makeOffer,_body.userId]
+                        value = [_body.candidateId,_body.positionId, adminApproveStatus, comment, makeOffer,_body.employeeId,currentTime]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Selection Mail";
                         textFormat = config.approvalMail.firstLine + config.nextLine+config.nextLine + approveMessage+config.nextLine+config.nextLine+config.approvalMail.thirdLine+config.nextLine+config.approvalMail.fourthLine
@@ -196,7 +198,7 @@ export const candidateClearance = (_body) => {
                     if (_body.userRoleId == 1) {
                         adminApproveStatus = 0
                         comment = _body.comment
-                        value = [_body.candidateId, adminApproveStatus, comment,_body.userId]
+                        value = [_body.candidateId,_body.positionId, adminApproveStatus, comment,_body.employeeId,currentTime]
                         candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
                     } else if (_body.userRoleId != 1) {
                         var rejectMessage=firstName.fontsize(3).bold()+'   '+lastName.fontsize(3).bold()+'   '+'from'+'   '+companyName.fontsize(3).bold()+'   '+'has been rejected for the position'+'   '+positionName.fontsize(3).bold()
@@ -226,15 +228,9 @@ export const candidateClearance = (_body) => {
                 }
                 await client.query(candidateApprovalQuery);
                 await client.query('COMMIT');
-                _body.userRoleId != 1 && await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
-                // sendMail(config.adminEmail, subj, textFormat, (err, data) => {
-                //     if (err) {
-                //         console.log(err)
-                //         reject({ code: 400, message: "Database Error", data: {} });
-                //         return;
-                //     }
+                _body.userRoleId != 1 && await createNotification({ positionId:_body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
                 resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
-                // });
+
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
