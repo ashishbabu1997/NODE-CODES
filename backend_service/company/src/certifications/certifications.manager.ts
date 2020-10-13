@@ -3,7 +3,7 @@ import database from '../common/database/database';
 
 export const fetchCompanyCertifications = (_body) => {
     return new Promise((resolve, reject) => {
-    const query = {
+        const query = {
             name: 'fetch-company-Certifications',
             text: certificationQuery.getCompanyCertifications,
             values: [parseInt(_body.companyId)],
@@ -20,8 +20,8 @@ export const fetchCompanyCertifications = (_body) => {
 
 export const createCompanyCertifications = (_body) => {
     return new Promise((resolve, reject) => {
-    const currentTime = Math.floor(Date.now() / 1000);
-    const query = {
+        const currentTime = Math.floor(Date.now() / 1000);
+        const query = {
             name: 'add-company-certifications',
             text: certificationQuery.addCompanyCertifications,
             values: [_body.companyId, _body.certificationId, _body.certificationNumber, _body.logo, _body.document, currentTime, _body.certificationType],
@@ -36,25 +36,24 @@ export const createCompanyCertifications = (_body) => {
                 reject({ code: 400, message: "Failed to fetch profile percentage", data: {} });
                 return;
             }
-            else
-            {
-                const profilePercentage=results.rows[0].profilePercentage
-                var count=profilePercentage+25
-                
+            else {
+                const profilePercentage = results.rows[0].profilePercentage
+                var count = profilePercentage + 25
+
             }
-        const updateProfile = {
-            name: 'profile-percentage-update',
-            text: certificationQuery.updateProfilePercentage,
-            values: [count,_body.companyId],
-        }
-        database().query(updateProfile, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed to update profile percentage", data: {} });
-                return;
+            const updateProfile = {
+                name: 'profile-percentage-update',
+                text: certificationQuery.updateProfilePercentage,
+                values: [count, _body.companyId],
             }
+            database().query(updateProfile, (error, results) => {
+                if (error) {
+                    reject({ code: 400, message: "Failed to update profile percentage", data: {} });
+                    return;
+                }
+            })
         })
-    })
-    database().query(query, (error, results) => {
+        database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
@@ -67,8 +66,8 @@ export const createCompanyCertifications = (_body) => {
 
 export const updateCompanyCertifications = (_body) => {
     return new Promise((resolve, reject) => {
-    const currentTime = Math.floor(Date.now() / 1000);
-    const query = {
+        const currentTime = Math.floor(Date.now() / 1000);
+        const query = {
             name: 'update-company-certifications',
             text: certificationQuery.updateCompanyCertifications,
             values: [_body.companyId, _body.certificationId, _body.certificationNumber, _body.logo, _body.document, currentTime, _body.certificationType, _body.companyCertificationId]
@@ -89,7 +88,7 @@ export const deleteCompanyCertifications = (_body) => {
         const query = {
             name: 'delete-company-certification',
             text: certificationQuery.deleteCompanyCertifications,
-            values: [currentTime, parseInt(_body.companycertificationId)],
+            values: [currentTime, parseInt(_body.companycertificationId), _body.companyId],
         }
         const getprofilePercentge = {
             name: 'get-profile-percentge',
@@ -101,24 +100,23 @@ export const deleteCompanyCertifications = (_body) => {
                 reject({ code: 400, message: "Failed to fetch profile percentage", data: {} });
                 return;
             }
-            else
-            {
-                const profilePercentage=results.rows[0].profilePercentage
-                var count=profilePercentage-25
-                
+            else {
+                const profilePercentage = results.rows[0].profilePercentage
+                var count = profilePercentage - 25
+
             }
-        const updateProfile = {
-            name: 'profile-percentage-update',
-            text: certificationQuery.updateProfilePercentage,
-            values: [count,_body.companyId],
-        }
-        database().query(updateProfile, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed to update profile percentage", data: {} });
-                return;
+            const updateProfile = {
+                name: 'profile-percentage-update',
+                text: certificationQuery.updateProfilePercentage,
+                values: [count, _body.companyId],
             }
+            database().query(updateProfile, (error, results) => {
+                if (error) {
+                    reject({ code: 400, message: "Failed to update profile percentage", data: {} });
+                    return;
+                }
+            })
         })
-    })
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });

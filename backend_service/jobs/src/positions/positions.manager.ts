@@ -3,7 +3,8 @@ import database from '../common/database/database';
 import { createNotification } from '../common/notifications/notifications';
 import { sendMail } from '../middlewares/mailer'
 import config from '../config/config'
-
+import * as handlebars from 'handlebars'
+import * as fs from 'fs'
 export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
         var queryText;
@@ -58,15 +59,15 @@ export const createCompanyPositions = async (_body) => {
                 const addCompanyPositionsQuery = {
                     name: 'add-company-positions',
                     text: positionsQuery.addCompanyPositions,
-                    values: [_body.positionName, _body.locationName, _body.developerCount, _body.companyId,
+                    values: [_body.positionName, _body.locationName, _body.developerCount, _body.positionCreatedCompanyId,
                     _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document, _body.contractPeriodId,
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
-                    _body.userId, _body.userId, currentTime, currentTime, _body.jobCategoryId]
+                    _body.employeeId, _body.employeeId, currentTime, currentTime, _body.jobCategoryId]
                 }
                 const getCompanyNameQuery = {
                     name: 'get-company-name',
                     text: positionsQuery.getCompanyName,
-                    values: [_body.companyId]
+                    values: [_body.positionCreatedCompanyId]
                 }
                 const getCompanyNameResponse = await client.query(getCompanyNameQuery);
                 const companyName = getCompanyNameResponse.rows[0].companyName
@@ -75,7 +76,7 @@ export const createCompanyPositions = async (_body) => {
                 const locationName=_body.locationName.fontsize(3).bold()
                 const companyPositionResponse = await client.query(addCompanyPositionsQuery);
                 const positionId = companyPositionResponse.rows[0].position_id
-                const companyId = _body.companyId
+                const companyId = _body.positionCreatedCompanyId
 
                 let tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
                 let oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];
@@ -204,12 +205,12 @@ export const updateCompanyPositions = async (_body) => {
                     text: positionsQuery.updatePositionFirst,
                     values: [_body.positionName, _body.locationName, _body.developerCount,
                     _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document,
-                    _body.userId, currentTime, positionId, _body.companyId, _body.jobCategoryId]
+                    _body.employeeId, currentTime, positionId, _body.positionCreatedCompanyId, _body.jobCategoryId]
                 }
                 const getCompanyNameQuery = {
                     name: 'get-company-name',
                     text: positionsQuery.getCompanyName,
-                    values: [_body.companyId]
+                    values: [_body.positionCreatedCompanyId]
                 }
                 const getCompanyNameResponse = await client.query(getCompanyNameQuery);
                 const companyName = getCompanyNameResponse.rows[0].companyName
@@ -220,7 +221,7 @@ export const updateCompanyPositions = async (_body) => {
                     text: positionsQuery.updatePositionSecond,
                     values: [_body.contractPeriodId,
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, _body.hiringStepId,
-                    _body.userId, currentTime, positionId, _body.companyId]
+                    _body.employeeId, currentTime, positionId, _body.positionCreatedCompanyId]
                 }
 
                 await client.query(updateCompanyPositionsSecondQuery);
@@ -289,6 +290,17 @@ export const publishCompanyPositions = async (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
+                var readHTMLFile = function(path, callback) {
+                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                        if (err) {
+                            throw err;
+                            callback(err);
+                        }
+                        else {
+                            callback(null, html);
+                        }
+                    });
+                  };
                 const positionId = _body.positionId;
                 const changePositionStatusQuery = {
                     name: 'change-position-status',
@@ -313,13 +325,22 @@ export const publishCompanyPositions = async (_body) => {
 
                 const { companyId, companyName,positionName } = details.rows[0];
                 const message = `A new position named ${positionName} has been created by ${companyName}.`
-                var cName=companyName.fontsize(3).bold()
-                var cpName=positionName.fontsize(3).bold()
+                var cName=companyName
+                var cpName=positionName
                 var msg= 'A new position named'+' '+cpName+' '+'has been created by'+' '+cName
                 await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position' })
                 var subject='New position notification'
-                var texFormat=config.text.firstLine+config.nextLine+msg+config.nextLine+config.text.fourthLine+config.nextLine+config.text.fifthLine
-                sendMail(config.adminEmail, subject,texFormat, function (err, data) {
+                readHTMLFile('emailTemplates/positionCreationText.html', function(err, html) {
+                    var template = handlebars.compile(html);
+                    var replacements = {
+                         company:cName,
+                         position:cpName,
+                         cId:companyId,
+                         pId:positionId
+
+                    };
+                    var htmlToSend = template(replacements);
+                sendMail(config.adminEmail, subject,htmlToSend, function (err, data) {
                     if (err) {
                             console.log(err)
                             reject({ code: 400, message: "Database Error", data: {} });
@@ -328,6 +349,7 @@ export const publishCompanyPositions = async (_body) => {
                     console.log('Notification mail to admin has been sent !!!');
                     // resolve({ code: 200, message: "User Approval Successfull", data: {} });
             });
+        })
                 resolve({ code: 200, message: "Position published successfully", data: {} });
             } catch (e) {
                 console.log(e)
@@ -344,6 +366,17 @@ export const publishCompanyPositions = async (_body) => {
 export const changeJobStatus = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
+        var readHTMLFile = function(path, callback) {
+            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                if (err) {
+                    throw err;
+                    callback(err);
+                }
+                else {
+                    callback(null, html);
+                }
+            });
+          };
         const positionQuery = {
             name: 'change-job-status',
             text: positionsQuery.changeJobStatus,
@@ -382,9 +415,14 @@ export const changeJobStatus = (_body) => {
                                 }          
                                 var positionName=results.rows[0].position_name
                                 var emailAddress=results.rows[0].email
-                                var mainText="The position named"+" "+positionName+" "+"which was deleted earlier by the admin, has been reopened by our Admin Panel"
-                                var textFormat=config.PositionText.firstLine.fontsize(3)+config.nextLine+mainText.fontsize(3)+config.nextLine+config.PositionText.secondLine.fontsize(3)+config.nextLine+config.nextLine+config.PositionText.thirdLine.fontsize(3)+config.nextLine+config.PositionText.fourthLine.fontsize(3)
-                                sendMail(emailAddress, config.PositionText.subject, textFormat, function (err, data) {
+                                readHTMLFile('emailTemplates/positionReopenText.html', function(err, html) {
+                                    var template = handlebars.compile(html);
+                                    var replacements = {
+                                        position:positionName
+                                    };
+                                    var htmlToSend = template(replacements);
+                                    var subj="Position Reopen Notification"
+                                sendMail(emailAddress, subj, htmlToSend, function (err, data) {
                                     if (err) {
                                         console.log(err)
                                         reject({ code: 400, message: "Mailer Error.", data: {} });
@@ -392,6 +430,7 @@ export const changeJobStatus = (_body) => {
                                     }
             
                                 });
+                            })
                                 resolve({ code: 200, message: "Job status changed", data: {} });
                             })
                         }
@@ -428,6 +467,17 @@ export const deletePositions = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
+                var readHTMLFile = function(path, callback) {
+                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                        if (err) {
+                            throw err;
+                            callback(err);
+                        }
+                        else {
+                            callback(null, html);
+                        }
+                    });
+                  };
                 const positionId = _body.positionId;
                 
                 const currentTime = Math.floor(Date.now() / 1000);
@@ -462,10 +512,13 @@ export const deletePositions = (_body) => {
                 var positionName=employeeData.rows[0].position_name
                 var emailAddress=employeeData.rows[0].email
                 await client.query('COMMIT');
-
-                var mainText="The position named"+" "+positionName+" "+"which you have created has been deleted by our Admin Panel"
-                var textFormat=config.PositionText.firstLine.fontsize(3)+config.nextLine+mainText.fontsize(3)+config.nextLine+config.PositionText.secondLine.fontsize(3)+config.nextLine+config.nextLine+config.PositionText.thirdLine.fontsize(3)+config.nextLine+config.PositionText.fourthLine.fontsize(3)
-                sendMail(emailAddress, config.PositionText.subject, textFormat, function (err, data) {
+                readHTMLFile('emailTemplates/positionDeletionText.html', function(err, html) {
+                    var template = handlebars.compile(html);
+                    var replacements = {
+                        position:positionName
+                    };
+                    var htmlToSend = template(replacements);
+                sendMail(emailAddress, config.PositionText.subject, htmlToSend, function (err, data) {
                     if (err) {
                         console.log(err)
                         reject({ code: 400, message: "Mailer Error.", data: {} });
@@ -473,6 +526,7 @@ export const deletePositions = (_body) => {
                     }
 
                 });
+            })
                 resolve({ code: 200, message: "Position deletion successfull", data: {} });
             } catch (e) {
                 console.log(e)

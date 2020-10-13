@@ -1,9 +1,11 @@
-import { listUsers,userDetails,adminPanel,registeredUserList } from './admin.controller';
+import { listUsers, userDetails, adminPanel, registeredUserList } from './admin.controller';
 import * as express from 'express';
+import { jwtAuth } from '../middleware/jwtAuthenticate';
+import setData from '../middleware/setData';
 const router = express.Router();
 router
-    .get('/listUsers',listUsers)
-    .get('/userDetails',userDetails)
-    .post('/userStatus',adminPanel)
-    .get('/registeredUserList',registeredUserList)
+    .get('/listUsers', jwtAuth, listUsers)
+    .get('/userDetails', jwtAuth, userDetails)
+    .post('/userStatus', jwtAuth, adminPanel)
+    .get('/registeredUserList', jwtAuth, registeredUserList)
 export default router;

@@ -40,7 +40,7 @@ export const getJobReceivedByJobReceivedId = (_body) => {
         const query = {
             name: 'get-JobReceivedByJobReceivedId',
             text: jobReceivedQuery.getJobReceivedById,
-            values: [parseInt(_body.jobReceivedId), parseInt(_body.sellerCompanyId)]
+            values: [parseInt(_body.jobReceivedId), parseInt(_body.companyId)]
         }
         database().query(query, (error, results) => {
             if (error) {
