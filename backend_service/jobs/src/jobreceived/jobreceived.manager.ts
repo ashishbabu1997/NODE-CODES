@@ -174,7 +174,7 @@ export const saveCandidateProfile = (_body) => {
             try {
                 await client.query('BEGIN');
                 const candidatesDetails = _body.candidates;
-                let candidates =[candidatesDetails.candidateFirstName, candidatesDetails.candidateLastName, candidatesDetails.companyId, candidatesDetails.jobReceivedId, candidatesDetails.coverNote,
+                let candidates =[candidatesDetails.firstName, candidatesDetails.lastName, candidatesDetails.companyId, candidatesDetails.jobReceivedId, candidatesDetails.coverNote,
                     candidatesDetails.rate, candidatesDetails.billingTypeId, candidatesDetails.currencyTypeId, candidatesDetails.email, candidatesDetails.phoneNumber, candidatesDetails.resume,
                     currentTime, currentTime,_body.employeeId,candidatesDetails.employeeId, candidatesDetails.candidateStatus,candidatesDetails.workExperience]
                     const saveCandidateQuery = {
