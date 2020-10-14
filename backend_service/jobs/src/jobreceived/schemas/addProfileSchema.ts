@@ -1,7 +1,7 @@
 import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({
-    candidates: Joi.array().items(Joi.object({
+    candidates: Joi.object().keys({
         firstName : Joi.string().required().error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
@@ -50,5 +50,5 @@ export default Joi.object().keys({
             });
             return errors;
         })
-    }).unknown(true) ),
+    }).unknown(true),
 }).unknown(true);

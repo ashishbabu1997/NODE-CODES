@@ -142,8 +142,8 @@ export const editCandidateDetails = (_body) => {
                         await client.query(addDefaultTraits);
                         
                         const addSkillRelatedTraits = {
-                            name: 'add-default-traits',
-                            text: jobReceivedQuery.addDefaultAssessmentTraits,
+                            name: 'add-skill-based-traits',
+                            text: jobReceivedQuery.addSkillBasedAssesmentTraits,
                             values: [_body.candidateId, _body.employeeId,currentTime],
                         }
                         await client.query(addSkillRelatedTraits);
@@ -176,10 +176,12 @@ export const saveCandidateProfile = (_body) => {
                 const candidatesDetails = _body.candidates;
                 let candidates =[candidatesDetails.firstName, candidatesDetails.lastName, candidatesDetails.companyId, candidatesDetails.jobReceivedId, candidatesDetails.coverNote,
                     candidatesDetails.rate, candidatesDetails.billingTypeId, candidatesDetails.currencyTypeId, candidatesDetails.email, candidatesDetails.phoneNumber, candidatesDetails.resume,
-                    currentTime, currentTime,_body.employeeId,candidatesDetails.employeeId, candidatesDetails.candidateStatus,candidatesDetails.workExperience]
+                    currentTime, currentTime,_body.employeeId,_body.employeeId, candidatesDetails.candidateStatus,candidatesDetails.workExperience]
+
+                    console.log("candidatesDetails : ",candidates);
                     const saveCandidateQuery = {
                         name: 'add-Profile',
-                        text: format(jobReceivedQuery.addProfile, candidates),
+                        text: format(jobReceivedQuery.addProfile, [candidates]),
                     }
                     var addCandidateResult = await client.query(saveCandidateQuery);
                     let candidateId = addCandidateResult.rows[0].candidate_id;
@@ -188,7 +190,7 @@ export const saveCandidateProfile = (_body) => {
                         const addPositionQuery = {
                             name: 'add-position',
                             text: jobReceivedQuery.addCandidatePosition,
-                            values: [_body.positionId,candidateId,candidates[0].jobReceivedId,candidates[0].billingTypeId,candidates[0].currencyTypeId,_body.employeeId,currentTime],
+                            values: [_body.positionId,candidateId,candidatesDetails.jobReceivedId,candidatesDetails.billingTypeId,candidatesDetails.currencyTypeId,_body.employeeId,currentTime],
                         }
                         await client.query(addPositionQuery);
                     }
@@ -203,7 +205,7 @@ export const saveCandidateProfile = (_body) => {
                     const updateCompanyJobStatusQuery = {
                         name: 'update-company-job-status',
                         text: jobReceivedQuery.updateCompanyJobStatus,
-                        values: [_body.candidates[0].jobReceivedId,jobStatus, _body.candidates[0].companyId,_body.employeeId, currentTime],
+                        values: [candidatesDetails.jobReceivedId,jobStatus, candidatesDetails.companyId,_body.employeeId, currentTime],
                     }
                     await client.query(updateCompanyJobStatusQuery);
                     
@@ -215,7 +217,7 @@ export const saveCandidateProfile = (_body) => {
                         const addTopSkillsQuery = {
                             name: 'add-top-job-skills',
                             text: jobReceivedQuery.addCandidateSkills,
-                            values: [_body.candidateId, tSkill,true, currentTime],
+                            values: [candidateId, tSkill,true, currentTime,_body.employeeId],
                         }
                         await client.query(addTopSkillsQuery);
                     }
@@ -224,12 +226,12 @@ export const saveCandidateProfile = (_body) => {
                         const addOtherSkillsQuery = {
                             name: 'add-other-job-skills',
                             text: jobReceivedQuery.addCandidateSkills,
-                            values: [_body.candidateId, oSkill,false, currentTime],
+                            values: [candidateId, oSkill,false, currentTime,_body.employeeId],
                         }
                         await client.query(addOtherSkillsQuery);
                     }
                     
-                    if(candidates[0].candidateStatus == 3)
+                    if(candidatesDetails.candidateStatus == 3)
                     {
                         const addDefaultTraits = {
                             name: 'add-default-traits',
@@ -239,8 +241,8 @@ export const saveCandidateProfile = (_body) => {
                         await client.query(addDefaultTraits);
                         
                         const addSkillRelatedTraits = {
-                            name: 'add-default-traits',
-                            text: jobReceivedQuery.addDefaultAssessmentTraits,
+                            name: 'add-skill-based-traits',
+                            text: jobReceivedQuery.addSkillBasedAssesmentTraits,
                             values: [candidateId, _body.employeeId,currentTime],
                         }
                         await client.query(addSkillRelatedTraits);
