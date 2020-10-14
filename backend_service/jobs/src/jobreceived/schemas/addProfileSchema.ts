@@ -2,7 +2,7 @@ import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({
     candidates: Joi.array().items(Joi.object({
-        candidateFirstName : Joi.string().required().error(errors => {
+        firstName : Joi.string().required().error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
                     case "any.required":
