@@ -99,7 +99,7 @@ export const editCandidateDetails = (_body) => {
                 const editQuery = {
                     name: 'update-JobReceived-reject',
                     text: jobReceivedQuery.editDetailsCandidate,
-                    values: [_body.candidateId, _body.firstName, _body.lastName, _body.email, _body.phoneNumber, _body.rate, _body.billingTypeId, _body.resume, _body.currencyTypeId, _body.coverNote, _body.candidateStatus,_body.companyId]
+                    values: [_body.candidateId, _body.firstName, _body.lastName, _body.email, _body.phoneNumber, _body.rate, _body.billingTypeId, _body.resume, _body.currencyTypeId, _body.coverNote, _body.candidateStatus,_body.workExperience,_body.companyId]
                 }
                 
                 let tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
@@ -173,12 +173,10 @@ export const saveCandidateProfile = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                const candidatesArray = _body.candidates;
-                let candidates = candidatesArray.map(c => {
-                    return [c.candidateFirstName, c.candidateLastName, c.companyId, c.jobReceivedId, c.coverNote,
-                        c.rate, c.billingTypeId, c.currencyTypeId, c.email, c.phoneNumber, c.resume,
-                        currentTime, currentTime,_body.employeeId,c.employeeId, c.candidateStatus]
-                    })
+                const candidatesDetails = _body.candidates;
+                let candidates =[candidatesDetails.candidateFirstName, candidatesDetails.candidateLastName, candidatesDetails.companyId, candidatesDetails.jobReceivedId, candidatesDetails.coverNote,
+                    candidatesDetails.rate, candidatesDetails.billingTypeId, candidatesDetails.currencyTypeId, candidatesDetails.email, candidatesDetails.phoneNumber, candidatesDetails.resume,
+                    currentTime, currentTime,_body.employeeId,candidatesDetails.employeeId, candidatesDetails.candidateStatus,candidatesDetails.workExperience]
                     const saveCandidateQuery = {
                         name: 'add-Profile',
                         text: format(jobReceivedQuery.addProfile, candidates),
