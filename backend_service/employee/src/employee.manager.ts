@@ -7,6 +7,7 @@ import config from './config/config'
 import * as handlebars from 'handlebars'
 import * as fs from 'fs'
 
+
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
         const mailId = _body.email
@@ -99,6 +100,11 @@ export const createEmployee = (_body) => {
                         values: [hashedPassword,loweremailId],
                     }
                     await client.query(storePasswordQuery);
+<<<<<<< HEAD
+=======
+                    console.log("Path : ",'src/emailTemplates/newUserText.html');
+                    
+>>>>>>> a3df243f7b9d423851f43128c993b569e8324083
                     readHTMLFile('src/emailTemplates/newUserText.html', function(err, html) {
                         var template = handlebars.compile(html);
                         var replacements = {
