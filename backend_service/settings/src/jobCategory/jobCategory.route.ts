@@ -8,8 +8,8 @@ import setData from '../middlewares/setData';
 const router = express.Router();
 
 router
-    .get('/',jwtAuth, setData(), getJobCategory)
-    .post('/',jwtAuth, setData(), addJobCategory)
-    .put('/',jwtAuth, setData(), updateJobCategories)
-    .delete('/:jobCategoryId',jwtAuth, setData(), deleteJobCategories)
+    .get('/', getJobCategory)
+    .post('/', addJobCategory)
+    .put('/', updateJobCategories)
+    .delete('/:jobCategoryId', deleteJobCategories)
 export default router;

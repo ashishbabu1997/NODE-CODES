@@ -5,9 +5,9 @@ import setData from '../middlewares/setData';
 const router = express.Router();
 
 router
-    .get('/',jwtAuth, setData(), fetchCertificates)
-    .post('/',jwtAuth, setData(), addCertificate)
-    .put('/',jwtAuth, setData(), editCertificate)
-    .delete('/:certificationId',jwtAuth, setData(), deleteCertificates)
+    .get('/', fetchCertificates)
+    .post('/',addCertificate)
+    .put('/', editCertificate)
+    .delete('/:certificationId', deleteCertificates)
 
 export default router;

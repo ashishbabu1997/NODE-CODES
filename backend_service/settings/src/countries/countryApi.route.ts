@@ -4,5 +4,5 @@ import { jwtAuth } from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
 const router = express.Router();
 router
-    .get('/',jwtAuth, setData(), getCountriesList)
+    .get('/', getCountriesList)
 export default router;
