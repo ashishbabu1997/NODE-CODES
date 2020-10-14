@@ -8,9 +8,9 @@ import setData from '../middlewares/setData';
 const router = express.Router();
 
 router
-    .get('/',jwtAuth, setData(), getDomains)
-    .post('/', jwtAuth, setData(),addDomains)
-    .put('/',jwtAuth, setData(), updateDomains)
-    .delete('/:domainId',jwtAuth, setData(), deleteDomain)
+    .get('/',getDomains)
+    .post('/',addDomains)
+    .put('/', updateDomains)
+    .delete('/:domainId',deleteDomain)
 export default router;
 
