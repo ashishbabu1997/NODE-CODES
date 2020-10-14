@@ -1,4 +1,4 @@
-import { candidateDetails, listCandidates,approveRejectCandidates,interviewRequest,candidateReview } from './candidates.controller';
+import { candidateDetails, listCandidates,listFreeCandidates,approveRejectCandidates,interviewRequest,candidateReview } from './candidates.controller';
 import * as express from 'express';
 import checkUserRole from '../middlewares/checkUserRole';
 import validate from '../middlewares/joiVaildation';
@@ -11,6 +11,7 @@ const router = express.Router();
 router
     .get('/candidateDetails',  jwtAuth, setData(),candidateDetails)
     .get('/listCandidates', jwtAuth, setData(), listCandidates)
+    .get('/listFreeCandidates', jwtAuth, setData(), listFreeCandidates)
     .post('/candidateApproveReject',jwtAuth, setData(),validate(approveRejectSchema),approveRejectCandidates)
     .post('/requestForInterview',jwtAuth, setData(),validate(interviewRequestSchema),interviewRequest)
     .post('/review',jwtAuth, setData(),candidateReview)

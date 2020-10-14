@@ -1,4 +1,4 @@
-import { getCandidateDetails, listCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview } from './candidates.manager';
+import { getCandidateDetails, listCandidatesDetails,listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview } from './candidates.manager';
 import sendResponse from '../common/response/response';
 
 export const candidateDetails = (req, res) => {
@@ -9,6 +9,11 @@ export const candidateDetails = (req, res) => {
 export const listCandidates = (req, res) => {
     const body = req.query;
     listCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
+export const listFreeCandidates = (req, res) => {
+    const body = req.query;
+    listFreeCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 export const approveRejectCandidates = (req, res) => {

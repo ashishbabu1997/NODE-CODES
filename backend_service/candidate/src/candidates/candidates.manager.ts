@@ -23,7 +23,7 @@ export const getCandidateDetails = (_body) => {
                 let results = await client.query(listCandidateQuery);
                 const candidate = results.rows;
                 const positionId = candidate[0].positionId
-                console.log(positionId)
+                // console.log(positionId)
                 const getCandidateAssessmentTraitsQuery = {
                     name: 'get-candidate-assessmentTraits',
                     text: candidateQuery.getAssessmentTraits,
@@ -149,6 +149,45 @@ export const listCandidatesDetails = (_body) => {
                 
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { jobReceivedId, allCandidates } });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
+
+export const listFreeCandidatesDetails = (_body) => {
+    return new Promise((resolve, reject) => {
+        var selectQuery = candidateQuery.listFreeCandidates;
+        if (_body.userRoleId != 1) {
+            selectQuery = selectQuery + " AND c.company_id = "+_body.companyId
+        }
+        else
+        {
+            selectQuery = selectQuery + " AND ca.candidate_status = 3"
+        }
+        if (_body.filter) {
+            selectQuery = selectQuery + " " + "AND ((LOWER(ca.candidate_first_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(ca.candidate_last_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
+        }
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                const listCandidates = {
+                    name: 'get-free-candidates',
+                    text: selectQuery
+                }
+                const candidatesResult = await client.query(listCandidates);
+                let candidates = candidatesResult.rows;
+                
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Candidate Listed successfully", data: {  candidates } });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
