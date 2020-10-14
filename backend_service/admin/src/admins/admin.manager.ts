@@ -116,7 +116,7 @@ export const clearance = (_body) => {
                     var approveResult = await client.query(adminApprovalQuery);
                     var email = approveResult.rows[0].email;
                     const subject = " ellow.io LOGIN PASSWORD "
-                    readHTMLFile('emailTemplates/adminApproveText.html', function(err, html) {
+                    readHTMLFile('src/emailTemplates/adminApproveText.html', function(err, html) {
                         var template = handlebars.compile(html);
                         var replacements = {
                              loginPassword: password
@@ -143,7 +143,7 @@ export const clearance = (_body) => {
 
                     var desc = _body.description
                     var subject = "ellow.io ACCOUNT REJECTION MAIL "
-                    readHTMLFile('emailTemplates/adminRejectText.html', function(err, html) {
+                    readHTMLFile('src/emailTemplates/adminRejectText.html', function(err, html) {
                         var template = handlebars.compile(html);
                         var replacements = {
                              description: desc

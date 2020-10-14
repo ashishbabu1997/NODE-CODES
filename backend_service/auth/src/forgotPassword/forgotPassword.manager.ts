@@ -50,7 +50,7 @@ export const sendLink = (_body) => {
         }
         var link=_body.host+"/passwordset/"+token
         const subject="ellow.ai RESET PASSWORD LINK"
-        readHTMLFile('emailTemplates/forgotPasswordText.html', function(err, html) {
+        readHTMLFile('src/emailTemplates/forgotPasswordText.html', function(err, html) {
           var template = handlebars.compile(html);
           var replacements = {
                resetLink: link

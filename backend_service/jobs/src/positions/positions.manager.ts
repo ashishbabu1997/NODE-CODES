@@ -325,7 +325,7 @@ export const publishCompanyPositions = async (_body) => {
                 var msg= 'A new position named'+' '+cpName+' '+'has been created by'+' '+cName
                 await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position' })
                 var subject='New position notification'
-                readHTMLFile('emailTemplates/positionCreationText.html', function(err, html) {
+                readHTMLFile('src/emailTemplates/positionCreationText.html', function(err, html) {
                     var template = handlebars.compile(html);
                     var replacements = {
                          company:cName,
@@ -410,7 +410,7 @@ export const changeJobStatus = (_body) => {
                                 }          
                                 var positionName=results.rows[0].position_name
                                 var emailAddress=results.rows[0].email
-                                readHTMLFile('emailTemplates/positionReopenText.html', function(err, html) {
+                                readHTMLFile('src/emailTemplates/positionReopenText.html', function(err, html) {
                                     var template = handlebars.compile(html);
                                     var replacements = {
                                         position:positionName
@@ -507,7 +507,7 @@ export const deletePositions = (_body) => {
                 var positionName=employeeData.rows[0].position_name
                 var emailAddress=employeeData.rows[0].email
                 await client.query('COMMIT');
-                readHTMLFile('emailTemplates/positionDeletionText.html', function(err, html) {
+                readHTMLFile('src/emailTemplates/positionDeletionText.html', function(err, html) {
                     var template = handlebars.compile(html);
                     var replacements = {
                         position:positionName

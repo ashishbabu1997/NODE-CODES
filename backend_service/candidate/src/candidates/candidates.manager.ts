@@ -215,7 +215,7 @@ export const candidateClearance = (_body) => {
                         value = [_body.candidateId,_body.positionId, adminApproveStatus, comment, makeOffer,_body.employeeId,currentTime]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Selection Mail";
-                        readHTMLFile('emailTemplates/selectionMailText.html', function(err, html) {
+                        readHTMLFile('src/emailTemplates/selectionMailText.html', function(err, html) {
                             var template = handlebars.compile(html);
                             var replacements = {
                                 fName: firstName,
@@ -249,7 +249,7 @@ export const candidateClearance = (_body) => {
                         value = [_body.candidateId, adminApproveStatus, comment, makeOffer,_body.employeeId]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Rejection Mail";
-                        readHTMLFile('emailTemplates/rejectionMailText.html', function(err, html) {
+                        readHTMLFile('src/emailTemplates/rejectionMailText.html', function(err, html) {
                             var template = handlebars.compile(html);
                             var replacements = {
                                 fName: firstName,
@@ -338,7 +338,7 @@ export const interviewRequestFunction = (_body) => {
                 var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber
                 // var description = interviewDetails[0].description === null ? '' : interviewDetails[0].description.fontsize(3).bold()
                 var subject = "Request for Interview from " + hirerCompanyName;
-                readHTMLFile('emailTemplates/interviewRequestMailText.html', function(err, html) {
+                readHTMLFile('src/emailTemplates/interviewRequestMailText.html', function(err, html) {
                     var template = handlebars.compile(html);
                     var replacements = {
                         hirerName: hirerCompanyName,

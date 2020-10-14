@@ -99,7 +99,7 @@ export const createEmployee = (_body) => {
                         values: [hashedPassword,loweremailId],
                     }
                     await client.query(storePasswordQuery);
-                    readHTMLFile('emailTemplates/newUserText.html', function(err, html) {
+                    readHTMLFile('src/emailTemplates/newUserText.html', function(err, html) {
                         var template = handlebars.compile(html);
                         var replacements = {
                              loginPassword:password
@@ -120,7 +120,7 @@ export const createEmployee = (_body) => {
                 var companyName = _body.companyName
                 var emailAddress = _body.email
                 var number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
-                readHTMLFile('emailTemplates/applicationText.html', function(err, html) {
+                readHTMLFile('src/emailTemplates/applicationText.html', function(err, html) {
                     var template = handlebars.compile(html);
                     var replacements = {
                          applicantName:Name,
