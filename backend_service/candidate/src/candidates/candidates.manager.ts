@@ -36,7 +36,7 @@ export const getCandidateDetails = (_body) => {
                 {
                     let flag=false;
                     assessmentTraits.forEach(element => {
-                        element.assessmentRating!=null && element.assessmentRating>0?flag=true:"";
+                        element.adminRating!=null && element.adminRating>0?flag=true:"";
                     });
                     if(!flag)
                     {
@@ -45,14 +45,13 @@ export const getCandidateDetails = (_body) => {
                 }
 
                 const getCandidateSkillsQuery = {
-                    name: 'get-candidate-assessmentTraits',
-                    text: candidateQuery.getAssessmentTraits,
+                    name: 'get-candidate-skills',
+                    text: candidateQuery.getCandidateSkills,
                     values: [_body.candidateId],
                 }
-                let skillResult = await client.query(getCandidateSkillsQuery);
-
+                let skillResult = await client.query(getCandidateSkillsQuery);                
                 skillResult.rows.forEach(step => {
-                    if (step.skill_id != null)
+                    if (step.skillId != null)
                     {
                     step.topSkill?
                     topRatedSkill.push(
@@ -430,7 +429,7 @@ export const addCandidateReview = (_body) => {
                     const candidateDetails = {
                         name: 'update-candidate-assesment-rating',
                         text: candidateQuery.updateCandidateAssesment,
-                        values: [element.candidateAssesmentId, element.assessmentRating, _body.employeeId, currentTime],
+                        values: [element.assesmentId, element.adminRating, _body.employeeId, currentTime],
                     }
                     promise.push(client.query(candidateDetails));
                 });
