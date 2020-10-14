@@ -110,7 +110,7 @@ export const editCandidateDetails = (_body) => {
                 const deleteCandidateSkillsQuery = {
                     name: 'delete-candidate-skills',
                     text: jobReceivedQuery.deleteCandidateSkills,
-                    values: [_body.candidateId, skillSet],
+                    values: [_body.candidates.candidateId, skillSet],
                 }                
                 await client.query(deleteCandidateSkillsQuery)
                 
@@ -119,7 +119,7 @@ export const editCandidateDetails = (_body) => {
                     const addTopSkillsQuery = {
                         name: 'add-top-job-skills',
                         text: jobReceivedQuery.addCandidateSkills,
-                        values: [_body.candidateId, tSkill,true, currentTime],
+                        values: [_body.candidates.candidateId, tSkill,true, currentTime],
                     }
                     await client.query(addTopSkillsQuery);
                 }
@@ -128,7 +128,7 @@ export const editCandidateDetails = (_body) => {
                     const addOtherSkillsQuery = {
                         name: 'add-other-job-skills',
                         text: jobReceivedQuery.addCandidateSkills,
-                        values: [_body.candidateId, oSkill,false, currentTime],
+                        values: [_body.candidates.candidateId, oSkill,false, currentTime],
                     }
                     await client.query(addOtherSkillsQuery);
                 }
@@ -137,14 +137,14 @@ export const editCandidateDetails = (_body) => {
                         const addDefaultTraits = {
                             name: 'add-default-traits',
                             text: jobReceivedQuery.addDefaultAssessmentTraits,
-                            values: [_body.candidateId, _body.employeeId,currentTime],
+                            values: [_body.candidates.candidateId, _body.employeeId,currentTime],
                         }
                         await client.query(addDefaultTraits);
                         
                         const addSkillRelatedTraits = {
                             name: 'add-skill-based-traits',
                             text: jobReceivedQuery.addSkillBasedAssesmentTraits,
-                            values: [_body.candidateId, _body.employeeId,currentTime],
+                            values: [_body.candidates.candidateId, _body.employeeId,currentTime],
                         }
                         await client.query(addSkillRelatedTraits);
                     }
