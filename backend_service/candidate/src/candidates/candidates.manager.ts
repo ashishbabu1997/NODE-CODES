@@ -45,14 +45,19 @@ export const getCandidateDetails = (_body) => {
                 }
 
                 const getCandidateSkillsQuery = {
-                    name: 'get-candidate-assessmentTraits',
-                    text: candidateQuery.getAssessmentTraits,
+                    name: 'get-candidate-skills',
+                    text: candidateQuery.getCandidateSkills,
                     values: [_body.candidateId],
                 }
                 let skillResult = await client.query(getCandidateSkillsQuery);
+                console.log("skillResult : ",skillResult.rows);
+                
 
                 skillResult.rows.forEach(step => {
-                    if (step.skill_id != null)
+                    console.log("step skillId : ",step.skillId);
+                    console.log("step skillName : ",step.skillName);
+                    console.log("step topSkill : ",step.topSkill);
+                    if (step.skillId != null)
                     {
                     step.topSkill?
                     topRatedSkill.push(
