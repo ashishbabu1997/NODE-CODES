@@ -130,7 +130,7 @@ export const listCandidatesDetails = (_body) => {
                 const listCandidates = {
                     name: 'get-position-candidates',
                     text: selectQuery,
-                    values: [_body.positionId]
+                    values: [_body.positionId,_body.employeeId]
                 }
                 const candidatesResult = await client.query(listCandidates);
                 let candidates = candidatesResult.rows;
