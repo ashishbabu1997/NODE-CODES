@@ -34,12 +34,9 @@ export default Joi.object().keys({
             });
             return errors;
         }),
-        jobReceivedId : Joi.number().allow('').error(errors => {
+        jobReceivedId : Joi.number().allow('',null).error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
-                    case "any.required":
-                        err.message = "job Received Id should not be empty!";
-                        break;
                     case "number.base":
                         err.message = "job Received Id must be a number"
                         break;
@@ -50,5 +47,5 @@ export default Joi.object().keys({
             });
             return errors;
         })
-    }).unknown(true),
+    })
 }).unknown(true);
