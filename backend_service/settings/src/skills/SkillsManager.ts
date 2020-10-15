@@ -3,39 +3,36 @@ import database from '../common/database/database';
 
 export const getCompanySkills = (_body) => {
     return new Promise((resolve, reject) => {
-        (async () => {
-            const client = await database().connect()
-            try {
-               
-                await client.query('BEGIN');
-                if (_body.jobCategoryId)
-                {
-                     const queryWithJobCategoryId = {
-                        name: 'fetch-skills',
-                        text: skillsQuery.getSkills,
-                        values: [_body.jobCategoryId],
-                    }
-                    await client.query(queryWithJobCategoryId)
-                }
-                else{
-                    const query = {
-                        name: 'fetch-skills',
-                        text: skillsQuery.getSkillsWithoutId,
-                        values: [],
-                    }
-                    await client.query(query)
-                }
-                await client.query('COMMIT')
-            } catch (e) {
-                await client.query('ROLLBACK')
-                console.log(e)
+        if (_body.jobCategoryId)
+        {
+        const query = {
+            name: 'fetch-skills',
+            text: skillsQuery.getSkills,
+            values: [_body.jobCategoryId],
+        }
+        database().query(query, (error, results) => {
+            if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
-                client.release();
+                return;
             }
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
         })
+    }
+    else{
+                        const queryWithJobCategoryId = {
+                            name: 'fetch-skills',
+                            text: skillsQuery.getSkills,
+                            values: [_body.jobCategoryId],
+                        }
+                        database().query(queryWithJobCategoryId, (error, results) => {
+                            if (error) {
+                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                return;
+                            }
+                            resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
+                        })
+                        
+    }
     });
 }
 
