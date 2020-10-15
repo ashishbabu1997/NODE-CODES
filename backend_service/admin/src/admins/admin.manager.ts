@@ -33,7 +33,7 @@ export const allUsersList = (_body) => {
         if (_body.filter) {
             selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%'";
         }
-        var orderBy = ' ORDER BY p.created_on DESC';
+        var orderBy = ' ORDER BY e.updated_on DESC';
         selectQuery = selectQuery + orderBy;
 
         const listquery = {
@@ -111,7 +111,7 @@ export const clearance = (_body) => {
                     const adminApprovalQuery = {
                         name: 'admin-panel',
                         text: admineQuery.approveEmployeeQuery,
-                        values: [_body.selectedEmployeeId,hashedPassword]
+                        values: [_body.selectedEmployeeId,hashedPassword,currentTime]
                     }
                     var approveResult = await client.query(adminApprovalQuery);
                     var email = approveResult.rows[0].email;
@@ -137,7 +137,7 @@ export const clearance = (_body) => {
                     const adminRejectQuery = {
                         name: 'admin-panel',
                         text: admineQuery.clearanceQuery,
-                        values: [_body.selectedEmployeeId, false, 0]
+                        values: [_body.selectedEmployeeId, false, 0,currentTime]
                     }
                     await client.query(adminRejectQuery);
 
