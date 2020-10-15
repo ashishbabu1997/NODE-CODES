@@ -65,6 +65,19 @@ export default Joi.object().keys({
         });
         return errors;
     }),
+    lastName: Joi.string().allow('').error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "string.base":
+                    err.message = "Firstname must be a string"
+                    break;
+                default:
+                    err.message = "Invalid Firstname"
+                    break;
+            }
+        });
+        return errors;
+    }),
     billingTypeId: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {

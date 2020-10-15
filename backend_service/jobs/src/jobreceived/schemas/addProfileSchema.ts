@@ -34,7 +34,7 @@ export default Joi.object().keys({
             });
             return errors;
         }),
-        jobReceivedId : Joi.number().required().error(errors => {
+        jobReceivedId : Joi.number().allow('').error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
                     case "any.required":
