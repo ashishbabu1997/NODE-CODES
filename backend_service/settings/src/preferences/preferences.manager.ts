@@ -6,7 +6,7 @@ export const getPreferences = (_body) => {
         const query = {
             name: 'fetch-company-preferences',
             text: preferencesQuery.getCompanyPreferences,
-            values: [parseInt(_body.companyId)],
+            values: [_body.companyId],
         }
         database().query(query, (error, results) => {
             if (error) {

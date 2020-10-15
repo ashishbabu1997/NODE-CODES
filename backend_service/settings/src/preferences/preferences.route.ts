@@ -8,7 +8,7 @@ import setData from '../middlewares/setData';
 const router = express.Router();
 
 router
-    .get('/:companyId',jwtAuth, setData(), getCompanyPreferences)
+    .get('/',jwtAuth, setData(), getCompanyPreferences)
     .put('/companyProfile',jwtAuth, setData(),validate(updateCompanyProfileSchema), updateCompanyProfile)
     .put('/enableMasking',jwtAuth, setData(), validate(updateCompanyMaskingSchema), enableCompanyMasking)
 
