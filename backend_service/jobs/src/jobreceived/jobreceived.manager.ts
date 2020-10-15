@@ -96,7 +96,6 @@ export const editCandidateDetails = (_body) => {
             const client = await database().connect()
             try {
                 console.log("values : ",[_body.candidates.candidateId, _body.candidates.firstName, _body.candidates.lastName, _body.candidates.email, _body.candidates.phoneNumber, _body.candidates.rate, _body.candidates.billingTypeId, _body.candidates.resume, _body.candidates.currencyTypeId, _body.candidates.coverNote, _body.candidates.candidateStatus,_body.candidates.workExperience,_body.candidates.companyId]);
-                _body.candidates.rate=undefined;
                 const editQuery = {
                     name: 'update-JobReceived-reject',
                     text: jobReceivedQuery.editDetailsCandidate,
