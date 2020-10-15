@@ -18,19 +18,6 @@ export default Joi.object().keys({
             });
             return errors;
         }),
-        lastName : Joi.string().allow('',null).error(errors => {
-            errors.forEach(err => {
-                switch (err.code) {
-                    case "string.base":
-                        err.message = "Candidate FirstName must be a string"
-                        break;
-                    default:
-                        err.message = "Invalid Candidate FirstName"
-                        break;
-                }
-            });
-            return errors;
-        }),
         candidateStatus : Joi.number().required().error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
@@ -60,5 +47,5 @@ export default Joi.object().keys({
             });
             return errors;
         })
-    })
+    }).unknown(true)
 }).unknown(true);
