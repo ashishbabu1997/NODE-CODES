@@ -47,8 +47,27 @@ export const createCompanyLocations = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Location added successfully", data: {} });
         })
+        if(_body.gstNumber && _body.panNumber)
+        {
+            const taxQuery = {
+                name: 'add-gst-pan',
+                text: locationQuery.addTaxDetails,
+                values: [_body.companyId,_body.gstNumber,_body.panNumber],
+            }
+            database().query(taxQuery, (error, results) => {
+                if (error) {
+                    console.log(error)
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    return;
+                }
+                resolve({ code: 200, message: "Locations,PAN Number and GST Number added successfully", data: {} });
+            })
+
+        }
+        else{
+            resolve({ code: 200, message: "Location added successfully", data: {} });
+        }
     })
 }
 
