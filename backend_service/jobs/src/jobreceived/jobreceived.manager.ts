@@ -96,12 +96,14 @@ export const editCandidateDetails = (_body) => {
             const client = await database().connect()
             try {
                 
+                
                 const editQuery = {
                     name: 'update-JobReceived-reject',
                     text: jobReceivedQuery.editDetailsCandidate,
                     values: [_body.candidates.candidateId, _body.candidates.firstName, _body.candidates.lastName, _body.candidates.email, _body.candidates.phoneNumber, _body.candidates.rate, _body.candidates.billingTypeId, _body.candidates.resume, _body.candidates.currencyTypeId, _body.candidates.coverNote, _body.candidates.candidateStatus,_body.candidates.workExperience,_body.candidates.companyId]
                 }
-                
+                await client.query(editQuery);
+
                 let tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
                 let oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];
                 
