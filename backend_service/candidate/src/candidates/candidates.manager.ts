@@ -449,3 +449,35 @@ export const addCandidateReview = (_body) => {
         })
     })
 }
+
+export const editVettingStatus = (_body) => {
+    return new Promise((resolve, reject) => {
+        const candidateId = _body.candidateId;
+        const vettingStatus = _body.candidateVetted;
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                const updateQuery = {
+                    name: 'update-candidate-vetting',
+                    text: candidateQuery.updateCandidateVetting,
+                    values: [candidateId, vettingStatus,_body.employeeId,currentTime],
+                }
+
+                await client.query(updateQuery);
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Candidate Vetting Updated successfully", data: {} });
+                
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
