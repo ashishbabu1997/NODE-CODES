@@ -21,8 +21,8 @@ export const getCompanySkills = (_body) => {
     else{
                         const queryWithJobCategoryId = {
                             name: 'fetch-skills',
-                            text: skillsQuery.getSkills,
-                            values: [_body.jobCategoryId],
+                            text: skillsQuery.getSkillsWithoutId,
+                            values: [],
                         }
                         database().query(queryWithJobCategoryId, (error, results) => {
                             if (error) {
