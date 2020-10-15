@@ -177,7 +177,8 @@ export const checkCompanyByWorkMail = (_body) => {
                 companyDetails = {
                     companyId:parseInt(results.rows[0].company_id),
                     companyName:results.rows[0].company_name,
-                    adminApproveStatus:results.rows[0].admin_approve_status
+                    adminApproveStatus:results.rows[0].admin_approve_status,
+                    accountType:results.rows[0].account_type
                 }
             }
             resolve({ code: 200, message: "Company Details", data: companyDetails });
