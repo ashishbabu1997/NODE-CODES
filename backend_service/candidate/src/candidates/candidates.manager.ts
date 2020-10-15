@@ -121,6 +121,8 @@ export const listCandidatesDetails = (_body) => {
         if (_body.filter) {
             selectQuery = selectQuery + " " + "AND ((LOWER(ca.candidate_first_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(ca.candidate_last_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
         }
+        let orderBy = 'ORDER BY ca.updated_on desc';
+        
         (async () => {
             const client = await database().connect()
             try {
