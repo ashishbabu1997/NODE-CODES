@@ -193,21 +193,23 @@ export const saveCandidateProfile = (_body) => {
                             values: [_body.positionId,candidateId,candidatesDetails.jobReceivedId,candidatesDetails.billingTypeId,candidatesDetails.currencyTypeId,_body.employeeId,currentTime],
                         }
                         await client.query(addPositionQuery);
-                    }
-                    const getJobStatusQuery = {
-                        name: 'get-Job-status',
-                        text: jobReceivedQuery.getJobStatus,
-                        values: [_body.positionId],
-                    }
-                    const response = await client.query(getJobStatusQuery);
-                    let jobStatus = response.rows[0].jobStatus;
                     
-                    const updateCompanyJobStatusQuery = {
-                        name: 'update-company-job-status',
-                        text: jobReceivedQuery.updateCompanyJobStatus,
-                        values: [candidatesDetails.jobReceivedId,jobStatus, candidatesDetails.companyId,_body.employeeId, currentTime],
+                        const getJobStatusQuery = {
+                            name: 'get-Job-status',
+                            text: jobReceivedQuery.getJobStatus,
+                            values: [_body.positionId],
+                        }
+                        const response = await client.query(getJobStatusQuery);
+                        let jobStatus = response.rows[0].jobStatus;
+                        
+                        const updateCompanyJobStatusQuery = {
+                            name: 'update-company-job-status',
+                            text: jobReceivedQuery.updateCompanyJobStatus,
+                            values: [candidatesDetails.jobReceivedId,jobStatus, candidatesDetails.companyId,_body.employeeId, currentTime],
+                        }
+                        await client.query(updateCompanyJobStatusQuery);
                     }
-                    await client.query(updateCompanyJobStatusQuery);
+                    
                     
                     let tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
                     let oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];
