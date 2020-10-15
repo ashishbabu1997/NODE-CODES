@@ -121,7 +121,7 @@ export const editCandidateDetails = (_body) => {
                     const addTopSkillsQuery = {
                         name: 'add-top-job-skills',
                         text: jobReceivedQuery.addCandidateSkills,
-                        values: [_body.candidates.candidateId, tSkill,true, currentTime],
+                        values: [_body.candidates.candidateId, tSkill,true, currentTime,_body.employeeId],
                     }
                     await client.query(addTopSkillsQuery);
                 }
@@ -130,7 +130,7 @@ export const editCandidateDetails = (_body) => {
                     const addOtherSkillsQuery = {
                         name: 'add-other-job-skills',
                         text: jobReceivedQuery.addCandidateSkills,
-                        values: [_body.candidates.candidateId, oSkill,false, currentTime],
+                        values: [_body.candidates.candidateId, oSkill,false, currentTime,_body.employeeId],
                     }
                     await client.query(addOtherSkillsQuery);
                 }

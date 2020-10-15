@@ -89,6 +89,7 @@ export const getCandidateDetails = (_body) => {
                     phoneNumber: candidate[0].phoneNumber,
                     label: candidate[0].label,
                     email: candidate[0].email,
+                    workExperience:candidate[0].workExperience,
                     assessmentComment: candidate[0].assessmentComment,
                     assessmentTraits,
                     skills
