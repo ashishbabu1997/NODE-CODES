@@ -12,7 +12,7 @@ export const getCandidateDetails = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                let skills=null,topRatedSkill=[],otherSkill=[];
+                let skills = null, topRatedSkill = [], otherSkill = [];
 
                 await client.query('BEGIN');
                 const listCandidateQuery = {
@@ -31,16 +31,14 @@ export const getCandidateDetails = (_body) => {
                 }
                 let value = await client.query(getCandidateAssessmentTraitsQuery);
 
-                let assessmentTraits = value.rows                
-                if(_body.admin!=1 && Array.isArray(assessmentTraits) && assessmentTraits.length>0)
-                {
-                    let flag=false;
+                let assessmentTraits = value.rows
+                if (_body.admin != 1 && Array.isArray(assessmentTraits) && assessmentTraits.length > 0) {
+                    let flag = false;
                     assessmentTraits.forEach(element => {
-                        element.adminRating!=null && element.adminRating>0?flag=true:"";
+                        element.adminRating != null && element.adminRating > 0 ? flag = true : "";
                     });
-                    if(!flag)
-                    {
-                        assessmentTraits=null;
+                    if (!flag) {
+                        assessmentTraits = null;
                     }
                 }
 
@@ -49,27 +47,26 @@ export const getCandidateDetails = (_body) => {
                     text: candidateQuery.getCandidateSkills,
                     values: [_body.candidateId],
                 }
-                let skillResult = await client.query(getCandidateSkillsQuery);                
+                let skillResult = await client.query(getCandidateSkillsQuery);
                 skillResult.rows.forEach(step => {
-                    if (step.skillId != null)
-                    {
-                    step.topSkill?
-                    topRatedSkill.push(
-                        {
-                            skillId: step.skillId,
-                            skillName: step.skillName
-                        }
-                    ):
-                    otherSkill.push(
-                        {
-                            skillId: step.skillId,
-                            skillName: step.skillName
-                        }
-                    );
-                }
+                    if (step.skillId != null) {
+                        step.topSkill ?
+                            topRatedSkill.push(
+                                {
+                                    skillId: step.skillId,
+                                    skillName: step.skillName
+                                }
+                            ) :
+                            otherSkill.push(
+                                {
+                                    skillId: step.skillId,
+                                    skillName: step.skillName
+                                }
+                            );
+                    }
                 });
 
-                skills = {topRatedSkill,otherSkill};
+                skills = { topRatedSkill, otherSkill };
 
 
                 let result = {
@@ -96,8 +93,8 @@ export const getCandidateDetails = (_body) => {
                     skills
                 };
                 _body.userRoleId == 1 && (result['ellowRate'] = candidate[0].ellowRate)
-                
-                resolve({ code: 200, message: "Candidate details listed successfully", data: result });                
+
+                resolve({ code: 200, message: "Candidate details listed successfully", data: result });
                 await client.query('COMMIT')
             } catch (e) {
                 console.log(e)
@@ -109,7 +106,7 @@ export const getCandidateDetails = (_body) => {
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
-        
+
     })
 }
 export const listCandidatesDetails = (_body) => {
@@ -141,7 +138,7 @@ export const listCandidatesDetails = (_body) => {
                         allCandidates.push(candidate);
                     }
                 });
-                
+
                 const getJobReceivedId = {
                     name: 'get-jobreceived-id',
                     text: candidateQuery.getJobReceivedId,
@@ -149,7 +146,7 @@ export const listCandidatesDetails = (_body) => {
                 }
                 const jobReceivedIdResult = await client.query(getJobReceivedId);
                 var jobReceivedId = jobReceivedIdResult.rows[0]['job_received_id'];
-                
+
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { jobReceivedId, allCandidates } });
             } catch (e) {
@@ -169,10 +166,9 @@ export const listFreeCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.listFreeCandidates;
         if (_body.userRoleId != 1) {
-            selectQuery = selectQuery + " AND c.company_id = "+_body.companyId
+            selectQuery = selectQuery + " AND c.company_id = " + _body.companyId
         }
-        else
-        {
+        else {
             selectQuery = selectQuery + " AND ca.candidate_status = 3"
         }
         if (_body.filter) {
@@ -188,9 +184,9 @@ export const listFreeCandidatesDetails = (_body) => {
                 }
                 const candidatesResult = await client.query(listCandidates);
                 let candidates = candidatesResult.rows;
-                
+
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Candidate Listed successfully", data: {  candidates } });
+                resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates } });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
@@ -207,13 +203,13 @@ export const listFreeCandidatesDetails = (_body) => {
 export const candidateClearance = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
-        
+
         (async () => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                var readHTMLFile = function(path, callback) {
-                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                var readHTMLFile = function (path, callback) {
+                    fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
                         if (err) {
                             throw err;
                             callback(err);
@@ -233,7 +229,7 @@ export const candidateClearance = (_body) => {
                 const getCandidateName = {
                     name: 'get-candidate-names',
                     text: candidateQuery.getCandidateNames,
-                    values: [_body.candidateId,_body.positionId]
+                    values: [_body.candidateId, _body.positionId]
                 }
                 const results = await client.query(getCandidateName);
                 const candidateDetails = results.rows[0];
@@ -245,25 +241,25 @@ export const candidateClearance = (_body) => {
                     if (_body.userRoleId == 1) {
                         adminApproveStatus = 1
                         comment = _body.comment
-                        value = [_body.candidateId,_body.positionId, adminApproveStatus, comment, _body.ellowRate,_body.employeeId,currentTime]
+                        value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, _body.ellowRate, _body.employeeId, currentTime]
                         candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
                     }
                     else if (_body.userRoleId == 2) {
                         message = `${firstName + ' ' + lastName} from ${companyName} has been selected for the position:${positionName}`;
-                        var approveMessage=firstName.fontsize(3).bold()+'  '+lastName.fontsize(3).bold()+'   '+'from'+'   '+companyName.fontsize(3).bold()+'   '+'has been selected for the position'+'   '+positionName.fontsize(3).bold()
+                        var approveMessage = firstName.fontsize(3).bold() + '  ' + lastName.fontsize(3).bold() + '   ' + 'from' + '   ' + companyName.fontsize(3).bold() + '   ' + 'has been selected for the position' + '   ' + positionName.fontsize(3).bold()
                         makeOffer = 1
                         adminApproveStatus = 1;
                         comment = _body.comment;
-                        value = [_body.candidateId,_body.positionId, adminApproveStatus, comment, makeOffer,_body.employeeId,currentTime]
+                        value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, makeOffer, _body.employeeId, currentTime]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Selection Mail";
-                        readHTMLFile('src/emailTemplates/selectionMailText.html', function(err, html) {
+                        readHTMLFile('src/emailTemplates/selectionMailText.html', function (err, html) {
                             var template = handlebars.compile(html);
                             var replacements = {
                                 fName: firstName,
-                                lName:lastName,
-                                cName:companyName,
-                                pName:positionName
+                                lName: lastName,
+                                cName: companyName,
+                                pName: positionName
                             };
                             var htmlToSend = template(replacements);
                             sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
@@ -280,24 +276,24 @@ export const candidateClearance = (_body) => {
                     if (_body.userRoleId == 1) {
                         adminApproveStatus = 0
                         comment = _body.comment
-                        value = [_body.candidateId,_body.positionId, adminApproveStatus, comment,_body.employeeId,currentTime]
+                        value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, _body.employeeId, currentTime]
                         candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
                     } else if (_body.userRoleId != 1) {
-                        var rejectMessage=firstName.fontsize(3).bold()+'   '+lastName.fontsize(3).bold()+'   '+'from'+'   '+companyName.fontsize(3).bold()+'   '+'has been rejected for the position'+'   '+positionName.fontsize(3).bold()
+                        var rejectMessage = firstName.fontsize(3).bold() + '   ' + lastName.fontsize(3).bold() + '   ' + 'from' + '   ' + companyName.fontsize(3).bold() + '   ' + 'has been rejected for the position' + '   ' + positionName.fontsize(3).bold()
                         message = `${firstName + ' ' + lastName} from ${companyName} has been rejected for the position ${positionName}`;
                         makeOffer = 0
                         adminApproveStatus = 1;
                         comment = _body.comment;
-                        value = [_body.candidateId, adminApproveStatus, comment, makeOffer,_body.employeeId]
+                        value = [_body.candidateId, adminApproveStatus, comment, makeOffer, _body.employeeId]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Rejection Mail";
-                        readHTMLFile('src/emailTemplates/rejectionMailText.html', function(err, html) {
+                        readHTMLFile('src/emailTemplates/rejectionMailText.html', function (err, html) {
                             var template = handlebars.compile(html);
                             var replacements = {
                                 fName: firstName,
-                                lName:lastName,
-                                cName:companyName,
-                                pName:positionName
+                                lName: lastName,
+                                cName: companyName,
+                                pName: positionName
                             };
                             var htmlToSend = template(replacements);
                             sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
@@ -310,7 +306,7 @@ export const candidateClearance = (_body) => {
                             });
                         })
                     }
-                    
+
                 }
                 const candidateApprovalQuery = {
                     name: 'admin',
@@ -319,9 +315,9 @@ export const candidateClearance = (_body) => {
                 }
                 await client.query(candidateApprovalQuery);
                 await client.query('COMMIT');
-                _body.userRoleId != 1 && await createNotification({ positionId:_body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
+                _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
                 resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
-                
+
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
@@ -341,8 +337,8 @@ export const interviewRequestFunction = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                var readHTMLFile = function(path, callback) {
-                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                var readHTMLFile = function (path, callback) {
+                    fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
                         if (err) {
                             throw err;
                             callback(err);
@@ -355,23 +351,23 @@ export const interviewRequestFunction = (_body) => {
                 const insertQuery = {
                     name: 'insert-make-offer-status',
                     text: candidateQuery.insertMakeOfferStatus,
-                    values: [_body.candidateId,_body.employeeId],
+                    values: [_body.candidateId, _body.employeeId],
                 }
                 await client.query(insertQuery);
                 const candidateDetails = {
                     name: 'get-interview-details',
                     text: candidateQuery.getInterviewDetails,
-                    values: [_body.companyId,_body.candidateId, _body.positionId],
+                    values: [_body.companyId, _body.candidateId, _body.positionId],
                 }
                 const result = await client.query(candidateDetails);
                 await client.query('COMMIT');
                 var interviewDetails = result.rows
-                
-                let {  jobReceivedId, candidateFirstName, candidateLastName } = interviewDetails[0];
-                
+
+                let { jobReceivedId, candidateFirstName, candidateLastName } = interviewDetails[0];
+
                 const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}.`
-                await createNotification({ positionId:_body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' })
-                
+                await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' })
+
                 var hirerCompanyName = interviewDetails[0].hirerCompanyName.toUpperCase()
                 candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName
                 candidateLastName = interviewDetails[0].candidateLastName === null ? '' : interviewDetails[0].candidateLastName
@@ -380,15 +376,15 @@ export const interviewRequestFunction = (_body) => {
                 var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber
                 // var description = interviewDetails[0].description === null ? '' : interviewDetails[0].description.fontsize(3).bold()
                 var subject = "Request for Interview from " + hirerCompanyName;
-                readHTMLFile('src/emailTemplates/interviewRequestMailText.html', function(err, html) {
+                readHTMLFile('src/emailTemplates/interviewRequestMailText.html', function (err, html) {
                     var template = handlebars.compile(html);
                     var replacements = {
                         hirerName: hirerCompanyName,
-                        firstName:candidateFirstName,
-                        lastName:candidateLastName,
-                        position:positionName,
-                        emailId:email,
-                        telephoneNumber:phoneNumber
+                        firstName: candidateFirstName,
+                        lastName: candidateLastName,
+                        position: positionName,
+                        emailId: email,
+                        telephoneNumber: phoneNumber
                     };
                     var htmlToSend = template(replacements);
                     sendMail(config.adminEmail, subject, htmlToSend, function (err, data) {
@@ -428,7 +424,7 @@ export const addCandidateReview = (_body) => {
                     values: [_body.candidateId, _body.assessmentComment],
                 }
                 promise.push(client.query(insertQuery));
-                
+
                 data.forEach(element => {
                     const candidateDetails = {
                         name: 'update-candidate-assesment-rating',
@@ -440,7 +436,7 @@ export const addCandidateReview = (_body) => {
                 const results = await Promise.all(promise);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });
-                
+
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
@@ -466,13 +462,45 @@ export const editVettingStatus = (_body) => {
                 const updateQuery = {
                     name: 'update-candidate-vetting',
                     text: candidateQuery.updateCandidateVetting,
-                    values: [candidateId, vettingStatus,_body.employeeId,currentTime],
+                    values: [candidateId, vettingStatus, _body.employeeId, currentTime],
                 }
 
                 await client.query(updateQuery);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate Vetting Updated successfully", data: {} });
-                
+
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
+
+
+export const removeCandidateFromPosition = (_body) => {
+    return new Promise((resolve, reject) => {
+        const candidateId = _body.candidateId;
+        const positionId = _body.positionId;
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                const removeCandidateQuery = {
+                    name: 'delete-candidate-from-position',
+                    text: candidateQuery.deleteCandidateFromPosition,
+                    values: [candidateId, positionId, _body.employeeId, currentTime],
+                }
+                await client.query(removeCandidateQuery);
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Candidate deleted successfully", data: {} });
+
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')

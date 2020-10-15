@@ -9,7 +9,7 @@ export const getAllJobReceived = (_body) => {
         var selectQuery = jobReceivedQuery.getAllJobReceived;
         
         if (_body.filter) {
-            selectQuery = selectQuery + " AND (LOWER(position_name ) LIKE '%" + _body.filter.toLowerCase() + "%' OR LOWER(position_name ) LIKE '%" + _body.filter.toLowerCase() + "%') "
+            selectQuery = selectQuery + " AND (LOWER(position_name ) LIKE '%" + _body.filter.toLowerCase() + "%' OR LOWER(company_name ) LIKE '%" + _body.filter.toLowerCase() + "%') "
         }
         
         if (_body.sortBy) {

@@ -1,4 +1,4 @@
-import { candidateDetails, candidateVettingStatus,listCandidates,listFreeCandidates,approveRejectCandidates,interviewRequest,candidateReview } from './candidates.controller';
+import { candidateDetails, candidateVettingStatus, listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition } from './candidates.controller';
 import * as express from 'express';
 import checkUserRole from '../middlewares/checkUserRole';
 import validate from '../middlewares/joiVaildation';
@@ -11,11 +11,12 @@ import setData from '../middlewares/setData';
 
 const router = express.Router();
 router
-    .get('/candidateDetails',  jwtAuth, setData(),candidateDetails)
+    .get('/candidateDetails', jwtAuth, setData(), candidateDetails)
     .get('/listCandidates', jwtAuth, setData(), listCandidates)
     .get('/listFreeCandidates', jwtAuth, setData(), listFreeCandidates)
-    .post('/candidateApproveReject',jwtAuth, setData(),validate(approveRejectSchema),approveRejectCandidates)
-    .post('/requestForInterview',jwtAuth, setData(),validate(interviewRequestSchema),interviewRequest)
-    .post('/review',jwtAuth, setData(),candidateReview)
-    .put('/candidateVettingStatus',jwtAuth, setData(),validate(candidateVettingSchema),candidateVettingStatus)
+    .post('/candidateApproveReject', jwtAuth, setData(), validate(approveRejectSchema), approveRejectCandidates)
+    .post('/requestForInterview', jwtAuth, setData(), validate(interviewRequestSchema), interviewRequest)
+    .post('/review', jwtAuth, setData(), candidateReview)
+    .put('/candidateVettingStatus', jwtAuth, setData(), validate(candidateVettingSchema), candidateVettingStatus)
+    .delete('/', jwtAuth, setData(), deleteCandidateFromPosition)
 export default router;
