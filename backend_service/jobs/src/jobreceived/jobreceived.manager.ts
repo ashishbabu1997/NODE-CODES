@@ -95,7 +95,7 @@ export const editCandidateDetails = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                
+                console.log("values : ",[_body.candidates.candidateId, _body.candidates.firstName, _body.candidates.lastName, _body.candidates.email, _body.candidates.phoneNumber, _body.candidates.rate, _body.candidates.billingTypeId, _body.candidates.resume, _body.candidates.currencyTypeId, _body.candidates.coverNote, _body.candidates.candidateStatus,_body.candidates.workExperience,_body.candidates.companyId]);
                 const editQuery = {
                     name: 'update-JobReceived-reject',
                     text: jobReceivedQuery.editDetailsCandidate,
@@ -119,7 +119,7 @@ export const editCandidateDetails = (_body) => {
                     const addTopSkillsQuery = {
                         name: 'add-top-job-skills',
                         text: jobReceivedQuery.addCandidateSkills,
-                        values: [_body.candidates.candidateId, tSkill,true, currentTime],
+                        values: [_body.candidates.candidateId, tSkill,true, currentTime,_body.employeeId],
                     }
                     await client.query(addTopSkillsQuery);
                 }
@@ -128,7 +128,7 @@ export const editCandidateDetails = (_body) => {
                     const addOtherSkillsQuery = {
                         name: 'add-other-job-skills',
                         text: jobReceivedQuery.addCandidateSkills,
-                        values: [_body.candidates.candidateId, oSkill,false, currentTime],
+                        values: [_body.candidates.candidateId, oSkill,false, currentTime,_body.employeeId],
                     }
                     await client.query(addOtherSkillsQuery);
                 }
@@ -193,21 +193,23 @@ export const saveCandidateProfile = (_body) => {
                             values: [_body.positionId,candidateId,candidatesDetails.jobReceivedId,candidatesDetails.billingTypeId,candidatesDetails.currencyTypeId,_body.employeeId,currentTime],
                         }
                         await client.query(addPositionQuery);
-                    }
-                    const getJobStatusQuery = {
-                        name: 'get-Job-status',
-                        text: jobReceivedQuery.getJobStatus,
-                        values: [_body.positionId],
-                    }
-                    const response = await client.query(getJobStatusQuery);
-                    let jobStatus = response.rows[0].jobStatus;
                     
-                    const updateCompanyJobStatusQuery = {
-                        name: 'update-company-job-status',
-                        text: jobReceivedQuery.updateCompanyJobStatus,
-                        values: [candidatesDetails.jobReceivedId,jobStatus, candidatesDetails.companyId,_body.employeeId, currentTime],
+                        const getJobStatusQuery = {
+                            name: 'get-Job-status',
+                            text: jobReceivedQuery.getJobStatus,
+                            values: [_body.positionId],
+                        }
+                        const response = await client.query(getJobStatusQuery);
+                        let jobStatus = response.rows[0].jobStatus;
+                        
+                        const updateCompanyJobStatusQuery = {
+                            name: 'update-company-job-status',
+                            text: jobReceivedQuery.updateCompanyJobStatus,
+                            values: [candidatesDetails.jobReceivedId,jobStatus, candidatesDetails.companyId,_body.employeeId, currentTime],
+                        }
+                        await client.query(updateCompanyJobStatusQuery);
                     }
-                    await client.query(updateCompanyJobStatusQuery);
+                    
                     
                     let tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
                     let oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];

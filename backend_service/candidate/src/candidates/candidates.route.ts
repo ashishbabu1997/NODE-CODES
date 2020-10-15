@@ -1,9 +1,11 @@
-import { candidateDetails, listCandidates,listFreeCandidates,approveRejectCandidates,interviewRequest,candidateReview } from './candidates.controller';
+import { candidateDetails, candidateVettingStatus,listCandidates,listFreeCandidates,approveRejectCandidates,interviewRequest,candidateReview } from './candidates.controller';
 import * as express from 'express';
 import checkUserRole from '../middlewares/checkUserRole';
 import validate from '../middlewares/joiVaildation';
 import approveRejectSchema from './schemas/approveRejectSchema';
 import interviewRequestSchema from './schemas/interviewRequestSchema';
+import candidateVettingSchema from './schemas/candidateVettingSchema';
+
 import { jwtAuth } from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
 
@@ -15,4 +17,5 @@ router
     .post('/candidateApproveReject',jwtAuth, setData(),validate(approveRejectSchema),approveRejectCandidates)
     .post('/requestForInterview',jwtAuth, setData(),validate(interviewRequestSchema),interviewRequest)
     .post('/review',jwtAuth, setData(),candidateReview)
+    .put('/candidateVettingStatus',jwtAuth, setData(),validate(candidateVettingSchema),candidateVettingStatus)
 export default router;

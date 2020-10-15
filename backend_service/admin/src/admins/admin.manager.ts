@@ -33,9 +33,9 @@ export const allUsersList = (_body) => {
         if (_body.filter) {
             selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%'";
         }
-        var orderBy = ' ORDER BY p.created_on DESC';
+        var orderBy = ' ORDER BY e.updated_on DESC';
         selectQuery = selectQuery + orderBy;
-
+        
         const listquery = {
             name: 'list-candidates',
             text: selectQuery,
@@ -94,15 +94,15 @@ export const clearance = (_body) => {
                     callback(null, html);
                 }
             });
-          };
+        };
         const currentTime = Math.floor(Date.now() / 1000);
         (async () => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-
+                
                 if (_body.decisionValue == 1) {
-
+                    
                     const password = passwordGenerator.generate({
                         length: 10,
                         numbers: true
@@ -111,7 +111,7 @@ export const clearance = (_body) => {
                     const adminApprovalQuery = {
                         name: 'admin-panel',
                         text: admineQuery.approveEmployeeQuery,
-                        values: [_body.selectedEmployeeId,hashedPassword]
+                        values: [_body.selectedEmployeeId,hashedPassword,currentTime]
                     }
                     var approveResult = await client.query(adminApprovalQuery);
                     var email = approveResult.rows[0].email;
@@ -119,17 +119,17 @@ export const clearance = (_body) => {
                     readHTMLFile('src/emailTemplates/adminApproveText.html', function(err, html) {
                         var template = handlebars.compile(html);
                         var replacements = {
-                             loginPassword: password
+                            loginPassword: password
                         };
                         var htmlToSend = template(replacements);
-                    sendMail(email, subject, htmlToSend, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Mailer Error", data: {} });
-                            return;
-                        }
-                    });
-                })
+                        sendMail(email, subject, htmlToSend, function (err, data) {
+                            if (err) {
+                                console.log(err)
+                                reject({ code: 400, message: "Mailer Error", data: {} });
+                                return;
+                            }
+                        });
+                    })
                     await client.query('COMMIT'); 
                     resolve({ code: 200, message: "User Approval Successfull", data: {} });
                 }
@@ -137,26 +137,26 @@ export const clearance = (_body) => {
                     const adminRejectQuery = {
                         name: 'admin-panel',
                         text: admineQuery.clearanceQuery,
-                        values: [_body.selectedEmployeeId, false, 0]
+                        values: [_body.selectedEmployeeId, false, 0,currentTime]
                     }
                     await client.query(adminRejectQuery);
-
+                    
                     var desc = _body.description
                     var subject = "ellow.io ACCOUNT REJECTION MAIL "
                     readHTMLFile('src/emailTemplates/adminRejectText.html', function(err, html) {
                         var template = handlebars.compile(html);
                         var replacements = {
-                             description: desc
+                            description: desc
                         };
                         var htmlToSend = template(replacements);
-                    sendMail(email, subject, htmlToSend, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Mailer Error", data: {} });
-                            return;
-                        }
-                    });
-                })
+                        sendMail(email, subject, htmlToSend, function (err, data) {
+                            if (err) {
+                                console.log(err)
+                                reject({ code: 400, message: "Mailer Error", data: {} });
+                                return;
+                            }
+                        });
+                    })
                     await client.query('COMMIT'); 
                     resolve({ code: 200, message: "User Rejection Successfull", data: {} });
                 }
@@ -171,3 +171,4 @@ export const clearance = (_body) => {
         })
     })
 }
+

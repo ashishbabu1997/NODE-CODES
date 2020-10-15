@@ -83,12 +83,14 @@ export const getCandidateDetails = (_body) => {
                     description: candidate[0].description,
                     coverNote: candidate[0].coverNote,
                     resume: candidate[0].resume,
-                    rate: _body.userRoleId == 1 ? candidate[0].rate : candidate[0].ellowRate,
+                    rate: candidate[0].rate,
+                    ellowRate: candidate[0].ellowRate,
                     billingTypeId: candidate[0].billingTypeId,
                     currencyTypeId: candidate[0].currencyTypeId,
                     phoneNumber: candidate[0].phoneNumber,
                     label: candidate[0].label,
                     email: candidate[0].email,
+                    workExperience:candidate[0].workExperience,
                     assessmentComment: candidate[0].assessmentComment,
                     assessmentTraits,
                     skills
@@ -436,6 +438,38 @@ export const addCandidateReview = (_body) => {
                 const results = await Promise.all(promise);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });
+                
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
+
+export const editVettingStatus = (_body) => {
+    return new Promise((resolve, reject) => {
+        const candidateId = _body.candidateId;
+        const vettingStatus = _body.candidateVetted;
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                const updateQuery = {
+                    name: 'update-candidate-vetting',
+                    text: candidateQuery.updateCandidateVetting,
+                    values: [candidateId, vettingStatus,_body.employeeId,currentTime],
+                }
+
+                await client.query(updateQuery);
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Candidate Vetting Updated successfully", data: {} });
                 
             } catch (e) {
                 console.log(e)
