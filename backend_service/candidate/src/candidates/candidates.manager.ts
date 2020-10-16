@@ -115,7 +115,7 @@ export const getCandidateDetails = (_body) => {
             return new Promise((resolve, reject) => {
                 var selectQuery = candidateQuery.listCandidates;
                 if (_body.userRoleId != 1) {
-                    selectQuery = selectQuery + " AND ca.admin_approve_status = 1"
+                    selectQuery = selectQuery + " AND cp.admin_approve_status = 1"
                 }
                 if (_body.filter) {
                     selectQuery = selectQuery + " " + "AND ((LOWER(ca.candidate_first_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(ca.candidate_last_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
