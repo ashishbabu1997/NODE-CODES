@@ -284,7 +284,7 @@ export const candidateClearance = (_body) => {
                         makeOffer = 0
                         adminApproveStatus = 1;
                         comment = _body.comment;
-                        value = [_body.candidateId, adminApproveStatus, comment, makeOffer, _body.employeeId]
+                        value = [_body.candidateId,_body.positionId, adminApproveStatus, comment, makeOffer, _body.employeeId,currentTime]
                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
                         subj = "Candidate Rejection Mail";
                         readHTMLFile('src/emailTemplates/rejectionMailText.html', function (err, html) {
