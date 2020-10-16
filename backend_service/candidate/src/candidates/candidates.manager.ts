@@ -488,10 +488,24 @@ export const getCandidateDetails = (_body) => {
             return new Promise((resolve, reject) => {
                 const candidateId = _body.candidateId;
                 const positionId = _body.positionId;
+                var positionName;
+                var hirerName;
                 const currentTime = Math.floor(Date.now() / 1000);
                 (async () => {
                     const client = await database().connect()
                     try {
+                        var readHTMLFile = function (path, callback) {
+                            fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
+                                if (err) {
+                                    throw err;
+                                    callback(err);
+                                }
+                                else {
+                                    callback(null, html);
+                                }
+                            });
+                        };
+                        console.log(candidateId,positionId)
                         await client.query('BEGIN');
                         const removeCandidateQuery = {
                             name: 'delete-candidate-from-position',
@@ -500,6 +514,55 @@ export const getCandidateDetails = (_body) => {
                         }
                         await client.query(removeCandidateQuery);
                         await client.query('COMMIT')
+                        const getPositionDetails = {
+                            name: 'delete-position-details',
+                            text: candidateQuery.getPositionDetails,
+                            values: [positionId],
+                        }
+                        database().query(getPositionDetails, (error, results) => {
+                            if (error) {
+                                console.log("DB1",error)
+                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                return;
+                            }
+                            else{
+                                positionName=results.rows[0].positionName
+                                hirerName=results.rows[0].hirerName
+                            }
+                        })
+                        const getSellerEmailQuery = {
+                            name: 'delete-candidate-from-position',
+                            text: candidateQuery.getSellerMail,
+                            values: [candidateId],
+                        }
+                        database().query(getSellerEmailQuery, (error, results) => {
+                            if (error) {
+                                console.log("DB2",error)
+                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                return;
+                            }
+                            var candidateFirstName=results.rows[0].cFirstName
+                            var candidateLastName=results.rows[0].cLastName
+                            var sellerMail=results.rows[0].email
+                            var subject = "Candidate Deletion Notification";
+                            readHTMLFile('src/emailTemplates/candidateDeletionMailText.html', function (err, html) {
+                            var template = handlebars.compile(html);
+                            var replacements = {
+                                hName: hirerName,
+                                pName: positionName,
+                                cfirstName: candidateFirstName,
+                                clastName:candidateLastName
+                            };
+                            var htmlToSend = template(replacements);
+                            sendMail(sellerMail, subject, htmlToSend, function (err, data) {
+                                if (err) {
+                                    console.log("mailer",err)
+                                    reject({ code: 400, message: "Email Error", data: {} });
+                                    return;
+                                }
+                            })
+                        })
+                        })
                         resolve({ code: 200, message: "Candidate deleted successfully", data: {} });
                         
                     } catch (e) {
