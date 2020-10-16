@@ -1,10 +1,11 @@
-import { candidateDetails, candidateVettingStatus, listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition } from './candidates.controller';
+import { candidateDetails, candidateVettingStatus, listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition,addCandidateToPosition } from './candidates.controller';
 import * as express from 'express';
 import checkUserRole from '../middlewares/checkUserRole';
 import validate from '../middlewares/joiVaildation';
 import approveRejectSchema from './schemas/approveRejectSchema';
 import interviewRequestSchema from './schemas/interviewRequestSchema';
 import candidateVettingSchema from './schemas/candidateVettingSchema';
+import addCandidateToPositionSchema from './schemas/addCandidateToPositionSchema';
 
 import { jwtAuth } from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
@@ -19,4 +20,5 @@ router
     .post('/review', jwtAuth, setData(), candidateReview)
     .put('/candidateVettingStatus', jwtAuth, setData(), validate(candidateVettingSchema), candidateVettingStatus)
     .delete('/', jwtAuth, setData(), deleteCandidateFromPosition)
+    .put('/linkCandidateToPosition', jwtAuth, setData(),validate(addCandidateToPosition), addCandidateToPosition)
 export default router;
