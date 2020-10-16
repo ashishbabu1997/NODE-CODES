@@ -174,7 +174,7 @@ export const getCandidateDetails = (_body) => {
                     selectQuery = selectQuery + " AND ca.candidate_status = 3"
                 }
                 if (_body.filter) {
-                    selectQuery = selectQuery + " " + "AND ((LOWER(ca.candidate_first_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(ca.candidate_last_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
+                    selectQuery = selectQuery + " " + "AND (ca.candidate_first_name ilike '%"+_body.filter+"%' or ca.candidate_last_name ilike '%"+_body.filter+"%' or c.company_name ilike '%"+_body.filter+"%')"
                 }
                 (async () => {
                     const client = await database().connect()
