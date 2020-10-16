@@ -1,4 +1,4 @@
-import { getCandidateDetails, editVettingStatus, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition } from './candidates.manager';
+import { getCandidateDetails, editVettingStatus, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition,linkCandidateWithPosition } from './candidates.manager';
 import sendResponse from '../common/response/response';
 
 export const candidateDetails = (req, res) => {
@@ -46,4 +46,10 @@ export const deleteCandidateFromPosition = (req, res) => {
     }).catch(error => {
         sendResponse(res, error.code, 0, 403, error.message, error.data)
     })
+}
+
+export const addCandidateToPosition = (req, res) => {
+    const body = req.body;
+    linkCandidateWithPosition(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
 }

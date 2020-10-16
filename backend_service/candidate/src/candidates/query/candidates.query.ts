@@ -1,3 +1,5 @@
+import { linkCandidateWithPosition } from "../candidates.manager";
+
 export default {
     getCandidateDetails: `select p.position_id as "positionId", ca.company_id as "companyId", cp.make_offer as "makeOffer", cp.admin_approve_status as "adminApproveStatus", ca.billing_type as "billingTypeId", ca.currency_type_id as "currencyTypeId", ca.work_experience as "workExperience", ca.ellow_rate as "defaultEllowRate", cp.ellow_rate as "ellowRate", c.company_name as "companyName", ca.candidate_id, ca.candidate_first_name as "firstName", ca.candidate_last_name as "lastName", p.position_name as "positionName", ca.description as "description", ca.cover_note as "coverNote", ca.resume as "resume", ca.rate as "rate", ca.phone_number as "phoneNumber", ca.label as "label", ca.email_address as "email", ca.candidate_status as "candidateStatus", ca.assessment_comment as "assessmentComment" from candidate ca left join candidate_position cp on cp.candidate_id = ca.candidate_id left join positions p on p.position_id = cp.position_id left join company c on c.company_id = ca.company_id where ca.candidate_id = $1 order by cp.created_on desc`,
     getJobReceivedId: 'SELECT job_received_id from job_received where position_id=$1',
@@ -17,5 +19,6 @@ export default {
     updateCandidateVetting : 'UPDATE candidate set candidate_vetted=$2,updated_by=$3,updated_on=$4 where candidate_id=$1;',
     deleteCandidateFromPosition: `UPDATE candidate_position set status= false,updated_by=$3,updated_on=$4 where candidate_id=$1 and position_id = $2`,
     getSellerMail:'SELECT e.email as "email",c.candidate_first_name as "cFirstName",c.candidate_last_name as "cLastName" FROM employee e LEFT JOIN candidate c ON c.company_id=e.company_id WHERE c.candidate_id=$1',
-    getPositionDetails:'SELECT p.position_name as "positionName",c.company_name as "hirerName" FROM positions p LEFT JOIN company c ON c.company_id=p.company_id WHERE p.position_id=$1'
+    getPositionDetails:'SELECT p.position_name as "positionName",c.company_name as "hirerName" FROM positions p LEFT JOIN company c ON c.company_id=p.company_id WHERE p.position_id=$1',
+    linkCandidateWithPosition: `INSERT INTO candidate_position(position_id, candidate_id, job_receievd_id, billing_type, currency_type_id, created_by, updated_by, created_on, updated_on) select position_id, $2, job_category_id, billing_type, currency_type_id, $3, $3, $4, $4 from positions where position_id = $1 on conflict on constraint candidate_position_candidate_id_position_id_unique_key do update set updated_on=$4, updated_by=$3, status= true`
 }

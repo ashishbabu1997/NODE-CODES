@@ -174,7 +174,7 @@ export const getCandidateDetails = (_body) => {
                     selectQuery = selectQuery + " AND ca.candidate_status = 3"
                 }
                 if (_body.filter) {
-                    selectQuery = selectQuery + " " + "AND ((LOWER(ca.candidate_first_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(ca.candidate_last_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
+                    selectQuery = selectQuery + " " + "AND (ca.candidate_first_name ilike '%"+_body.filter+"%' or ca.candidate_last_name ilike '%"+_body.filter+"%' or c.company_name ilike '%"+_body.filter+"%')"
                 }
                 (async () => {
                     const client = await database().connect()
@@ -565,6 +565,36 @@ export const getCandidateDetails = (_body) => {
                         })
                         resolve({ code: 200, message: "Candidate deleted successfully", data: {} });
                         
+                    } catch (e) {
+                        console.log(e)
+                        await client.query('ROLLBACK')
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    } finally {
+                        client.release();
+                    }
+                })().catch(e => {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                })
+            })
+        }
+
+        export const linkCandidateWithPosition = (_body) => {
+            return new Promise((resolve, reject) => {
+                const candidateId = _body.candidateId;
+                const positionId = _body.positionId;
+                const currentTime = Math.floor(Date.now() / 1000);
+                (async () => {
+                    const client = await database().connect()
+                    try {
+                        await client.query('BEGIN');
+                        const linkCandidateQuery = {
+                            name: 'link-candidate-with-position',
+                            text: candidateQuery.linkCandidateWithPosition,
+                            values: [positionId,candidateId, _body.employeeId, currentTime],
+                        }
+                        await client.query(linkCandidateQuery);
+                        await client.query('COMMIT')
+                        resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
                     } catch (e) {
                         console.log(e)
                         await client.query('ROLLBACK')

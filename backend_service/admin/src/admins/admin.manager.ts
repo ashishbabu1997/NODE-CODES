@@ -30,8 +30,10 @@ export const listUsersDetails = (_body) => {
 export const allUsersList = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = admineQuery.allRegisteredUsersList;
+        console.log("filter : ",_body.filter);
+        
         if (_body.filter) {
-            selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%'";
+            selectQuery = selectQuery + " " + "AND (c.company_name ilike '%"+_body.filter+"%' OR e.firstname ilike '%"+_body.filter+"%' OR e.lastname ilike '%"+_body.filter+"%')";
         }
         var orderBy = ' ORDER BY e.updated_on DESC';
         selectQuery = selectQuery + orderBy;
