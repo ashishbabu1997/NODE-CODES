@@ -334,6 +334,7 @@ export const getCandidateDetails = (_body) => {
         
         export const interviewRequestFunction = (_body) => {
             return new Promise((resolve, reject) => {
+                const currentTime = Math.floor(Date.now() / 1000);
                 (async () => {
                     const client = await database().connect()
                     try {
@@ -352,13 +353,13 @@ export const getCandidateDetails = (_body) => {
                         const insertQuery = {
                             name: 'insert-make-offer-status',
                             text: candidateQuery.insertMakeOfferStatus,
-                            values: [_body.candidateId, _body.employeeId],
+                            values: [_body.candidateId,_body.positionId, _body.employeeId,currentTime],
                         }
                         await client.query(insertQuery);
                         const candidateDetails = {
                             name: 'get-interview-details',
                             text: candidateQuery.getInterviewDetails,
-                            values: [_body.companyId, _body.candidateId, _body.positionId],
+                            values: [ _body.candidateId,_body.companyId, _body.positionId],
                         }
                         const result = await client.query(candidateDetails);
                         await client.query('COMMIT');
