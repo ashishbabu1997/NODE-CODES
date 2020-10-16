@@ -205,7 +205,6 @@ export const listFreeCandidatesDetails = (_body) => {
 export const candidateClearance = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
-        
         (async () => {
             const client = await database().connect()
             try {
@@ -247,7 +246,7 @@ export const candidateClearance = (_body) => {
                         candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
                     }
                     else if (_body.userRoleId == 2) {
-                        message = `${firstName + ' ' + lastName} from ${companyName} has been selected for the position:${positionName}`;
+                        message = `${firstName + ' ' + lastName} from ${companyName} has been selected for the position:${positionName}`
                         var approveMessage=firstName.fontsize(3).bold()+'  '+lastName.fontsize(3).bold()+'   '+'from'+'   '+companyName.fontsize(3).bold()+'   '+'has been selected for the position'+'   '+positionName.fontsize(3).bold()
                         makeOffer = 1
                         adminApproveStatus = 1;

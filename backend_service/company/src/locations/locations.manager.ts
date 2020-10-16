@@ -96,13 +96,15 @@ export const deleteCompanyLocations = (_body) => {
         const query = {
             name: 'delete-company-locations',
             text: locationQuery.deleteCompanyLocations,
-            values: [_body.locationId, _body.companyId]
+            values: [parseInt(_body.locationId),false]
         }
         database().query(query, (error, results) => {
             if (error) {
+                console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
+            console.log(query)
             resolve({ code: 200, message: "Location deleted successfully", data: {} });
         })
     })
