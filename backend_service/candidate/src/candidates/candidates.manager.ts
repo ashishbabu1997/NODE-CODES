@@ -547,22 +547,22 @@ export const getCandidateDetails = (_body) => {
                             var sellerMail=results.rows[0].email
                             var subject = "Candidate Deletion Notification";
                             readHTMLFile('src/emailTemplates/candidateDeletionMailText.html', function (err, html) {
-                            var template = handlebars.compile(html);
-                            var replacements = {
-                                hName: hirerName,
-                                pName: positionName,
-                                cfirstName: candidateFirstName,
-                                clastName:candidateLastName
-                            };
-                            var htmlToSend = template(replacements);
-                            sendMail(sellerMail, subject, htmlToSend, function (err, data) {
-                                if (err) {
-                                    console.log("mailer",err)
-                                    reject({ code: 400, message: "Email Error", data: {} });
-                                    return;
-                                }
+                                var template = handlebars.compile(html);
+                                var replacements = {
+                                    hName: hirerName,
+                                    pName: positionName,
+                                    cfirstName: candidateFirstName,
+                                    clastName:candidateLastName
+                                };
+                                var htmlToSend = template(replacements);
+                                sendMail(sellerMail, subject, htmlToSend, function (err, data) {
+                                    if (err) {
+                                        console.log("mailer",err)
+                                        reject({ code: 400, message: "Email Error", data: {} });
+                                        return;
+                                    }
+                                })
                             })
-                        })
                         })
                         resolve({ code: 200, message: "Candidate deleted successfully", data: {} });
                         
@@ -578,22 +578,38 @@ export const getCandidateDetails = (_body) => {
                 })
             })
         }
-
+        
         export const linkCandidateWithPosition = (_body) => {
             return new Promise((resolve, reject) => {
-                const candidateId = _body.candidateId;
+                const candidateList = _body.candidates;
                 const positionId = _body.positionId;
                 const currentTime = Math.floor(Date.now() / 1000);
                 (async () => {
                     const client = await database().connect()
                     try {
                         await client.query('BEGIN');
-                        const linkCandidateQuery = {
-                            name: 'link-candidate-with-position',
-                            text: candidateQuery.linkCandidateWithPosition,
-                            values: [positionId,candidateId, _body.employeeId, currentTime],
-                        }
-                        await client.query(linkCandidateQuery);
+                        let promise=[];
+                        
+                        candidateList.forEach(element => {
+                            const linkCandidateQuery = {
+                                name: 'link-candidate-with-position',
+                                text: candidateQuery.linkCandidateWithPosition,
+                                values: [positionId,element.candidateId,_body.employeeId, currentTime],
+                            }
+                            promise.push(client.query(linkCandidateQuery));
+                        });
+
+                        candidateList.forEach(element => {
+                            const updateSellerRate = {
+                                name: 'update-seller-rate',
+                                text: candidateQuery.updateSellerRate,
+                                values: [element.candidateId,element.sellerId,_body.employeeId, currentTime],
+                            }
+                            promise.push(client.query(updateSellerRate));
+                        });
+                        
+
+                        await Promise.all(promise);
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
                     } catch (e) {
