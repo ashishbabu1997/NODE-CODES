@@ -22,7 +22,7 @@ export const getAllJobReceived = (_body) => {
         const query = {
             name: 'get-AllActivePositions',
             text: selectQuery,
-            values: [_body.companyId]
+            values: [_body.companyId,_body.employeeId]
         }
         database().query(query, (error, results) => {
             if (error) {
