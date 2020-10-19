@@ -23,11 +23,11 @@ export const getCompanyPositions = (_body) => {
 
         if (_body.userRoleId == 1) {
             queryText = positionsQuery.getCompanyPositionsForAdmin + sort;
-            queryValues = [_body.companyId,'%' + _body.searchKey + '%']
+            queryValues = [_body.companyId,'%' + _body.searchKey + '%',_body.employeeId]
         }
         else {
             queryText = positionsQuery.getCompanyPositionsForBuyer + sort;
-            queryValues = [_body.companyId, '%' + _body.searchKey + '%']
+            queryValues = [_body.companyId, '%' + _body.searchKey + '%',_body.employeeId]
         }
 
 
@@ -537,5 +537,25 @@ export const deletePositions = (_body) => {
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
+        })
+    }
+
+    export const changeReadStatus = (_body) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        return new Promise((resolve, reject) => {
+            const CompanyQuery = {
+                name: 'update-read-status',
+                text: positionsQuery.insertReadStatus,
+                values: [_body.positionId,_body.employeeId,currentTime,currentTime],
+            }
+            database().query(CompanyQuery, (error, results) => {
+                if (error) {
+                    console.log(error)
+                    reject({ code: 400, message: "Error in database connection.", data: {} });
+                    return;
+                }
+                resolve({ code: 200, message: "Read status updated", data: {} });
+            })
         })
     }

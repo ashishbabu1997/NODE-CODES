@@ -1,4 +1,4 @@
-import { getPositionDetails,positionDeletion, createPositions, getPositions, updatePositions, publishPositions,changePositionStatus,getCompanyNames } from './positions.controller';
+import { getPositionDetails,positionDeletion,updateReadStatus, createPositions, getPositions, updatePositions, publishPositions,changePositionStatus,getCompanyNames } from './positions.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addPositionSchema from './schemas/addPositionSchema';
@@ -21,4 +21,5 @@ router
     .post('/publish',jwtAuth, setData(), validate(positionIdSchema), publishPositions)
     .post('/changePositionStatus',jwtAuth, setData(),validate(jobStatusSchema),changePositionStatus)
     .post('/deletePosition',jwtAuth, setData(),validate(positionIdSchema),positionDeletion)
+    .put('/updateReadStatus',jwtAuth, setData(),validate(positionIdSchema),updateReadStatus)
 export default router;
