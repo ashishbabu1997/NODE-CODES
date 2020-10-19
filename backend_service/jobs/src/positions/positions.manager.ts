@@ -158,6 +158,10 @@ export const fetchPositionDetails = (_body) => {
                     companyName: step.company_name,
                     companySize : step.company_size,
                     companyLogo : step.company_logo,
+                    createdBy : step.createdBy,
+                    fullName : step.fullName,
+                    email : step.email,
+                    phoneNumber : step.phoneNumber,
                     companyLinkedinId: step.company_linkedin_id,
                     skills: []
                 }
