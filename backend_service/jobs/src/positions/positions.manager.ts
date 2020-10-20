@@ -547,7 +547,7 @@ export const deletePositions = (_body) => {
             const CompanyQuery = {
                 name: 'update-read-status',
                 text: positionsQuery.insertReadStatus,
-                values: [_body.positionId,_body.employeeId,currentTime,currentTime],
+                values: [_body.positionId,_body.employeeId,currentTime],
             }
             database().query(CompanyQuery, (error, results) => {
                 if (error) {
