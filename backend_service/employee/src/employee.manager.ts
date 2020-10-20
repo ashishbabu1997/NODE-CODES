@@ -13,7 +13,7 @@ export const createEmployee = (_body) => {
         const mailId = _body.email
         const loweremailId = mailId.toLowerCase()
         const currentTime = Math.floor(Date.now() / 1000);
-
+        
         (async () => {
             const client = await database().connect()
             try {
@@ -28,7 +28,7 @@ export const createEmployee = (_body) => {
                             callback(null, html);
                         }
                     });
-                  };
+                };
                 //Check if Email already exist reject in case exists        
                 const getEmailQuery = {
                     name: 'get-email',
@@ -36,7 +36,7 @@ export const createEmployee = (_body) => {
                     values: [loweremailId],
                 }
                 const getEmailResult = await client.query(getEmailQuery);
-
+                
                 if (getEmailResult.rowCount >= 1) {
                     var adminStatus = getEmailResult.rows[0].admin_approve_status
                     var emailId = getEmailResult.rows[0].email
@@ -54,9 +54,9 @@ export const createEmployee = (_body) => {
                             return;
                         }
                     }
-
+                    
                 }
-
+                
                 // If email does not exist allow registration
                 // create a new company if companyId is null or use the same companyId to create employee and other details
                 let companyId = _body.companyId;
@@ -103,19 +103,19 @@ export const createEmployee = (_body) => {
                     readHTMLFile('src/emailTemplates/newUserText.html', function(err, html) {
                         var template = handlebars.compile(html);
                         var replacements = {
-                             loginPassword:password
+                            loginPassword:password
                         };
                         var htmlToSend = template(replacements);
-                    sendMail(loweremailId, subject, htmlToSend, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Mailer Error", data: {} });
-                            return;
-                        }
-                    });
-                })
+                        sendMail(loweremailId, subject, htmlToSend, function (err, data) {
+                            if (err) {
+                                console.log(err)
+                                reject({ code: 400, message: "Mailer Error", data: {} });
+                                return;
+                            }
+                        });
+                    })
                 }
-
+                
                 await client.query('COMMIT')                
                 var Name = _body.firstName + " " + _body.lastName
                 var companyName = _body.companyName
@@ -124,23 +124,23 @@ export const createEmployee = (_body) => {
                 readHTMLFile('src/emailTemplates/applicationText.html', function(err, html) {
                     var template = handlebars.compile(html);
                     var replacements = {
-                         applicantName:Name,
-                         company:companyName,
-                         email:emailAddress,
-                         phoneNumber:number
+                        applicantName:Name,
+                        company:companyName,
+                        email:emailAddress,
+                        phoneNumber:number
                     };
                     var htmlToSend = template(replacements);
-                sendMail(config.adminEmail, config.text.subject, htmlToSend, function (err, data) {
-                    if (err) {
-                        console.log(err)
-                        reject({ code: 400, message: "Database Error", data: {} });
-                        return;
-                    }
-                    console.log('Notification mail to admin has been sent !!!');
-                    // resolve({ code: 200, message: "User Approval Successfull", data: {} });
-                });
-            })
-
+                    sendMail(config.adminEmail, config.text.subject, htmlToSend, function (err, data) {
+                        if (err) {
+                            console.log(err)
+                            reject({ code: 400, message: "Database Error", data: {} });
+                            return;
+                        }
+                        console.log('Notification mail to admin has been sent !!!');
+                        // resolve({ code: 200, message: "User Approval Successfull", data: {} });
+                    });
+                })
+                
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
                 console.log(e)
@@ -152,14 +152,150 @@ export const createEmployee = (_body) => {
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
+        
+    })
+}
 
+export const createEmployeeByAdmin = (_body) => {
+    return new Promise((resolve, reject) => {
+        const loweremailId = _body.email.toLowerCase()
+        const currentTime = Math.floor(Date.now() / 1000);
+        
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                var readHTMLFile = function(path, callback) {
+                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                        if (err) {
+                            throw err;
+                            callback(err);
+                        }
+                        else {
+                            callback(null, html);
+                        }
+                    });
+                };
+                //Check if Email already exist reject in case exists        
+                const getEmailQuery = {
+                    name: 'get-email',
+                    text: employeeQuery.getEmail,
+                    values: [loweremailId],
+                }
+                const getEmailResult = await client.query(getEmailQuery);
+                
+                if (getEmailResult.rowCount >= 1) {
+                    var adminStatus = getEmailResult.rows[0].admin_approve_status
+                    let message = adminStatus===null?"EmailId is held for approval of Ellow recruiter"
+                    :adminStatus==1?"Email already registered"
+                    :"This account is rejected by Ellow";
+                    
+                    reject({ code: 400, statusCode: 406, message:message , data: {} });
+                    return;
+                }
+                
+                // If email does not exist allow registration
+                // create a new company if companyId is null or use the same companyId to create employee and other details
+                let companyId = _body.employeeCompanyId;
+                let adminApproveStatus=1,approvalStatus=true;
+                if (companyId == null) {
+                    const createCompanyQuery = {
+                        name: 'createCompany',
+                        text: employeeQuery.createCompany,
+                        values: [_body.companyName, currentTime],
+                    }
+                    const result = await client.query(createCompanyQuery);
+                    companyId = result.rows[0].company_id;
+                }
+                const createEmployeeQuery = {
+                    name: 'createEmployee',
+                    text: employeeQuery.createEmployee,
+                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus],
+                }
+                await client.query(createEmployeeQuery);
+                
+                // create an entry in settings table later used for company preferences like currency
+                const createSettingsQuery = {
+                    name: 'createSettings',
+                    text: employeeQuery.createSettings,
+                    values: [companyId, currentTime],
+                }
+                await client.query(createSettingsQuery);
+                
+                const password = passwordGenerator.generate({
+                    length: 10,
+                    numbers: true
+                });
+
+                var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                const subject = " ellow.io LOGIN PASSWORD "
+                const storePasswordQuery = {
+                    name: 'store-encrypted-password',
+                    text: employeeQuery.storePassword,
+                    values: [hashedPassword,loweremailId],
+                }
+                await client.query(storePasswordQuery);
+                
+                readHTMLFile('src/emailTemplates/newUserText.html', function(err, html) {
+                    var template = handlebars.compile(html);
+                    var replacements = {
+                        loginPassword:password
+                    };
+                    var htmlToSend = template(replacements);
+                    sendMail(loweremailId, subject, htmlToSend, function (err, data) {
+                        if (err) {
+                            console.log(err)
+                            reject({ code: 400, message: "Mailer Error", data: {} });
+                            return;
+                        }
+                    });
+                })
+                
+                
+                await client.query('COMMIT')                
+                var Name = _body.firstName + " " + _body.lastName
+                var companyName = _body.companyName
+                var emailAddress = _body.email
+                var number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
+                readHTMLFile('src/emailTemplates/applicationText.html', function(err, html) {
+                    var template = handlebars.compile(html);
+                    var replacements = {
+                        applicantName:Name,
+                        company:companyName,
+                        email:emailAddress,
+                        phoneNumber:number
+                    };
+                    var htmlToSend = template(replacements);
+                    sendMail(config.adminEmail, config.text.subject, htmlToSend, function (err, data) {
+                        if (err) {
+                            console.log(err)
+                            reject({ code: 400, message: "Database Error", data: {} });
+                            return;
+                        }
+                        console.log('Notification mail to admin has been sent !!!');
+                        // resolve({ code: 200, message: "User Approval Successfull", data: {} });
+                    });
+                })
+                
+                resolve({ code: 200, message: "Employee added successfully", data: {} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+        
     })
 }
 
 export const checkCompanyByWorkMail = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
-
+        
         var email = _body.emailId;
         var workMailExtension = email.substring(email.lastIndexOf('@') + 1);
         const query = {
