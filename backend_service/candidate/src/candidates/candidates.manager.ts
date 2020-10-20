@@ -182,7 +182,7 @@ export const getCandidateDetails = (_body) => {
                     selectQuery = selectQuery + " AND c.company_id = " + _body.companyId
                 }
                 else {
-                    selectQuery = selectQuery + " AND ca.candidate_status = 3"
+                    selectQuery = selectQuery + " AND ca.candidate_status = 3 or (ca.candidate_status = 4 and ca.created_by="+_body.employeeId+") ";
                 }
                 if (_body.filter) {
                     selectQuery = selectQuery + " " + "AND (ca.candidate_first_name ilike '%" + _body.filter + "%' or ca.candidate_last_name ilike '%" + _body.filter + "%' or c.company_name ilike '%" + _body.filter + "%')"
