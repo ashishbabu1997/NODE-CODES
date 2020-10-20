@@ -491,6 +491,10 @@ export const getCandidateDetails = (_body) => {
                 const positionId = _body.positionId;
                 var positionName;
                 var hirerName;
+                var jobReceivedId;
+                var candidateFirstName;
+                var candidateLastName;
+                var message;
                 const currentTime = Math.floor(Date.now() / 1000);
                 (async () => {
                     const client = await database().connect()
@@ -529,6 +533,8 @@ export const getCandidateDetails = (_body) => {
                             else{
                                 positionName=results.rows[0].positionName
                                 hirerName=results.rows[0].hirerName
+                                jobReceivedId=results.rows[0].jobReceivedId
+
                             }
                         })
                         const getSellerEmailQuery = {
@@ -542,32 +548,41 @@ export const getCandidateDetails = (_body) => {
                                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                                 return;
                             }
-                            var candidateFirstName=results.rows[0].cFirstName
-                            var candidateLastName=results.rows[0].cLastName
+                            candidateFirstName=results.rows[0].cFirstName
+                            candidateLastName=results.rows[0].cLastName
                             var sellerMail=results.rows[0].email
                             var subject = "Candidate Deletion Notification";
-                            readHTMLFile('src/emailTemplates/candidateDeletionMailText.html', function (err, html) {
+                            message = `A candidate ${candidateFirstName + ' ' + candidateLastName} who applied against the position ${positionName} has been deleted.`
+                            readHTMLFile('emailTemplates/candidateDeletionMailText.html', function (error, html) {
+                            if (error){
+                                    reject({ code: 400, message: "Email text path error", data: {} });
+                                    return;
+                            }
                             var template = handlebars.compile(html);
                             var replacements = {
-                                hName: hirerName,
-                                pName: positionName,
-                                cfirstName: candidateFirstName,
-                                clastName:candidateLastName
+                                name1: candidateFirstName,
+                                name2:candidateLastName,
+                                position: positionName,
+                                hirer: hirerName
                             };
                             var htmlToSend = template(replacements);
-                            sendMail(sellerMail, subject, htmlToSend, function (err, data) {
-                                if (err) {
-                                    console.log("mailer",err)
+                            sendMail(sellerMail, subject, htmlToSend, function (error, data) {
+                                if (error) {
+                                    console.log("mailer",error)
                                     reject({ code: 400, message: "Email Error", data: {} });
                                     return;
                                 }
+                                console.log(data)
+                                console.log(sellerMail,hirerName,positionName,candidateFirstName,candidateLastName)
                             })
+                            
                         })
                         })
+                        await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' })
                         resolve({ code: 200, message: "Candidate deleted successfully", data: {} });
                         
-                    } catch (e) {
-                        console.log(e)
+                    } catch (error) {
+                        console.log(error)
                         await client.query('ROLLBACK')
                         reject({ code: 400, message: "Failed. Please try again.", data: {} });
                     } finally {
