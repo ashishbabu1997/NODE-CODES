@@ -60,7 +60,7 @@ export const createCompanyPositions = async (_body) => {
                     name: 'add-company-positions',
                     text: positionsQuery.addCompanyPositions,
                     values: [_body.positionName, _body.locationName, _body.developerCount, _body.positionCreatedCompanyId,
-                    _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document, _body.contractPeriodId,
+                    _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document, _body.contractStartDate,_body.contractDuration,
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, 
                     _body.employeeId, _body.employeeId, currentTime, currentTime, _body.jobCategoryId]
                 }
@@ -218,9 +218,9 @@ export const updateCompanyPositions = async (_body) => {
                 const updateCompanyPositionsSecondQuery = {
                     name: 'update-company-positions-second',
                     text: positionsQuery.updatePositionSecond,
-                    values: [_body.contractPeriodId,
+                    values: [_body.contractStartDate,
                     _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget,
-                    _body.employeeId, currentTime, positionId, _body.positionCreatedCompanyId]
+                    _body.employeeId, currentTime, positionId, _body.positionCreatedCompanyId,_body.contractDuration]
                 }
 
                 await client.query(updateCompanyPositionsSecondQuery);
@@ -365,6 +365,16 @@ export const publishCompanyPositions = async (_body) => {
 export const changeJobStatus = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
+        var jobReceivedId;
+        var message;
+        var positionName
+        var positionId
+        (async () => {
+            const client = await database().connect()
+
+            try {
+                await client.query('BEGIN');
+
         var readHTMLFile = function(path, callback) {
             fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
                 if (err) {
@@ -411,9 +421,11 @@ export const changeJobStatus = (_body) => {
                                     console.log(error)
                                     reject({ code: 400, message: "Error in database connection.", data: {} });
                                     return;
-                                }          
-                                var positionName=results.rows[0].position_name
+                                }   
+                                jobReceivedId=results.rows[0].job_received_id    
+                                positionName=results.rows[0].position_name
                                 var emailAddress=results.rows[0].email
+                                message=`A position named ${positionName} has been reopened.`
                                 readHTMLFile('src/emailTemplates/positionReopenText.html', function(err, html) {
                                     var template = handlebars.compile(html);
                                     var replacements = {
@@ -427,17 +439,29 @@ export const changeJobStatus = (_body) => {
                                         reject({ code: 400, message: "Mailer Error.", data: {} });
                                         return;
                                     }
-            
                                 });
                             })
-                                resolve({ code: 200, message: "Job status changed", data: {} });
                             })
                         }
-                        resolve({ code: 200, message: "Job status changed", data: {} });
+                        positionId=_body.positionId
+                        message=`Job status for the position with id  ${positionId} has been changed.`
                 }
             })
         })
-    })
+        await createNotification({ positionId:_body.positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'position' })
+        resolve({ code: 200, message: "Job status changed", data: {} });
+
+    } catch (e) {
+        console.log(e)
+        await client.query('ROLLBACK')
+        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+    } finally {
+        client.release();
+    }
+})().catch(e => {
+    reject({ code: 400, message: "Failed. Please try again.", data: {} })
+})
+})
 }
 export const getCompanies = (_body) => {
     return new Promise((resolve, reject) => {
@@ -511,7 +535,7 @@ export const deletePositions = (_body) => {
                 var positionName=employeeData.rows[0].position_name
                 var emailAddress=employeeData.rows[0].email
                 await client.query('COMMIT');
-                readHTMLFile('src/emailTemplates/positionDeletionText.html', function(err, html) {
+                readHTMLFile('emailTemplates/positionDeletionText.html', function(err, html) {
                     var template = handlebars.compile(html);
                     var replacements = {
                         position:positionName
@@ -523,7 +547,7 @@ export const deletePositions = (_body) => {
                         reject({ code: 400, message: "Mailer Error.", data: {} });
                         return;
                     }
-
+                    console.log(positionName,emailAddress)
                 });
             })
                 resolve({ code: 200, message: "Position deletion successfull", data: {} });
