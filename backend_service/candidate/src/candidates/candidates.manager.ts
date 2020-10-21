@@ -620,8 +620,6 @@ export const linkCandidateWithPosition = (_body) => {
                     }
                     promise.push(client.query(updateSellerRate));
                 });
-
-
                 await Promise.all(promise);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
