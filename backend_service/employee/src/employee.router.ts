@@ -4,6 +4,7 @@ import { addEmployee,addEmployeeByAdmin,getCompanyByEmail } from './employee.con
  import createSchema from './schema/create.schema';
  import { jwtAuth } from './middleware/jwtAuthenticate';
  import setData from './middleware/setData';
+
 const router = express.Router();
 
 router
