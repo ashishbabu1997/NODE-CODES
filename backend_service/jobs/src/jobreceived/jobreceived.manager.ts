@@ -14,7 +14,12 @@ export const getAllJobReceived = (_body) => {
         const orderBy = {
             "position": 'p.position_id',
             "positionName": 'p.position_name',
-            "companyName": 'c.company_name'
+            "companyName": 'c.company_name',
+            "createdOn":'jr.created_on',
+            "candidateCount":'"candidateCount"',
+            "resourceCount":'p.developer_count',
+            "duration":'p.contract_duration',
+            "startDate":'p.contract_start_date'
         }
 
         if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  

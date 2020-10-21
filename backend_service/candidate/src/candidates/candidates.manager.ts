@@ -118,7 +118,12 @@ export const getCandidateDetails = (_body) => {
                     selectQuery = selectQuery + " AND cp.admin_approve_status = 1"
                 }
                 const orderBy = {
-                    "updatedOn": 'ca.updated_on'
+                    "updatedOn": 'ca.updated_on',
+                    "candidateFirstName":'ca.candidate_first_name',
+                    "candidateLastName":'ca.candidate_last_name',
+                    "rate":'ca.rate',
+                    "ellowRate":'cp.ellow_rate',
+                    "companyName":'c.company_name'
                 }
                 
                 if (_body.filter) {
@@ -189,7 +194,11 @@ export const getCandidateDetails = (_body) => {
                 }
                 
                 const orderBy = {
-                    "candidateId": 'ca.candidate_id'
+                    "candidateId": 'ca.candidate_id',
+                    "candidateFirstName":'ca.candidate_first_name',
+                    "candidatelastName":'ca.candidate_last_name',
+                    "email":'ca.email_address',
+                    "phoneNumber":'ca.phone_number'
                 }
                 
                 if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  

@@ -12,6 +12,18 @@ export const listUsersDetails = (_body) => {
         if (_body.filter) {
             selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%'";
         }
+        const orderBy = {
+            "firstName":'e.firstname',
+            "lastName":'e.lastname',
+            "email":'e.email',
+            "phoneNumber":'e.telephone_number'
+        }
+
+        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+                {
+                    selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+                }  
+        
         const listquery = {
             name: 'list-candidates',
             text: selectQuery
@@ -35,8 +47,21 @@ export const allUsersList = (_body) => {
         if (_body.filter) {
             selectQuery = selectQuery + " " + "AND (c.company_name ilike '%"+_body.filter+"%' OR e.firstname ilike '%"+_body.filter+"%' OR e.lastname ilike '%"+_body.filter+"%')";
         }
-        var orderBy = ' ORDER BY e.updated_on DESC';
-        selectQuery = selectQuery + orderBy;
+        const orderBy = {
+            "updatedOn": 'e.updated_on',
+            "firstName":'e.firstname',
+            "lastName":'e.lastname',
+            "email":'e.email',
+            "accountType":'e.account_type',
+            "phoneNumber":'e.telephone_number'
+        }
+        
+        // var orderBy = ' ORDER BY e.updated_on DESC';
+        // selectQuery = selectQuery + orderBy;
+        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+                {
+                    selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+                }  
         
         const listquery = {
             name: 'list-candidates',
