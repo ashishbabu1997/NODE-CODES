@@ -17,7 +17,10 @@ export const getAllJobReceived = (_body) => {
             "companyName": 'c.company_name'
         }
 
-        selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+        {
+            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+        }
 
         if (_body.limit && _body.skip) {
             selectQuery = selectQuery + ' LIMIT ' + _body.limit + ' OFFSET ' + _body.skip;
