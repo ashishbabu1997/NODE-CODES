@@ -63,7 +63,7 @@ export const createCompanyPositions = async (_body) => {
                     values: [_body.positionName, _body.locationName, _body.developerCount, _body.positionCreatedCompanyId,
                         _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document, _body.contractStartDate,_body.contractDuration,
                         _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget, 
-                        _body.employeeId, _body.employeeId, currentTime, currentTime, _body.jobCategoryId]
+                        _body.employeeId, _body.employeeId, currentTime, currentTime, _body.jobCategoryId,_body.immediate]
                     }
                     const getCompanyNameQuery = {
                         name: 'get-company-name',
@@ -142,7 +142,9 @@ export const createCompanyPositions = async (_body) => {
                         maxBudget: step.max_budget,
                         minBudget: step.min_budget,
                         billingType: step.billing_type,
-                        contractPeriodId: step.contract_period,
+                        contractStartDate: step.contract_start_date,
+                        contractDuration:step.contract_duration,
+                        immediate:step.immediate,
                         currencyTypeId: step.currency_type_id,
                         developerCount: step.developer_count,
                         allowRemote: step.allow_remote,
@@ -221,7 +223,7 @@ export const createCompanyPositions = async (_body) => {
                                     text: positionsQuery.updatePositionSecond,
                                     values: [_body.contractStartDate,
                                         _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget,
-                                        _body.employeeId, currentTime, positionId, _body.positionCreatedCompanyId,_body.contractDuration]
+                                        _body.employeeId, currentTime, positionId, _body.positionCreatedCompanyId,_body.contractDuration,_body.immediate]
                                     }
                                     
                                     await client.query(updateCompanyPositionsSecondQuery);
