@@ -53,7 +53,9 @@ export const allUsersList = (_body) => {
             "lastName":'e.lastname',
             "email":'e.email',
             "accountType":'e.account_type',
-            "phoneNumber":'e.telephone_number'
+            "phoneNumber":'e.telephone_number',
+            "companyName":'c.company_name'
+
         }
         
         // var orderBy = ' ORDER BY e.updated_on DESC';

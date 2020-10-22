@@ -198,7 +198,8 @@ export const getCandidateDetails = (_body) => {
                     "candidateFirstName":'ca.candidate_first_name',
                     "candidatelastName":'ca.candidate_last_name',
                     "email":'ca.email_address',
-                    "phoneNumber":'ca.phone_number'
+                    "phoneNumber":'ca.phone_number',
+                    "companyName":'c.company_name'
                 }
                 
                 if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
