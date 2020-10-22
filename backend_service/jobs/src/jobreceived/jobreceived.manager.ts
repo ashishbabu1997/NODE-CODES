@@ -272,10 +272,19 @@ export const saveCandidateProfile = (_body) => {
 
 export const getProfileByCompanyId = (_body) => {
     return new Promise((resolve, reject) => {
+        var selectQuery=jobReceivedQuery.getProfile
+        const orderBy = {
+            "candidateFirstName": 'ca.candidate_first_name',
+        }
+
+        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+        {
+            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+        }
         if (_body.companyId) {
             const query = {
                 name: 'get-ProfileByCompanyId',
-                text: jobReceivedQuery.getProfile,
+                text: selectQuery,
                 values: [parseInt(_body.companyId), parseInt(_body.positionId)]
             }
 
@@ -292,7 +301,7 @@ export const getProfileByCompanyId = (_body) => {
 
             const listJobCandidatesQuery = {
                 name: 'get-Profile',
-                text: jobReceivedQuery.getProfileByJobReceived,
+                text: selectQuery,
                 values: [parseInt(_body.jobReceivedId)]
             }
 
