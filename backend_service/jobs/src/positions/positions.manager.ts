@@ -444,12 +444,15 @@ export const createCompanyPositions = async (_body) => {
                                                         })
                                                     })
                                                 }
-                                                positionId=_body.positionId
-                                                message=`Job status for the position with id  ${positionId} has been changed.`
+                                                else if(_body.jobStatus==8)
+                                                {
+                                                    message=`A position named ${positionName} has been closed.`
+
+                                                }   
                                             }
                                         })
                                     })
-                                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'position' })
+                                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList' })
                                     resolve({ code: 200, message: "Job status changed", data: {} });
                                     
                                 } catch (e) {
@@ -551,6 +554,8 @@ export const createCompanyPositions = async (_body) => {
                                             console.log(positionName,emailAddress)
                                         });
                                     })
+                                    const message=`The position named ${positionName} with id ${positionId} has been removed .`
+                                    await createNotification({ positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList' })
                                     resolve({ code: 200, message: "Position deletion successfull", data: {} });
                                 } catch (e) {
                                     console.log(e)

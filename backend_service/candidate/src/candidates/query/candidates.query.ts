@@ -22,4 +22,5 @@ export default {
     getPositionDetails:'SELECT p.position_name as "positionName",c.company_name as "hirerName",j.job_received_id as "jobReceivedId" FROM positions p LEFT JOIN company c ON c.company_id=p.company_id LEFT JOIN job_received j ON j.position_id=p.position_id WHERE p.position_id=$1',
     linkCandidateWithPosition: `INSERT INTO candidate_position(position_id, candidate_id, job_receievd_id, billing_type, currency_type_id, created_by, updated_by, created_on, updated_on) select position_id, $2, job_category_id, billing_type, currency_type_id, $3, $3, $4, $4 from positions where position_id = $1 on conflict on constraint candidate_position_candidate_id_position_id_unique_key do update set updated_on=$4, updated_by=$3, status= true`,
     updateSellerRate: `update candidate set rate=$2,updated_by=$3,updated_on=$4 where candidate_id=$1`,
+    getPositionName:'SELECT p.position_name as "position",j.job_received_id as "jobReceivedId" FROM positions p LEFT JOIN job_received j ON p.position_id=j.position_id WHERE p.position_id=$1'
 }
