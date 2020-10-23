@@ -13,6 +13,7 @@ export const getEmployeesByCompanyId = (_body) => {
         const orderBy = {
             "firstName": 'first_name',
             "lastName": 'last_name',
+            "roleId":'role_id',
             "email": 'email',
             "createdOn":'created_on'
         }
