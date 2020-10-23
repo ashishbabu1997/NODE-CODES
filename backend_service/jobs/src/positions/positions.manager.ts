@@ -110,11 +110,13 @@ export const createCompanyPositions = async (_body) => {
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyId  } });
                 } catch (e) {
                     await client.query('ROLLBACK')
+                    console.log(e)
                     reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 } finally {
                     client.release();
                 }
             })().catch(e => {
+                console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} })
             })
         })

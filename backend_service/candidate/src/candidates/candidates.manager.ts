@@ -653,8 +653,8 @@ export const getCandidateDetails = (_body) => {
 
                         await Promise.all(promise);
                         await client.query('COMMIT')
-                        var candidateFirstName=candidateList.candidateFirstName
-                        var candidateLastName=candidateList.candidateLastName
+                        var candidateFirstName=candidateList.firstName
+                        var candidateLastName=candidateList.lastName
                         const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
                         await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId:candidateList.candidateId, notificationType: 'position' })
                         resolve({ code: 200, message: "Candidate added to position successfully", data: {} });

@@ -6,7 +6,7 @@ export const fetchCompanyCertifications = (_body) => {
         const query = {
             name: 'fetch-company-Certifications',
             text: certificationQuery.getCompanyCertifications,
-            values: [parseInt(_body.companyId)],
+            values: [parseInt(_body.companyId)]
         }
         database().query(query, (error, results) => {
             if (error) {
