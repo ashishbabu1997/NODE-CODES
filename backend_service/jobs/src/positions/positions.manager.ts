@@ -526,12 +526,16 @@ export const createCompanyPositions = async (_body) => {
                                         values:[positionId,currentTime,updateStatus]
                                     }
                                     let result = await client.query(updateJobReceivedStatus);
-                                    let jobReceivedId = result.rows[0].job_received_id;
-                                    
-                                    const updateCompanyJobStatus = {
-                                        name: 'change-CompanyJobStatus',
-                                        text:positionsQuery.updateCompanyJobStatus,
-                                        values:[jobReceivedId,currentTime,updateStatus]
+
+                                    let jobReceivedId = result.rows[0]!=undefined?result.rows[0].job_received_id:null;                                    
+                                    if(![null,undefined].includes(jobReceivedId))
+                                    {
+                                        const updateCompanyJobStatus = {
+                                            name: 'change-CompanyJobStatus',
+                                            text:positionsQuery.updateCompanyJobStatus,
+                                            values:[jobReceivedId,currentTime,updateStatus]
+                                        }
+                                        await client.query(updateCompanyJobStatus);
                                     }
                                     
                                     const getMailAddress = {
