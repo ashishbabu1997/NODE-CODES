@@ -10,9 +10,16 @@ export const getEmployeesByCompanyId = (_body) => {
         {
             selectQuery =selectQuery +  "AND (LOWER(firstname) LIKE '%" +_body.filter.toLowerCase() + "%' OR LOWER(lastname) LIKE '%" +  _body.filter.toLowerCase() + "%') "
         }
+        const orderBy = {
+            "firstName": 'first_name',
+            "lastName": 'last_name',
+            "email": 'email',
+            "createdOn":'created_on'
+        }
 
-        if(_body.sortBy){
-            selectQuery  = selectQuery + ' ORDER BY firstname ' + _body.sortBy.toUpperCase();
+        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+        {
+            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
         }
 
         if(_body.limit && _body.skip){

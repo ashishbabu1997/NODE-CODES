@@ -110,11 +110,13 @@ export const createCompanyPositions = async (_body) => {
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyId  } });
                 } catch (e) {
                     await client.query('ROLLBACK')
+                    console.log(e)
                     reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 } finally {
                     client.release();
                 }
             })().catch(e => {
+                console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} })
             })
         })
@@ -541,7 +543,7 @@ export const createCompanyPositions = async (_body) => {
                                     var positionName=employeeData.rows[0].position_name
                                     var emailAddress=employeeData.rows[0].email
                                     await client.query('COMMIT');
-                                    readHTMLFile('emailTemplates/positionDeletionText.html', function(err, html) {
+                                    readHTMLFile('src/emailTemplates/positionDeletionText.html', function(err, html) {
                                         var template = handlebars.compile(html);
                                         var replacements = {
                                             position:positionName
