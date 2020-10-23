@@ -20,5 +20,5 @@ router
     .post('/review', jwtAuth, setData(), candidateReview)
     .put('/candidateVettingStatus', jwtAuth, setData(), validate(candidateVettingSchema), candidateVettingStatus)
     .delete('/', jwtAuth, setData(), deleteCandidateFromPosition)
-    .put('/linkCandidateToPosition', jwtAuth, setData(),validate(addCandidateToPosition), addCandidateToPosition)
+    .put('/linkCandidateToPosition', jwtAuth, setData(),validate(addCandidateToPositionSchema), addCandidateToPosition)
 export default router;
