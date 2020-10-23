@@ -40,7 +40,7 @@ export const candidateVettingStatus = (req, res) => {
 }
 
 export const deleteCandidateFromPosition = (req, res) => {
-    const body = req.query;
+    const body = req.body;
     removeCandidateFromPosition(body).then((response: any) => {
         sendResponse(res, response.code, 1, 203, response.message, response.data)
     }).catch(error => {

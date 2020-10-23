@@ -1,6 +1,7 @@
 import jobReceivedQuery from './query/jobreceived.query';
 import database from '../common/database/database';
 import * as format from 'pg-format';
+import { createNotification } from '../common/notifications/notifications';
 
 export const getAllJobReceived = (_body) => {
 
@@ -237,7 +238,13 @@ export const saveCandidateProfile = (_body) => {
                     }
                     await client.query(addOtherSkillsQuery);
                 }
-
+                const updateQuery = {
+                    name: 'get-position-details',
+                    text: jobReceivedQuery.getPositionName,
+                    values: [_body.positionId],
+                }   
+                var positionDetail=await client.query(updateQuery);
+                var positionName=positionDetail.rows[0].position
                 if (candidatesDetails.candidateStatus == 3) {
                     const addDefaultTraits = {
                         name: 'add-default-traits',
@@ -255,6 +262,10 @@ export const saveCandidateProfile = (_body) => {
                 }
 
                 await client.query('COMMIT');
+                var candidateFirstName=candidatesDetails.firstName
+                var candidateLastName=candidatesDetails.lastName
+                const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
+                await createNotification({ positionId:_body.positionId, jobReceivedId:candidatesDetails.jobReceivedId, companyId: _body.companyId, message, candidateId:candidatesDetails.candidateId, notificationType: 'position' })
                 resolve({ code: 200, message: "Candidate profiles added", data: {} });
             } catch (e) {
                 console.log(e)

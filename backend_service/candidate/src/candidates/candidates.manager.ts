@@ -517,13 +517,12 @@ export const getCandidateDetails = (_body) => {
         
         export const removeCandidateFromPosition = (_body) => {
             return new Promise((resolve, reject) => {
-                const candidateId = _body.candidateId;
-                const positionId = _body.positionId;
-                var positionName;
-                var hirerName;
                 var jobReceivedId;
                 var candidateFirstName;
                 var candidateLastName;
+                var message;
+                var positionName;
+                var hirerName;
                 const currentTime = Math.floor(Date.now() / 1000);
                 (async () => {
                     const client = await database().connect()
@@ -539,7 +538,9 @@ export const getCandidateDetails = (_body) => {
                                 }
                             });
                         };
-                        console.log(candidateId, positionId)
+                        var candidateId = _body.candidateId;
+                        var positionId = _body.positionId;
+                        console.log("hai",candidateId, positionId)
                         await client.query('BEGIN');
                         const removeCandidateQuery = {
                             name: 'delete-candidate-from-position',
@@ -547,39 +548,26 @@ export const getCandidateDetails = (_body) => {
                             values: [candidateId, positionId, _body.employeeId, currentTime],
                         }
                         await client.query(removeCandidateQuery);
-                        await client.query('COMMIT')
                         const getPositionDetails = {
                             name: 'delete-position-details',
                             text: candidateQuery.getPositionDetails,
                             values: [positionId],
                         }
-                        database().query(getPositionDetails, (error, results) => {
-                            if (error) {
-                                console.log("DB1", error)
-                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                                return;
-                            }
-                            else {
-                                positionName = results.rows[0].positionName
-                                hirerName = results.rows[0].hirerName
-                            }
-                        })
+                        var positionDetail=await client.query(getPositionDetails);
+                        positionName=positionDetail.rows[0].positionName
+                        hirerName=positionDetail.rows[0].hirerName
                         const getSellerEmailQuery = {
-                            name: 'delete-candidate-from-position',
+                            name: 'get-email-details',
                             text: candidateQuery.getSellerMail,
                             values: [candidateId],
                         }
-                        database().query(getSellerEmailQuery, (error, results) => {
-                            if (error) {
-                                console.log("DB2", error)
-                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                                return;
-                            }
-                            candidateFirstName = results.rows[0].cFirstName
-                            candidateLastName = results.rows[0].cLastName
-                            var sellerMail = results.rows[0].email
-                            var subject = "Candidate Deletion Notification";
-                            readHTMLFile('src/emailTemplates/candidateDeletionMailText.html', function (err, html) {
+                        var emailResults=await client.query(getSellerEmailQuery);
+                        candidateFirstName = emailResults.rows[0].cFirstName
+                        candidateLastName = emailResults.rows[0].cLastName
+                        var sellerMail = emailResults.rows[0].email
+                        var subject = "Candidate Deletion Notification";
+                        message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position named ${positionName} has been removed `
+                            readHTMLFile('emailTemplates/candidateDeletionMailText.html', function (err, html) {
                                 var template = handlebars.compile(html);
                                 var replacements = {
                                     hName: hirerName,
@@ -596,8 +584,8 @@ export const getCandidateDetails = (_body) => {
                                     }
                                 })
                             })
-                        })
-                        const message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position named ${{positionName}} has been removed `
+                        await client.query('COMMIT')
+                        console.log(message)
                         await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange' })
                         resolve({ code: 200, message: "Candidate deleted successfully", data: {positionId:positionId} });
                         
@@ -641,22 +629,11 @@ export const getCandidateDetails = (_body) => {
                                 values: [element.candidateId, element.sellerId, _body.employeeId, currentTime],
                             }
                             promise.push(client.query(updateSellerRate));
-                        });
-                        const updateQuery = {
-                            name: 'get-position-details',
-                            text: candidateQuery.getPositionName,
-                            values: [positionId],
-                        }   
-                        var positionDetails=await client.query(updateQuery);
-                        var jobReceivedId=positionDetails.rows[0].jobReceivedId
-                        var positionName=positionDetails.rows[0].position
-
+                          });
                         await Promise.all(promise);
                         await client.query('COMMIT')
                         var candidateFirstName=candidateList.firstName
                         var candidateLastName=candidateList.lastName
-                        const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
-                        await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId:candidateList.candidateId, notificationType: 'position' })
                         resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
                     } catch (e) {
                         console.log(e)
