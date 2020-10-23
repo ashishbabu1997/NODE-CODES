@@ -567,13 +567,13 @@ export const getCandidateDetails = (_body) => {
                         var sellerMail = emailResults.rows[0].email
                         var subject = "Candidate Deletion Notification";
                         message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position named ${positionName} has been removed `
-                            readHTMLFile('emailTemplates/candidateDeletionMailText.html', function (err, html) {
+                            readHTMLFile('src/emailTemplates/candidateDeletionMailText.html', function (err, html) {
                                 var template = handlebars.compile(html);
                                 var replacements = {
-                                    hName: hirerName,
-                                    pName: positionName,
-                                    cfirstName: candidateFirstName,
-                                    clastName: candidateLastName
+                                    hirer: hirerName,
+                                    position: positionName,
+                                    name1: candidateFirstName,
+                                    name2: candidateLastName
                                 };
                                 var htmlToSend = template(replacements);
                                 sendMail(sellerMail, subject, htmlToSend, function (err, data) {
