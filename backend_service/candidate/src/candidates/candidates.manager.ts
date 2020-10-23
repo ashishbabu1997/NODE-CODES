@@ -638,7 +638,7 @@ export const getCandidateDetails = (_body) => {
                             const updateSellerRate = {
                                 name: 'update-seller-rate',
                                 text: candidateQuery.updateSellerRate,
-                                values: [element.candidateId, element.sellerId, _body.employeeId, currentTime],
+                                values: [element.candidateId, element.sellerFee, _body.employeeId, currentTime],
                             }
                             promise.push(client.query(updateSellerRate));
                         });
