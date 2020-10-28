@@ -112,7 +112,7 @@ export const editCandidateDetails = (_body) => {
                 const editQuery = {
                     name: 'update-JobReceived-reject',
                     text: jobReceivedQuery.editDetailsCandidate,
-                    values: [_body.candidates.candidateId, _body.candidates.firstName, _body.candidates.lastName, _body.candidates.email, _body.candidates.phoneNumber, _body.candidates.rate, _body.candidates.billingTypeId, _body.candidates.resume, _body.candidates.currencyTypeId, _body.candidates.coverNote, _body.candidates.candidateStatus, _body.candidates.workExperience, _body.candidates.companyId]
+                    values: [_body.candidates.candidateId, _body.candidates.firstName, _body.candidates.lastName, _body.candidates.email, _body.candidates.phoneNumber, _body.candidates.rate, _body.candidates.billingTypeId, _body.candidates.resume, _body.candidates.currencyTypeId, _body.candidates.coverNote, _body.candidates.candidateStatus, _body.candidates.workExperience, _body.candidates.companyId,_body.candidates.image,_body.candidates.citizenship,_body.candidates.residence,_body.candidates.remoteWorkExperience]
                 }
                 var candidateId=_body.candidates.candidateId
                 await client.query(editQuery)
@@ -128,13 +128,13 @@ export const editCandidateDetails = (_body) => {
                     let promise=[];
                     _body.skills.forEach(element => { 
                         var competency=element.competency
-                        var preffered=element.preffered
+                        var preffered=element.preferred
                         var skillId=element.skill["skillId"]
                         var yearsOfExperience=element.yoe
                         const addSkills = {
                             name: 'add-top-job-skills',
                             text: jobReceivedQuery.addCandidateSkills,
-                            values: [candidateId, skillId,competency,preffered,yearsOfExperience, true, currentTime, _body.employeeId],
+                            values: [candidateId, skillId,competency,preffered,yearsOfExperience,currentTime, _body.employeeId,true],
                         }
                         promise.push(client.query(addSkills))
                     });
@@ -336,7 +336,7 @@ export const saveCandidateProfiles = (_body) => {
                     const candidatesDetails = _body.candidates;
                     let candidates = [candidatesDetails.firstName, candidatesDetails.lastName, candidatesDetails.companyId, candidatesDetails.jobReceivedId, candidatesDetails.coverNote,
                         candidatesDetails.rate, candidatesDetails.billingTypeId, candidatesDetails.currencyTypeId, candidatesDetails.email, candidatesDetails.phoneNumber, candidatesDetails.resume,
-                        currentTime, currentTime, _body.employeeId, _body.employeeId, candidatesDetails.candidateStatus, candidatesDetails.workExperience]
+                        currentTime, currentTime, _body.employeeId, _body.employeeId, candidatesDetails.candidateStatus, candidatesDetails.workExperience,candidatesDetails.image,candidatesDetails.citizenship,candidatesDetails.residence,candidatesDetails.remoteWorkExperience]
                         
                         console.log("candidatesDetails : ", candidates);
                         const saveCandidateQuery = {
@@ -381,7 +381,7 @@ export const saveCandidateProfiles = (_body) => {
                                 const addSkills = {
                                     name: 'add-top-job-skills',
                                     text: jobReceivedQuery.addCandidateSkills,
-                                    values: [candidateId, skillId,competency,preffered,yearsOfExperience, true, currentTime, _body.employeeId],
+                                    values: [candidateId, skillId,competency,preffered,yearsOfExperience,currentTime, _body.employeeId,true],
                                 }
                                 promise.push(client.query(addSkills))
                             });
@@ -435,39 +435,43 @@ export const saveCandidateProfiles = (_body) => {
                     const client = await database().connect()
                     try {
                         var candidateId=_body.candidates.candidateId
-                        let skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];                                
+                        console.log(candidateId)
+                        let skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];
+                        console.log(skillSet)                                
                         const deleteCandidateSkillsQuery = {
                             name: 'delete-candidate-skills',
                             text: jobReceivedQuery.deleteCandidateSkills,
                             values: [_body.candidates.candidateId, skillSet],
                         }
+                        console.log(deleteCandidateSkillsQuery)
                         await client.query(deleteCandidateSkillsQuery)
                         if (Array.isArray(_body.skills))
                         {
                             let promise=[];
                             _body.skills.forEach(element => { 
                                 var competency=element.competency
-                                var preffered=element.preffered
+                                var preffered=element.preferred
                                 var skillId=element.skill["skillId"]
                                 var yearsOfExperience=element.yoe
                                 const addSkills = {
                                     name: 'add-top-job-skills',
                                     text: jobReceivedQuery.addCandidateSkills,
-                                    values: [candidateId, skillId,competency,preffered,yearsOfExperience, true, currentTime, _body.employeeId],
+                                    values: [candidateId, skillId,competency,preffered,yearsOfExperience,currentTime,_body.employeeId,true],
                                 }
                                 promise.push(client.query(addSkills))
                             });
                             await Promise.all(promise);
                         }
-                
+                            console.log("2")
                              const addDefaultTraits = {
                                 name: 'add-default-traits',
                                 text: jobReceivedQuery.addDefaultAssessmentTraits,
                                 values: [candidateId, _body.employeeId, currentTime],
                              }
                             await client.query(addDefaultTraits);
+                            console.log("3")
                             const deleteCandidateAssesmentTraitsQuery = {
-                                name: 'delete-candidate-skills',
+                                name: 'delete-candidate-assessment-traits',
                                 text: jobReceivedQuery.deleteCandidateAssesmentTraits,
                                 values: [candidateId, skillSet],
                             }
