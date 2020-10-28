@@ -22,5 +22,26 @@ export default {
     getPositionDetails: 'SELECT p.position_name as "positionName",c.company_name as "hirerName",j.job_received_id as "jobReceivedId" FROM positions p LEFT JOIN company c ON c.company_id=p.company_id LEFT JOIN job_received j ON j.position_id=p.position_id WHERE p.position_id=$1',
     linkCandidateWithPosition: `INSERT INTO candidate_position(position_id, candidate_id, job_receievd_id, billing_type, currency_type_id, created_by, updated_by, created_on, updated_on) select position_id, $2, job_category_id, billing_type, currency_type_id, $3, $3, $4, $4 from positions where position_id = $1 on conflict on constraint candidate_position_candidate_id_position_id_unique_key do update set updated_on=$4, updated_by=$3, status= true`,
     updateSellerRate: `update candidate set rate=$2,updated_by=$3,updated_on=$4 where candidate_id=$1`,
-    deleteCandidate: `update candidate set status = false, updated_on=$2, updated_by = $3 where candidate_id = $1`
+    deleteCandidate: `update candidate set status = false, updated_on=$2, updated_by = $3 where candidate_id = $1`,
+    modifyLanguageProficiency: `update candidate_language set candidate_id = $2, language_name = $3, proficiency = $4, updated_on = $5, updated_by = $6 where candidate_language_id = $1`,
+    insertLanguageProficiency:'insert into candidate_language (candidate_id, language_name, proficiency, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$4,$5,$5)',
+    deleteLanguageProficiency:'update candidate_language set status = false, updated_on = $5, updated_by = $6 where candidate_language_id = $1',
+    modifyCandidateAvailability: `update candidate set availability = $2, type_of_availability = $3, ready_to_start = $4, updated_on=$5, updated_by = $6 where candidate_id = $1`,
+    modifyCandidateProject: `update candidate_project set candidate_id = $2, project_name = $3, company_name = $4, project_description = $5, project_link = $6, side_project = $7, skills = $8, updated_on = $9, updated_by = $10, where candidate_project_id = $1`,
+    insertCandidateProject:'insert into candidate_project (candidate_id, project_name,company_name, project_description, project_link, side_project, skills, created_by, updated_by, created_on, updated_on ) values ($1,$2,$3,$4,$5,$6,$7,$8,$8,$9,$9)',
+    deleteCandidateProject:'update candidate_project set status = false, updated_on = $2, updated_by = $3 where candidate_project_id = $1',
+    modifyCandidateWorkHistory: `update candidate_project set candidate_id = $2, project_name = $3, company_name = $4, project_description = $5, project_link = $6, side_project = $7, skills = $8, updated_on = $9, updated_by = $10, where candidate_project_id = $1`,
+    insertCandidateWorkHistory:'insert into candidate_work_experience (candidate_id, candidate_position_name, candidate_company_name, description, logo, start_date, end_date, still_working, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$9,$10,$10)',
+    deleteCandidateWorkHistory:'update candidate_work_experience set status=false, updated_on=$2, updated_by=$3 where candidate_work_experience_id = $1',
+    modifyCandidateEducation: `update candidate_education set candidate_id=$2, set degree=$3, set college=$4, set start_date=$5, set end_date=$6, set updated_on=$7, set updated_by=$8 where candidate_education_id=$1`,
+    insertCandidateEducation:'insert INTO candidate_education (candidate_id, degree, college, start_date, end_date, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$4,$5,$6,$6,$7,$7)',
+    deleteCandidateEducation:'update candidate_education set status=false, set updated_on=$2, set updated_by=$3 where candidate_education_id=$1',
+    
+    modifyCandidatePublication: `update candidate_publication set candidate_id=$2, set title = $3, set published_year = $4, set link = $5, set updated_on = $6, set updated_by = $7 where candidate_publication_id = $1`,
+    insertCandidatePublication:'insert into candidate_publication (candidate_id, title, published_year, link, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$4,$5,$5,$6,$6)',
+    deleteCandidatePublication:'update candidate_publication set status=false, set updated_on = $2, set updated_by = $3 where candidate_publication_id = $1',
+    
+    modifyCandidateAward: `update candidate_certifications set candidate_id=$2, set certification_id = $3, set certified_year = $4, set updated_on = $5, set updated_by = $6 where candidate_certification_id = $1`,
+    insertCandidateAward:'insert into candidate_certifications(candidate_id, certification_id, certified_year, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$4,$4,$5,$5)',
+    deleteCandidateAward:'update candidate_certifications set status=false, set updated_on = $2, set updated_by = $3 where candidate_certification_id = $1',
 }

@@ -1,4 +1,4 @@
-import { candidateDetails, candidateVettingStatus, listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate } from './candidates.controller';
+import { candidateDetails, candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate } from './candidates.controller';
 import * as express from 'express';
 import checkUserRole from '../middlewares/checkUserRole';
 import validate from '../middlewares/joiVaildation';
@@ -22,4 +22,11 @@ router
     .delete('/', jwtAuth, setData(), deleteCandidateFromPosition)
     .put('/linkCandidateToPosition', jwtAuth, setData(), validate(addCandidateToPositionSchema), addCandidateToPosition)
     .delete('/deleteCandidate', jwtAuth, setData(), deleteCandidate)
+    .put('/updateLanguageProficiency',jwtAuth, setData(), updateLanguageProficiency)
+    .put('/updateAvailability',jwtAuth, setData(), updateAvailability)
+    .put('/updateProject',jwtAuth, setData(), updateProject)
+    .put('/updateWorkExperience',jwtAuth, setData(), updateWorkExperience)
+    .put('/updateEducation',jwtAuth, setData(), updateEducation)
+    .put('/updateAward',jwtAuth, setData(), updateAward)
+    .put('/updatePublication',jwtAuth, setData(), updatePublication)
 export default router;
