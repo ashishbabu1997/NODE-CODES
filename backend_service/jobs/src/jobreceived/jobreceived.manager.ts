@@ -479,7 +479,7 @@ export const saveCandidateProfiles = (_body) => {
                             }
                             await client.query(addSkillRelatedTraits);
                         
-                        
+
                         resolve({ code: 200, message: "Candidate skills updated successfully", data: {} });
                         
                     } catch (e) {
