@@ -423,6 +423,7 @@ export const saveCandidateProfiles = (_body) => {
                         client.release();
                     }
                 })().catch(e => {
+                    console.log(e)
                     reject({ code: 400, message: "Failed. Please try again.", data: {} })
                 })
             })
