@@ -1,4 +1,4 @@
-import { getCandidateDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate } from './candidates.manager';
+import { getCandidateDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume } from './candidates.manager';
 import sendResponse from '../common/response/response';
 
 export const candidateDetails = (req, res) => {
@@ -123,4 +123,8 @@ export const updatePublication = (req, res) => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)
     })
 }
-
+export const resumeDetails = (req, res) => {
+    const body = req.query;
+    getResume(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
+}

@@ -999,6 +999,80 @@ export const getCandidateDetails = (_body) => {
                 })
             })
         }
-        
-        
-        
+        export const getResume = (_body) => {
+            return new Promise((resolve, reject) => {
+                const candidateId = _body.candidateId;
+                const currentTime = Math.floor(Date.now() / 1000);
+                (async () => {
+                    const client = await database().connect()
+                    try {
+                        await client.query('BEGIN');
+                        const fetchProfile = {
+                            name: 'fetch-profile-details',
+                            text: candidateQuery.getProfileDetails,
+                            values: [candidateId],
+                        }
+                        var profileDetails=await client.query(fetchProfile);
+                        const fetchSkills = {
+                            name: 'fetch-skill-details',
+                            text: candidateQuery.fetchSkillDetails,
+                            values: [candidateId],
+                        }
+                        var skills=await client.query(fetchSkills);
+                        const fetchProjects = {
+                            name: 'fetch-project-details',
+                            text: candidateQuery.fetchProjectDetails,
+                            values: [candidateId],
+                        }
+                        var projects=await client.query(fetchProjects);
+                        const fetchAssesements = {
+                            name: 'fetch-assesement-details',
+                            text: candidateQuery.fetchAssesmentDetails,
+                            values: [candidateId],
+                        }
+                        var assesements=await client.query(fetchAssesements);
+                        const fetchWorkExperience = {
+                            name: 'fetch-work-experience-details',
+                            text: candidateQuery.fetchWorkExperienceDetails,
+                            values: [candidateId],
+                        }
+                        var workExperiences=await client.query(fetchWorkExperience);
+                        const fetchEducations = {
+                            name: 'fetch-education-details',
+                            text: candidateQuery.fetchEducationDetails,
+                            values: [candidateId],
+                        }
+                        var educations=await client.query(fetchEducations);
+                        const fetchPublications = {
+                            name: 'fetch-publications-details',
+                            text: candidateQuery.fetchPublicationDetails,
+                            values: [candidateId],
+                        }
+                        var publications=await client.query(fetchPublications);
+                        const fetchAwards = {
+                            name: 'fetch-awards-details',
+                            text: candidateQuery.fetchAwardDetails,
+                            values: [candidateId],
+                        }
+                        var awards=await client.query(fetchAwards);
+                        const fetchLanguages = {
+                            name: 'fetch-language-details',
+                            text: candidateQuery.fetchLanguageDetails,
+                            values: [candidateId],
+                        }
+                        var languages=await client.query(fetchLanguages);
+                        await client.query('COMMIT')
+                        resolve({ code: 200, message: "Resume listed successfully", data: {profile:profileDetails.rows[0],skills:skills.rows,projects:projects.rows,assesments:assesements.rows,workExperience:workExperiences.rows,education:educations.rows,publications:publications.rows,awards:awards.rows,languages:languages.rows} });
+                        
+                    } catch (e) {
+                        console.log(e)
+                        await client.query('ROLLBACK')
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    } finally {
+                        client.release();
+                    }
+                })().catch(e => {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                })
+            })
+        }
