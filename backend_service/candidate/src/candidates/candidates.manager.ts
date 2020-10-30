@@ -12,8 +12,7 @@ export const getCandidateDetails = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                let skills = null, topRatedSkill = [], otherSkill = [];
-                
+                let skills =[]
                 await client.query('BEGIN');
                 const listCandidateQuery = {
                     name: 'get-candidate-details',
@@ -41,7 +40,6 @@ export const getCandidateDetails = (_body) => {
                     }
                     
                 }
-                
                 const getCandidateSkillsQuery = {
                     name: 'get-candidate-skills',
                     text: candidateQuery.getCandidateSkills,
@@ -50,22 +48,14 @@ export const getCandidateDetails = (_body) => {
                 let skillResult = await client.query(getCandidateSkillsQuery);
                 skillResult.rows.forEach(step => {
                     if (step.skillId != null) {
-                        step.topSkill ?
-                        topRatedSkill.push(
+                        skills.push(
                             {
                                 skillId: step.skillId,
                                 skillName: step.skillName
                             }
-                            ) :
-                            otherSkill.push(
-                                {
-                                    skillId: step.skillId,
-                                    skillName: step.skillName
-                                }
-                                );
+                            )
                             }
                         });
-                        skills = { topRatedSkill, otherSkill };
                         let result = {
                             makeOffer: candidate[0].makeOffer,
                             adminApproveStatus: candidate[0].adminApproveStatus,

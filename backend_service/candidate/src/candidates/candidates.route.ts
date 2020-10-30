@@ -12,7 +12,7 @@ import setData from '../middlewares/setData';
 
 const router = express.Router();
 router
-    .get('/candidateDetails', jwtAuth, setData(), candidateDetails)
+    .get('/candidateDetails', jwtAuth, setData(),candidateDetails)
     .get('/listCandidates', jwtAuth, setData(), listCandidates)
     .get('/listFreeCandidates', jwtAuth, setData(), listFreeCandidates)
     .post('/candidateApproveReject', jwtAuth, setData(), validate(approveRejectSchema), approveRejectCandidates)
