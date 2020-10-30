@@ -434,14 +434,14 @@ export const saveCandidateProfiles = (_body) => {
                 (async () => {
                     const client = await database().connect()
                     try {
-                        var candidateId=_body.candidates.candidateId
+                        var candidateId=_body.candidateId
                         console.log(candidateId)
                         let skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];
                         console.log(skillSet)                                
                         const deleteCandidateSkillsQuery = {
                             name: 'delete-candidate-skills',
                             text: jobReceivedQuery.deleteCandidateSkills,
-                            values: [_body.candidates.candidateId, skillSet],
+                            values: [candidateId, skillSet],
                         }
                         console.log(deleteCandidateSkillsQuery)
                         await client.query(deleteCandidateSkillsQuery)

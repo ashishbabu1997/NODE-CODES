@@ -50,8 +50,13 @@ export const getCandidateDetails = (_body) => {
                     if (step.skillId != null) {
                         skills.push(
                             {
-                                skillId: step.skillId,
-                                skillName: step.skillName
+                                skill:{
+                                    skillId: step.skillId,
+                                    skillName: step.skillName
+                                },
+                                competency:step.competency,
+                                yoe:step.yoe,
+                                preferred:step.preferred
                             }
                             )
                             }
