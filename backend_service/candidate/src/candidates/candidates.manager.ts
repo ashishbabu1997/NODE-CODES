@@ -675,7 +675,7 @@ export const getCandidateDetails = (_body) => {
                         const modifyCandidateProfileDetailsQuery = {
                             name: 'modify-candidate-ProfileDetails',
                             text: candidateQuery.modifyProfileDetails,
-                            values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.workExperience, _body.remoteWorkExperience,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,_body.githubId,_body.linkedInId,_body.stackoverflowId,_body.kaggleId,currentTime,_body.employeeId],
+                            values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.workExperience, _body.remoteWorkExperience,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,_body.githubId,_body.linkedInId,_body.stackoverflowId,_body.kaggleId,currentTime,_body.employeeId,_body.candidatePostionName],
                         }
                         await client.query(modifyCandidateProfileDetailsQuery);
                         resolve({ code: 200, message: "Candidate ProfileDetails updated successfully", data: {} });
