@@ -6,6 +6,8 @@ import approveRejectSchema from './schemas/approveRejectSchema';
 import interviewRequestSchema from './schemas/interviewRequestSchema';
 import candidateVettingSchema from './schemas/candidateVettingSchema';
 import addCandidateToPositionSchema from './schemas/addCandidateToPositionSchema';
+import {languageProficiencySchema,availabilitySchema,profileDetailSchema,projectSchema,workExperienceSchema,educationSchema,awardSchema,publicationSchema} from './schemas/modifyCandidateDetailsSchema';
+
 
 import { jwtAuth } from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
@@ -22,14 +24,14 @@ router
     .delete('/', jwtAuth, setData(), deleteCandidateFromPosition)
     .put('/linkCandidateToPosition', jwtAuth, setData(), validate(addCandidateToPositionSchema), addCandidateToPosition)
     .delete('/deleteCandidate', jwtAuth, setData(), deleteCandidate)
-    .put('/updateLanguageProficiency',jwtAuth, setData(), updateLanguageProficiency)
-    .put('/updateAvailability',jwtAuth, setData(), updateAvailability)
-    .put('/updateProfileDetails',jwtAuth, setData(), updateProfileDetails)
-    .put('/updateProject',jwtAuth, setData(), updateProject)
-    .put('/updateWorkExperience',jwtAuth, setData(), updateWorkExperience)
-    .put('/updateEducation',jwtAuth, setData(), updateEducation)
-    .put('/updateAward',jwtAuth, setData(), updateAward)
-    .put('/updatePublication',jwtAuth, setData(), updatePublication)
+    .put('/updateLanguageProficiency',jwtAuth, setData(),validate(languageProficiencySchema), updateLanguageProficiency)
+    .put('/updateAvailability',jwtAuth, setData(),validate(availabilitySchema), updateAvailability)
+    .put('/updateProfileDetails',jwtAuth, setData(),validate(profileDetailSchema), updateProfileDetails)
+    .put('/updateProject',jwtAuth, setData(),validate(projectSchema), updateProject)
+    .put('/updateWorkExperience',jwtAuth, setData(),validate(workExperienceSchema), updateWorkExperience)
+    .put('/updateEducation',jwtAuth, setData(),validate(educationSchema), updateEducation)
+    .put('/updateAward',jwtAuth, setData(),validate(awardSchema), updateAward)
+    .put('/updatePublication',jwtAuth, setData(),validate(publicationSchema), updatePublication)
     .get('/resume',jwtAuth, setData(), resumeDetails)
 
     

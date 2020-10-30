@@ -24,7 +24,7 @@ export default {
     
     modifyLanguageProficiency: `update candidate_language set candidate_id = $2, language_name = $3, proficiency = $4, updated_on = $5, updated_by = $6 where candidate_language_id = $1`,
     insertLanguageProficiency:'insert into candidate_language (candidate_id, language_name, proficiency, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$4,$5,$5)',
-    deleteLanguageProficiency:'update candidate_language set status = false, updated_on = $5, updated_by = $6 where candidate_language_id = $1',
+    deleteLanguageProficiency:'update candidate_language set status = false, updated_on = $2, updated_by = $3 where candidate_language_id = $1',
     
     modifyCandidateAvailability: `update candidate set availability = $2, type_of_availability = $3, ready_to_start = $4, updated_on=$5, updated_by = $6 where candidate_id = $1`,
     modifyProfileDetails : 'update candidate set candidate_first_name = $2, candidate_last_name = $3, description = $4, work_experience = $5, remote_work_experience =$6, image = $7, citizenship = $8, residence = $9, phone_number = $10, email_address = $11, github_id=$12, linked_in_id=$13, stackoverflow_id=$14, kaggle_id=$15, updated_on = $16, updated_by = $17 where candidate_id=$1',
