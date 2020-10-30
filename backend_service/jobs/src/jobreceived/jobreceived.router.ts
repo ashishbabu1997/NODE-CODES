@@ -8,8 +8,6 @@ import editprofileSchema from './schemas/editprofileSchema'
 import { jwtAuth } from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
 const router = express.Router();
-
-
 router
     .get('/',jwtAuth, setData(), validate(getJobReceivedSchema),getJobReceived)
     .get('/getById',jwtAuth, setData(), validate(getJobReceivedByIdSchema),getJobReceivedById)
@@ -20,4 +18,3 @@ router
     .put('/editSkills',jwtAuth, setData(),skillEdits)
     .get('/profile',jwtAuth, setData(), getProfile)
 export default router;
-// validate(editprofileSchema)

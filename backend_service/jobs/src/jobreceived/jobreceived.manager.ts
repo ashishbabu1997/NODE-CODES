@@ -112,7 +112,7 @@ export const editCandidateDetails = (_body) => {
                 const editQuery = {
                     name: 'update-JobReceived-reject',
                     text: jobReceivedQuery.editDetailsCandidate,
-                    values: [_body.candidates.candidateId, _body.candidates.firstName, _body.candidates.lastName, _body.candidates.email, _body.candidates.phoneNumber, _body.candidates.rate, _body.candidates.billingTypeId, _body.candidates.resume, _body.candidates.currencyTypeId, _body.candidates.coverNote, _body.candidates.candidateStatus, _body.candidates.workExperience, _body.candidates.companyId,_body.candidates.image,_body.candidates.citizenship,_body.candidates.residence,_body.candidates.remoteWorkExperience]
+                    values: [_body.candidates.candidateId, _body.candidates.firstName, _body.candidates.lastName, _body.candidates.email, _body.candidates.phoneNumber, _body.candidates.rate, _body.candidates.billingTypeId, _body.candidates.resume, _body.candidates.currencyTypeId, _body.candidates.coverNote, _body.candidates.candidateStatus, _body.candidates.workExperience, _body.candidates.companyId,_body.candidates.image,_body.candidates.citizenship,_body.candidates.residence,_body.candidates.remoteWorkExperience,_body.candidates.candidatePositionName]
                 }
                 var candidateId=_body.candidates.candidateId
                 await client.query(editQuery)
@@ -336,7 +336,7 @@ export const saveCandidateProfiles = (_body) => {
                     const candidatesDetails = _body.candidates;
                     let candidates = [candidatesDetails.firstName, candidatesDetails.lastName, candidatesDetails.companyId, candidatesDetails.jobReceivedId, candidatesDetails.coverNote,
                         candidatesDetails.rate, candidatesDetails.billingTypeId, candidatesDetails.currencyTypeId, candidatesDetails.email, candidatesDetails.phoneNumber, candidatesDetails.resume,
-                        currentTime, currentTime, _body.employeeId, _body.employeeId, candidatesDetails.candidateStatus, candidatesDetails.workExperience,candidatesDetails.image,candidatesDetails.citizenship,candidatesDetails.residence,candidatesDetails.remoteWorkExperience]
+                        currentTime, currentTime, _body.employeeId, _body.employeeId, candidatesDetails.candidateStatus, candidatesDetails.workExperience,candidatesDetails.image,candidatesDetails.citizenship,candidatesDetails.residence,candidatesDetails.remoteWorkExperience,candidatesDetails.candidatePositionName]
                         
                         console.log("candidatesDetails : ", candidates);
                         const saveCandidateQuery = {
