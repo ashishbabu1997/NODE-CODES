@@ -66,10 +66,7 @@ export const getCandidateDetails = (_body) => {
                                 );
                             }
                         });
-                        
                         skills = { topRatedSkill, otherSkill };
-                        
-                        
                         let result = {
                             makeOffer: candidate[0].makeOffer,
                             adminApproveStatus: candidate[0].adminApproveStatus,
@@ -95,7 +92,6 @@ export const getCandidateDetails = (_body) => {
                             skills
                         };
                         _body.userRoleId == 1 && (result['ellowRate'] = candidate[0].ellowRate)
-                        
                         resolve({ code: 200, message: "Candidate details listed successfully", data: result });
                         await client.query('COMMIT')
                     } catch (e) {
