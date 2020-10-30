@@ -674,6 +674,34 @@ export const getCandidateDetails = (_body) => {
                 })
             })
         }
+
+        export const modifyProfileDetails = (_body) => {
+            return new Promise((resolve, reject) => {
+                const currentTime = Math.floor(Date.now() / 1000);
+                (async () => {
+                    const client = await database().connect()
+                    try {
+                        
+                        const modifyCandidateProfileDetailsQuery = {
+                            name: 'modify-candidate-ProfileDetails',
+                            text: candidateQuery.modifyProfileDetails,
+                            values: [_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.workExperience, _body.remoteWorkExperience,_body.image,_body.citizenship,_body.residence,_body.typeOfAvailability ,_body.readyToStart,_body.phoneNumber,_body.email,currentTime,_body.employeeId],
+                        }
+                        await client.query(modifyCandidateProfileDetailsQuery);
+                        resolve({ code: 200, message: "Candidate ProfileDetails updated successfully", data: {} });
+                        
+                    } catch (e) {
+                        console.log(e)
+                        await client.query('ROLLBACK')
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    } finally {
+                        client.release();
+                    }
+                })().catch(e => {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                })
+            })
+        }
         
         export const modifyLanguageProficiency = (_body) => {
             return new Promise((resolve, reject) => {
