@@ -778,10 +778,12 @@ export const getCandidateDetails = (_body) => {
                     try {
                         if(_body.action === 'add')
                         {
+                            var skills=JSON.stringify(_body.skills)
+                            console.log(skills)
                             const insertCandidateProjectsQuery = {
                                 name: 'insert-candidate-projects',
                                 text: candidateQuery.insertCandidateProject,
-                                values: [_body.candidateId,_body.projectName,_body.companyName,_body.projectDescription,_body.projectLink,_body.extraProject,_body.skills, _body.employeeId,currentTime],
+                                values: [_body.candidateId,_body.projectName,_body.companyName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, _body.employeeId,currentTime],
                             }
                             await client.query(insertCandidateProjectsQuery);
                         }
@@ -1058,6 +1060,7 @@ export const getCandidateDetails = (_body) => {
                                 var projectDescription=element.projectDescription
                                 var  projectLink=element.projectLink
                                 var skill=element.skills
+                                console.log(skill)
                                 var skills=JSON.parse(skill)
                                 var extraProject=element.extraProject
                                 promise.push({candidateProjectId:candidateProjectId,candidateId:candidateId,projectName:projectName,companyName:companyName,
