@@ -788,10 +788,11 @@ export const getCandidateDetails = (_body) => {
                         }
                         else if(![null,undefined,''].includes(_body.candidateProjectId) && _body.action==='update')
                         {
+                            var skills=JSON.stringify(_body.skills)
                             const modifyCandidateProjectsQuery = {
                                 name: 'modify-candidate-projects',
                                 text: candidateQuery.modifyCandidateProject,
-                                values: [_body.candidateProjectId,_body.candidateId,_body.projectName,_body.companyName,_body.projectDescription,_body.projectLink,_body.extraProject,_body.skills, currentTime, _body.employeeId],
+                                values: [_body.candidateProjectId,_body.candidateId,_body.projectName,_body.companyName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, currentTime, _body.employeeId],
                             }
                             await client.query(modifyCandidateProjectsQuery);
                         }
