@@ -779,7 +779,6 @@ export const getCandidateDetails = (_body) => {
                         if(_body.action === 'add')
                         {
                             var skills=JSON.stringify(_body.skills)
-                            console.log(skills)
                             const insertCandidateProjectsQuery = {
                                 name: 'insert-candidate-projects',
                                 text: candidateQuery.insertCandidateProject,
