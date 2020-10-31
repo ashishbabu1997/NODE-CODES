@@ -1020,6 +1020,7 @@ export const getCandidateDetails = (_body) => {
         export const getResume = (_body) => {
             return new Promise((resolve, reject) => {
                 const candidateId = _body.candidateId;
+                var promise=[]
                 const currentTime = Math.floor(Date.now() / 1000);
                 (async () => {
                     const client = await database().connect()
@@ -1043,6 +1044,29 @@ export const getCandidateDetails = (_body) => {
                             values: [candidateId],
                         }
                         var projects=await client.query(fetchProjects);
+                        if (Array.isArray(projects.rows))
+                        {
+                            console.log("hai")
+                            
+                            projects.rows.forEach(element => {
+                                
+                                var candidateProjectId=element.candidateProjectId
+                                var candidateId=element.candidateId
+                                var projectName=element.projectName
+                                var companyName=element.companyName
+                                var yearsOfExperience=element.yoe
+                                var projectDescription=element.projectDescription
+                                var  projectLink=element.projectLink
+                                var skill=element.skills
+                                var skills=JSON.parse(skill)
+                                var extraProject=element.extraProject
+                                promise.push({candidateProjectId:candidateProjectId,candidateId:candidateId,projectName:projectName,companyName:companyName,
+                                    yearsOfExperience:yearsOfExperience,projectDescription:projectDescription,projectLink:projectLink,
+                                    skills:skills,extraProject:extraProject})
+                            });
+                            await Promise.all(promise);
+                        }
+                        console.log(promise)
                         const fetchAssesements = {
                             name: 'fetch-assesement-details',
                             text: candidateQuery.fetchAssesmentDetails,
@@ -1080,7 +1104,7 @@ export const getCandidateDetails = (_body) => {
                         }
                         var languages=await client.query(fetchLanguages);
                         await client.query('COMMIT')
-                        resolve({ code: 200, message: "Resume listed successfully", data: {profile:profileDetails.rows[0],skills:skills.rows,projects:projects.rows,assesments:assesements.rows,workExperience:workExperiences.rows,education:educations.rows,publications:publications.rows,awards:awards.rows,languages:languages.rows} });
+                        resolve({ code: 200, message: "Resume listed successfully", data: {candidateId:Number(_body.candidateId),profile:profileDetails.rows[0],skills:skills.rows,projects:promise,assesments:assesements.rows,workExperience:workExperiences.rows,education:educations.rows,publications:publications.rows,awards:awards.rows,languages:languages.rows} });
                         
                     } catch (e) {
                         console.log(e)

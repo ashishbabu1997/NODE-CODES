@@ -29,11 +29,11 @@ export default {
     modifyCandidateAvailability: `update candidate set availability = $2, type_of_availability = $3, ready_to_start = $4, updated_on=$5, updated_by = $6 where candidate_id = $1`,
     modifyProfileDetails : 'update candidate set candidate_first_name = $2, candidate_last_name = $3, description = $4, work_experience = $5, remote_work_experience =$6, image = $7, citizenship = $8, residence = $9, phone_number = $10, email_address = $11, github_id=$12, linked_in_id=$13, stackoverflow_id=$14, kaggle_id=$15, updated_on = $16, updated_by = $17,candidate_position_name=$18 where candidate_id=$1',
 
-    modifyCandidateProject: `update candidate_project set candidate_id = $2, project_name = $3, company_name = $4, project_description = $5, project_link = $6, side_project = $7, skills = $8, updated_on = $9, updated_by = $10, where candidate_project_id = $1`,
+    modifyCandidateProject: `update candidate_project set candidate_id = $2, project_name = $3, company_name = $4, project_description = $5, project_link = $6, side_project = $7, skills = $8, updated_on = $9, updated_by = $10 where candidate_project_id = $1`,
     insertCandidateProject:'insert into candidate_project (candidate_id, project_name,company_name, project_description, project_link, side_project, skills, created_by, updated_by, created_on, updated_on ) values ($1,$2,$3,$4,$5,$6,$7,$8,$8,$9,$9)',
     deleteCandidateProject:'update candidate_project set status = false, updated_on = $2, updated_by = $3 where candidate_project_id = $1',
     
-    modifyCandidateWorkHistory: `update candidate_project set candidate_id = $2, project_name = $3, company_name = $4, project_description = $5, project_link = $6, side_project = $7, skills = $8, updated_on = $9, updated_by = $10, where candidate_project_id = $1`,
+    modifyCandidateWorkHistory: `update candidate_project set candidate_id = $2, project_name = $3, company_name = $4, project_description = $5, project_link = $6, side_project = $7, skills = $8, updated_on = $9, updated_by = $10 where candidate_project_id = $1`,
     insertCandidateWorkHistory:'insert into candidate_work_experience (candidate_id, candidate_position_name, candidate_company_name, description, logo, start_date, end_date, still_working, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$9,$10,$10)',
     deleteCandidateWorkHistory:'update candidate_work_experience set status=false, updated_on=$2, updated_by=$3 where candidate_work_experience_id = $1',
     
