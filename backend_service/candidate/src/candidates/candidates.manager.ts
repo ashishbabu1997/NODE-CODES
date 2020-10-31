@@ -834,7 +834,7 @@ export const getCandidateDetails = (_body) => {
                             const insertCandidateWorkHistoryQuery = {
                                 name: 'insert-candidate-work-history',
                                 text: candidateQuery.insertCandidateWorkHistory,
-                                values: [_body.candidateId,_body.positionName,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWoking,_body.employeeid,currentTime],
+                                values: [_body.candidateId,_body.positionName,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,_body.employeeid,currentTime],
                             }
                             await client.query(insertCandidateWorkHistoryQuery);
                         }
@@ -843,7 +843,7 @@ export const getCandidateDetails = (_body) => {
                             const modifyCandidateWorkHistoryQuery = {
                                 name: 'modify-candidate-work-history',
                                 text: candidateQuery.modifyCandidateWorkHistory,
-                                values: [_body.candidateWorkExperienceId,_body.candidateId,_body.positionName,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWoking,currentTime,_body.employeeid],
+                                values: [_body.candidateWorkExperienceId,_body.candidateId,_body.positionName,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,currentTime,_body.employeeid],
                             }
                             await client.query(modifyCandidateWorkHistoryQuery);
                         }
