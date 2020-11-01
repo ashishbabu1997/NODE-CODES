@@ -441,7 +441,7 @@ export const getCandidateDetails = (_body) => {
                         const insertQuery = {
                             name: 'insert-assessment-comment',
                             text: candidateQuery.updateAssessmentComment,
-                            values: [_body.candidateId, _body.assessmentComment],
+                            values: [_body.candidateId, _body.adminComment],
                         }
                         promise.push(client.query(insertQuery));
                         
@@ -449,7 +449,7 @@ export const getCandidateDetails = (_body) => {
                             const candidateDetails = {
                                 name: 'update-candidate-assesment-rating',
                                 text: candidateQuery.updateCandidateAssesment,
-                                values: [element.assesmentId, element.adminRating, _body.employeeId, currentTime],
+                                values: [element.candidateAssesmentId, element.rating, _body.employeeId, currentTime],
                             }
                             promise.push(client.query(candidateDetails));
                         });
