@@ -333,6 +333,14 @@ export const getCandidateDetails = (_body) => {
                             values: value
                         }
                         await client.query(candidateApprovalQuery);
+                        const updateQuery = {
+                            name: 'update-candidate-vetting',
+                            text: candidateQuery.updateCandidateVetting,
+                            values: [_body.candidateId, 1, _body.employeeId, currentTime],
+                        }
+                        
+                        await client.query(updateQuery);
+                        
                         await client.query('COMMIT');
                         _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
                         resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
