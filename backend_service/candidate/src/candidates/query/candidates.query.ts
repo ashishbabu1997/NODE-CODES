@@ -37,18 +37,18 @@ export default {
     insertCandidateWorkHistory:'insert into candidate_work_experience (candidate_id, candidate_position_name, candidate_company_name, description, logo, start_date, end_date, still_working, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$9,$10,$10)',
     deleteCandidateWorkHistory:'update candidate_work_experience set status=false, updated_on=$2, updated_by=$3 where candidate_work_experience_id = $1',
     
-    modifyCandidateEducation: `update candidate_education set candidate_id=$2, set degree=$3, set college=$4, set start_date=$5, set end_date=$6, set updated_on=$7, set updated_by=$8 where candidate_education_id=$1`,
+    modifyCandidateEducation: `update candidate_education set candidate_id=$2, degree = $3, college = $4, start_date = $5, end_date = $6, updated_on = $7, updated_by = $8 where candidate_education_id = $1`,
     insertCandidateEducation:'insert INTO candidate_education (candidate_id, degree, college, start_date, end_date, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$4,$5,$6,$6,$7,$7)',
-    deleteCandidateEducation:'update candidate_education set status=false, set updated_on=$2, set updated_by=$3 where candidate_education_id=$1',
+    deleteCandidateEducation:'update candidate_education set status= false, updated_on = $2, updated_by = $3 where candidate_education_id = $1',
     
-    modifyCandidatePublication: `update candidate_publication set candidate_id=$2, set title = $3, set published_year = $4, set link = $5, set updated_on = $6, set updated_by = $7 where candidate_publication_id = $1`,
+    modifyCandidatePublication: `update candidate_publication set candidate_id=$2, title = $3, published_year = $4, link = $5, updated_on = $6, updated_by = $7 where candidate_publication_id = $1`,
     insertCandidatePublication:'insert into candidate_publication (candidate_id, title, published_year, link, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$4,$5,$5,$6,$6)',
-    deleteCandidatePublication:'update candidate_publication set status=false, set updated_on = $2, set updated_by = $3 where candidate_publication_id = $1',
+    deleteCandidatePublication:'update candidate_publication set status=false, updated_on = $2, updated_by = $3 where candidate_publication_id = $1',
     
     modifyCloudAndSocial:'update candidate set github_id=$2, stackoverflow_id=$3, kaggle_id=$4, linked_in_id=$5, cloud_proficiency=$6, updated_on=$7, updated_by=$8 where candidate_id=$1',
-    modifyCandidateAward: `update candidate_certifications set candidate_id=$2, set certification_id = $3, set certified_year = $4, set updated_on = $5, set updated_by = $6 where candidate_certification_id = $1`,
+    modifyCandidateAward: `update candidate_certifications set candidate_id=$2, certification_id = $3, certified_year = $4, updated_on = $5, updated_by = $6 where candidate_certification_id = $1`,
     insertCandidateAward:'insert into candidate_certifications(candidate_id, certification_id, certified_year, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$4,$4,$5,$5)',
-    deleteCandidateAward:'update candidate_certifications set status=false, set updated_on = $2, set updated_by = $3 where candidate_certification_id = $1',
+    deleteCandidateAward:'update candidate_certifications set status=false, updated_on = $2, updated_by = $3 where candidate_certification_id = $1',
     
     getProfileDetails:'select candidate_first_name as "firstName", candidate_last_name as "lastName", description,resume as "resume", candidate_status as "candidateStatus", rate, work_experience as "workExperience", remote_work_experience as "remoteWorkExperience", image, citizenship, residence, phone_number as "phoneNumber", email_address as "email", billing_type as "billingTypeId", currency_type_id as "currencyTypeId", candidate_position_name as "candidatePositionName", candidate_vetted as "candidateVetted" from candidate where candidate_id = $1',
     fetchAvailabilityDetails:'select availability,type_of_availability as "typeOfAvailability",ready_to_start as "readyToStart" from candidate where candidate_id = $1',
