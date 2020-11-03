@@ -353,14 +353,15 @@ export const editSkills = (_body) => {
                 {
                     let promise=[];
                     _body.skills.forEach(element => { 
-                        var competency=element.competency
-                        var preffered=element.preferred
-                        var skillId=element.skill["skillId"]
-                        var yearsOfExperience=element.yoe
+                        let competency=element.competency
+                        let preffered=element.preferred
+                        let skillId=element.skill["skillId"]
+                        let yearsOfExperience=element.yoe
+                        let skillVersion = element.skillVersion
                         const addSkills = {
                             name: 'add-candidate-skills',
                             text: jobReceivedQuery.addCandidateSkills,
-                            values: [candidateId, skillId,competency,preffered,yearsOfExperience,currentTime,_body.employeeId,true],
+                            values: [candidateId, skillId,competency,preffered,yearsOfExperience,skillVersion,currentTime,_body.employeeId,true],
                         }
                         promise.push(client.query(addSkills))
                     });
