@@ -257,35 +257,8 @@ export const saveCandidateProfile = (_body) => {
                     }
                     await client.query(updateCompanyJobStatusQuery);
                 }
-                
-                // const getPositionNameQuery = {
-                //     name: 'get-position-details',
-                //     text: jobReceivedQuery.getPositionName,
-                //     values: [_body.positionId],
-                // }   
-                // var positionDetail=await client.query(getPositionNameQuery);
-                // var positionName=positionDetail.rows[0].position
-                // if (_body.candidateStatus == 3) {
-                //     const addDefaultTraits = {
-                //         name: 'add-default-traits',
-                //         text: jobReceivedQuery.addDefaultAssessmentTraits,
-                //         values: [candidateId, _body.employeeId, currentTime],
-                //     }
-                //     await client.query(addDefaultTraits);
-                
-                //     const addSkillRelatedTraits = {
-                //         name: 'add-skill-based-traits',
-                //         text: jobReceivedQuery.addSkillBasedAssesmentTraits,
-                //         values: [candidateId, _body.employeeId, currentTime],
-                //     }
-                //     await client.query(addSkillRelatedTraits);
-                // } 
+
                 await client.query('COMMIT');
-                // var candidateFirstName=_body.firstName
-                // var candidateLastName=_body.lastName
-                // const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
-                // await createNotification({ positionId:_body.positionId, jobReceivedId:_body.jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'position' })
-                
                 resolve({ code: 200, message: "Candidate profile added", data: {} });
             } catch (e) {
                 console.log(e)

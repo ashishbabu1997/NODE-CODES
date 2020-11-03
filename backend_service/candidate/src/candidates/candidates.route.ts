@@ -1,4 +1,4 @@
-import { candidateDetails,updateSocialAndCloud, updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails } from './candidates.controller';
+import { candidateDetails,updateSocialAndCloud, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails } from './candidates.controller';
 import * as express from 'express';
 import checkUserRole from '../middlewares/checkUserRole';
 import validate from '../middlewares/joiVaildation';
@@ -33,6 +33,7 @@ router
     .put('/updateAward',jwtAuth, setData(),validate(awardSchema), updateAward)
     .put('/updateSocialAndCloud',jwtAuth, setData(),validate(profileDetailSchema), updateSocialAndCloud)
     .put('/updatePublication',jwtAuth, setData(),validate(publicationSchema), updatePublication)
+    .put('/updateResumeFile',jwtAuth,setData(),validate(profileDetailSchema),updateResumeFile)
     .get('/resume',jwtAuth, setData(), resumeDetails)
 
     

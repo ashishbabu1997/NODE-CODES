@@ -1069,26 +1069,10 @@ export const getCandidateDetails = (_body) => {
                     await client.query('BEGIN');
                     const fetchProfile = {
                         name: 'fetch-profile-details',
-                        text: candidateQuery.getProfileDetails,
+                        text: candidateQuery.getAllProfileDetails,
                         values: [candidateId],
                     }
-                    var profileDetails=await client.query(fetchProfile);
-                    const fetchAvailability = {
-                        name: 'fetch-availability-details',
-                        text: candidateQuery.fetchAvailabilityDetails,
-                        values: [candidateId],
-                    }
-                    var availabilityDetails=await client.query(fetchAvailability);
-                    const fetchSocialPresence = {
-                        name: 'fetch-socialcloud-details',
-                        text: candidateQuery.fetchSocialAndCloud,
-                        values: [candidateId],
-                    }
-                    var socialDetails=await client.query(fetchSocialPresence);
-                    
-                    let cloudProficiency = ![null,undefined,""].includes(socialDetails.rows[0].cloudProficiency)?JSON.parse(socialDetails.rows[0].cloudProficiency):null;
-                    delete socialDetails.rows[0].cloudProficiency;
-
+                    var allProfileDetails=await client.query(fetchProfile);
                     const fetchSkills = {
                         name: 'fetch-skill-details',
                         text: candidateQuery.fetchSkillDetails,
@@ -1101,6 +1085,43 @@ export const getCandidateDetails = (_body) => {
                         values: [candidateId],
                     }
                     var projects=await client.query(fetchProjects);
+                    console.log(promise)
+                    const fetchAssesements = {
+                        name: 'fetch-assesement-details',
+                        text: candidateQuery.fetchAssesmentDetails,
+                        values: [candidateId],
+                    }
+                    var assesements=await client.query(fetchAssesements);
+                    const fetchWorkExperience = {
+                        name: 'fetch-work-experience-details',
+                        text: candidateQuery.fetchWorkExperienceDetails,
+                        values: [candidateId],
+                    }
+                    var workExperiences=await client.query(fetchWorkExperience);
+                    const fetchEducations = {
+                        name: 'fetch-education-details',
+                        text: candidateQuery.fetchEducationDetails,
+                        values: [candidateId],
+                    }
+                    var educations=await client.query(fetchEducations);
+                    const fetchPublications = {
+                        name: 'fetch-publications-details',
+                        text: candidateQuery.fetchPublicationDetails,
+                        values: [candidateId],
+                    }
+                    var publications=await client.query(fetchPublications);
+                    const fetchAwards = {
+                        name: 'fetch-awards-details',
+                        text: candidateQuery.fetchAwardDetails,
+                        values: [candidateId],
+                    }
+                    var awards=await client.query(fetchAwards);
+                    const fetchLanguages = {
+                        name: 'fetch-language-details',
+                        text: candidateQuery.fetchLanguageDetails,
+                        values: [candidateId],
+                    }
+                    var languages=await client.query(fetchLanguages);
                     if (Array.isArray(projects.rows))
                     {
                         console.log("hai")
@@ -1124,46 +1145,86 @@ export const getCandidateDetails = (_body) => {
                             });
                             await Promise.all(promise);
                         }
-                        console.log(promise)
-                        const fetchAssesements = {
-                            name: 'fetch-assesement-details',
-                            text: candidateQuery.fetchAssesmentDetails,
-                            values: [candidateId],
-                        }
-                        var assesements=await client.query(fetchAssesements);
-                        const fetchWorkExperience = {
-                            name: 'fetch-work-experience-details',
-                            text: candidateQuery.fetchWorkExperienceDetails,
-                            values: [candidateId],
-                        }
-                        var workExperiences=await client.query(fetchWorkExperience);
-                        const fetchEducations = {
-                            name: 'fetch-education-details',
-                            text: candidateQuery.fetchEducationDetails,
-                            values: [candidateId],
-                        }
-                        var educations=await client.query(fetchEducations);
-                        const fetchPublications = {
-                            name: 'fetch-publications-details',
-                            text: candidateQuery.fetchPublicationDetails,
-                            values: [candidateId],
-                        }
-                        var publications=await client.query(fetchPublications);
-                        const fetchAwards = {
-                            name: 'fetch-awards-details',
-                            text: candidateQuery.fetchAwardDetails,
-                            values: [candidateId],
-                        }
-                        var awards=await client.query(fetchAwards);
-                        const fetchLanguages = {
-                            name: 'fetch-language-details',
-                            text: candidateQuery.fetchLanguageDetails,
-                            values: [candidateId],
-                        }
-                        var languages=await client.query(fetchLanguages);
-                        await client.query('COMMIT')
-                        resolve({ code: 200, message: "Resume listed successfully", data: {candidateId:Number(_body.candidateId),profile:profileDetails.rows[0],availability:availabilityDetails.rows[0],socialPresence:socialDetails.rows[0],cloudProficiency,skills:skills.rows,projects:promise,assesments:assesements.rows,workExperience:workExperiences.rows,education:educations.rows,publications:publications.rows,awards:awards.rows,languages:languages.rows} });
                         
+                        let profileDetails = {
+                            firstName : allProfileDetails.rows[0].firstName,
+                            lastName : allProfileDetails.rows[0].lastName,
+                            description : allProfileDetails.rows[0].description,
+                            candidateStatus : allProfileDetails.rows[0].candidateStatus,
+                            sellerCompanyId : allProfileDetails.rows[0].sellerCompanyId,
+                            image : allProfileDetails.rows[0].image,
+                            citizenship : allProfileDetails.rows[0].citizenship,
+                            residence : allProfileDetails.rows[0].residence,
+                            phoneNumber : allProfileDetails.rows[0].phoneNumber,
+                            email : allProfileDetails.rows[0].email,
+                            candidateVetted : allProfileDetails.rows[0].candidateVetted
+                        }
+                        let overallWorkExperience = {
+                            cost:allProfileDetails.rows[0].rate,
+                            workExperience:allProfileDetails.rows[0].workExperience,
+                            remoteWorkExperience:allProfileDetails.rows[0].remoteWorkExperience,
+                            billingTypeId:allProfileDetails.rows[0].billingTypeId,
+                            currencyTypeId:allProfileDetails.rows[0].currencyTypeId,
+                            candidatePositionName:allProfileDetails.rows[0].candidatePositionName,
+                        }
+                        let availability = {
+                            availability : allProfileDetails.rows[0].availability,
+                            typeOfAvailability : allProfileDetails.rows[0].typeOfAvailability,
+                            readyToStart : allProfileDetails.rows[0].readyToStart
+                        }
+                        let socialPresence = {
+                            kaggleId : allProfileDetails.rows[0].kaggleId,
+                            stackoverflowId : allProfileDetails.rows[0].stackoverflowId,
+                            linkedInId : allProfileDetails.rows[0].linkedInId,
+                            githubId : allProfileDetails.rows[0].githubId
+                        }
+                        
+                        await client.query('COMMIT')
+                        resolve({ code: 200, message: "Resume listed successfully", 
+                        data: 
+                        {candidateId:Number(_body.candidateId),
+                            profile:profileDetails,
+                            resume : allProfileDetails.rows[0].resume,
+                            overallWorkExperience,
+                            availability,
+                            socialPresence,
+                            cloudProficiency:allProfileDetails.rows[0].cloudProficiency,
+                            skills:skills.rows,
+                            projects:promise,
+                            assesments:assesements.rows,
+                            workExperience:workExperiences.rows,
+                            education:educations.rows,
+                            publications:publications.rows,
+                            awards:awards.rows,
+                            languages:languages.rows
+                        } });
+                        
+                    } catch (e) {
+                        console.log(e)
+                        await client.query('ROLLBACK')
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    } finally {
+                        client.release();
+                    }
+                })().catch(e => {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                })
+            })
+        }
+        
+        export const modifyResumeFile = (_body) => {
+            return new Promise((resolve, reject) => {
+                const currentTime = Math.floor(Date.now() / 1000);
+                (async () => {
+                    const client = await database().connect()
+                    try {
+                        const updateResumeFile = {
+                            name: 'update-resumeFile',
+                            text: candidateQuery.modifyResumeFile,
+                            values: [_body.candidateId,_body.resume,currentTime,_body.employeeId],
+                        }
+                        await client.query(updateResumeFile);
+                        resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
                     } catch (e) {
                         console.log(e)
                         await client.query('ROLLBACK')

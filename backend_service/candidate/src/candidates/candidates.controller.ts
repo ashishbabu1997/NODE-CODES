@@ -1,4 +1,4 @@
-import { getCandidateDetails,modifySocialPresenceCloudProficiency,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume } from './candidates.manager';
+import { getCandidateDetails,modifyResumeFile,modifySocialPresenceCloudProficiency,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume } from './candidates.manager';
 import sendResponse from '../common/response/response';
 
 export const candidateDetails = (req, res) => {
@@ -76,6 +76,14 @@ export const updateLanguageProficiency = (req, res) => {
 export const updateProfileDetails = (req, res) => {
     const body = req.body;
     modifyProfileDetails(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+export const updateResumeFile = (req, res) => {
+    const body = req.body;
+    modifyResumeFile(body).then((response: any) => {
         sendResponse(res, response.code, 1, 201, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)
