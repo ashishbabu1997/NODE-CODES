@@ -1,13 +1,11 @@
-import { candidateDetails,updateSocialAndCloud, updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience } from './candidates.controller';
+import { candidateDetails,updateSocialAndCloud, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience } from './candidates.controller';
 import * as express from 'express';
-import checkUserRole from '../middlewares/checkUserRole';
 import validate from '../middlewares/joiVaildation';
 import approveRejectSchema from './schemas/approveRejectSchema';
 import interviewRequestSchema from './schemas/interviewRequestSchema';
 import candidateVettingSchema from './schemas/candidateVettingSchema';
 import addCandidateToPositionSchema from './schemas/addCandidateToPositionSchema';
 import {languageProficiencySchema,availabilitySchema,profileDetailSchema,projectSchema,workExperienceSchema,educationSchema,awardSchema,publicationSchema} from './schemas/modifyCandidateDetailsSchema';
-
 
 import { jwtAuth } from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
@@ -33,9 +31,7 @@ router
     .put('/updateAward',jwtAuth, setData(),validate(awardSchema), updateAward)
     .put('/updateSocialAndCloud',jwtAuth, setData(),validate(profileDetailSchema), updateSocialAndCloud)
     .put('/updatePublication',jwtAuth, setData(),validate(publicationSchema), updatePublication)
+    .put('/updateResumeFile',jwtAuth,setData(),validate(profileDetailSchema),updateResumeFile)
     .get('/resume',jwtAuth, setData(), resumeDetails)
-    .put('/workExperience',jwtAuth, setData(), WorkExperience)
-
-
-    
+    .put('/workExperience',jwtAuth, setData(),validate(profileDetailSchema), WorkExperience)
 export default router;
