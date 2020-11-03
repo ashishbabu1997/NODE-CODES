@@ -32,6 +32,6 @@ router
     .put('/updateSocialAndCloud',jwtAuth, setData(),validate(profileDetailSchema), updateSocialAndCloud)
     .put('/updatePublication',jwtAuth, setData(),validate(publicationSchema), updatePublication)
     .put('/updateResumeFile',jwtAuth,setData(),validate(profileDetailSchema),updateResumeFile)
+    .put('/updateOverallWorkExperience',jwtAuth, setData(),validate(profileDetailSchema), WorkExperience)
     .get('/resume',jwtAuth, setData(), resumeDetails)
-    .put('/workExperience',jwtAuth, setData(),validate(profileDetailSchema), WorkExperience)
 export default router;
