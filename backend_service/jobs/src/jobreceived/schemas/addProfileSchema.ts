@@ -1,7 +1,6 @@
 import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({
-    candidates: Joi.object().keys({
         firstName : Joi.string().required().error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
@@ -18,23 +17,6 @@ export default Joi.object().keys({
             });
             return errors;
         }),
-        candidateStatus : Joi.number().required().error(errors => {
-            errors.forEach(err => {
-                switch (err.code) {
-                    case "any.required":
-                        err.message = "Candidate Status should not be empty!";
-                        break;
-                    case "number.base":
-                        err.message = "Candidate Status must be a number"
-                        break;
-                    default:
-                        err.message = "Invalid Candidate Status"
-                        break;
-                }
-            });
-            return errors;
-        }),
-        
         jobReceivedId : Joi.number().allow('',null).error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
@@ -48,5 +30,4 @@ export default Joi.object().keys({
             });
             return errors;
         })
-    }).unknown(true)
 }).unknown(true);

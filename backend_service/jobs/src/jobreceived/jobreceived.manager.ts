@@ -102,181 +102,74 @@ export const updateIsRejectForJobReceived = (_body) => {
         })
     })
 }
-export const editCandidateDetails = (_body) => {
-    return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
-        (async () => {
-            const client = await database().connect()
-            try {
-                console.log("values : ", [_body.candidates.candidateId, _body.candidates.firstName, _body.candidates.lastName, _body.candidates.email, _body.candidates.phoneNumber, _body.candidates.rate, _body.candidates.billingTypeId, _body.candidates.resume, _body.candidates.currencyTypeId, _body.candidates.coverNote, _body.candidates.candidateStatus, _body.candidates.workExperience, _body.candidates.companyId]);
-                const editQuery = {
-                    name: 'update-JobReceived-reject',
-                    text: jobReceivedQuery.editDetailsCandidate,
-                    values: [_body.candidates.candidateId, _body.candidates.firstName, _body.candidates.lastName, _body.candidates.email, _body.candidates.phoneNumber, _body.candidates.rate, _body.candidates.billingTypeId, _body.candidates.resume, _body.candidates.currencyTypeId, _body.candidates.coverNote, _body.candidates.candidateStatus, _body.candidates.workExperience, _body.candidates.companyId,_body.candidates.image,_body.candidates.citizenship,_body.candidates.residence,_body.candidates.remoteWorkExperience,_body.candidates.candidatePositionName]
-                }
-                var candidateId=_body.candidates.candidateId
-                await client.query(editQuery)
-                let skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];                                
-                const deleteCandidateSkillsQuery = {
-                    name: 'delete-candidate-skills',
-                    text: jobReceivedQuery.deleteCandidateSkills,
-                    values: [_body.candidates.candidateId, skillSet],
-                }
-                await client.query(deleteCandidateSkillsQuery)
-                if (Array.isArray(_body.skills))
-                {
-                    let promise=[];
-                    _body.skills.forEach(element => { 
-                        var competency=element.competency
-                        var preffered=element.preferred
-                        var skillId=element.skill["skillId"]
-                        var yearsOfExperience=element.yoe
-                        const addSkills = {
-                            name: 'add-top-job-skills',
-                            text: jobReceivedQuery.addCandidateSkills,
-                            values: [candidateId, skillId,competency,preffered,yearsOfExperience,currentTime, _body.employeeId,true],
-                        }
-                        promise.push(client.query(addSkills))
-                    });
-                    await Promise.all(promise);
-                }
-                if (_body.candidateStatus == 3) {
-                    const addDefaultTraits = {
-                        name: 'add-default-traits',
-                        text: jobReceivedQuery.addDefaultAssessmentTraits,
-                        values: [_body.candidates.candidateId, _body.employeeId, currentTime],
-                    }
-                    await client.query(addDefaultTraits);
-                    
-                    const addSkillRelatedTraits = {
-                        name: 'add-skill-based-traits',
-                        text: jobReceivedQuery.addSkillBasedAssesmentTraits,
-                        values: [_body.candidates.candidateId, _body.employeeId, currentTime],
-                    }
-                    await client.query(addSkillRelatedTraits);
-                }
-                
-                resolve({ code: 200, message: "Candidate profile updated successfully", data: {} });
-                
-            } catch (e) {
-                console.log(e)
-                await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
-                client.release();
-            }
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
-        })
-    })
-    // reject({ code: 400, message: "Failed. Please try again.", data: {} });
-    
-}
-
-// export const saveCandidateProfiles = (_body) => {
+// export const editCandidateDetails = (_body) => {
 //     return new Promise((resolve, reject) => {
 //         const currentTime = Math.floor(Date.now() / 1000);
 //         (async () => {
 //             const client = await database().connect()
 //             try {
-//                 await client.query('BEGIN');
-//                 const candidatesDetails = _body.candidates;
-//                 let candidates = [candidatesDetails.firstName, candidatesDetails.lastName, candidatesDetails.companyId, candidatesDetails.jobReceivedId, candidatesDetails.coverNote,
-//                     candidatesDetails.rate, candidatesDetails.billingTypeId, candidatesDetails.currencyTypeId, candidatesDetails.email, candidatesDetails.phoneNumber, candidatesDetails.resume,
-//                     currentTime, currentTime, _body.employeeId, _body.employeeId, candidatesDetails.candidateStatus, candidatesDetails.workExperience]
-
-//                     console.log("candidatesDetails : ", candidates);
-//                     const saveCandidateQuery = {
-//                         name: 'add-Profile',
-//                         text: format(jobReceivedQuery.addProfile, [candidates]),
-//                     }
-//                     var addCandidateResult = await client.query(saveCandidateQuery);
-//                     let candidateId = addCandidateResult.rows[0].candidate_id;
-//                     if (![null, undefined, ''].includes(_body.positionId)) {
-//                         const addPositionQuery = {
-//                             name: 'add-position',
-//                             text: jobReceivedQuery.addCandidatePosition,
-//                             values: [_body.positionId, candidateId, candidatesDetails.jobReceivedId, candidatesDetails.billingTypeId, candidatesDetails.currencyTypeId, _body.employeeId, currentTime],
-//                         }
-//                         await client.query(addPositionQuery);
-
-//                         const getJobStatusQuery = {
-//                             name: 'get-Job-status',
-//                             text: jobReceivedQuery.getJobStatus,
-//                             values: [_body.positionId],
-//                         }
-//                         const response = await client.query(getJobStatusQuery);
-//                         let jobStatus = response.rows[0].jobStatus;
-
-//                         const updateCompanyJobStatusQuery = {
-//                             name: 'update-company-job-status',
-//                             text: jobReceivedQuery.updateCompanyJobStatus,
-//                             values: [candidatesDetails.jobReceivedId, jobStatus, candidatesDetails.companyId, _body.employeeId, currentTime],
-//                         }
-//                         await client.query(updateCompanyJobStatusQuery);
-//                     }
-
-
-//                     let tSkill = (![undefined, null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"])) ? _body.skills["topRatedSkill"].map(a => a.skillId) : [];
-//                     let oSkill = (![undefined, null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"])) ? _body.skills["otherSkill"].map(a => a.skillId) : [];
-
-//                     if (tSkill.length > 0) {
-//                         const addTopSkillsQuery = {
+//                 console.log("values : ", [_body.candidates.candidateId, _body.candidates.firstName, _body.candidates.lastName, _body.candidates.email, _body.candidates.phoneNumber, _body.candidates.rate, _body.candidates.billingTypeId, _body.candidates.resume, _body.candidates.currencyTypeId, _body.candidates.coverNote, _body.candidates.candidateStatus, _body.candidates.workExperience, _body.candidates.companyId]);
+//                 const editQuery = {
+//                     name: 'update-JobReceived-reject',
+//                     text: jobReceivedQuery.editDetailsCandidate,
+//                     values: [_body.candidates.candidateId, _body.candidates.firstName, _body.candidates.lastName, _body.candidates.email, _body.candidates.phoneNumber, _body.candidates.rate, _body.candidates.billingTypeId, _body.candidates.resume, _body.candidates.currencyTypeId, _body.candidates.coverNote, _body.candidates.candidateStatus, _body.candidates.workExperience, _body.candidates.companyId,_body.candidates.image,_body.candidates.citizenship,_body.candidates.residence,_body.candidates.remoteWorkExperience,_body.candidates.candidatePositionName]
+//                 }
+//                 var candidateId=_body.candidates.candidateId
+//                 await client.query(editQuery)
+//                 let skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];                                
+//                 const deleteCandidateSkillsQuery = {
+//                     name: 'delete-candidate-skills',
+//                     text: jobReceivedQuery.deleteCandidateSkills,
+//                     values: [_body.candidates.candidateId, skillSet],
+//                 }
+//                 await client.query(deleteCandidateSkillsQuery)
+//                 if (Array.isArray(_body.skills))
+//                 {
+//                     let promise=[];
+//                     _body.skills.forEach(element => { 
+//                         var competency=element.competency
+//                         var preffered=element.preferred
+//                         var skillId=element.skill["skillId"]
+//                         var yearsOfExperience=element.yoe
+//                         const addSkills = {
 //                             name: 'add-top-job-skills',
 //                             text: jobReceivedQuery.addCandidateSkills,
-//                             values: [candidateId, tSkill, true, currentTime, _body.employeeId],
+//                             values: [candidateId, skillId,competency,preffered,yearsOfExperience,currentTime, _body.employeeId,true],
 //                         }
-//                         await client.query(addTopSkillsQuery);
-//                     }
-//                     if (oSkill.length > 0) {
-//                         const addOtherSkillsQuery = {
-//                             name: 'add-other-job-skills',
-//                             text: jobReceivedQuery.addCandidateSkills,
-//                             values: [candidateId, oSkill, false, currentTime, _body.employeeId],
-//                         }
-//                         await client.query(addOtherSkillsQuery);
-//                     }
-//                     const updateQuery = {
-//                         name: 'get-position-details',
-//                         text: jobReceivedQuery.getPositionName,
-//                         values: [_body.positionId],
-//                     }   
-//                     var positionDetail=await client.query(updateQuery);
-//                     var positionName=positionDetail.rows[0].position
-//                     if (candidatesDetails.candidateStatus == 3) {
-//                         const addDefaultTraits = {
-//                             name: 'add-default-traits',
-//                             text: jobReceivedQuery.addDefaultAssessmentTraits,
-//                             values: [candidateId, _body.employeeId, currentTime],
-//                         }
-//                         await client.query(addDefaultTraits);
-
-//                         const addSkillRelatedTraits = {
-//                             name: 'add-skill-based-traits',
-//                             text: jobReceivedQuery.addSkillBasedAssesmentTraits,
-//                             values: [candidateId, _body.employeeId, currentTime],
-//                         }
-//                         await client.query(addSkillRelatedTraits);
-//                     }
-
-//                     await client.query('COMMIT');
-//                     var candidateFirstName=candidatesDetails.firstName
-//                     var candidateLastName=candidatesDetails.lastName
-//                     const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
-//                     await createNotification({ positionId:_body.positionId, jobReceivedId:candidatesDetails.jobReceivedId, companyId: _body.companyId, message, candidateId:candidatesDetails.candidateId, notificationType: 'position' })
-//                     resolve({ code: 200, message: "Candidate profiles added", data: {} });
-//                 } catch (e) {
-//                     console.log(e)
-//                     await client.query('ROLLBACK')
-//                     reject({ code: 400, message: "Failed. Please try again.", data: {} });
-//                 } finally {
-//                     client.release();
+//                         promise.push(client.query(addSkills))
+//                     });
+//                     await Promise.all(promise);
 //                 }
-//             })().catch(e => {
-//                 reject({ code: 400, message: "Failed. Please try again.", data: {} })
-//             })
+//                 if (_body.candidateStatus == 3) {
+//                     const addDefaultTraits = {
+//                         name: 'add-default-traits',
+//                         text: jobReceivedQuery.addDefaultAssessmentTraits,
+//                         values: [_body.candidates.candidateId, _body.employeeId, currentTime],
+//                     }
+//                     await client.query(addDefaultTraits);
+
+//                     const addSkillRelatedTraits = {
+//                         name: 'add-skill-based-traits',
+//                         text: jobReceivedQuery.addSkillBasedAssesmentTraits,
+//                         values: [_body.candidates.candidateId, _body.employeeId, currentTime],
+//                     }
+//                     await client.query(addSkillRelatedTraits);
+//                 }
+
+//                 resolve({ code: 200, message: "Candidate profile updated successfully", data: {} });
+
+//             } catch (e) {
+//                 console.log(e)
+//                 await client.query('ROLLBACK')
+//                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
+//             } finally {
+//                 client.release();
+//             }
+//         })().catch(e => {
+//             reject({ code: 400, message: "Failed. Please try again.", data: {} })
 //         })
-//     }
+//     })    
+// }
 
 
 export const getProfileByCompanyId = (_body) => {
@@ -333,135 +226,176 @@ export const saveCandidateProfile = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                const candidatesDetails = _body.candidates;
-                let candidates = [candidatesDetails.firstName, candidatesDetails.lastName, candidatesDetails.companyId, candidatesDetails.jobReceivedId, candidatesDetails.coverNote,
-                    candidatesDetails.rate, candidatesDetails.billingTypeId, candidatesDetails.currencyTypeId, candidatesDetails.email, candidatesDetails.phoneNumber, candidatesDetails.resume,
-                    currentTime, currentTime, _body.employeeId, _body.employeeId, candidatesDetails.candidateStatus, candidatesDetails.workExperience,candidatesDetails.image,candidatesDetails.citizenship,candidatesDetails.residence,candidatesDetails.remoteWorkExperience,candidatesDetails.candidatePositionName]
-                    
-                    console.log("candidatesDetails : ", candidates);
-                    const saveCandidateQuery = {
-                        name: 'add-Profile',
-                        text: format(jobReceivedQuery.addProfile, [candidates]),
-                    }
-                    var addCandidateResult = await client.query(saveCandidateQuery);
-                    let candidateId = addCandidateResult.rows[0].candidate_id;
-                    if (![null, undefined, ''].includes(_body.positionId)) {
-                        const addPositionQuery = {
-                            name: 'add-position',
-                            text: jobReceivedQuery.addCandidatePosition,
-                            values: [_body.positionId, candidateId, candidatesDetails.jobReceivedId, candidatesDetails.billingTypeId, candidatesDetails.currencyTypeId, _body.employeeId, currentTime],
-                        }
-                        await client.query(addPositionQuery);
-                        
-                        const getJobStatusQuery = {
-                            name: 'get-Job-status',
-                            text: jobReceivedQuery.getJobStatus,
-                            values: [_body.positionId],
-                        }
-                        const response = await client.query(getJobStatusQuery);
-                        let jobStatus = response.rows[0].jobStatus;
-                        
-                        const updateCompanyJobStatusQuery = {
-                            name: 'update-company-job-status',
-                            text: jobReceivedQuery.updateCompanyJobStatus,
-                            values: [candidatesDetails.jobReceivedId, jobStatus, candidatesDetails.companyId, _body.employeeId, currentTime],
-                        }
-                        await client.query(updateCompanyJobStatusQuery);
-                    }
-                    
-                    if (Array.isArray(_body.skills))
-                    {
-                        let promise=[];
-                        _body.skills.forEach(element => {
-                            
-                            var competency=element.competency
-                            var preffered=element.preffered
-                            var skillId=element.skill["skillId"]
-                            var yearsOfExperience=element.yoe
-                            const addSkills = {
-                                name: 'add-top-job-skills',
-                                text: jobReceivedQuery.addCandidateSkills,
-                                values: [candidateId, skillId,competency,preffered,yearsOfExperience,currentTime, _body.employeeId,true],
-                            }
-                            promise.push(client.query(addSkills))
-                        });
-                        await Promise.all(promise);
-                    }
-                    const updateQuery = {
-                        name: 'get-position-details',
-                        text: jobReceivedQuery.getPositionName,
-                        values: [_body.positionId],
-                    }   
-                    var positionDetail=await client.query(updateQuery);
-                    var positionName=positionDetail.rows[0].position
-                    if (candidatesDetails.candidateStatus == 3) {
-                        const addDefaultTraits = {
-                            name: 'add-default-traits',
-                            text: jobReceivedQuery.addDefaultAssessmentTraits,
-                            values: [candidateId, _body.employeeId, currentTime],
-                        }
-                        await client.query(addDefaultTraits);
-                        
-                        const addSkillRelatedTraits = {
-                            name: 'add-skill-based-traits',
-                            text: jobReceivedQuery.addSkillBasedAssesmentTraits,
-                            values: [candidateId, _body.employeeId, currentTime],
-                        }
-                        await client.query(addSkillRelatedTraits);
-                    } 
-                    await client.query('COMMIT');
-                    var candidateFirstName=candidatesDetails.firstName
-                    var candidateLastName=candidatesDetails.lastName
-                    const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
-                    await createNotification({ positionId:_body.positionId, jobReceivedId:candidatesDetails.jobReceivedId, companyId: _body.companyId, message, candidateId:candidatesDetails.candidateId, notificationType: 'position' })
-                    resolve({ code: 200, message: "Candidate profiles added", data: {} });
-                } catch (e) {
-                    console.log(e)
-                    await client.query('ROLLBACK')
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                } finally {
-                    client.release();
+                let sellerCompanyId = _body.userRoleId=1?_body.sellerCompanyId:_body.companyId;
+                let candidates = [_body.firstName, _body.lastName, sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence]    
+                const saveCandidateQuery = {
+                    name: 'add-Profile',
+                    text: format(jobReceivedQuery.addProfile, [candidates]),
                 }
-            })().catch(e => {
+                var addCandidateResult = await client.query(saveCandidateQuery);
+                let candidateId = addCandidateResult.rows[0].candidate_id;
+                if (![null, undefined, ''].includes(_body.positionId)) {
+                    const addPositionQuery = {
+                        name: 'add-position',
+                        text: jobReceivedQuery.addCandidatePosition,
+                        values: [_body.positionId, candidateId, _body.jobReceivedId, _body.billingTypeId, _body.currencyTypeId, _body.employeeId, currentTime],
+                    }
+                    await client.query(addPositionQuery);
+                    
+                    const getJobStatusQuery = {
+                        name: 'get-Job-status',
+                        text: jobReceivedQuery.getJobStatus,
+                        values: [_body.positionId],
+                    }
+                    const response = await client.query(getJobStatusQuery);
+                    let jobStatus = response.rows[0].jobStatus;
+                    
+                    const updateCompanyJobStatusQuery = {
+                        name: 'update-company-job-status',
+                        text: jobReceivedQuery.updateCompanyJobStatus,
+                        values: [_body.jobReceivedId, jobStatus, sellerCompanyId, _body.employeeId, currentTime],
+                    }
+                    await client.query(updateCompanyJobStatusQuery);
+                }
+                
+                // const getPositionNameQuery = {
+                //     name: 'get-position-details',
+                //     text: jobReceivedQuery.getPositionName,
+                //     values: [_body.positionId],
+                // }   
+                // var positionDetail=await client.query(getPositionNameQuery);
+                // var positionName=positionDetail.rows[0].position
+                // if (_body.candidateStatus == 3) {
+                //     const addDefaultTraits = {
+                //         name: 'add-default-traits',
+                //         text: jobReceivedQuery.addDefaultAssessmentTraits,
+                //         values: [candidateId, _body.employeeId, currentTime],
+                //     }
+                //     await client.query(addDefaultTraits);
+                
+                //     const addSkillRelatedTraits = {
+                //         name: 'add-skill-based-traits',
+                //         text: jobReceivedQuery.addSkillBasedAssesmentTraits,
+                //         values: [candidateId, _body.employeeId, currentTime],
+                //     }
+                //     await client.query(addSkillRelatedTraits);
+                // } 
+                await client.query('COMMIT');
+                // var candidateFirstName=_body.firstName
+                // var candidateLastName=_body.lastName
+                // const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
+                // await createNotification({ positionId:_body.positionId, jobReceivedId:_body.jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'position' })
+                
+                resolve({ code: 200, message: "Candidate profile added", data: {} });
+            } catch (e) {
                 console.log(e)
-                reject({ code: 400, message: "Failed. Please try again.", data: {} })
-            })
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
-    }
-    export const editSkills = (_body) => {
-        return new Promise((resolve, reject) => {
-            const currentTime = Math.floor(Date.now() / 1000);
-            (async () => {
-                const client = await database().connect()
-                try {
-                    var candidateId=_body.candidateId
-                    console.log(candidateId)
-                    let skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];
-                    let competentSkillSet = ![undefined, null].includes(_body.skills) ? _body.skills.filter(a=> a.competency==2 || a.competency==3).map(a => a.skill.skillId) :[];
-                    const deleteCandidateSkillsQuery = {
-                        name: 'delete-candidate-skills',
-                        text: jobReceivedQuery.deleteCandidateSkills,
-                        values: [candidateId, skillSet],
-                    }
-                    console.log(deleteCandidateSkillsQuery)
-                    await client.query(deleteCandidateSkillsQuery)
-                    if (Array.isArray(_body.skills))
-                    {
-                        let promise=[];
-                        _body.skills.forEach(element => { 
-                            var competency=element.competency
-                            var preffered=element.preferred
-                            var skillId=element.skill["skillId"]
-                            var yearsOfExperience=element.yoe
-                            const addSkills = {
-                                name: 'add-candidate-skills',
-                                text: jobReceivedQuery.addCandidateSkills,
-                                values: [candidateId, skillId,competency,preffered,yearsOfExperience,currentTime,_body.employeeId,true],
-                            }
-                            promise.push(client.query(addSkills))
-                        });
-                        await Promise.all(promise);
-                    }
+    })
+}
+
+export const submitCandidateProfile = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+
+                await client.query('BEGIN');
+                let candidateId = _body.candidateId;
+                const updateCandidateStatus = {
+                    name: 'update-candidate-status',
+                    text: jobReceivedQuery.updateCandidateStatus,
+                    values: [candidateId, _body.employeeId, currentTime],
+                }
+                let result = await client.query(updateCandidateStatus);
+                
+                const addDefaultTraits = {
+                    name: 'add-default-traits',
+                    text: jobReceivedQuery.addDefaultAssessmentTraits,
+                    values: [candidateId, _body.employeeId, currentTime],
+                }
+                await client.query(addDefaultTraits);
+                const addSkillRelatedTraits = {
+                    name: 'add-skill-based-traits',
+                    text: jobReceivedQuery.addSkillBasedAssesmentTraits,
+                    values: [candidateId, _body.employeeId, currentTime],
+                }
+                await client.query(addSkillRelatedTraits);
+                
+                await client.query('COMMIT');
+                let candidateFirstName=result.rows[0].candidate_first_name;
+                let candidateLastName=result.rows[0].candidate_last_name;
+                let companyId = result.rows[0].company_id;
+                let jobReceivedId = result.rows[0].job_received_id;
+                let positionName = _body.positionName;
+                
+                if(![null,undefined,""].includes(_body.positionId))
+                {
+                    const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
+                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position' })    
+                }
+                
+                resolve({ code: 200, message: "Candidate profile submitted", data: {} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
+
+
+export const editSkills = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+                var candidateId=_body.candidateId
+                console.log(candidateId)
+                let skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];
+                let competentSkillSet = ![undefined, null].includes(_body.skills) ? _body.skills.filter(a=> a.competency==2 || a.competency==3).map(a => a.skill.skillId) :[];
+                const deleteCandidateSkillsQuery = {
+                    name: 'delete-candidate-skills',
+                    text: jobReceivedQuery.deleteCandidateSkills,
+                    values: [candidateId, skillSet],
+                }
+                console.log(deleteCandidateSkillsQuery)
+                await client.query(deleteCandidateSkillsQuery)
+                if (Array.isArray(_body.skills))
+                {
+                    let promise=[];
+                    _body.skills.forEach(element => { 
+                        var competency=element.competency
+                        var preffered=element.preferred
+                        var skillId=element.skill["skillId"]
+                        var yearsOfExperience=element.yoe
+                        const addSkills = {
+                            name: 'add-candidate-skills',
+                            text: jobReceivedQuery.addCandidateSkills,
+                            values: [candidateId, skillId,competency,preffered,yearsOfExperience,currentTime,_body.employeeId,true],
+                        }
+                        promise.push(client.query(addSkills))
+                    });
+                    await Promise.all(promise);
+                }
+                
+                if(_body.candidateStatus == 3)
+                {
                     const deleteCandidateAssesmentTraitsQuery = {
                         name: 'delete-candidate-assessment-traits',
                         text: jobReceivedQuery.deleteCandidateAssesmentTraits,
@@ -474,21 +408,23 @@ export const saveCandidateProfile = (_body) => {
                         values: [candidateId, _body.employeeId, currentTime],
                     }
                     await client.query(addSkillRelatedTraits);
-                    
-                    
-                    resolve({ code: 200, message: "Candidate skills updated successfully", data: {} });
-                    
-                } catch (e) {
-                    console.log(e)
-                    await client.query('ROLLBACK')
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                } finally {
-                    client.release();
                 }
-            })().catch(e => {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} })
-            })
+                
+                
+                
+                resolve({ code: 200, message: "Candidate skills updated successfully", data: {} });
+                
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
-        // reject({ code: 400, message: "Failed. Please try again.", data: {} });
-        
-    }
+    })
+    // reject({ code: 400, message: "Failed. Please try again.", data: {} });
+    
+}

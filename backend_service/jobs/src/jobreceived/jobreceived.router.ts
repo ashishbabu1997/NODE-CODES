@@ -1,4 +1,4 @@
-import {getJobReceived, getJobReceivedById, updateFlag, updateReject, saveOrSubmitProfile, getProfile,editProfile,skillEdits} from './jobreceived.controller';
+import {getJobReceived, getJobReceivedById, updateFlag, updateReject, addProfile, submitProfile,getProfile,skillEdits} from './jobreceived.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addProfileSchema from './schemas/addProfileSchema';
@@ -13,8 +13,9 @@ router
     .get('/getById',jwtAuth, setData(), validate(getJobReceivedByIdSchema),getJobReceivedById)
     .put('/', jwtAuth, setData(),validate(schemaFlag), updateFlag)
     .put('/reject', jwtAuth, setData(),validate(schemaReject), updateReject)
-    .post('/',jwtAuth, setData(),validate(addProfileSchema),saveOrSubmitProfile)
-    .put('/editProfiles',jwtAuth, setData(),validate(editprofileSchema),editProfile)
+    .post('/addProfile',jwtAuth, setData(),addProfile)
+    .put('/submitProfile',jwtAuth, setData(),submitProfile)
+    // .put('/editProfiles',jwtAuth, setData(),validate(editprofileSchema),editProfile)
     .put('/editSkills',jwtAuth, setData(),skillEdits)
     .get('/profile',jwtAuth, setData(), getProfile)
 export default router;
