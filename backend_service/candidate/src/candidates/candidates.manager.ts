@@ -1176,3 +1176,33 @@ export const getCandidateDetails = (_body) => {
                 })
             })
         }
+        export const addWorkExperience = (_body) => {
+            return new Promise((resolve, reject) => {
+                const currentTime = Math.floor(Date.now() / 1000);
+                (async () => {
+                    const client = await database().connect()
+                    try {
+                        
+                    
+                            const addWorkExperiences = {
+                                name: 'add-work-experiences',
+                                text: candidateQuery.addExperience,
+                                values: [_body.candidateId,_body.totalWorkExperience,_body.remoteWorkExperience,_body.candidatePositionName,_body.cost,_body.billingTypeId,currentTime,_body.employeeId],
+                            }
+                            await client.query(addWorkExperiences);
+                       
+                        
+                        resolve({ code: 200, message: "Candidate work experience updated successfully", data: {} });
+                        
+                    } catch (e) {
+                        console.log(e)
+                        await client.query('ROLLBACK')
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    } finally {
+                        client.release();
+                    }
+                })().catch(e => {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                })
+            })
+        }

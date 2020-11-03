@@ -60,5 +60,6 @@ export default {
     fetchEducationDetails:'select candidate_education_id as "candidateEducationId", candidate_id as "candidateId", degree, college, start_date as "startDate", end_date as "endDate" from candidate_education where candidate_id = $1 and status = true',
     fetchPublicationDetails:'select candidate_publication_id as "candidatePublicationId", candidate_id as "candidateId", title, published_year as "publishedYear", link from candidate_publication where candidate_id = $1 and status = true',
     fetchAwardDetails:'select candidate_certification_id as "candidateAwardId", candidate_id as "candidateId", certification_id as "certificationId", certified_year as "certifiedYear" from candidate_certifications where candidate_id = $1 and status = true',
-    fetchLanguageDetails:'select candidate_language_id as "candidateLanguageId", candidate_id as "candidateId", language_name as "languageName", proficiency from candidate_language where candidate_id = $1 and status = true'
+    fetchLanguageDetails:'select candidate_language_id as "candidateLanguageId", candidate_id as "candidateId", language_name as "languageName", proficiency from candidate_language where candidate_id = $1 and status = true',
+    addExperience:'update candidate set work_experience=$2,remote_work_experience=$3,candidate_position_name=$4,rate=$5,billing_type=$6,updated_on=$7,updated_by=$8 where candidate_id=$1'
 }
