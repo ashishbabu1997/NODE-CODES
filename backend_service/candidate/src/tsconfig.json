@@ -1,16 +1,16 @@
 {
-    "compilerOptions": {
-      "target": "es6",
-      "module": "commonjs",
-      "outDir": "../dist/",
-      "sourceMap": true,
-      "allowJs": true
-    },
-    "include": [
-      "*.ts", "candidates/candidates.route.ts", "candidates/candidates.controller.ts"
-    ],
-    "exclude": [
-      "node_modules"
-    ]
-  }
-  
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "../dist/",
+    "sourceMap": true,
+    "allowJs": true,
+    "resolveJsonModule": true  },
+  "include": [
+    "*.ts", "candidates/candidates.route.ts", "candidates/candidates.controller.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+
