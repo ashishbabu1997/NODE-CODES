@@ -630,8 +630,6 @@ export const getCandidateDetails = (_body) => {
                     });
                     await Promise.all(promise);
                     await client.query('COMMIT')
-                    var candidateFirstName = candidateList.firstName
-                    var candidateLastName = candidateList.lastName
                     resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
                 } catch (e) {
                     console.log(e)
@@ -685,7 +683,7 @@ export const getCandidateDetails = (_body) => {
                     const modifyCandidateProfileDetailsQuery = {
                         name: 'modify-candidate-ProfileDetails',
                         text: candidateQuery.modifyProfileDetails,
-                        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.workExperience, _body.remoteWorkExperience,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime,_body.employeeId,_body.candidatePositionName],
+                        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime,_body.employeeId],
                     }
                     await client.query(modifyCandidateProfileDetailsQuery);
                     resolve({ code: 200, message: "Candidate ProfileDetails updated successfully", data: {} });
