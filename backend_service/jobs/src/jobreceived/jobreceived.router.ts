@@ -14,7 +14,6 @@ router
     .put('/reject', jwtAuth, setData(),validate(schemaReject), updateReject)
     .post('/addProfile',jwtAuth, setData(),addProfile)
     .put('/submitProfile',jwtAuth, setData(),submitProfile)
-    // .put('/editProfiles',jwtAuth, setData(),validate(editprofileSchema),editProfile)
     .put('/editSkills',jwtAuth, setData(),skillEdits)
     .get('/profile',jwtAuth, setData(), getProfile)
 export default router;
