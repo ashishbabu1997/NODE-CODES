@@ -11,7 +11,7 @@ const swaggerDefinition = {
     version: '1.0.0',
     description: 'Endpoints to test jobs (jobreceived & positions) routes',
   },
-  host: `localhost:4003`,
+  host: `devjobs.ellow.io`,
   basePath: `/api/${AppConfig.version}/jobs`,
   securityDefinitions: {
     bearerAuth: {
