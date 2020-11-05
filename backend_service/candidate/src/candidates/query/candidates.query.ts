@@ -27,7 +27,7 @@ export default {
     deleteLanguageProficiency:'update candidate_language set status = false, updated_on = $2, updated_by = $3 where candidate_language_id = $1',
     
     modifyCandidateAvailability: `update candidate set availability = $2, type_of_availability = $3, ready_to_start = $4, updated_on=$5, updated_by = $6 where candidate_id = $1`,
-    modifyProfileDetails : 'update candidate set candidate_first_name = $2, candidate_last_name = $3, description = $4, image = $5, citizenship = $6, residence = $7, phone_number = $7, email_address = $9, updated_on = $10, updated_by = $11 where candidate_id = $1',
+    modifyProfileDetails : 'update candidate set candidate_first_name = $2, candidate_last_name = $3, description = $4, image = $5, citizenship = $6, residence = $7, phone_number = $8, email_address = $9, updated_on = $10, updated_by = $11 where candidate_id = $1',
 
     modifyCandidateProject: `update candidate_project set candidate_id = $2, project_name = $3, company_name = $4, project_description = $5, project_link = $6, side_project = $7, skills = $8, updated_on = $9, updated_by = $10 where candidate_project_id = $1`,
     insertCandidateProject:'insert into candidate_project (candidate_id, project_name,company_name, project_description, project_link, side_project, skills, created_by, updated_by, created_on, updated_on ) values ($1,$2,$3,$4,$5,$6,$7,$8,$8,$9,$9)',
