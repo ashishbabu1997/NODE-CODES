@@ -11,7 +11,7 @@ const swaggerDefinition = {
     version: '1.0.0',
     description: 'Endpoints to test the user candidates routes',
   },
-  host: `devcandidate.ellow.io`,
+  
   basePath: `/api/${AppConfig.version}/candidates`,
   securityDefinitions: {
     bearerAuth: {
