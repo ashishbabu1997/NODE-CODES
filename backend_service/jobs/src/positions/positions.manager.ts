@@ -451,7 +451,7 @@ export const createCompanyPositions = async (_body) => {
                                                 else if(_body.jobStatus==8)
                                                 {
                                                     message=`A position named ${positionName} has been closed.`
-
+                                                    
                                                 }   
                                             }
                                         })
@@ -526,7 +526,7 @@ export const createCompanyPositions = async (_body) => {
                                         values:[positionId,currentTime,updateStatus]
                                     }
                                     let result = await client.query(updateJobReceivedStatus);
-
+                                    
                                     let jobReceivedId = result.rows[0]!=undefined?result.rows[0].job_received_id:null;                                    
                                     if(![null,undefined].includes(jobReceivedId))
                                     {

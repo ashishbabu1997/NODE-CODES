@@ -16,8 +16,8 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 configurePassport();
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/', router);
 
 app.listen(AppConfig.http.port, () => {

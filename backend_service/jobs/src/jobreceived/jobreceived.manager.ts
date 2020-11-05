@@ -65,25 +65,6 @@ export const getJobReceivedByJobReceivedId = (_body) => {
     })
 }
 
-export const updateflagForJobReceived = (_body) => {
-    return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
-        const query = {
-            name: 'update-position-flag',
-            text: jobReceivedQuery.updateFlag,
-            values: [_body.jobReceivedId, _body.companyId, _body.flag, _body.employeeId, currentTime]
-        }
-        
-        database().query(query, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                return;
-            }
-            resolve({ code: 200, message: "Flag updated successfully", data: {} });
-        })
-    })
-}
-
 export const updateIsRejectForJobReceived = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);

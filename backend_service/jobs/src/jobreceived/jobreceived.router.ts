@@ -1,4 +1,4 @@
-import {getJobReceived, getJobReceivedById, updateFlag, updateReject, addProfile, submitProfile,getProfile,skillEdits} from './jobreceived.controller';
+import {getJobReceived, getJobReceivedById, updateReject, addProfile, submitProfile,getProfile,skillEdits} from './jobreceived.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addProfileSchema from './schemas/addProfileSchema';
@@ -11,7 +11,6 @@ const router = express.Router();
 router
     .get('/',jwtAuth, setData(), validate(getJobReceivedSchema),getJobReceived)
     .get('/getById',jwtAuth, setData(), validate(getJobReceivedByIdSchema),getJobReceivedById)
-    .put('/', jwtAuth, setData(),validate(schemaFlag), updateFlag)
     .put('/reject', jwtAuth, setData(),validate(schemaReject), updateReject)
     .post('/addProfile',jwtAuth, setData(),addProfile)
     .put('/submitProfile',jwtAuth, setData(),submitProfile)

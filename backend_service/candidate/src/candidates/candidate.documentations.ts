@@ -150,7 +150,7 @@
 *             comment :
 *               type: string 
 *             ellowRate:
-*               type: integer
+*               type: number
 *           required:
 *             - candidateId
 *             - positionId

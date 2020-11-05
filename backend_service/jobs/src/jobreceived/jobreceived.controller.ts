@@ -1,4 +1,4 @@
-import {getAllJobReceived, getJobReceivedByJobReceivedId,submitCandidateProfile, updateflagForJobReceived, updateIsRejectForJobReceived, getProfileByCompanyId, saveCandidateProfile,editSkills} from './jobreceived.manager';
+import {getAllJobReceived, getJobReceivedByJobReceivedId,submitCandidateProfile, updateIsRejectForJobReceived, getProfileByCompanyId, saveCandidateProfile,editSkills} from './jobreceived.manager';
 import sendResponse from '../common/response/response';
 
 export const getJobReceived = (req, res) => {
@@ -16,14 +16,6 @@ export const getJobReceivedById = (req, res) => {
         sendResponse(res, response.code, 1,200, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0,400, error.message, error.data)
-    })
-}
-export const updateFlag = (req, res) => {
-    const body = req.body;
-    updateflagForJobReceived(body).then((response: any) => {
-        sendResponse(res, response.code, 1,202, response.message, response.data)
-    }).catch(error => {
-        sendResponse(res, error.code, 0,402, error.message, error.data)
     })
 }
 
