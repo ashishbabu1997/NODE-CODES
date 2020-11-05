@@ -263,6 +263,7 @@
 *       - Candidates
 *     name: Change vetting status
 *     summary: Change candidate vetting status
+*     description:  candidateVetted [0 - rejected ,1 - vetted ,null - nonvetted]
 *     security:
 *       - bearerAuth: []
 *     consumes:
@@ -272,7 +273,6 @@
 *     parameters:
 *       - name: body
 *         in: body
-*         description:  candidateVetted [0 - rejected ,1 - vetted ,null - non-vetted]
 *         schema:
 *           type: object
 *           properties:
@@ -350,6 +350,7 @@
 *     tags:
 *       - Candidates
 *     name: Change vetting status
+*     description:  action ['add' ,'update' ,'delete']
 *     summary: Add or edit language proficiency of a candidate
 *     security:
 *       - bearerAuth: []
@@ -360,7 +361,6 @@
 *     parameters:
 *       - name: body
 *         in: body
-*         description:  action ['add' ,'update' ,'delete']
 *         schema:
 *           type: object
 *           properties:
@@ -495,6 +495,7 @@
 *     tags:
 *       - Candidates
 *     name: Modify candidate projects
+*     description:  action ['add' ,'update' ,'delete']
 *     summary: Add or edit existing candidate project details
 *     security:
 *       - bearerAuth: []
@@ -505,7 +506,6 @@
 *     parameters:
 *       - name: body
 *         in: body
-*         description:  action ['add' ,'update' ,'delete']
 *         schema:
 *           type: object
 *           properties:
@@ -557,6 +557,7 @@
 *     tags:
 *       - Candidates
 *     name: Update work experience
+*     description:  action ['add' ,'update' ,'delete']
 *     summary: Add or edit existing work history details
 *     security:
 *       - bearerAuth: []
@@ -567,7 +568,6 @@
 *     parameters:
 *       - name: body
 *         in: body
-*         description:  action ['add' ,'update' ,'delete']
 *         schema:
 *           type: object
 *           properties:
@@ -614,6 +614,7 @@
 *     tags:
 *       - Candidates
 *     name: Update education
+*     description:  action ['add' ,'update' ,'delete']
 *     summary: Add or edit candidate education details
 *     security:
 *       - bearerAuth: []
@@ -624,7 +625,6 @@
 *     parameters:
 *       - name: body
 *         in: body
-*         description:  action ['add' ,'update' ,'delete']
 *         schema:
 *           type: object
 *           properties:
@@ -665,6 +665,7 @@
 *     tags:
 *       - Candidates
 *     name: Update awards and certifications
+*     description:  action ['add' ,'update' ,'delete']
 *     summary: Add or edit awards and certifications details
 *     security:
 *       - bearerAuth: []
@@ -675,7 +676,6 @@
 *     parameters:
 *       - name: body
 *         in: body
-*         description:  action ['add' ,'update' ,'delete']
 *         schema:
 *           type: object
 *           properties:
