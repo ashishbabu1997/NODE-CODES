@@ -165,11 +165,6 @@
 *               type: integer
 *             residence:
 *               type: integer
-*             billingTypeId:
-*               type: integer
-*               description: billingTypeId will be null for free candidates
-*             currencyTypeId:
-*               type: integer
 *               description: currencyTypeId will be null for free candidates
 *     responses:
 *       200:

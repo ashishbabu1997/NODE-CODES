@@ -171,7 +171,7 @@ export const saveCandidateProfile = (_body) => {
                 }
 
                 await client.query('COMMIT');
-                resolve({ code: 200, message: "Candidate profile added", data: {} });
+                resolve({ code: 200, message: "Candidate profile added", data: {candidateId} });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
