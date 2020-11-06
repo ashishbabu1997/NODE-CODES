@@ -1174,7 +1174,7 @@ export const getCandidateDetails = (_body) => {
                             var candidateProjectId=element.candidateProjectId
                             var candidateId=element.candidateId
                             var projectName=element.projectName
-                            var companyName=element.companyName
+                            var clientName=element.clientName
                             var yearsOfExperience=element.yoe
                             var projectDescription=element.projectDescription
                             var  projectLink=element.projectLink
@@ -1182,7 +1182,7 @@ export const getCandidateDetails = (_body) => {
                             console.log(skill)
                             var skills=JSON.parse(skill)
                             var extraProject=element.extraProject
-                            promise.push({candidateProjectId:candidateProjectId,candidateId:candidateId,projectName:projectName,companyName:companyName,
+                            promise.push({candidateProjectId:candidateProjectId,candidateId:candidateId,projectName:projectName,clientName:clientName,
                                 yearsOfExperience:yearsOfExperience,projectDescription:projectDescription,projectLink:projectLink,
                                 skills:skills,extraProject:extraProject})
                             });
