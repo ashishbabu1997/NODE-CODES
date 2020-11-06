@@ -790,7 +790,7 @@ export const getCandidateDetails = (_body) => {
                         const insertCandidateProjectsQuery = {
                             name: 'insert-candidate-projects',
                             text: candidateQuery.insertCandidateProject,
-                            values: [_body.candidateId,_body.projectName,_body.companyName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, _body.employeeId,currentTime],
+                            values: [_body.candidateId,_body.projectName,_body.clientName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, _body.employeeId,currentTime],
                         }
                         await client.query(insertCandidateProjectsQuery);
                     }
