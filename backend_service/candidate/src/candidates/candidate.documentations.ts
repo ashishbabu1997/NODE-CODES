@@ -701,16 +701,14 @@
 *       500:
 *         description: Server down
 */
-
-
 /**
 * @swagger
-* /updateSocialAndCloud:
+* /updateSocialProfile:
 *   put:
 *     tags:
 *       - Candidates
-*     name: Update social profile and cloud proficiency
-*     summary: Edit social profile and cloud proficiency
+*     name: Update social profile
+*     summary: Edit social profile details of a candidate
 *     security:
 *       - bearerAuth: []
 *     consumes:
@@ -725,27 +723,69 @@
 *           properties:
 *             candidateId:
 *               type: integer
-*             githubId:
+*             github:
+*               type: boolean
+*             githubLink:
+*               type: string
+*             linkedin:
+*               type: boolean
+*             linkedinLink:
+*               type: string
+*             stackoverflow:
+*               type: boolean
+*             stackoverflowLink:
+*               type: string
+*             kaggle:
+*               type: boolean
+*             kaggleLink:
+*               type: string
+*           required: [candidateId]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /updateCloudProficiency:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Update cloud proficiency
+*     summary: Edit cloud proficiency of a candidate
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
 *               type: integer
-*             stackoverflowId:
-*               type: integer
-*             kaggleId:
-*               type: integer
-*             linkedInId:
-*               type: integer
-*             cloudProficiency:
-*               type: object
-*               properties:
-*                 IBM:
-*                   type:boolean
-*                 Oracle:
-*                   type:boolean
-*                 Azure:
-*                   type:boolean
-*                 AWS:
-*                   type:boolean
-*           required:
-*             - candidateId
+*             aws:
+*               type: boolean
+*             gcp:
+*               type: boolean
+*             azure:
+*               type: boolean
+*             ibm:
+*               type: boolean
+*             oracle:
+*               type: boolean
+*           required: [candidateId]
 *     responses:
 *       200:
 *         description: Api success

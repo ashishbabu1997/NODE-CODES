@@ -1,4 +1,4 @@
-import { candidateDetails,updateSocialAndCloud, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience } from './candidates.controller';
+import { candidateDetails,updateCloudProficiency,updateSocialProfile, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience } from './candidates.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import approveRejectSchema from './schemas/approveRejectSchema';
@@ -29,7 +29,8 @@ router
     .put('/updateWorkExperience',jwtAuth, setData(),validate(workExperienceSchema), updateWorkExperience)
     .put('/updateEducation',jwtAuth, setData(),validate(educationSchema), updateEducation)
     .put('/updateAward',jwtAuth, setData(),validate(awardSchema), updateAward)
-    .put('/updateSocialAndCloud',jwtAuth, setData(),validate(profileDetailSchema), updateSocialAndCloud)
+    .put('/updateSocialProfile',jwtAuth, setData(),validate(profileDetailSchema), updateSocialProfile)
+    .put('/updateCloudProficiency',jwtAuth, setData(),validate(profileDetailSchema), updateCloudProficiency)
     .put('/updatePublication',jwtAuth, setData(),validate(publicationSchema), updatePublication)
     .put('/updateResumeFile',jwtAuth,setData(),validate(profileDetailSchema),updateResumeFile)
     .put('/updateOverallWorkExperience',jwtAuth, setData(),validate(profileDetailSchema), WorkExperience)

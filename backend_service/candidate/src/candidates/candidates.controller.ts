@@ -1,4 +1,4 @@
-import { getCandidateDetails,modifyResumeFile,modifySocialPresenceCloudProficiency,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience } from './candidates.manager';
+import { getCandidateDetails,modifyResumeFile,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience } from './candidates.manager';
 import sendResponse from '../common/response/response';
 
 export const candidateDetails = (req, res) => {
@@ -89,9 +89,18 @@ export const updateResumeFile = (req, res) => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)
     })
 }
-export const updateSocialAndCloud = (req, res) => {
+export const updateSocialProfile = (req, res) => {
     const body = req.body;
-    modifySocialPresenceCloudProficiency(body).then((response: any) => {
+    modifySocialPresence(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
+export const updateCloudProficiency = (req, res) => {
+    const body = req.body;
+    modifyCloudProficiency(body).then((response: any) => {
         sendResponse(res, response.code, 1, 201, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)

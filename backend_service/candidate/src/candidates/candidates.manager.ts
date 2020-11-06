@@ -930,20 +930,50 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
-    export const modifySocialPresenceCloudProficiency = (_body) => {
+    export const modifyCloudProficiency = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
             (async () => {
                 const client = await database().connect()
                 try {
-                    ![null,undefined,""].includes(_body.cloudProficiency)?JSON.parse(_body.cloudProficiency):"";
+
                     const insertCandidateCloudQuery = {
-                        name: 'insert-candidate-education',
-                        text: candidateQuery.modifyCloudAndSocial,
-                        values: [_body.candidateId,_body.githubId,_body.stackoverflowId,_body.kaggleId,_body.linkedInId,_body.cloudProficiency,currentTime,_body.employeeId],
+                        name: 'insert-candidate-cloud-proficiency',
+                        text: candidateQuery.modifyCloud,
+                        values: [_body.candidateId,_body.aws,_body.gcp,_body.azure,_body.ibm,_body.oracle,_body.employeeId,currentTime],
                     }
                     await client.query(insertCandidateCloudQuery);
-                    resolve({ code: 200, message: "Candidate proficiency and presence updated successfully", data: {} });
+
+                    resolve({ code: 200, message: "Candidate cloud proficiency updated successfully", data: {} });
+                    
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            })
+        })
+    }
+
+    export const modifySocialPresence = (_body) =>{
+        return new Promise((resolve, reject) => {
+            const currentTime = Math.floor(Date.now() / 1000);
+            (async () => {
+                const client = await database().connect()
+                try {
+                    const insertCandidateSocialQuery = {
+                        name: 'insert-candidate-social-profile',
+                        text: candidateQuery.modifySocial,
+                        values: [_body.candidateId,_body.github,_body.githubLink,_body.linkedin,_body.linkedinLink,_body.stackoverflow,_body.stackoverflowLink,_body.kaggle,_body.kaggleLink,_body.employeeId,currentTime],
+                    }
+                    await client.query(insertCandidateSocialQuery);
+
+
+                    resolve({ code: 200, message: "Candidate social profile updated successfully", data: {} });
                     
                 } catch (e) {
                     console.log(e)
@@ -1102,6 +1132,21 @@ export const getCandidateDetails = (_body) => {
                         values: [candidateId],
                     }
                     var educations=await client.query(fetchEducations);
+
+                    const fetchSocialProfile = {
+                        name: 'fetch-social-profile',
+                        text: candidateQuery.fetchSocialProfile,
+                        values: [candidateId],
+                    }
+                    var socialProfileDetails=await client.query(fetchSocialProfile);
+
+                    const fetchCloudProficiency = {
+                        name: 'fetch-cloud-proficiency',
+                        text: candidateQuery.fetchCloudProficiency,
+                        values: [candidateId],
+                    }
+                    var cloudProficiencyDetails=await client.query(fetchCloudProficiency);
+
                     const fetchPublications = {
                         name: 'fetch-publications-details',
                         text: candidateQuery.fetchPublicationDetails,
@@ -1170,12 +1215,7 @@ export const getCandidateDetails = (_body) => {
                             typeOfAvailability : allProfileDetails.rows[0].typeOfAvailability,
                             readyToStart : allProfileDetails.rows[0].readyToStart
                         }
-                        let socialPresence = {
-                            kaggleId : allProfileDetails.rows[0].kaggleId,
-                            stackoverflowId : allProfileDetails.rows[0].stackoverflowId,
-                            linkedInId : allProfileDetails.rows[0].linkedInId,
-                            githubId : allProfileDetails.rows[0].githubId
-                        }
+                        
                         
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Resume listed successfully", 
@@ -1185,8 +1225,8 @@ export const getCandidateDetails = (_body) => {
                             resume : allProfileDetails.rows[0].resume,
                             overallWorkExperience,
                             availability,
-                            socialPresence,
-                            cloudProficiency:allProfileDetails.rows[0].cloudProficiency,
+                            socialPresence:socialProfileDetails.rows[0],
+                            cloudProficiency:cloudProficiencyDetails.rows[0],
                             skills:skills.rows,
                             projects:promise,
                             assesments:assesements.rows,
