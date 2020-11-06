@@ -192,9 +192,7 @@
 *               type: integer
 *             positionId:
 *               type: integer
-*           required:
-*             - candidateId
-*             - positionId
+*           required: [candidateId,positionId]
 *     responses:
 *       200:
 *         description: Api success

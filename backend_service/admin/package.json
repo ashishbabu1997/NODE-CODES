@@ -28,7 +28,9 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^8.2.1",
-    "pm2": "^4.4.0"
+    "pm2": "^4.4.0",
+    "swagger-jsdoc": "^5.0.0",
+    "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
     "@types/es6-promise": "^3.3.0",
