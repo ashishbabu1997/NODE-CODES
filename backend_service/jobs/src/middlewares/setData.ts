@@ -1,6 +1,6 @@
 export default () => {
     return (req, res, next) => {
-        console.log(req.user.companyId)
+        console.log('tokenData : ', req.user.companyId)
         if (req.user.hasOwnProperty('companyId')) {
             if (req.route.methods.hasOwnProperty("post") || req.route.methods.hasOwnProperty("put")) {
                 req.body['companyId'] = req.user.companyId;
