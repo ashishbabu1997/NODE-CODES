@@ -790,7 +790,7 @@ export const getCandidateDetails = (_body) => {
                         const insertCandidateProjectsQuery = {
                             name: 'insert-candidate-projects',
                             text: candidateQuery.insertCandidateProject,
-                            values: [_body.candidateId,_body.projectName,_body.companyName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, _body.employeeId,currentTime],
+                            values: [_body.candidateId,_body.projectName,_body.clientName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, _body.employeeId,currentTime],
                         }
                         await client.query(insertCandidateProjectsQuery);
                     }
@@ -1174,7 +1174,7 @@ export const getCandidateDetails = (_body) => {
                             var candidateProjectId=element.candidateProjectId
                             var candidateId=element.candidateId
                             var projectName=element.projectName
-                            var companyName=element.companyName
+                            var clientName=element.clientName
                             var yearsOfExperience=element.yoe
                             var projectDescription=element.projectDescription
                             var  projectLink=element.projectLink
@@ -1182,7 +1182,7 @@ export const getCandidateDetails = (_body) => {
                             console.log(skill)
                             var skills=JSON.parse(skill)
                             var extraProject=element.extraProject
-                            promise.push({candidateProjectId:candidateProjectId,candidateId:candidateId,projectName:projectName,companyName:companyName,
+                            promise.push({candidateProjectId:candidateProjectId,candidateId:candidateId,projectName:projectName,clientName:clientName,
                                 yearsOfExperience:yearsOfExperience,projectDescription:projectDescription,projectLink:projectLink,
                                 skills:skills,extraProject:extraProject})
                             });
