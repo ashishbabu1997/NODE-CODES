@@ -95,7 +95,6 @@ export const getProfileByCompanyId = (_body) => {
         {
             selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
         }
-        if (_body.companyId) {
             const query = {
                 name: 'get-ProfileByCompanyId',
                 text: selectQuery,
@@ -110,24 +109,6 @@ export const getProfileByCompanyId = (_body) => {
                 }
                 resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
             })
-        }
-        else {
-            
-            const listJobCandidatesQuery = {
-                name: 'get-Profile',
-                text: selectQuery,
-                values: [parseInt(_body.jobReceivedId)]
-            }
-            
-            database().query(listJobCandidatesQuery, (error, results) => {
-                if (error) {
-                    console.log(error)
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                    return;
-                }
-                resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
-            })
-        }
         
     })
 }
