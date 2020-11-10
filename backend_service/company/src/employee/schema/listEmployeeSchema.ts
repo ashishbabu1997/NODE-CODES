@@ -1,7 +1,7 @@
 import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({ 
-    filter: Joi.string().allow('').error(errors => {
+    filter: Joi.string().optional().allow('').error(errors => {
         errors.forEach(err => {
             console.log(err)
             switch (err.code) {
@@ -15,23 +15,7 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    companyId: Joi.number().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                    err.message = "company Id should not be empty!";
-                    break;
-                case "number.base":
-                    err.message = "company Id must be a number";
-                    break;
-                default:
-                    err.message = "Invalid company Id";
-                    break;
-            }
-        });
-        return errors;
-    }), 
-    sortBy: Joi.string().required().valid('DESC','ASC').insensitive().lowercase().error(errors => {
+    sortType: Joi.string().optional().valid('DESC','ASC').insensitive().lowercase().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
@@ -47,7 +31,7 @@ export default Joi.object().keys({
         });
         return errors;
     }), 
-    limit:  Joi.number().required().error(errors => {
+    limit:  Joi.number().optional().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
@@ -63,7 +47,7 @@ export default Joi.object().keys({
         });
         return errors;
     }), 
-    skip:  Joi.number().required().error(errors => {
+    skip:  Joi.number().optional().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
