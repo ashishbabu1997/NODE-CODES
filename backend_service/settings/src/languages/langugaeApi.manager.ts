@@ -16,7 +16,7 @@ export const listLanguages = () => {
         if (error) {
             return ({ code: 400, message: "Failed. Please try again.", data: {} });
         }
-        return({ code: 200, message: "Languages listed succesfully", data:  results.rows  });   
+        return({ code: 200, message: "Languages listed succesfully", data: {languages: results.rows } });   
     }).then((result) => {
         return  result;
     })
