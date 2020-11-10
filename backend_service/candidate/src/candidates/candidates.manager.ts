@@ -1203,11 +1203,14 @@ export const getCandidateDetails = (_body) => {
                             var projectDescription=element.projectDescription
                             var  projectLink=element.projectLink
                             var skill=element.skills
+                            var contribtion=element.contribution
+                            var parentCompany=element.doneFor
+                            var roleDone=element.role
                             console.log(skill)
                             var skills=JSON.parse(skill)
                             var extraProject=element.extraProject
                             promise.push({candidateProjectId:candidateProjectId,candidateId:candidateId,projectName:projectName,clientName:clientName,
-                                yearsOfExperience:yearsOfExperience,projectDescription:projectDescription,projectLink:projectLink,
+                                yearsOfExperience:yearsOfExperience,projectDescription:projectDescription,projectLink:projectLink,contribution:contribtion,doneFor:parentCompany,role:roleDone,
                                 skills:skills,extraProject:extraProject})
                             });
                             await Promise.all(promise);
