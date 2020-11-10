@@ -824,7 +824,7 @@ export const getCandidateDetails = (_body) => {
                         const modifyCandidateProjectsQuery = {
                             name: 'modify-candidate-projects',
                             text: candidateQuery.modifyCandidateProject,
-                            values: [_body.candidateProjectId,_body.candidateId,_body.projectName,_body.companyName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, currentTime, _body.employeeId,,_body.contribution,_body.doneFor,_body.role],
+                            values: [_body.candidateProjectId,_body.candidateId,_body.projectName,_body.clientName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, currentTime, _body.employeeId,_body.contribution,_body.doneFor,_body.role],
                         }
                         await client.query(modifyCandidateProjectsQuery);
                     }
