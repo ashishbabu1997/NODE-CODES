@@ -712,7 +712,7 @@ export const getCandidateDetails = (_body) => {
                         const insertLanguageProficiencyQuery = {
                             name: 'insert-candidate-language',
                             text: candidateQuery.insertLanguageProficiency,
-                            values: [_body.candidateId,_body.languageName,_body.proficiency, _body.employeeId,currentTime],
+                            values: [_body.candidateId,_body.languageId,_body.proficiency, _body.employeeId,currentTime],
                         }
                         await client.query(insertLanguageProficiencyQuery);
                     }
@@ -721,7 +721,7 @@ export const getCandidateDetails = (_body) => {
                         const modifyLanguageProficiencyQuery = {
                             name: 'modify-candidate-language',
                             text: candidateQuery.modifyLanguageProficiency,
-                            values: [_body.candidateLanguageId,_body.candidateId,_body.languageName,_body.proficiency, currentTime, _body.employeeId],
+                            values: [_body.candidateLanguageId,_body.candidateId,_body.languageId,_body.proficiency, currentTime, _body.employeeId],
                         }
                         await client.query(modifyLanguageProficiencyQuery);
                     }

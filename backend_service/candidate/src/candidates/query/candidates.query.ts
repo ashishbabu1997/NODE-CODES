@@ -63,6 +63,6 @@ export default {
     fetchSocialProfile:'select candidate_id as "candidateId",github, github_link as "githubLink", linkedin, linkedin_link as "linkedinLink", stackoverflow,stackoverflow_link as "stackoverflowLink",kaggle, kaggle_link as "kaggleLink" from candidate_social where candidate_id = $1 and status=true',
     fetchPublicationDetails:'select candidate_publication_id as "candidatePublicationId", candidate_id as "candidateId", title, published_year as "publishedYear", link from candidate_publication where candidate_id = $1 and status = true',
     fetchAwardDetails:'select candidate_certification_id as "candidateAwardId", candidate_id as "candidateId", certification_id as "certificationId", certified_year as "certifiedYear" from candidate_certifications where candidate_id = $1 and status = true',
-    fetchLanguageDetails:'select candidate_language_id as "candidateLanguageId", candidate_id as "candidateId", language_name as "languageName", proficiency from candidate_language where candidate_id = $1 and status = true',
+    fetchLanguageDetails:'select candidate_language_id as "candidateLanguageId", candidate_id as "candidateId", language_id as "languageId", proficiency from candidate_language where candidate_id = $1 and status = true',
     addExperience:'update candidate set work_experience=$2, remote_work_experience=$3, candidate_position_name=$4, rate=$5, billing_type=$6, currency_type_id=$7, updated_on=$8, updated_by=$9 where candidate_id = $1'
 }

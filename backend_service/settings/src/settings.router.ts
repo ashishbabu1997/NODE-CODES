@@ -1,5 +1,4 @@
 import AppConfig from './config/config';
-import hiringStepsRouter from './hiringSteps/hiringSteps.route';
 import preferencesRouter from './preferences/preferences.route';
 import certificateRouter from './certificate/certificate.route';
 import ServicesRouter from './services/ServicesRoute';
@@ -9,12 +8,13 @@ import SkillsRouter from './skills/SkillsRoute';
 import countryRouter from './countries/countryApi.route'
 import stateRouter from './states/statesApi.route'
 import jobCategoryRouter from './jobCategory/jobCategory.route'
-import assessmentTraitRouter from './assessmentTraits/assessmentTraitsRoute'
+import assessmentTraitRouter from './assessmentTraits/assessmentTraitsRoute';
+import languageRouter from './languages/languageApi.route';
+
 import * as express from 'express';
 const router = express.Router();
 
 router
-    .use(`/api/${AppConfig.version}/settings/hiringSteps`, hiringStepsRouter)
     .use(`/api/${AppConfig.version}/settings/preferences`, preferencesRouter)
     .use(`/api/${AppConfig.version}/settings/certificate`, certificateRouter)
     .use(`/api/${AppConfig.version}/settings/services`, ServicesRouter)
@@ -25,7 +25,7 @@ router
     .use(`/api/${AppConfig.version}/settings/states`, stateRouter)
     .use(`/api/${AppConfig.version}/settings/jobCategory`, jobCategoryRouter)
     .use(`/api/${AppConfig.version}/settings/assessmentTraits`, assessmentTraitRouter)
-
+    .use(`/api/${AppConfig.version}/settings/languages`, languageRouter)
 export default router;
 
 
