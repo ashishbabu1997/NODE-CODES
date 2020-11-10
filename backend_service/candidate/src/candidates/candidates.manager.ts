@@ -777,6 +777,30 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
+    // {
+    //     "projectName": "Automated Calculator",
+    //     "clientName": "Tcs",
+    //     "skills": [
+    //       {
+    //         "skillId": 1172,
+    //         "skillName": "Material-UI",
+    //         "topRated": 0
+    //       },
+    //       {
+    //         "skillId": 1174,
+    //         "skillName": "AppRun",
+    //         "topRated": 0
+    //       }
+    //     ],
+    //     "projectDescription": "Good",
+    //     "contribution": "Devleoepr",
+    //     "doneFor": "Doog",
+    //     "role": "Testing",
+    //     "projectLink": "hhtp://dfg.com",
+    //     "candidateId": 2,
+    //     "extraProject": false,
+    //     "action": "add"
+    //   }
     
     export const modifyCandidateProject = (_body) => {
         return new Promise((resolve, reject) => {
@@ -790,7 +814,7 @@ export const getCandidateDetails = (_body) => {
                         const insertCandidateProjectsQuery = {
                             name: 'insert-candidate-projects',
                             text: candidateQuery.insertCandidateProject,
-                            values: [_body.candidateId,_body.projectName,_body.clientName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, _body.employeeId,currentTime],
+                            values: [_body.candidateId,_body.projectName,_body.clientName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, _body.employeeId,currentTime,_body.contribution,_body.doneFor,_body.role],
                         }
                         await client.query(insertCandidateProjectsQuery);
                     }
@@ -800,7 +824,7 @@ export const getCandidateDetails = (_body) => {
                         const modifyCandidateProjectsQuery = {
                             name: 'modify-candidate-projects',
                             text: candidateQuery.modifyCandidateProject,
-                            values: [_body.candidateProjectId,_body.candidateId,_body.projectName,_body.companyName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, currentTime, _body.employeeId],
+                            values: [_body.candidateProjectId,_body.candidateId,_body.projectName,_body.companyName,_body.projectDescription,_body.projectLink,_body.extraProject,skills, currentTime, _body.employeeId,,_body.contribution,_body.doneFor,_body.role],
                         }
                         await client.query(modifyCandidateProjectsQuery);
                     }
