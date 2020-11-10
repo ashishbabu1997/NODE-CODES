@@ -1,17 +1,16 @@
 {
-    "compilerOptions": {
-      "target": "es6",
-      "module": "commonjs",
-      "outDir": "../dist/",
-      "sourceMap": true,
-      "allowJs": true,
-      "esModuleInterop":true
-    },
-    "include": [
-      "*.ts", "locations/locations.route.ts", "locations/locations.controller.ts"
-    ],
-    "exclude": [
-      "node_modules"
-    ]
-  }
-  
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "../dist/",
+    "sourceMap": true,
+    "allowJs": true
+  },
+  "include": [
+    "*.ts", "locations/locations.route.ts", "locations/locations.controller.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
+
