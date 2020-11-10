@@ -368,8 +368,8 @@
 *               type: integer
 *             proficiency:
 *               type: integer
-*             languageName:
-*               type: string
+*             languageId:
+*               type: integer
 *             action:
 *               type: string
 *           required:
