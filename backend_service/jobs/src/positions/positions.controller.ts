@@ -75,5 +75,6 @@ export const updateReadStatus = (req, res) => {
     }).catch(error => {
         sendResponse(res, error.code, 0,401, error.message, error.data)
     })
+
 }
 
