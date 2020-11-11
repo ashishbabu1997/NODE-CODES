@@ -4,8 +4,8 @@ import * as cors from 'cors';
 import AppConfig from './config/config';
 import router from './jobs.router';
 import configurePassport from './config/passportJwtConfig';
-// import {swaggerSpec} from './swagger';
-// import * as swaggerUi from 'swagger-ui-express';
+import {swaggerSpec} from './swagger';
+import * as swaggerUi from 'swagger-ui-express';
 
 const app = express();
 app.use(cors());

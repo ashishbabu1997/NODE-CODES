@@ -12,35 +12,29 @@ export const getCompanyPositions = (_body) => {
         var filterQuery='';
         if(_body.body.filter)
         {
-            console.log(">>>>>>>>>TRUE<<<<<<<<<")
-            if(_body.body.filter.positionName)
-            {
-                console.log(">>>>>>>>>1<<<<<<<<<")
-                filterQuery=' AND position_name ILIKE %'+_body.body.filter.positionName+'%'
-            }
             if(_body.body.filter.postedOn)
             {
                 console.log(">>>>>>>>>2<<<<<<<<<")
 
-                filterQuery=filterQuery+' AND p.created_on BETWEEN '+'('+_body.body.filter.postedOn.start+','+_body.body.filter.postedOn.end+')'
+                filterQuery=filterQuery+' AND p.created_on BETWEEN '+_body.body.filter.postedOn.start+' AND '+_body.body.filter.postedOn.end
             }
             if(_body.body.filter.openPositions)
             {
-                filterQuery=filterQuery+' AND p.job_status IN '+'('+_body.body.filter.openPositions+')'
+                filterQuery=filterQuery+' AND p.job_status ='+_body.body.filter.openPositions
 
             }
             if(_body.body.filter.status)
             {
-                filterQuery=filterQuery+' AND p.status IN '+'('+_body.body.filter.status+')'
+                filterQuery=filterQuery+' AND p.status='+_body.body.filter.status
 
             }
             if(_body.body.filter.duration)
             {
-                filterQuery=filterQuery+' AND p.contract_duration IN '+'('+_body.body.filter.status+')'
+                filterQuery=filterQuery+' AND p.contract_duration= '+_body.body.filter.status
             }
             if(_body.body.filter.durationLimit)
             {
-                filterQuery=filterQuery+' AND p.contract_duration BETWEEN '+'('+_body.body.filter.durationLimit.start+','+_body.body.filter.durationLimit.end+')'
+                filterQuery=filterQuery+' AND p.contract_duration BETWEEN '+_body.body.filter.durationLimit.start+' AND '+_body.body.filter.durationLimit.end
             }
             
         }
