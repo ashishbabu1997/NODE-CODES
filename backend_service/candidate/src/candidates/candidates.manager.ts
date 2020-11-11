@@ -1268,7 +1268,7 @@ export const getCandidateDetails = (_body) => {
                             readyToStart : allProfileDetails.rows[0].readyToStart
                         }
 
-                        let assesementComment = {"assessmentComment":allProfileDetails.rows[0].assessmentComment};
+                        let assesementComment = allProfileDetails.rows[0].assessmentComment;
                         
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Resume listed successfully", 
