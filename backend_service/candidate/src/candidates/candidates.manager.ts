@@ -1243,7 +1243,7 @@ export const getCandidateDetails = (_body) => {
                             readyToStart : allProfileDetails.rows[0].readyToStart
                         }
                         let workedCompanyList =  workExperiences.rows.map(element => ({"id":element.candidateWorkExperienceId,"companyName":element.companyName}))
-                        
+                        workedCompanyList  = [...workedCompanyList,{"id":0,"companyName":"On personal capacity"}];
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Resume listed successfully", 
                         data: 
