@@ -72,6 +72,7 @@ export const allUsersList = (_body) => {
         }
         database().query(listquery, (error, results) => {
             if (error) {
+                console.log(error)
                 reject({ code: 400, message: "Database Error", data: {} });
                 return;
             }
