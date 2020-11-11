@@ -17,20 +17,34 @@ export const getCompanyPositions = (_body) => {
         {
             if(filter.postedOn)
             {
+<<<<<<< HEAD
                 console.log(">>>>>>>>>2<<<<<<<<<")
 
                 filterQuery=filterQuery+' AND p.created_on BETWEEN '+filter.postedOn.start+' AND '+filter.postedOn.end
+=======
+                filterQuery=filterQuery+' AND p.created_on BETWEEN '+_body.body.filter.postedOn.start+' AND '+_body.body.filter.postedOn.end
+>>>>>>> a07f182559cad9fa7ed1ebe70999abe0f6f4169e
             }
             if(filter.openPositions)
             {
+<<<<<<< HEAD
                 console.log("Haiiiiiii")
                 filterQuery=filterQuery+' AND p.job_status ='+filter.openPositions
 
+=======
+                filterQuery=filterQuery+' AND p.job_status ='+_body.body.filter.openPositions
+                
+>>>>>>> a07f182559cad9fa7ed1ebe70999abe0f6f4169e
             }
             if(filter.status)
             {
+<<<<<<< HEAD
                 filterQuery=filterQuery+' AND p.status='+filter.status
 
+=======
+                filterQuery=filterQuery+' AND p.status='+_body.body.filter.status
+                
+>>>>>>> a07f182559cad9fa7ed1ebe70999abe0f6f4169e
             }
             if(filter.duration)
             {
@@ -42,7 +56,9 @@ export const getCompanyPositions = (_body) => {
             }
             
         }
-      
+
+
+        
         const orderBy = {
             "position": 'p.position_id',
             "positionName": 'p.position_name',
@@ -513,7 +529,7 @@ export const createCompanyPositions = async (_body) => {
                             const CompanyQuery = {
                                 name: 'get-company-names',
                                 text: positionsQuery.getNames,
-                                values: [_body.accountType],
+                                values: {'accounttype': _body.accountType},
                             }
                             database().query(CompanyQuery, (error, results) => {
                                 if (error) {
