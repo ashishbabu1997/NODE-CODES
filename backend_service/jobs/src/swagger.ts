@@ -1,4 +1,4 @@
-import * as swaggerJsDoc  from 'swagger-jsdoc';
+// import * as swaggerJsDoc  from 'swagger-jsdoc';
 import * as express from 'express';
 import AppConfig from './config/config';
 
@@ -26,4 +26,4 @@ const options = {
     swaggerDefinition,
     apis:[`./src/jobreceived/*.ts`,`./src/positions/*.ts`]
   };
- export const swaggerSpec = swaggerJsDoc(options);
+//  export const swaggerSpec = swaggerJsDoc(options);
