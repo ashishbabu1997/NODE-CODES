@@ -14,19 +14,17 @@ export const getCompanyPositions = (_body) => {
         {
             if(_body.body.filter.postedOn)
             {
-                console.log(">>>>>>>>>2<<<<<<<<<")
-
                 filterQuery=filterQuery+' AND p.created_on BETWEEN '+_body.body.filter.postedOn.start+' AND '+_body.body.filter.postedOn.end
             }
             if(_body.body.filter.openPositions)
             {
                 filterQuery=filterQuery+' AND p.job_status ='+_body.body.filter.openPositions
-
+                
             }
             if(_body.body.filter.status)
             {
                 filterQuery=filterQuery+' AND p.status='+_body.body.filter.status
-
+                
             }
             if(_body.body.filter.duration)
             {
@@ -38,7 +36,9 @@ export const getCompanyPositions = (_body) => {
             }
             
         }
-      
+
+
+        
         const orderBy = {
             "position": 'p.position_id',
             "positionName": 'p.position_name',
@@ -509,7 +509,7 @@ export const createCompanyPositions = async (_body) => {
                             const CompanyQuery = {
                                 name: 'get-company-names',
                                 text: positionsQuery.getNames,
-                                values: [_body.accountType],
+                                values: {'accounttype': _body.accountType},
                             }
                             database().query(CompanyQuery, (error, results) => {
                                 if (error) {
