@@ -1271,7 +1271,7 @@ export const getCandidateDetails = (_body) => {
                             overallWorkExperience,
                             availability,
                             socialPresence:socialProfileDetails.rows[0],
-                            cloudProficiency:cloudProficiencyDetails.rows[0],
+                            candidateCloudProficiency:cloudProficiencyDetails.rows,
                             skills:skills.rows,
                             projects:promise,
                             assesments:assesements.rows,
