@@ -1242,8 +1242,8 @@ export const getCandidateDetails = (_body) => {
                             typeOfAvailability : allProfileDetails.rows[0].typeOfAvailability,
                             readyToStart : allProfileDetails.rows[0].readyToStart
                         }
-                        
-                        
+                        let workedCompanyList =  workExperiences.rows.map(element => ({"id":element.candidateWorkExperienceId,"companyName":element.companyName}))
+                        workedCompanyList  = [...workedCompanyList,{"id":0,"companyName":"On personal capacity"}];
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Resume listed successfully", 
                         data: 
@@ -1261,7 +1261,8 @@ export const getCandidateDetails = (_body) => {
                             education:educations.rows,
                             publications:publications.rows,
                             awards:awards.rows,
-                            languages:languages.rows
+                            languages:languages.rows,
+                            workedCompanyList
                         } });
                         
                     } catch (e) {
