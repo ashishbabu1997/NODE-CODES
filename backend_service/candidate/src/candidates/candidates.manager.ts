@@ -451,7 +451,7 @@ export const getCandidateDetails = (_body) => {
                     const insertQuery = {
                         name: 'insert-assessment-comment',
                         text: candidateQuery.updateAssessmentComment,
-                        values: [_body.candidateId, _body.adminComment],
+                        values: [_body.candidateId, _body.assessmentComment],
                     }
                     promise.push(client.query(insertQuery));
                     
@@ -1234,7 +1234,11 @@ export const getCandidateDetails = (_body) => {
                             });
                             await Promise.all(promise);
                         }
-                        
+                        let citizenship = allProfileDetails.rows[0].citizenship;
+                        let citizenshipName = ![null,undefined,""].includes(citizenship)?config.countries.filter(element=>element.id == citizenship)[0].name:'';
+                        let residence = allProfileDetails.rows[0].citizenship;
+                        let residenceName = ![null,undefined,""].includes(residence)?config.countries.filter(element=>element.id == residence)[0].name:'';
+
                         let profileDetails = {
                             firstName : allProfileDetails.rows[0].firstName,
                             lastName : allProfileDetails.rows[0].lastName,
@@ -1242,8 +1246,10 @@ export const getCandidateDetails = (_body) => {
                             candidateStatus : allProfileDetails.rows[0].candidateStatus,
                             sellerCompanyId : allProfileDetails.rows[0].sellerCompanyId,
                             image : allProfileDetails.rows[0].image,
-                            citizenship : allProfileDetails.rows[0].citizenship,
-                            residence : allProfileDetails.rows[0].residence,
+                            citizenship,
+                            citizenshipName,
+                            residence,
+                            residenceName,
                             phoneNumber : allProfileDetails.rows[0].phoneNumber,
                             email : allProfileDetails.rows[0].email,
                             candidateVetted : allProfileDetails.rows[0].candidateVetted
@@ -1261,6 +1267,8 @@ export const getCandidateDetails = (_body) => {
                             typeOfAvailability : allProfileDetails.rows[0].typeOfAvailability,
                             readyToStart : allProfileDetails.rows[0].readyToStart
                         }
+
+                        let assesementComment = {"assessmentComment":allProfileDetails.rows[0].assessmentComment};
                         
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Resume listed successfully", 
@@ -1275,6 +1283,7 @@ export const getCandidateDetails = (_body) => {
                             skills:skills.rows,
                             projects:promise,
                             assesments:assesements.rows,
+                            assesementComment,
                             workExperience:workExperiences.rows,
                             education:educations.rows,
                             publications:publications.rows,

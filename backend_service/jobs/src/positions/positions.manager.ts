@@ -61,7 +61,7 @@ export const getCompanyPositions = (_body) => {
                 
         if (body.userRoleId == 1) {
             queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+sort;
-            queryValues = Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
+            queryValues = Object.assign({searchkey:searchKey,employeeid:body.employeeId},queryValues)
         }
         else {
             queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
