@@ -1151,12 +1151,11 @@ export const getCandidateDetails = (_body) => {
                     }
                     var workExperiences=await client.query(fetchWorkExperience);
                     let workedCompanyList =  workExperiences.rows.map(element => ({"id":element.candidateWorkExperienceId,"companyName":element.companyName}))
-                    workedCompanyList  = [...workedCompanyList,{"id":0,"companyName":"On personal capacity"}]; 
+                    workedCompanyList  = [...workedCompanyList,{"id":0,"companyName":"On personal capacity"}];                                         
                     let companyJson = {};
                     workExperiences.rows.forEach(element => {
                         companyJson[element.candidateWorkExperienceId]=element.companyName;
-                    });                    
-
+                    });
                     const fetchEducations = {
                         name: 'fetch-education-details',
                         text: candidateQuery.fetchEducationDetails,
@@ -1198,9 +1197,7 @@ export const getCandidateDetails = (_body) => {
                     var languages=await client.query(fetchLanguages);
                     if (Array.isArray(projects.rows))
                     {
-                        console.log("hai")
-                        
-                        projects.rows.forEach(element => {
+                    projects.rows.forEach(element => {
                             
                             let candidateProjectId=element.candidateProjectId
                             let candidateId=element.candidateId
