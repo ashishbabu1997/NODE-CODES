@@ -5,8 +5,10 @@ import { sendMail } from '../middlewares/mailer'
 import config from '../config/config'
 import * as handlebars from 'handlebars'
 import * as fs from 'fs'
+
 export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
+<<<<<<< HEAD
         var queryText;
         var queryValues;
         var filterQuery='';
@@ -53,12 +55,10 @@ export const getCompanyPositions = (_body) => {
             if(filter.durationLimit)
             {
                 filterQuery=filterQuery+' AND p.contract_duration BETWEEN '+filter.durationLimit.start+' AND '+filter.durationLimit.end
-            }
-            
-        }
+=======
+        var queryText='', queryValues={}, filterQuery='', filter=_body.body.filter,
+            body=_body.query, sort = '', searchKey = '%%';
 
-
-        
         const orderBy = {
             "position": 'p.position_id',
             "positionName": 'p.position_name',
@@ -68,6 +68,43 @@ export const getCompanyPositions = (_body) => {
             "companyName": 'c.company_name',
             "updatedOn":'p.updated_on'
         }
+        
+        if(filter)
+        {            
+            if(filter.postedStartDate && filter.postedEndDate)
+            {   
+                filterQuery=filterQuery+' AND p.created_on BETWEEN $startdate  AND $enddate'
+                queryValues = Object.assign({startdate:filter.postedStartDate,enddate:filter.postedEndDate})
+            }
+            if(filter.numberOfOpenings)
+            {
+                filterQuery=filterQuery+' AND p.developer_count = $openings'
+                queryValues =  Object.assign({openings:filter.numberOfOpenings},queryValues)
+            }
+            if(filter.positionStatus)
+            {  
+                filterQuery=filterQuery+' AND p.job_status=$positionstatus'
+                queryValues=Object.assign({positionstatus:filter.positionStatus},queryValues)
+            }
+            if(filter.duration)
+            {
+                filterQuery=filterQuery+' AND p.contract_duration= $duration'
+                queryValues=Object.assign({duration:filter.duration},queryValues)
+            }
+            if(filter.durationStart && filter.durationEnd)
+            {
+                filterQuery=filterQuery+' AND p.contract_duration BETWEEN $durationstart AND $durationend'
+                queryValues=Object.assign({durationstart:filter.durationStart,durationend:filter.durationEnd},queryValues)
+>>>>>>> feature/namedParams
+            }
+        }
+        
+        if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
+        {
+            sort = ' ORDER BY $sort';
+            queryValues = Object.assign({sort: orderBy[body.sortBy] + ' '+ body.sortType},queryValues)
+        }
+<<<<<<< HEAD
         if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
         {
             var sort = ' ORDER BY ' + orderBy[body.sortBy] + ' ' + body.sortType + ' LIMIT ' + body.limit + ' OFFSET ' + body.offset;
@@ -82,9 +119,22 @@ export const getCompanyPositions = (_body) => {
         else {
             queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
             queryValues = [body.companyId, '%' + body.query.searchKey + '%',body.employeeId]
+=======
+        if(![undefined,null].includes(body.searchKey))
+        {
+            searchKey='%' + body.searchKey + '%';
         }
-        
-        
+                
+        if (body.userRoleId == 1) {
+            queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+sort;
+            queryValues = Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
+        }
+        else {
+            queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
+            queryValues =  Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
+>>>>>>> feature/namedParams
+        }
+     
         const query = {
             name: 'id-fetch-company-positions',
             text: queryText,
@@ -92,14 +142,15 @@ export const getCompanyPositions = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
-                console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
             var steps = results.rows
             resolve({ code: 200, message: "Positions listed successfully", data: { positions: steps } })
-        })
-        
+        })  
+    }).catch(err=>{
+        console.error("err : ",err); 
+        throw ({ code: 400, message: "Database error Please try again.", data: err.Error });
     })
 }
 
@@ -533,14 +584,14 @@ export const createCompanyPositions = async (_body) => {
                             }
                             database().query(CompanyQuery, (error, results) => {
                                 if (error) {
-                                    console.log(error)
                                     reject({ code: 400, message: "Error in database connection.", data: {} });
                                     return;
                                 }
-                                resolve({ code: 200, message: "Companies listed successfully", data: { companies: results.rows } });
-                                
-                                
+                                else
+                                resolve({ code: 200, message: "Companies listed successfully", data: { companies: results.rows } });     
                             })
+                        }).catch((err)=>{
+                            throw ({ code: 400, message: "Error in database connection.", data: {} });
                         })
                     }
                     

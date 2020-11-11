@@ -1,6 +1,6 @@
 /**
 * @swagger
-* /positions/:
+* /positions:
 *   get:
 *     tags:
 *       - Positions
@@ -13,11 +13,6 @@
 *     produces:
 *       - application/json
 *     parameters:
-*       - in: query 
-*         name: positionId
-*         schema:
-*         required:
-*           type: integer
 *       - in: query
 *         name: sortBy
 *         schema:
