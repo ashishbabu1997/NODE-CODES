@@ -1150,6 +1150,13 @@ export const getCandidateDetails = (_body) => {
                         values: [candidateId],
                     }
                     var workExperiences=await client.query(fetchWorkExperience);
+                    let workedCompanyList =  workExperiences.rows.map(element => ({"id":element.candidateWorkExperienceId,"companyName":element.companyName}))
+                    workedCompanyList  = [...workedCompanyList,{"id":0,"companyName":"On personal capacity"}]; 
+                    let companyJson = {};
+                    workExperiences.rows.forEach(element => {
+                        companyJson[element.candidateWorkExperienceId]=element.companyName;
+                    });                    
+
                     const fetchEducations = {
                         name: 'fetch-education-details',
                         text: candidateQuery.fetchEducationDetails,
@@ -1195,22 +1202,22 @@ export const getCandidateDetails = (_body) => {
                         
                         projects.rows.forEach(element => {
                             
-                            var candidateProjectId=element.candidateProjectId
-                            var candidateId=element.candidateId
-                            var projectName=element.projectName
-                            var clientName=element.clientName
-                            var yearsOfExperience=element.yoe
-                            var projectDescription=element.projectDescription
-                            var  projectLink=element.projectLink
-                            var skill=element.skills
-                            var contribtion=element.contribution
-                            var parentCompany=element.doneFor
-                            var roleDone=element.role
-                            console.log(skill)
-                            var skills=JSON.parse(skill)
-                            var extraProject=element.extraProject
+                            let candidateProjectId=element.candidateProjectId
+                            let candidateId=element.candidateId
+                            let projectName=element.projectName
+                            let clientName=element.clientName
+                            let yearsOfExperience=element.yoe
+                            let projectDescription=element.projectDescription
+                            let  projectLink=element.projectLink
+                            let skill=element.skills
+                            let contribtion=element.contribution
+                            let parentCompany=element.doneFor
+                            let doneForName = companyJson[element.doneFor]                            
+                            let roleDone=element.role
+                            let skills=JSON.parse(skill)
+                            let extraProject=element.extraProject
                             promise.push({candidateProjectId:candidateProjectId,candidateId:candidateId,projectName:projectName,clientName:clientName,
-                                yearsOfExperience:yearsOfExperience,projectDescription:projectDescription,projectLink:projectLink,contribution:contribtion,doneFor:parentCompany,role:roleDone,
+                                yearsOfExperience:yearsOfExperience,projectDescription:projectDescription,projectLink:projectLink,contribution:contribtion,doneFor:parentCompany,doneForName,role:roleDone,
                                 skills:skills,extraProject:extraProject})
                             });
                             await Promise.all(promise);
@@ -1242,8 +1249,7 @@ export const getCandidateDetails = (_body) => {
                             typeOfAvailability : allProfileDetails.rows[0].typeOfAvailability,
                             readyToStart : allProfileDetails.rows[0].readyToStart
                         }
-                        let workedCompanyList =  workExperiences.rows.map(element => ({"id":element.candidateWorkExperienceId,"companyName":element.companyName}))
-                        workedCompanyList  = [...workedCompanyList,{"id":0,"companyName":"On personal capacity"}];
+                              
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Resume listed successfully", 
                         data: 
