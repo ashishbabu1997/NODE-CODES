@@ -68,6 +68,7 @@ export const allUsersList = (_body) => {
         const listquery = {
             name: 'list-candidates',
             text: selectQuery,
+            values:[_body.usersType]
         }
         database().query(listquery, (error, results) => {
             if (error) {
