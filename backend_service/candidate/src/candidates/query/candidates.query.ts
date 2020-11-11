@@ -21,8 +21,8 @@ export default {
     updateSellerRate: `update candidate set rate=$2,updated_by=$3,updated_on=$4 where candidate_id=$1`,
     deleteCandidate: `update candidate set status = false, updated_on=$2, updated_by = $3 where candidate_id = $1`,
     
-    modifyLanguageProficiency: `update candidate_language set candidate_id = $2, language_name = $3, proficiency = $4, updated_on = $5, updated_by = $6 where candidate_language_id = $1`,
-    insertLanguageProficiency:'insert into candidate_language (candidate_id, language_name, proficiency, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$4,$5,$5)',
+    modifyLanguageProficiency: `update candidate_language set candidate_id = $2, language_id = $3, proficiency = $4, updated_on = $5, updated_by = $6 where candidate_language_id = $1`,
+    insertLanguageProficiency:'insert into candidate_language (candidate_id, language_id, proficiency, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$4,$5,$5)',
     deleteLanguageProficiency:'update candidate_language set status = false, updated_on = $2, updated_by = $3 where candidate_language_id = $1',
     
     modifyCandidateAvailability: `update candidate set availability = $2, type_of_availability = $3, ready_to_start = $4, updated_on=$5, updated_by = $6 where candidate_id = $1`,
