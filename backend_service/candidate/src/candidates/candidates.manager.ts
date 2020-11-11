@@ -960,14 +960,29 @@ export const getCandidateDetails = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-
-                    const insertCandidateCloudQuery = {
-                        name: 'insert-candidate-cloud-proficiency',
-                        text: candidateQuery.modifyCloud,
-                        values: [_body.candidateId,_body.aws,_body.gcp,_body.azure,_body.ibm,_body.oracle,_body.employeeId,currentTime],
+                  
+                    let idSet = Array.isArray(_body.cloudProficiency)?_body.cloudProficiency.map(a => a.cloudProficiencyId):false;
+                    console.log("idSet : ",idSet);
+                    
+                    if(idSet)
+                    {
+                        const deleteCandidateCloudQuery = {
+                            name: 'delete-candidate-cloud-proficiency',
+                            text: candidateQuery.deleteCloud,
+                            values: [_body.candidateId,idSet,_body.employeeId,currentTime],
+                        }
+                        await client.query(deleteCandidateCloudQuery);
+                        
+                        const insertCandidateCloudQuery = {
+                            name: 'insert-candidate-cloud-proficiency',
+                            text: candidateQuery.modifyCloud,
+                            values: [_body.candidateId,idSet,_body.employeeId,currentTime],
+                        }
+                        await client.query(insertCandidateCloudQuery);
                     }
-                    await client.query(insertCandidateCloudQuery);
-
+                    
+                    
+                    
                     resolve({ code: 200, message: "Candidate cloud proficiency updated successfully", data: {} });
                     
                 } catch (e) {
@@ -982,7 +997,7 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
-
+    
     export const modifySocialPresence = (_body) =>{
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -995,8 +1010,8 @@ export const getCandidateDetails = (_body) => {
                         values: [_body.candidateId,_body.github,_body.githubLink,_body.linkedin,_body.linkedinLink,_body.stackoverflow,_body.stackoverflowLink,_body.kaggle,_body.kaggleLink,_body.employeeId,currentTime],
                     }
                     await client.query(insertCandidateSocialQuery);
-
-
+                    
+                    
                     resolve({ code: 200, message: "Candidate social profile updated successfully", data: {} });
                     
                 } catch (e) {
@@ -1162,21 +1177,21 @@ export const getCandidateDetails = (_body) => {
                         values: [candidateId],
                     }
                     var educations=await client.query(fetchEducations);
-
+                    
                     const fetchSocialProfile = {
                         name: 'fetch-social-profile',
                         text: candidateQuery.fetchSocialProfile,
                         values: [candidateId],
                     }
                     var socialProfileDetails=await client.query(fetchSocialProfile);
-
+                    
                     const fetchCloudProficiency = {
                         name: 'fetch-cloud-proficiency',
                         text: candidateQuery.fetchCloudProficiency,
                         values: [candidateId],
                     }
                     var cloudProficiencyDetails=await client.query(fetchCloudProficiency);
-
+                    
                     const fetchPublications = {
                         name: 'fetch-publications-details',
                         text: candidateQuery.fetchPublicationDetails,
@@ -1197,7 +1212,7 @@ export const getCandidateDetails = (_body) => {
                     var languages=await client.query(fetchLanguages);
                     if (Array.isArray(projects.rows))
                     {
-                    projects.rows.forEach(element => {
+                        projects.rows.forEach(element => {
                             
                             let candidateProjectId=element.candidateProjectId
                             let candidateId=element.candidateId
@@ -1246,7 +1261,7 @@ export const getCandidateDetails = (_body) => {
                             typeOfAvailability : allProfileDetails.rows[0].typeOfAvailability,
                             readyToStart : allProfileDetails.rows[0].readyToStart
                         }
-                              
+                        
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Resume listed successfully", 
                         data: 
