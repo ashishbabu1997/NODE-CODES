@@ -49,7 +49,6 @@ export const getCompanyPositions = (_body) => {
                 queryValues=Object.assign({durationstart:filter.durationStart,durationend:filter.durationEnd},queryValues)
             }
         }
-        
         if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
         {
             sort = ' ORDER BY $sort';
