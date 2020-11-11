@@ -2,7 +2,7 @@ import {  fetchPositionDetails,changeReadStatus,deletePositions, createCompanyPo
 import sendResponse from '../common/response/response';
 
 export const getPositions = (req, res) => {
-    const body = req.query;
+    const body = req;
     getCompanyPositions(body).then((response: any) => {
         sendResponse(res, response.code, 1,200, response.message, response.data)
     }).catch(error => {

@@ -9,6 +9,42 @@ export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
         var queryText;
         var queryValues;
+        var filterQuery='';
+        if(_body.body.filter)
+        {
+            console.log(">>>>>>>>>TRUE<<<<<<<<<")
+            if(_body.body.filter.positionName)
+            {
+                console.log(">>>>>>>>>1<<<<<<<<<")
+                filterQuery=' AND position_name ILIKE %'+_body.body.filter.positionName+'%'
+            }
+            if(_body.body.filter.postedOn)
+            {
+                console.log(">>>>>>>>>2<<<<<<<<<")
+
+                filterQuery=filterQuery+' AND p.created_on BETWEEN '+'('+_body.body.filter.postedOn.start+','+_body.body.filter.postedOn.end+')'
+            }
+            if(_body.body.filter.openPositions)
+            {
+                filterQuery=filterQuery+' AND p.job_status IN '+'('+_body.body.filter.openPositions+')'
+
+            }
+            if(_body.body.filter.status)
+            {
+                filterQuery=filterQuery+' AND p.status IN '+'('+_body.body.filter.status+')'
+
+            }
+            if(_body.body.filter.duration)
+            {
+                filterQuery=filterQuery+' AND p.contract_duration IN '+'('+_body.body.filter.status+')'
+            }
+            if(_body.body.filter.durationLimit)
+            {
+                filterQuery=filterQuery+' AND p.contract_duration BETWEEN '+'('+_body.body.filter.durationLimit.start+','+_body.body.filter.durationLimit.end+')'
+            }
+            
+        }
+      
         const orderBy = {
             "position": 'p.position_id',
             "positionName": 'p.position_name',
@@ -18,17 +54,20 @@ export const getCompanyPositions = (_body) => {
             "companyName": 'c.company_name',
             "updatedOn":'p.updated_on'
         }
-        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+        if(_body.query.sortBy && _body.query.sortType && Object.keys(orderBy).includes(_body.query.sortBy))  
         {
-            var sort = ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType + ' LIMIT ' + _body.limit + ' OFFSET ' + _body.offset;
+            var sort = ' ORDER BY ' + orderBy[_body.query.sortBy] + ' ' + _body.query.sortType + ' LIMIT ' + _body.query.limit + ' OFFSET ' + _body.query.offset;
         }
+        queryText = positionsQuery.getCompanyPositionsForAdmin +filterQuery+sort;
+        console.log(queryText)
         if (_body.userRoleId == 1) {
-            queryText = positionsQuery.getCompanyPositionsForAdmin + sort;
-            queryValues = [_body.companyId,'%' + _body.searchKey + '%',_body.employeeId]
+            queryText = positionsQuery.getCompanyPositionsForAdmin +filterQuery+sort;
+            console.log(queryText)
+            queryValues = [_body.companyId,'%' + _body.query.searchKey + '%',_body.employeeId]
         }
         else {
-            queryText = positionsQuery.getCompanyPositionsForBuyer + sort;
-            queryValues = [_body.companyId, '%' + _body.searchKey + '%',_body.employeeId]
+            queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
+            queryValues = [_body.companyId, '%' + _body.query.searchKey + '%',_body.employeeId]
         }
         
         
