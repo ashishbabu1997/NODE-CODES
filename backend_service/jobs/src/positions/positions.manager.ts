@@ -8,54 +8,6 @@ import * as fs from 'fs'
 
 export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
-<<<<<<< HEAD
-        var queryText;
-        var queryValues;
-        var filterQuery='';
-        var filter=_body.body.filter
-        console.log(filter)
-        var body=_body.query
-        if(filter)
-        {
-            if(filter.postedOn)
-            {
-<<<<<<< HEAD
-                console.log(">>>>>>>>>2<<<<<<<<<")
-
-                filterQuery=filterQuery+' AND p.created_on BETWEEN '+filter.postedOn.start+' AND '+filter.postedOn.end
-=======
-                filterQuery=filterQuery+' AND p.created_on BETWEEN '+_body.body.filter.postedOn.start+' AND '+_body.body.filter.postedOn.end
->>>>>>> a07f182559cad9fa7ed1ebe70999abe0f6f4169e
-            }
-            if(filter.openPositions)
-            {
-<<<<<<< HEAD
-                console.log("Haiiiiiii")
-                filterQuery=filterQuery+' AND p.job_status ='+filter.openPositions
-
-=======
-                filterQuery=filterQuery+' AND p.job_status ='+_body.body.filter.openPositions
-                
->>>>>>> a07f182559cad9fa7ed1ebe70999abe0f6f4169e
-            }
-            if(filter.status)
-            {
-<<<<<<< HEAD
-                filterQuery=filterQuery+' AND p.status='+filter.status
-
-=======
-                filterQuery=filterQuery+' AND p.status='+_body.body.filter.status
-                
->>>>>>> a07f182559cad9fa7ed1ebe70999abe0f6f4169e
-            }
-            if(filter.duration)
-            {
-                filterQuery=filterQuery+' AND p.contract_duration= '+filter.status
-            }
-            if(filter.durationLimit)
-            {
-                filterQuery=filterQuery+' AND p.contract_duration BETWEEN '+filter.durationLimit.start+' AND '+filter.durationLimit.end
-=======
         var queryText='', queryValues={}, filterQuery='', filter=_body.body.filter,
             body=_body.query, sort = '', searchKey = '%%';
 
@@ -95,7 +47,6 @@ export const getCompanyPositions = (_body) => {
             {
                 filterQuery=filterQuery+' AND p.contract_duration BETWEEN $durationstart AND $durationend'
                 queryValues=Object.assign({durationstart:filter.durationStart,durationend:filter.durationEnd},queryValues)
->>>>>>> feature/namedParams
             }
         }
         
@@ -104,22 +55,6 @@ export const getCompanyPositions = (_body) => {
             sort = ' ORDER BY $sort';
             queryValues = Object.assign({sort: orderBy[body.sortBy] + ' '+ body.sortType},queryValues)
         }
-<<<<<<< HEAD
-        if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
-        {
-            var sort = ' ORDER BY ' + orderBy[body.sortBy] + ' ' + body.sortType + ' LIMIT ' + body.limit + ' OFFSET ' + body.offset;
-        }
-        queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+sort;
-        console.log(queryText)
-        if (body.userRoleId == 1) {
-            queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+sort;
-            console.log(queryText)
-            queryValues = [body.companyId,'%' + body.searchKey + '%',body.employeeId]
-        }
-        else {
-            queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
-            queryValues = [body.companyId, '%' + body.query.searchKey + '%',body.employeeId]
-=======
         if(![undefined,null].includes(body.searchKey))
         {
             searchKey='%' + body.searchKey + '%';
@@ -132,7 +67,6 @@ export const getCompanyPositions = (_body) => {
         else {
             queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
             queryValues =  Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
->>>>>>> feature/namedParams
         }
      
         const query = {
