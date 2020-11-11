@@ -11,6 +11,7 @@ export const getCompanyPositions = (_body) => {
         var queryValues;
         var filterQuery='';
         var filter=_body.body.filter
+        console.log(filter)
         var body=_body.query
         if(filter)
         {
@@ -22,6 +23,7 @@ export const getCompanyPositions = (_body) => {
             }
             if(filter.openPositions)
             {
+                console.log("Haiiiiiii")
                 filterQuery=filterQuery+' AND p.job_status ='+filter.openPositions
 
             }
@@ -54,10 +56,10 @@ export const getCompanyPositions = (_body) => {
         {
             var sort = ' ORDER BY ' + orderBy[body.sortBy] + ' ' + body.sortType + ' LIMIT ' + body.limit + ' OFFSET ' + body.offset;
         }
-        queryText = positionsQuery.getCompanyPositionsForAdmin +filterQuery+sort;
+        queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+sort;
         console.log(queryText)
-        if (_body.userRoleId == 1) {
-            queryText = positionsQuery.getCompanyPositionsForAdmin +filterQuery+sort;
+        if (body.userRoleId == 1) {
+            queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+sort;
             console.log(queryText)
             queryValues = [body.companyId,'%' + body.searchKey + '%',body.employeeId]
         }
