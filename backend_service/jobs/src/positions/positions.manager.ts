@@ -10,31 +10,33 @@ export const getCompanyPositions = (_body) => {
         var queryText;
         var queryValues;
         var filterQuery='';
-        if(_body.body.filter)
+        var filter=_body.body.filter
+        var body=_body.query
+        if(filter)
         {
-            if(_body.body.filter.postedOn)
+            if(filter.postedOn)
             {
                 console.log(">>>>>>>>>2<<<<<<<<<")
 
-                filterQuery=filterQuery+' AND p.created_on BETWEEN '+_body.body.filter.postedOn.start+' AND '+_body.body.filter.postedOn.end
+                filterQuery=filterQuery+' AND p.created_on BETWEEN '+filter.postedOn.start+' AND '+filter.postedOn.end
             }
-            if(_body.body.filter.openPositions)
+            if(filter.openPositions)
             {
-                filterQuery=filterQuery+' AND p.job_status ='+_body.body.filter.openPositions
+                filterQuery=filterQuery+' AND p.job_status ='+filter.openPositions
 
             }
-            if(_body.body.filter.status)
+            if(filter.status)
             {
-                filterQuery=filterQuery+' AND p.status='+_body.body.filter.status
+                filterQuery=filterQuery+' AND p.status='+filter.status
 
             }
-            if(_body.body.filter.duration)
+            if(filter.duration)
             {
-                filterQuery=filterQuery+' AND p.contract_duration= '+_body.body.filter.status
+                filterQuery=filterQuery+' AND p.contract_duration= '+filter.status
             }
-            if(_body.body.filter.durationLimit)
+            if(filter.durationLimit)
             {
-                filterQuery=filterQuery+' AND p.contract_duration BETWEEN '+_body.body.filter.durationLimit.start+' AND '+_body.body.filter.durationLimit.end
+                filterQuery=filterQuery+' AND p.contract_duration BETWEEN '+filter.durationLimit.start+' AND '+filter.durationLimit.end
             }
             
         }
@@ -48,20 +50,20 @@ export const getCompanyPositions = (_body) => {
             "companyName": 'c.company_name',
             "updatedOn":'p.updated_on'
         }
-        if(_body.query.sortBy && _body.query.sortType && Object.keys(orderBy).includes(_body.query.sortBy))  
+        if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
         {
-            var sort = ' ORDER BY ' + orderBy[_body.query.sortBy] + ' ' + _body.query.sortType + ' LIMIT ' + _body.query.limit + ' OFFSET ' + _body.query.offset;
+            var sort = ' ORDER BY ' + orderBy[body.sortBy] + ' ' + body.sortType + ' LIMIT ' + body.limit + ' OFFSET ' + body.offset;
         }
         queryText = positionsQuery.getCompanyPositionsForAdmin +filterQuery+sort;
         console.log(queryText)
         if (_body.userRoleId == 1) {
             queryText = positionsQuery.getCompanyPositionsForAdmin +filterQuery+sort;
             console.log(queryText)
-            queryValues = [_body.companyId,'%' + _body.query.searchKey + '%',_body.employeeId]
+            queryValues = [body.companyId,'%' + body.searchKey + '%',body.employeeId]
         }
         else {
             queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
-            queryValues = [_body.companyId, '%' + _body.query.searchKey + '%',_body.employeeId]
+            queryValues = [body.companyId, '%' + body.query.searchKey + '%',body.employeeId]
         }
         
         
