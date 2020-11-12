@@ -10,6 +10,8 @@ import stateRouter from './states/statesApi.route'
 import jobCategoryRouter from './jobCategory/jobCategory.route'
 import assessmentTraitRouter from './assessmentTraits/assessmentTraitsRoute';
 import languageRouter from './languages/languageApi.route';
+import cloudRouter from './cloudproficiency/CloudProficiencyRoute';
+
 
 import * as express from 'express';
 const router = express.Router();
@@ -26,6 +28,7 @@ router
     .use(`/api/${AppConfig.version}/settings/jobCategory`, jobCategoryRouter)
     .use(`/api/${AppConfig.version}/settings/assessmentTraits`, assessmentTraitRouter)
     .use(`/api/${AppConfig.version}/settings/languages`, languageRouter)
+    .use(`/api/${AppConfig.version}/settings/cloudproficiency`, cloudRouter)
 export default router;
 
 
