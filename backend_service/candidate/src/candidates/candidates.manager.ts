@@ -1152,7 +1152,6 @@ export const getCandidateDetails = (_body) => {
                         values: [candidateId],
                     }
                     var projects=await client.query(fetchProjects);
-                    console.log(promise)
                     const fetchAssesements = {
                         name: 'fetch-assesement-details',
                         text: candidateQuery.fetchAssesmentDetails,
@@ -1295,7 +1294,7 @@ export const getCandidateDetails = (_body) => {
                     } catch (e) {
                         console.log(e)
                         await client.query('ROLLBACK')
-                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                        reject({ code: 400, message: "Failed. Please try again.", data: e.message });
                     } finally {
                         client.release();
                     }
