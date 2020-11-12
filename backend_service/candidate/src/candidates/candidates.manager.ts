@@ -340,7 +340,6 @@ export const getCandidateDetails = (_body) => {
                         text: candidateQuery.updateCandidateVetting,
                         values: [_body.candidateId, 1, _body.employeeId, currentTime],
                     }
-                    
                     await client.query(updateQuery);
                     
                     await client.query('COMMIT');
@@ -1236,7 +1235,7 @@ export const getCandidateDetails = (_body) => {
                         let citizenship = allProfileDetails.rows[0].citizenship;
                         let citizenshipName = ![null,undefined,""].includes(citizenship)?config.countries.filter(element=>element.id == citizenship)[0].name:'';
                         let residence = allProfileDetails.rows[0].residence;
-                        let residenceName = ![null,undefined,""].includes(residence)?config.countries.filter(element=>element.id == residence)[0].name:'';
+                        // let residenceName = ![null,undefined,""].includes(residence)?config.countries.filter(element=>element.id == residence)[0].name:'';
 
                         let profileDetails = {
                             firstName : allProfileDetails.rows[0].firstName,
@@ -1248,7 +1247,6 @@ export const getCandidateDetails = (_body) => {
                             citizenship,
                             citizenshipName,
                             residence,
-                            residenceName,
                             phoneNumber : allProfileDetails.rows[0].phoneNumber,
                             email : allProfileDetails.rows[0].email,
                             candidateVetted : allProfileDetails.rows[0].candidateVetted
