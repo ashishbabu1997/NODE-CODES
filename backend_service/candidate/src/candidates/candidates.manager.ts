@@ -1236,7 +1236,7 @@ export const getCandidateDetails = (_body) => {
                         }
                         let citizenship = allProfileDetails.rows[0].citizenship;
                         let citizenshipName = ![null,undefined,""].includes(citizenship)?config.countries.filter(element=>element.id == citizenship)[0].name:'';
-                        let residence = allProfileDetails.rows[0].citizenship;
+                        let residence = allProfileDetails.rows[0].residence;
                         let residenceName = ![null,undefined,""].includes(residence)?config.countries.filter(element=>element.id == residence)[0].name:'';
 
                         let profileDetails = {
