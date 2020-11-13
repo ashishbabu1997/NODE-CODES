@@ -960,9 +960,8 @@ export const getCandidateDetails = (_body) => {
                 const client = await database().connect()
                 try {
                   
-                    let idSet = Array.isArray(_body.cloudProficiency)?_body.cloudProficiency.map(a => a.cloudProficiencyId):false;
-                    console.log("idSet : ",idSet);
-                    
+                    let idSet = Array.isArray(_body.cloudProficiency)?_body.cloudProficiency.map(a => a.cloudProficiencyId).filter(Number):false;
+
                     if(idSet)
                     {
                         const deleteCandidateCloudQuery = {
@@ -979,8 +978,6 @@ export const getCandidateDetails = (_body) => {
                         }
                         await client.query(insertCandidateCloudQuery);
                     }
-                    
-                    
                     
                     resolve({ code: 200, message: "Candidate cloud proficiency updated successfully", data: {} });
                     
