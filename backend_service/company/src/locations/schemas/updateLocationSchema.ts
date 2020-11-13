@@ -102,7 +102,6 @@ export default Joi.object().keys({
     }),
     locationId: Joi.number().required().error(errors => {
         errors.forEach(err => {
-            console.log(err)
             switch (err.code) {
                 case "any.required":
                     err.message = "Location Id should not be empty!";

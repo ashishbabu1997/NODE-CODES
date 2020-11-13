@@ -3,13 +3,15 @@ import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addCertificationSchema from './schemas/addCertificationSchema';
 import updateCertificationSchema from './schemas/updateCertificationSchema';
+import { jwtAuth } from '../middlewares/jwtAuthenticate';
+import setData from '../middlewares/setData';
 
 const router = express.Router();
 
 router
-    .get('/:companyId', getCertifications)
-    .post('/', validate(addCertificationSchema), addCertifications)
-    .put('/',validate(updateCertificationSchema), updateCertifications)
-    .delete('/:companycertificationId', deleteCertifications)
+    .get('/', jwtAuth, setData(), getCertifications)
+    .post('/', jwtAuth, setData(), validate(addCertificationSchema), addCertifications)
+    .put('/', jwtAuth, setData(), validate(updateCertificationSchema), updateCertifications)
+    .delete('/:companycertificationId', jwtAuth, setData(), deleteCertifications)
 
 export default router;

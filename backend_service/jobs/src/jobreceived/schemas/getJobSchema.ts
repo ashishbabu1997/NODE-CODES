@@ -36,21 +36,5 @@ export const getJobReceivedByIdSchema =  Joi.object().keys({
         });
         return errors;
     }),
-    sellerCompanyId: Joi.number().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                    err.message = "Seller Company Id should not be empty";
-                    break;
-                case "number.base":
-                    err.message = "Seller Company Id must be a number"
-                    break;
-                default:
-                    err.message = "Invalid Seller Company Id"
-                    break;
-            }
-        });
-        return errors;
-    }),
 }).unknown(true)
 

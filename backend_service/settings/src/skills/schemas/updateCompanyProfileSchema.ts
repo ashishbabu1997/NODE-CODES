@@ -33,4 +33,4 @@ export default Joi.object().keys({
         });
         return errors;
     })
-});
+}).unknwon(true);

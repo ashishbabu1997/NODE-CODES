@@ -3,6 +3,8 @@ import database from '../common/database/database';
 
 export const getCompanySkills = (_body) => {
     return new Promise((resolve, reject) => {
+        if (_body.jobCategoryId)
+        {
         const query = {
             name: 'fetch-skills',
             text: skillsQuery.getSkills,
@@ -15,6 +17,22 @@ export const getCompanySkills = (_body) => {
             }
             resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
         })
+    }
+    else{
+                        const queryWithJobCategoryId = {
+                            name: 'fetch-skills',
+                            text: skillsQuery.getSkillsWithoutId,
+                            values: [],
+                        }
+                        database().query(queryWithJobCategoryId, (error, results) => {
+                            if (error) {
+                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                return;
+                            }
+                            resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
+                        })
+                        
+    }
     });
 }
 

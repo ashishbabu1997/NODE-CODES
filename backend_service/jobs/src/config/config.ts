@@ -4,6 +4,8 @@ export default {
     "http": {
         "port": 4003
     },
+    "jwtSecretKey": "elL0wA!",
+
     "db": {
         "user": "devdb_user",
         "host": "52.66.51.51",
@@ -30,7 +32,7 @@ export default {
     },
     "PositionText": {
         "subject":"Position Deletion Alert",
-        "firstLine": "Hi,",
+        "firstLine": "Hello,",
         "secondLine": "For queries contact us at sales@ellow.io",
         "thirdLine": "With regards,",
         "fourthLine": "Team ellow.io"

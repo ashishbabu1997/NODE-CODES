@@ -62,22 +62,6 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    // roleId: Joi.number().required().error(errors => {
-    //     errors.forEach(err => {
-    //         switch (err.code) {
-    //             case "any.required":
-    //                 err.message = "Role Id should not be empty!";
-    //                 break;
-    //             case "number.base":
-    //                 err.message = "Role Id must be a number"
-    //                 break;
-    //             default:
-    //                 err.message = "Invalid Role Id"
-    //                 break;
-    //         }
-    //     });
-    //     return errors;
-    // }),
     email: Joi.string().email({ tlds: { allow: false } }).required().error(function (errors) {
         errors.forEach(function (err) {
             switch (err.code) {
@@ -109,37 +93,5 @@ export default Joi.object().keys({
             }
         });
         return errors;
-    }),
-    // company_website: Joi.string().required().regex( /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/i).error(errors => {
-    //     errors.forEach(err => {
-    //         switch (err.code) {
-    //             case "any.required":
-    //                 err.message = "Company Website should not be empty";
-    //                 break;
-    //             case "string.base":
-    //                 err.message = "Company Website must be a string"
-    //                 break;
-    //             default:
-    //                 err.message = "Invalid Company Website"
-    //                 break;
-    //         }
-    //     });
-    //     return errors;
-    // }),
-    // companySizeId: Joi.number().required().error(errors => {
-    //     errors.forEach(err => {
-    //         switch (err.code) {
-    //             case "any.required":
-    //                 err.message = "Company Size Id should not be empty!";
-    //                 break;
-    //             case "number.base":
-    //                 err.message = "Company Size Id must be a number"
-    //                 break;
-    //             default:
-    //                 err.message = "Invalid Company Size Id"
-    //                 break;
-    //         }
-    //     });
-    //     return errors;
-    // })
+    })
 }).unknown(true);

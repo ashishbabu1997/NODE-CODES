@@ -3,7 +3,7 @@ import sendResponse from '../common/response/response';
 
 // Fetch the company preferences
 export const getCompanyPreferences = (req, res) => {
-    const body = req.params;
+    const body = req.query;
     getPreferences(body).then((response: any) => {
         sendResponse(res, response.code, 1,200, response.message, response.data)
     }).catch(error => {
