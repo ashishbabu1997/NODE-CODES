@@ -2,7 +2,7 @@ import {getAllJobReceived, getJobReceivedByJobReceivedId,submitCandidateProfile,
 import sendResponse from '../common/response/response';
 
 export const getJobReceived = (req, res) => {
-    const body = req.query;
+    const body = req;
     getAllJobReceived(body).then((response: any) => {
         sendResponse(res, response.code, 1,200, response.message, response.data)
     }).catch(error => {
