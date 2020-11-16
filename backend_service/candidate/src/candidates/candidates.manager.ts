@@ -1252,6 +1252,7 @@ export const getCandidateDetails = (_body) => {
                         }
                         let overallWorkExperience = {
                             cost:allProfileDetails.rows[0].rate,
+                            ellowRate:allProfileDetails.rows[0].ellowRate,
                             workExperience:allProfileDetails.rows[0].workExperience,
                             remoteWorkExperience:allProfileDetails.rows[0].remoteWorkExperience,
                             billingTypeId:allProfileDetails.rows[0].billingTypeId,
