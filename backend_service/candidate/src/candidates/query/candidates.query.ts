@@ -65,5 +65,7 @@ export default {
     fetchPublicationDetails:'select candidate_publication_id as "candidatePublicationId", candidate_id as "candidateId", title, published_year as "publishedYear", link from candidate_publication where candidate_id = $1 and status = true order by published_year desc nulls last',
     fetchAwardDetails:'select candidate_certification_id as "candidateAwardId", candidate_id as "candidateId", certification_id as "certificationId", certified_year as "certifiedYear" from candidate_certifications where candidate_id = $1 and status = true order by certified_year desc nulls last',
     fetchLanguageDetails:'select candidate_language_id as "candidateLanguageId", candidate_id as "candidateId", language_id as "languageId", l.language as "languageName", proficiency from candidate_language cl join languages l on cl.language_id = l."languageId" where cl.candidate_id = $1 and cl.status = true  order by proficiency desc',
-    addExperience:'update candidate set work_experience=$2, remote_work_experience=$3, candidate_position_name=$4, rate=$5, billing_type=$6, currency_type_id=$7, updated_on=$8, updated_by=$9 where candidate_id = $1'
+    addExperience:'update candidate set work_experience=$2, remote_work_experience=$3, candidate_position_name=$4, rate=$5, billing_type=$6, currency_type_id=$7, updated_on=$8, updated_by=$9 where candidate_id = $1',
+    addResumeShare : 'insert into candidate_resume_share (candidate_id, unique_key, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$3,$4,$4) on conflict (candidate_id) do nothing',
+    fetchResumeDatafromUniqueId : 'select candidate_id from candidate_resume_share where unique_key like $1'
 }

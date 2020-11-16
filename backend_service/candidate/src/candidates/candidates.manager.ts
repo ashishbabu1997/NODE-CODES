@@ -5,7 +5,7 @@ import config from '../config/config';
 import { createNotification } from '../common/notifications/notifications';
 import * as handlebars from 'handlebars'
 import * as fs from 'fs'
-
+import {nanoid} from 'nanoid';
 
 export const getCandidateDetails = (_body) => {
     return new Promise((resolve, reject) => {
@@ -959,9 +959,9 @@ export const getCandidateDetails = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-                  
+                    
                     let idSet = Array.isArray(_body.cloudProficiency)?_body.cloudProficiency.map(a => a.cloudProficiencyId).filter(Number):false;
-
+                    
                     if(idSet)
                     {
                         const deleteCandidateCloudQuery = {
@@ -1124,6 +1124,8 @@ export const getCandidateDetails = (_body) => {
     export const getResume = (_body) => {
         return new Promise((resolve, reject) => {
             const candidateId = _body.candidateId;
+            console.log("candidateId : ",candidateId);
+            
             var promise=[]
             const currentTime = Math.floor(Date.now() / 1000);
             (async () => {
@@ -1233,7 +1235,7 @@ export const getCandidateDetails = (_body) => {
                         let citizenshipName = ![null,undefined,""].includes(citizenship)?config.countries.filter(element=>element.id == citizenship)[0].name:'';
                         let residence = allProfileDetails.rows[0].residence;
                         // let residenceName = ![null,undefined,""].includes(residence)?config.countries.filter(element=>element.id == residence)[0].name:'';
-
+                        
                         let profileDetails = {
                             firstName : allProfileDetails.rows[0].firstName,
                             lastName : allProfileDetails.rows[0].lastName,
@@ -1261,7 +1263,7 @@ export const getCandidateDetails = (_body) => {
                             typeOfAvailability : allProfileDetails.rows[0].typeOfAvailability,
                             readyToStart : allProfileDetails.rows[0].readyToStart
                         }
-
+                        
                         let assesementComment = allProfileDetails.rows[0].assessmentComment;
                         
                         await client.query('COMMIT')
@@ -1325,6 +1327,81 @@ export const getCandidateDetails = (_body) => {
                 })
             })
         }
+        export const addResumeShareLink = (_body) => {
+            return new Promise((resolve, reject) => {
+                const currentTime = Math.floor(Date.now());
+                (async () => {
+                    const client = await database().connect()
+                    try {
+                        if(!isNaN(_body.candidateId))
+                        {
+                        
+                            let uniqueId = nanoid();
+                            console.log("uniqueId : ",uniqueId);
+                            const addResumeShare = {
+                                name: 'add-resume-share',
+                                text: candidateQuery.addResumeShare,
+                                values: [_body.candidateId,uniqueId,_body.employeeId,currentTime],
+                            }
+                            await client.query(addResumeShare);
+                            resolve({ code: 200, message: "Candidate resume share link updated", data: uniqueId });
+                        
+                        }
+                        else
+                        {
+                            reject({ code: 400, message: "Invalid candidateId", data: {} });
+                        }
+                    } catch (e) {
+                        console.log(e)
+                        await client.query('ROLLBACK')
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    } finally {
+                        client.release();
+                    }
+                })().catch(e => {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                })
+            })
+        }
+        
+        export const fetchResumeData = (_body) => {
+            return new Promise((resolve, reject) => {
+                const currentTime = Math.floor(Date.now() / 1000);
+                (async () => {
+                    const client = await database().connect()
+                    try {
+                        const getCandidateId = {
+                            name: 'fetch-candidateid',
+                            text: candidateQuery.fetchResumeDatafromUniqueId,
+                            values: [_body.uniqueId],
+                        }
+                        let result = await client.query(getCandidateId);
+                        if(result.rows[0])
+                        {
+                            let candidateId = result.rows[0].candidate_id;
+                            
+                            _body.candidateId = candidateId;
+                            let data = await getResume(_body);                                                        
+                            resolve({ code: 200, message: "Candidate resume listed successfully", data:data["data"] });
+                        }
+                        else{
+                            reject({ code: 400, message: "Id does not match with data available", data: {} });
+                        }
+                    } catch (e) {
+                        console.log(e)
+                        await client.query('ROLLBACK')
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    } finally {
+                        client.release();
+                    }
+                })().catch(e => {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                })
+            })
+            
+           
+        }
+
         export const modifyResumeFile = (_body) => {
             return new Promise((resolve, reject) => {
                 const currentTime = Math.floor(Date.now() / 1000);
