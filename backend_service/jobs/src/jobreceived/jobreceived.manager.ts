@@ -2,49 +2,85 @@ import jobReceivedQuery from './query/jobreceived.query';
 import database from '../common/database/database';
 import * as format from 'pg-format';
 import { createNotification } from '../common/notifications/notifications';
-import { ENETUNREACH } from 'constants';
 
 export const getAllJobReceived = (_body) => {
     
     return new Promise((resolve, reject) => {
         
         var selectQuery = jobReceivedQuery.getAllJobReceived;
-        
-        if (_body.filter) {
-            selectQuery = selectQuery + " AND (LOWER(position_name ) LIKE '%" + _body.filter.toLowerCase() + "%' OR LOWER(company_name ) LIKE '%" + _body.filter.toLowerCase() + "%') "
-        }
+        var queryText='', queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',searchQuery='',body=_body.query, sort = '', searchKey = '';
+
         const orderBy = {
             "position": 'p.position_id',
             "positionName": 'p.position_name',
             "companyName": 'c.company_name',
             "createdOn":'jr.created_on',
             "candidateCount":'"candidateCount"',
-            "resourceCount":'p.developer_count',
+            "resourceCount":'p.developer_count', 
             "duration":'p.contract_duration',
             "startDate":'p.contract_start_date'
         }
-        
-        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+
+        if(filter)
+        {            
+            if(filter.submittedProfile)
+            {
+                filterQuery=filterQuery+' AND p.submittedProfile'
+                queryValues = Object.assign({submittedprofile:filter.submittedProfile})
+            }
+            if(filter.numberOfOpenings)
+            {
+                filterQuery=filterQuery+' AND p.developer_count = $openings'
+                queryValues =  Object.assign({openings:filter.numberOfOpenings},queryValues)
+            }
+            if(filter.positionStatus)
+            {  
+                filterQuery=filterQuery+' AND p.job_status=$positionstatus'
+                queryValues=Object.assign({positionstatus:filter.positionStatus},queryValues)
+            }
+            if(filter.duration)
+            {
+                filterQuery=filterQuery+' AND p.contract_duration= $duration'
+                queryValues=Object.assign({duration:filter.duration},queryValues)
+            }
+            if(filter.durationStart && filter.durationEnd)
+            {
+                filterQuery=filterQuery+' AND p.contract_duration BETWEEN $durationstart AND $durationend'
+                queryValues=Object.assign({durationstart:filter.durationStart,durationend:filter.durationEnd},queryValues)
+            }
+        }
+
+        if(![undefined,null,''].includes(body.filter))
         {
-            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+            searchKey='%' + body.filter + '%';
+            searchQuery = " AND (position_name ILIKE $searchkey OR company_name ILIKE $searchkey) "
+            queryValues=Object.assign({searchkey:searchKey},queryValues)
         }
-        
-        if (_body.limit && _body.skip) {
-            selectQuery = selectQuery + ' LIMIT ' + _body.limit + ' OFFSET ' + _body.skip;
+
+         if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
+        {
+            sort = ' ORDER BY $sort';
+            queryValues = Object.assign({sort: orderBy[body.sortBy] + ' '+ body.sortType},queryValues)
         }
+        queryText = selectQuery + filterQuery + searchQuery + sort;
+        queryValues =  Object.assign({companyid:body.companyId,employeeid:body.employeeId},queryValues)
+
         const query = {
-            name: 'get-AllActivePositions',
-            text: selectQuery,
-            values: [_body.companyId,_body.employeeId]
+            name: 'get-all-positions-provider',
+            text: queryText,
+            values: queryValues
         }
         database().query(query, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            if (error) {              
+                console.log("error : ",error);
+                reject({ code: 400, message: "Database error", data : error });
                 return;
-            }
-            console.log(results.rows)
-            resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs: results.rows } });
+            }            
+            resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs: results.rows} });
         })
+    }).catch((err)=>{
+        console.log("error raised : ",err);
+        return ({ code: 400, message: "Database error", data: err });
     })
 }
 
