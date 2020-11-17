@@ -70,7 +70,7 @@ export const updateUser = (_body) => {
                     const employeeUpdate = {
                         name: 'update-employees',
                         text:employeeQuery.updateEmployee,
-                        values:[_body.employeeId,_body.firstName,_body.lastName,_body.roleId,_body.phoneNumber]
+                        values:[_body.empId,_body.firstName,_body.lastName,_body.roleId,_body.phoneNumber]
                     }
                     await client.query(employeeUpdate);
                 }
@@ -79,7 +79,7 @@ export const updateUser = (_body) => {
                     const employeeDelete = {
                         name: 'list-employees',
                         text:employeeQuery.deleteEmployee,
-                        values:[_body.employeeId]
+                        values:[_body.empId]
                     }
                     await client.query(employeeDelete);
                 }
@@ -108,7 +108,7 @@ export const getUserDetails = (_body) => {
                     const employeeData = {
                         name: 'data-employees',
                         text:employeeQuery.getEmployeeData,
-                        values:[_body.employeeId]
+                        values:[_body.empId]
                     }
                     var result=await client.query(employeeData)
                 await client.query('COMMIT');

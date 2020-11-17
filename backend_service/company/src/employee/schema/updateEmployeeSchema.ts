@@ -1,7 +1,7 @@
 import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({
-    employeeId: Joi.number().required().error(errors => {
+    empId: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
@@ -17,12 +17,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    decisionValue: Joi.number().required().error(errors => {
+    decisionValue: Joi.number().allow('').error(errors => {
         errors.forEach(err => {
             switch (err.code) {
-                case "any.required":
-                    err.message = "decisionValue should not be empty";
-                    break;
                 case "number.base":
                     err.message = "decisionValue must be a number"
                     break;

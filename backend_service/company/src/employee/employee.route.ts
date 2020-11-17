@@ -13,7 +13,7 @@ router
     .get('/', jwtAuth, setData(), validate(listEmployeeSchema), getEmployee)
     .post('/', jwtAuth, setData(), validate(addEmployeeSchema), addEmployee)
     .put('/', jwtAuth, setData(),validate(updateEmployeeSchema), updateEmployee)
-    .get('/userDetails', jwtAuth, setData(), getemployeeData)
+    .get('/userDetails',jwtAuth, setData(), getemployeeData)
 
 export default router;
 
