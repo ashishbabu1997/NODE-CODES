@@ -1287,7 +1287,7 @@ export const getCandidateDetails = (_body) => {
                         let profileDetails = {
                             firstName : allProfileDetails.rows[0].firstName,
                             lastName : allProfileDetails.rows[0].lastName,
-                            positionName:allProfileDetails.rows[0].candidatePositionName,
+                            candidatePositionName:allProfileDetails.rows[0].candidatePositionName,
                             description : allProfileDetails.rows[0].description,
                             candidateStatus : allProfileDetails.rows[0].candidateStatus,
                             sellerCompanyId : allProfileDetails.rows[0].sellerCompanyId,

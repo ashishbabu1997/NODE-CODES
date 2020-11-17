@@ -1,4 +1,4 @@
-import { getEmployee, addEmployee,updateEmployee} from './employee.controller';
+import { getEmployee, addEmployee,updateEmployee,getemployeeData} from './employee.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addEmployeeSchema from './schema/addEmployeeSchema';
@@ -13,5 +13,7 @@ router
     .get('/', jwtAuth, setData(), validate(listEmployeeSchema), getEmployee)
     .post('/', jwtAuth, setData(), validate(addEmployeeSchema), addEmployee)
     .put('/', jwtAuth, setData(),validate(updateEmployeeSchema), updateEmployee)
+    .get('/userDetails', jwtAuth, setData(), getemployeeData)
+
 export default router;
 
