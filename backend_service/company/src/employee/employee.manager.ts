@@ -58,3 +58,43 @@ export const createEmployee = (_body) => {
         })
     })
 }
+export const updateUser = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                if (_body.decisionValue==1)
+                {
+                    const employeeUpdate = {
+                        name: 'update-employees',
+                        text:employeeQuery.updateEmployee,
+                        values:[_body.employeeId,_body.firstName,_body.lastName,_body.roleId]
+                    }
+                    await client.query(employeeUpdate);
+                }
+                else
+                {
+                    const employeeDelete = {
+                        name: 'list-employees',
+                        text:employeeQuery.deleteEmployee,
+                        values:[_body.employeeId]
+                    }
+                    await client.query(employeeDelete);
+                }
+                await client.query('COMMIT');
+                resolve({ code: 200, message: "Employees updated successfully", data:{} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
