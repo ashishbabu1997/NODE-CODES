@@ -104,9 +104,10 @@ export const getCandidateDetails = (_body) => {
     export const listCandidatesDetails = (_body) => {
         return new Promise((resolve, reject) => {
             var selectQuery = candidateQuery.listCandidates;
-            if (_body.userRoleId != 1) {
-                selectQuery = selectQuery + " AND cp.admin_approve_status = 1"
-            }
+            
+            var adminApproveQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
+            body=_body.query, sort = '', searchKey = '%%';
+            
             const orderBy = {
                 "updatedOn": 'ca.updated_on',
                 "candidateFirstName": 'ca.candidate_first_name',
@@ -116,44 +117,68 @@ export const getCandidateDetails = (_body) => {
                 "companyName": 'c.company_name'
             }
             
-            if (_body.filter) {
-                selectQuery = selectQuery + " AND ((LOWER(ca.candidate_first_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(ca.candidate_last_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
+            if(filter)
+            {            
+                if(filter.name)
+                {   
+                    filterQuery=filterQuery+' AND (ca.candidate_first_name ILIKE $name OR ca.candidate_last_name ILIKE $name) '
+                    queryValues = Object.assign({name:filter.candidateName})
+                }
+                if(filter.email)
+                {
+                    filterQuery=filterQuery+' AND email ILIKE $email'
+                    queryValues =  Object.assign({email:filter.email},queryValues)
+                }
+                if(filter.minCost && filter.maxCost)
+                {  
+                    filterQuery=filterQuery+' AND (ca.rate BETWEEN $mincost AND $maxcost)'
+                    queryValues=Object.assign({mincost:filter.minCost,maxcost:filter.maxCost},queryValues)
+                }
+                if(filter.minRate && filter.maxRate)
+                {  
+                    filterQuery=filterQuery+' AND (cp.ellow_rate BETWEEN $minrate AND $maxrate)'
+                    queryValues=Object.assign({minrate:filter.minRate,maxrate:filter.maxRate},queryValues)
+                }
+
             }
-            if (_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy)) {
-                selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
-                console.log("if");
-                
-            }            
+            
+            if(![undefined,null,''].includes(body.filter))
+            {
+                searchKey='%' + body.filter + '%';
+                searchQuery = " AND (ca.candidate_first_name ILIKE $searchkey OR ca.candidate_last_name ILIKE $searchkey OR c.company_name ILIKE $searchkey) "
+                queryValues=Object.assign({searchkey:searchKey},queryValues)
+            }
+            
+            if (body.userRoleId != 1) {
+                adminApproveQuery = " AND cp.admin_approve_status = 1"
+            }
+            
+            if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+                sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;                
+            }
             
             (async () => {
-                const client = await database().connect()
+                const client = await database()
                 try {
                     await client.query('BEGIN');
-                    const listCandidates = {
-                        name: 'get-position-candidates',
-                        text: selectQuery,
-                        values: [_body.positionId, _body.employeeId]
-                    }
-                    const candidatesResult = await client.query(listCandidates);
-                    let candidates = candidatesResult.rows;
-                    let allCandidates = [];
-                    candidates.forEach(candidate => {
-                        let candidateIndex = allCandidates.findIndex(c => c.candidateId == candidate.candidateId)
-                        if (candidate.candidateStatus != 0 && candidateIndex == -1) {
-                            allCandidates.push(candidate);
-                        }
-                    });
+                    queryText = selectQuery+adminApproveQuery+filterQuery+searchQuery+sort;
+                    queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
                     
+                    const listCandidates = {
+                        name: 'get-candidate-under-position',
+                        text: queryText,
+                        values: queryValues
+                    }
+                    const candidatesResult = await client.query(listCandidates);                    
                     const getJobReceivedId = {
                         name: 'get-jobreceived-id',
                         text: candidateQuery.getJobReceivedId,
-                        values: [_body.positionId]
+                        values: [body.positionId]
                     }
-                    const jobReceivedIdResult = await client.query(getJobReceivedId);
-                    var jobReceivedId = jobReceivedIdResult.rows[0]['job_received_id'];
-                    
+                    const jobReceivedIdResult = await client.query(getJobReceivedId);                    
                     await client.query('COMMIT')
-                    resolve({ code: 200, message: "Candidate Listed successfully", data: { jobReceivedId, allCandidates } });
+                    resolve({ code: 200, message: "Candidate Listed successfully", data: { jobReceivedId:jobReceivedIdResult.rows[0].job_received_id, allCandidates:candidatesResult.rows } });
+
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
@@ -164,22 +189,16 @@ export const getCandidateDetails = (_body) => {
             })().catch(e => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} })
             })
+            
         })
     }
     
     export const listFreeCandidatesDetails = (_body) => {
         return new Promise((resolve, reject) => {
             var selectQuery = candidateQuery.listFreeCandidates;
-            if (_body.userRoleId != 1) {
-                selectQuery = selectQuery + " AND c.company_id = " + _body.companyId
-            }
-            else {
-                selectQuery = selectQuery + " AND (ca.candidate_status = 3 or (ca.candidate_status = 4 and ca.created_by=" + _body.employeeId + ")) ";
-            }
-            if (_body.filter) {
-                selectQuery = selectQuery + " " + "AND (ca.candidate_first_name ilike '%" + _body.filter + "%' or ca.candidate_last_name ilike '%" + _body.filter + "%' or c.company_name ilike '%" + _body.filter + "%')"
-            }
-            
+            var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
+            body=_body.query, sort = '', searchKey = '%%';
+
             const orderBy = {
                 "candidateId": 'ca.candidate_id',
                 "candidateFirstName": 'ca.candidate_first_name',
@@ -188,24 +207,56 @@ export const getCandidateDetails = (_body) => {
                 "phoneNumber": 'ca.phone_number',
                 "companyName": 'c.company_name'
             }
-            
-            if (_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy)) {
-                selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+
+            if(filter)
+            {            
+                if(filter.name)
+                {   
+                    filterQuery=filterQuery+' AND (ca.candidate_first_name ILIKE $name OR ca.candidate_last_name ILIKE $name) '
+                    queryValues = Object.assign({name:filter.candidateName})
+                }
+                if(filter.experience)
+                {
+                    filterQuery=filterQuery+' AND ca.work_experience = $experience'
+                    queryValues =  Object.assign({experience:filter.experience},queryValues)
+                }
             }
+            
+            if(![undefined,null,''].includes(body.filter))
+            {
+                searchKey='%' + body.filter + '%';
+                searchQuery = " AND (ca.candidate_first_name ILIKE $searchkey OR ca.candidate_last_name ILIKE $searchkey OR c.company_name ILIKE $searchkey) "
+                queryValues=Object.assign({searchkey:searchKey},queryValues)
+            }
+
+            if (body.userRoleId != 1) {
+                roleBasedQuery = " AND c.company_id = $companyid"
+                queryValues=Object.assign({companyid:body.companyId},queryValues)
+            }
+            else {
+                roleBasedQuery =  " AND (ca.candidate_status = 3 or (ca.candidate_status = 4 and ca.created_by= $employeeid))" 
+                queryValues=Object.assign({employeeid:body.employeeId},queryValues)
+            }
+            
+            if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+                sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;                
+            }
+
             (async () => {
-                const client = await database().connect()
+                const client = await database()
                 try {
                     await client.query('BEGIN');
+                    queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+sort;
+                    queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
+                
                     const listCandidates = {
                         name: 'get-free-candidates',
-                        text: selectQuery
+                        text: queryText,
+                        values: queryValues
                     }
-                    
                     const candidatesResult = await client.query(listCandidates);
-                    let candidates = candidatesResult.rows;
-                    
                     await client.query('COMMIT')
-                    resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates } });
+                    resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows } });
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
@@ -1333,7 +1384,7 @@ export const getCandidateDetails = (_body) => {
                     try {
                         if(!isNaN(_body.candidateId))
                         {
-                        
+                            
                             let uniqueId = nanoid();
                             console.log("uniqueId : ",uniqueId);
                             const addResumeShare = {
@@ -1343,7 +1394,7 @@ export const getCandidateDetails = (_body) => {
                             }
                             await client.query(addResumeShare);
                             resolve({ code: 200, message: "Candidate resume share link updated", data: uniqueId });
-                        
+                            
                         }
                         else
                         {
@@ -1397,9 +1448,9 @@ export const getCandidateDetails = (_body) => {
                 })
             })
             
-           
+            
         }
-
+        
         export const modifyResumeFile = (_body) => {
             return new Promise((resolve, reject) => {
                 const currentTime = Math.floor(Date.now() / 1000);
