@@ -1292,17 +1292,17 @@ export const getCandidateDetails = (_body) => {
                         {
                             type:"algorithmTestLink",
                             name:"Algorithm Test",
-                            link: assesementsLinks.rows[0].algorithmTestLink
+                            link: assesementsLinks.rows[0].algorithm_test_link
                         },
                         {
                             type:"programmingTestLink",
                             name:"Programming Test Link",
-                            link: assesementsLinks.rows[0].programmingTestLink
+                            link: assesementsLinks.rows[0].programming_test_link
                         },
                         {
                             type:"interviewLink",
                             name:"Interview Link",
-                            link: assesementsLinks.rows[0].interviewLink
+                            link: assesementsLinks.rows[0].interview_link
                         }
                     ]
                     if (Array.isArray(projects.rows))
