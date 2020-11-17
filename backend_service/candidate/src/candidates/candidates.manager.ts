@@ -681,7 +681,7 @@ export const getCandidateDetails = (_body) => {
                     const modifyCandidateProfileDetailsQuery = {
                         name: 'modify-candidate-ProfileDetails',
                         text: candidateQuery.modifyProfileDetails,
-                        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime,_body.employeeId],
+                        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime,_body.employeeId,_body.positionName],
                     }
                     await client.query(modifyCandidateProfileDetailsQuery);
                     resolve({ code: 200, message: "Candidate ProfileDetails updated successfully", data: {} });
@@ -864,7 +864,7 @@ export const getCandidateDetails = (_body) => {
                         const insertCandidateWorkHistoryQuery = {
                             name: 'insert-candidate-work-history',
                             text: candidateQuery.insertCandidateWorkHistory,
-                            values: [_body.candidateId,_body.positionName,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,_body.employeeid,currentTime],
+                            values: [_body.candidateId,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,_body.employeeid,currentTime],
                         }
                         await client.query(insertCandidateWorkHistoryQuery);
                     }
@@ -873,7 +873,7 @@ export const getCandidateDetails = (_body) => {
                         const modifyCandidateWorkHistoryQuery = {
                             name: 'modify-candidate-work-history',
                             text: candidateQuery.modifyCandidateWorkHistory,
-                            values: [_body.candidateWorkExperienceId,_body.candidateId,_body.positionName,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,currentTime,_body.employeeid],
+                            values: [_body.candidateWorkExperienceId,_body.candidateId,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,currentTime,_body.employeeid],
                         }
                         await client.query(modifyCandidateWorkHistoryQuery);
                     }
@@ -1251,6 +1251,7 @@ export const getCandidateDetails = (_body) => {
                         }
                         let overallWorkExperience = {
                             cost:allProfileDetails.rows[0].rate,
+                            ellowRate:allProfileDetails.rows[0].ellowRate,
                             workExperience:allProfileDetails.rows[0].workExperience,
                             remoteWorkExperience:allProfileDetails.rows[0].remoteWorkExperience,
                             billingTypeId:allProfileDetails.rows[0].billingTypeId,
