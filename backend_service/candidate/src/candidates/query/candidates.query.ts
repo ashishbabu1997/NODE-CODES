@@ -51,6 +51,7 @@ export default {
     insertCandidateAward:'insert into candidate_certifications(candidate_id, certification_id, certified_year, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$4,$4,$5,$5)',
     deleteCandidateAward:'update candidate_certifications set status=false, updated_on = $2, updated_by = $3 where candidate_certification_id = $1',
 
+    
     modifyResumeFile:'update candidate set resume=$2,updated_on=$3,updated_by=$4 where candidate_id=$1',
 
 

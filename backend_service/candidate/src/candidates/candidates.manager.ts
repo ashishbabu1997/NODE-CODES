@@ -1379,7 +1379,7 @@ export const getCandidateDetails = (_body) => {
                             skills:skills.rows,
                             projects:promise,
                             assesments:assesements.rows,
-                            assesmentLinkslists:assesmentLinksList,
+                            assesmentLink:assesmentLinksList,
                             assesementComment,
                             workExperience:workExperiences.rows,
                             education:educations.rows,
