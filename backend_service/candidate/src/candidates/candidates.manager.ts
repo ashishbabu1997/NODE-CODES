@@ -1235,7 +1235,7 @@ export const getCandidateDetails = (_body) => {
                         text: candidateQuery.fetchAssesmentLinks,
                         values: [candidateId],
                     }
-                    var assesementsLinks=await client.query(fetchAssesements);
+                    var assesementsLinks=await client.query(fetchAssesementsLinks);
                     const fetchWorkExperience = {
                         name: 'fetch-work-experience-details',
                         text: candidateQuery.fetchWorkExperienceDetails,
