@@ -39,7 +39,7 @@ export default {
     modifyCandidateEducation: `update candidate_education set candidate_id=$2, degree = $3, college = $4, start_date = $5, end_date = $6, updated_on = $7, updated_by = $8 where candidate_education_id = $1`,
     insertCandidateEducation:'insert INTO candidate_education (candidate_id, degree, college, start_date, end_date, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$4,$5,$6,$6,$7,$7)',
     deleteCandidateEducation:'update candidate_education set status= false, updated_on = $2, updated_by = $3 where candidate_education_id = $1',
-    fetchAssesmentLinks:'SELECT algorithmTestLink,programmingTestLink,interviewLink FROM candidate WHERE candidate_id=$1',
+    fetchAssesmentLinks:'SELECT algorithm_test_link,programming_test_link,interview_link FROM candidate WHERE candidate_id=$1',
     modifyCandidatePublication: `update candidate_publication set candidate_id=$2, title = $3, published_year = $4, link = $5, updated_on = $6, updated_by = $7 where candidate_publication_id = $1`,
     insertCandidatePublication:'insert into candidate_publication (candidate_id, title, published_year, link, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$4,$5,$5,$6,$6)',
     deleteCandidatePublication:'update candidate_publication set status=false, updated_on = $2, updated_by = $3 where candidate_publication_id = $1',
@@ -68,6 +68,6 @@ export default {
     addExperience:'update candidate set work_experience=$2, remote_work_experience=$3,rate=$4, billing_type=$5, currency_type_id=$6, updated_on=$7, updated_by=$8 where candidate_id = $1',
     addResumeShare : 'insert into candidate_resume_share (candidate_id, unique_key, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$3,$4,$4) on conflict (candidate_id) do nothing',
     fetchResumeDatafromUniqueId : 'select candidate_id from candidate_resume_share where unique_key like $1',
-    updateAssesmentLinks:'UPDATE candidate SET algorithmTestLink=$2,programmingTestLink=$3,interviewLink=$4 WHERE candidate_id=$1'
+    updateAssesmentLinks:'UPDATE candidate SET algorithm_test_link=$2,programming_test_link=$3,interview_link=$4 WHERE candidate_id=$1'
 
 }
