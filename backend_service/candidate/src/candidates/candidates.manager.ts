@@ -123,9 +123,7 @@ export const getCandidateDetails = (_body) => {
                 selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
                 console.log("if");
                 
-            }
-            // let orderBy = 'ORDER BY ca.updated_on desc';
-            
+            }            
             
             (async () => {
                 const client = await database().connect()

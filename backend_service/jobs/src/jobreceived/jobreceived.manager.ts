@@ -57,10 +57,9 @@ export const getAllJobReceived = (_body) => {
             queryValues=Object.assign({searchkey:searchKey},queryValues)
         }
 
-         if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
+        if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
         {
-            sort = ' ORDER BY $sort';
-            queryValues = Object.assign({sort: orderBy[body.sortBy] + ' '+ body.sortType},queryValues)
+            sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
         }
         queryText = selectQuery + filterQuery + searchQuery + sort;
         queryValues =  Object.assign({companyid:body.companyId,employeeid:body.employeeId},queryValues)

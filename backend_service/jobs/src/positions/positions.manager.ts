@@ -51,8 +51,7 @@ export const getCompanyPositions = (_body) => {
         }
         if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
         {
-            sort = ' ORDER BY $sort';
-            queryValues = Object.assign({sort: orderBy[body.sortBy] + ' '+ body.sortType},queryValues)
+            sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
         }
         if(![undefined,null].includes(body.searchKey))
         {
@@ -67,7 +66,10 @@ export const getCompanyPositions = (_body) => {
             queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
             queryValues =  Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
         }
-     
+        console.log("queryText : ",queryText);
+        console.log("queryValues : ",queryValues);
+
+        
         const query = {
             name: 'id-fetch-company-positions',
             text: queryText,
