@@ -1230,6 +1230,12 @@ export const getCandidateDetails = (_body) => {
                         values: [candidateId],
                     }
                     var assesements=await client.query(fetchAssesements);
+                    const fetchAssesementsLinks = {
+                        name: 'fetch-assesement-links',
+                        text: candidateQuery.fetchAssesmentLinks,
+                        values: [candidateId],
+                    }
+                    var assesementsLinks=await client.query(fetchAssesements);
                     const fetchWorkExperience = {
                         name: 'fetch-work-experience-details',
                         text: candidateQuery.fetchWorkExperienceDetails,
@@ -1281,6 +1287,23 @@ export const getCandidateDetails = (_body) => {
                         values: [candidateId],
                     }
                     var languages=await client.query(fetchLanguages);
+                    var assesmentLinksList=[
+                        {
+                            type:"algorithmTestLink",
+                            name:"Algorithm Test",
+                            link: assesementsLinks.rows[0].algorithmTestLink
+                        },
+                        {
+                            type:"programmingTestLink",
+                            name:"Programming Test Link",
+                            link: assesementsLinks.rows[0].programmingTestLink
+                        },
+                        {
+                            type:"interviewLink",
+                            name:"Interview Link",
+                            link: assesementsLinks.rows[0].interviewLink
+                        }
+                    ]
                     if (Array.isArray(projects.rows))
                     {
                         projects.rows.forEach(element => {
@@ -1355,6 +1378,7 @@ export const getCandidateDetails = (_body) => {
                             skills:skills.rows,
                             projects:promise,
                             assesments:assesements.rows,
+                            assesmentLinkslists:assesmentLinksList,
                             assesementComment,
                             workExperience:workExperiences.rows,
                             education:educations.rows,
