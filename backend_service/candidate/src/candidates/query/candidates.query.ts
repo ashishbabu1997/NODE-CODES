@@ -67,5 +67,7 @@ export default {
     fetchLanguageDetails:'select candidate_language_id as "candidateLanguageId", candidate_id as "candidateId", language_id as "languageId", l.language as "languageName", proficiency from candidate_language cl join languages l on cl.language_id = l."languageId" where cl.candidate_id = $1 and cl.status = true  order by proficiency desc',
     addExperience:'update candidate set work_experience=$2, remote_work_experience=$3,rate=$4, billing_type=$5, currency_type_id=$6, updated_on=$7, updated_by=$8 where candidate_id = $1',
     addResumeShare : 'insert into candidate_resume_share (candidate_id, unique_key, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$3,$4,$4) on conflict (candidate_id) do nothing',
-    fetchResumeDatafromUniqueId : 'select candidate_id from candidate_resume_share where unique_key like $1'
+    fetchResumeDatafromUniqueId : 'select candidate_id from candidate_resume_share where unique_key like $1',
+    updateAssesmentLinks:'UPDATE candidate_assesement SET algorithmTestLink=$2,programmingTestLink=$3,interviewLink=$4 WHERE candidate_id=$1'
+
 }

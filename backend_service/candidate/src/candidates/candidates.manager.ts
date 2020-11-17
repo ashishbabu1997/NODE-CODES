@@ -489,6 +489,9 @@ export const getCandidateDetails = (_body) => {
     export const addCandidateReview = (_body) => {
         return new Promise((resolve, reject) => {
             const data = _body.assessmentTraits;
+            var algorithmLink;
+            var programmingLink;
+            var interviewLink;
             const currentTime = Math.floor(Date.now() / 1000);
             let promise = [];
             (async () => {
@@ -510,6 +513,29 @@ export const getCandidateDetails = (_body) => {
                         }
                         promise.push(client.query(candidateDetails));
                     });
+                    if (Array.isArray(_body.assesmentLink))
+                    {
+                        _body.assesmentLink.forEach(element => { 
+                            if (element.type == 'algorithmTestLink')
+                            {
+                                algorithmLink=element.link
+                            }
+                            else if (element.type == 'programmingTestLink')
+                            {
+                                programmingLink=element.link
+                            }
+                            else if (element.type == 'interviewLink')
+                            {
+                                interviewLink=element.link
+                            }
+                        })
+                    }
+                    const insertLinks = {
+                        name: 'insert-assessment-links',
+                        text: candidateQuery.updateAssesmentLinks,
+                        values: [_body.candidateId,algorithmLink,programmingLink,interviewLink],
+                    }
+                    promise.push(client.query(insertLinks));
                     const results = await Promise.all(promise);
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });
