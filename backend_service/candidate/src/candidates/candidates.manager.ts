@@ -1239,6 +1239,7 @@ export const getCandidateDetails = (_body) => {
                     let workedCompanyList =  workExperiences.rows.map(element => ({"id":element.candidateWorkExperienceId,"companyName":element.companyName}))
                     workedCompanyList  = [...workedCompanyList,{"id":0,"companyName":"On personal capacity"}];                                         
                     let companyJson = {};
+                    companyJson = Object.assign({0:'On personal capacity'},companyJson);
                     workExperiences.rows.forEach(element => {
                         companyJson[element.candidateWorkExperienceId]=element.companyName;
                     });
