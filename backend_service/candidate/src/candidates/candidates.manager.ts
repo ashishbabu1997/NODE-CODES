@@ -202,7 +202,6 @@ export const getCandidateDetails = (_body) => {
                         name: 'get-free-candidates',
                         text: selectQuery
                     }
-                    console.log("selectQuery : ",selectQuery);
                     
                     const candidatesResult = await client.query(listCandidates);
                     let candidates = candidatesResult.rows;
