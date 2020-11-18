@@ -2,6 +2,11 @@ import jobReceivedQuery from './query/jobreceived.query';
 import database from '../common/database/database';
 import * as format from 'pg-format';
 import { createNotification } from '../common/notifications/notifications';
+import { sendMail } from '../middlewares/mailer'
+import * as handlebars from 'handlebars'
+import * as fs from 'fs'
+import config from '../config/config'
+
 
 export const getAllJobReceived = (_body) => {
     
@@ -214,7 +219,17 @@ export const submitCandidateProfile = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                
+                var readHTMLFile = function(path, callback) {
+                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                        if (err) {
+                            throw err;
+                            callback(err);
+                        }
+                        else {
+                            callback(null, html);
+                        }
+                    });
+                };
                 await client.query('BEGIN');
                 let candidateId = _body.candidateId;
                 const updateCandidateStatus = {
@@ -243,11 +258,29 @@ export const submitCandidateProfile = (_body) => {
                 let companyId = result.rows[0].company_id;
                 let jobReceivedId = result.rows[0].job_received_id;
                 let positionName = _body.positionName;
-                
+                var subject='New candidate notification'
                 if(![null,undefined,""].includes(_body.positionId))
                 {
                     const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
                     await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position' })    
+                    readHTMLFile('src/emailTemplates/candidateAdditionText.html', function(err, html) {
+                        var template = handlebars.compile(html);
+                        var replacements = {
+                            first:candidateFirstName,
+                            last:candidateLastName,
+                            position:positionName,     
+                        };
+                        var htmlToSend = template(replacements);
+                        sendMail(config.adminEmail,subject,htmlToSend, function (err, data) {
+                            if (err) {
+                                console.log(err)
+                                reject({ code: 400, message: "Mailer Error", data: {} });
+                                return;
+                            }
+                            console.log('Notification mail to admin has been sent !!!');
+                            // resolve({ code: 200, message: "User Approval Successfull", data: {} });
+                        });
+                    }) 
                 }
                 
                 resolve({ code: 200, message: "Candidate profile submitted", data: {} });

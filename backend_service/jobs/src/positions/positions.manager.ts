@@ -66,9 +66,6 @@ export const getCompanyPositions = (_body) => {
             queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
             queryValues =  Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
         }
-        console.log("queryText : ",queryText);
-        console.log("queryValues : ",queryValues);
-
         
         const query = {
             name: 'id-fetch-company-positions',
@@ -370,7 +367,7 @@ export const createCompanyPositions = async (_body) => {
                                     const message = `A new position named ${positionName} has been created by ${companyName}.`
                                     var cName=companyName
                                     var cpName=positionName
-                                    var msg= 'A new position named'+' '+cpName+' '+'has been created by'+' '+cName
+                                    // var msg= 'A new position named'+' '+cpName+' '+'has been created by'+' '+cName
                                     await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position' })
                                     var subject='New position notification'
                                     readHTMLFile('src/emailTemplates/positionCreationText.html', function(err, html) {
@@ -409,16 +406,15 @@ export const createCompanyPositions = async (_body) => {
                     export const changeJobStatus = (_body) => {
                         return new Promise((resolve, reject) => {
                             const currentTime = Math.floor(Date.now() / 1000);
-                            var jobReceivedId;
-                            var message;
-                            var positionName
-                            var positionId
+                           
                             (async () => {
                                 const client = await database().connect()
                                 
                                 try {
                                     await client.query('BEGIN');
-                                    
+                                    var jobReceivedId;
+                                    var message;
+                                    let positionName;
                                     var readHTMLFile = function(path, callback) {
                                         fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
                                             if (err) {
@@ -470,6 +466,7 @@ export const createCompanyPositions = async (_body) => {
                                                         positionName=results.rows[0].position_name
                                                         var emailAddress=results.rows[0].email
                                                         message=`A position named ${positionName} has been reopened.`
+                                                        createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position' })
                                                         readHTMLFile('src/emailTemplates/positionReopenText.html', function(err, html) {
                                                             var template = handlebars.compile(html);
                                                             var replacements = {
@@ -485,17 +482,37 @@ export const createCompanyPositions = async (_body) => {
                                                                 }
                                                             });
                                                         })
-                                                    })
+
+                                                        })
+                                                    
                                                 }
                                                 else if(_body.jobStatus==8)
                                                 {
-                                                    message=`A position named ${positionName} has been closed.`
-                                                    
+                                                    const mailAddress = {
+                                                        name: 'fetch-emailaddress',
+                                                        text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
+                                                        values:[_body.positionId]
+                                                    }
+                                                    database().query(mailAddress, (error, results) => {
+                                                        if (error) {
+                                                            console.log(error)
+                                                            reject({ code: 400, message: "Error in database connection.", data: {} });
+                                                            return;
+                                                        }   
+                                                        jobReceivedId=results.rows[0].job_received_id    
+                                                        positionName=results.rows[0].position_name
+                                                        var emailAddress=results.rows[0].email
+                                                        message=`A position named ${positionName} has been closed.`
+                                                        createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position' })
+                                                    })
                                                 }   
+                                            
                                             }
+
                                         })
+                                        
                                     })
-                                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList' })
+                                    console.log(message)
                                     resolve({ code: 200, message: "Job status changed", data: {} });
                                     
                                 } catch (e) {

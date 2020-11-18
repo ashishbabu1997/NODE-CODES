@@ -5,7 +5,7 @@
   "main": "dist/Server.js",
   "scripts": {
     "predev": "tsc -w -p src &",
-    "dev": "nodemon dist/Server.js",
+    "dev": "nodemon dist/Server.ts",
     "prod_stop": "pm2 stop dist/Server.js",
     "lintbe": "tslint **/**.ts{,x}",
     "serve": "pm2 start dist/Server.js",
@@ -26,6 +26,7 @@
     "nanoid": "^3.1.16",
     "node-postgres-named": "^2.4.1",
     "nodemailer": "^6.4.11",
+    "nodemon": "^2.0.6",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^8.2.1",
