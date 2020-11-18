@@ -1,6 +1,5 @@
 import servicesQuery from './query/services.query';
 import database from '../common/database/database';
-import { getProfilePercentage } from '../profilePercentage/profilePercentage.controller';
 
 export const fetchCompanyServices = (_body) => {
     return new Promise((resolve, reject) => {

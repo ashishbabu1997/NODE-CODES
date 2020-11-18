@@ -1,8 +1,8 @@
-import {getAllJobReceived, getJobReceivedByJobReceivedId, updateflagForJobReceived, updateIsRejectForJobReceived, getProfileByCompanyId, saveCandidateProfile,editCandidateDetails } from './jobreceived.manager';
+import {getAllJobReceived, getJobReceivedByJobReceivedId,submitCandidateProfile, updateIsRejectForJobReceived, getProfileByCompanyId, saveCandidateProfile,editSkills} from './jobreceived.manager';
 import sendResponse from '../common/response/response';
 
 export const getJobReceived = (req, res) => {
-    const body = req.query;
+    const body = req;
     getAllJobReceived(body).then((response: any) => {
         sendResponse(res, response.code, 1,200, response.message, response.data)
     }).catch(error => {
@@ -18,14 +18,6 @@ export const getJobReceivedById = (req, res) => {
         sendResponse(res, error.code, 0,400, error.message, error.data)
     })
 }
-export const updateFlag = (req, res) => {
-    const body = req.body;
-    updateflagForJobReceived(body).then((response: any) => {
-        sendResponse(res, response.code, 1,202, response.message, response.data)
-    }).catch(error => {
-        sendResponse(res, error.code, 0,402, error.message, error.data)
-    })
-}
 
 export const updateReject = (req, res) => {
     const body = req.body;
@@ -36,12 +28,21 @@ export const updateReject = (req, res) => {
     })
 }
 
-export const saveOrSubmitProfile = (req, res) => {
+export const addProfile = (req, res) => {
     const body = req.body;
     saveCandidateProfile(body).then((response: any) => {
         sendResponse(res, response.code, 1,201, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0,401, error.message, error.data)
+    })
+}
+
+export const submitProfile = (req, res) => {
+    const body = req.body;
+    submitCandidateProfile(body).then((response: any) => {
+        sendResponse(res, response.code, 1,202, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0,402, error.message, error.data)
     })
 }
 
@@ -53,18 +54,9 @@ export const getProfile = (req, res) => {
         sendResponse(res, error.code, 0,400, error.message, error.data)
     })
 }
-// export const editProfile = (req, res) => {
-//     const body = req.body;
-//     console.log("Hai")
-//     editCandidateDetails(body).then((response: any) => {
-//         console.log(response)
-//         sendResponse(res, response.code, 1,202, response.message, response.data)
-//     }).catch(error => {
-//         sendResponse(res, error.code, 0,402, error.message, error.data)
-//     })
-// }
-export const editProfile = (req, res) => {
+
+export const skillEdits = (req, res) => {
     const body = req.body;
-    editCandidateDetails(body).then((response: any) => sendResponse(res, response.code, 1,202, response.message, response.data))
+    editSkills(body).then((response: any) => sendResponse(res, response.code, 1,202, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0,402, error.message, error.data))
 }
