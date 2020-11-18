@@ -1292,7 +1292,7 @@ export const getCandidateDetails = (_body) => {
                     var assesmentLinksList=[
                         {
                             type:"algorithmTestLink",
-                            name:"Algorithm Test",
+                            name:"Algorithm Test Link",
                             link: assesementsLinks.rows[0].algorithm_test_link
                         },
                         {
