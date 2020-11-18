@@ -205,7 +205,8 @@ export const getCandidateDetails = (_body) => {
                 "candidatelastName": 'ca.candidate_last_name',
                 "email": 'ca.email_address',
                 "phoneNumber": 'ca.phone_number',
-                "companyName": 'c.company_name'
+                "companyName": 'c.company_name',
+                "updatedOn" : 'ca.updated_on'
             }
 
             if(filter)
