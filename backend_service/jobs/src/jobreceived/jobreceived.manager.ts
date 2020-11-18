@@ -238,7 +238,7 @@ export const submitCandidateProfile = (_body) => {
                     values: [candidateId, _body.employeeId, currentTime],
                 }
                 let result = await client.query(updateCandidateStatus);
-                
+        
                 const addDefaultTraits = {
                     name: 'add-default-traits',
                     text: jobReceivedQuery.addDefaultAssessmentTraits,
