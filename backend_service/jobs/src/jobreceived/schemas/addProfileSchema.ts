@@ -1,8 +1,7 @@
 import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({
-    candidates: Joi.array().items(Joi.object({
-        candidateFirstName : Joi.string().required().error(errors => {
+        firstName : Joi.string().required().error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
                     case "any.required":
@@ -18,28 +17,9 @@ export default Joi.object().keys({
             });
             return errors;
         }),
-        candidateStatus : Joi.number().required().error(errors => {
+        jobReceivedId : Joi.number().allow('',null).error(errors => {
             errors.forEach(err => {
                 switch (err.code) {
-                    case "any.required":
-                        err.message = "Candidate Status should not be empty!";
-                        break;
-                    case "number.base":
-                        err.message = "Candidate Status must be a number"
-                        break;
-                    default:
-                        err.message = "Invalid Candidate Status"
-                        break;
-                }
-            });
-            return errors;
-        }),
-        jobReceivedId : Joi.number().required().error(errors => {
-            errors.forEach(err => {
-                switch (err.code) {
-                    case "any.required":
-                        err.message = "job Received Id should not be empty!";
-                        break;
                     case "number.base":
                         err.message = "job Received Id must be a number"
                         break;
@@ -49,38 +29,5 @@ export default Joi.object().keys({
                 }
             });
             return errors;
-        }), 
-        companyId : Joi.number().required().error(errors => {
-            errors.forEach(err => {
-                switch (err.code) {
-                    case "any.required":
-                        err.message = "Company Id should not be empty!";
-                        break;
-                    case "number.base":
-                        err.message = "Company Id must be a number"
-                        break;
-                    default:
-                        err.message = "Invalid job Company Id"
-                        break;
-                }
-            });
-            return errors;
-        }), 
-        positionId : Joi.number().required().error(errors => {
-                errors.forEach(err => {
-                    switch (err.code) {
-                        case "any.required":
-                            err.message = "Position Id should not be empty!";
-                            break;
-                        case "number.base":
-                            err.message = "Position Id must be a number"
-                            break;
-                        default:
-                            err.message = "Invalid Position Id"
-                            break;
-                    }
-                });
-                return errors;
-            })
-    }).unknown(true) ),
+        })
 }).unknown(true);

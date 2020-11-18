@@ -8,10 +8,10 @@ import setData from '../middlewares/setData';
 const router = express.Router();
 
 router
-    .get('/:companyId', jwtAuth, setData(), getlocations)
+    .get('/', jwtAuth, setData(), getlocations)
     .post('/', jwtAuth, setData(), validate(addLocationSchema), addLocations)
     .put('/', jwtAuth, setData(), validate(updateLocationSchema), updateLocations)
-    .delete('/:locationId', jwtAuth, setData(), deleteLocations)
+    .get('/:locationId',deleteLocations)
 
 export default router;
 

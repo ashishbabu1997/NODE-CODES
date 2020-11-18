@@ -3,17 +3,17 @@ import database from '../common/database/database';
 
 export const getPreferences = (_body) => {
     return new Promise((resolve, reject) => {
-        const query = {
+        const fetchQuery = {
             name: 'fetch-company-preferences',
             text: preferencesQuery.getCompanyPreferences,
-            values: [parseInt(_body.companyId)],
+            values: [_body.companyId],
         }
-        database().query(query, (error, results) => {
+        database().query(fetchQuery, (error, results) => {
             if (error) {
                 console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
-            }
+            }            
             resolve({ code: 200, message: "Preferences listed successfully", data: results.rows[0] });
         })
     });

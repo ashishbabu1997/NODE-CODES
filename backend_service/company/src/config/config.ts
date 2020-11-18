@@ -7,7 +7,7 @@ export default {
     "db": {
         "user": "devdb_user",
         "host": "52.66.51.51",
-        "database": "devdb",
+        "database": "devdb_copy",
         "password": "DevD8u5er",
         "port":5432
     },

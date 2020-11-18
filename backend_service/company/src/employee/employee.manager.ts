@@ -10,9 +10,17 @@ export const getEmployeesByCompanyId = (_body) => {
         {
             selectQuery =selectQuery +  "AND (LOWER(firstname) LIKE '%" +_body.filter.toLowerCase() + "%' OR LOWER(lastname) LIKE '%" +  _body.filter.toLowerCase() + "%') "
         }
+        const orderBy = {
+            "firstName": 'first_name',
+            "lastName": 'last_name',
+            "roleId":'role_id',
+            "email": 'email',
+            "createdOn":'created_on'
+        }
 
-        if(_body.sortBy){
-            selectQuery  = selectQuery + ' ORDER BY firstname ' + _body.sortBy.toUpperCase();
+        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+        {
+            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
         }
 
         if(_body.limit && _body.skip){
@@ -47,6 +55,74 @@ export const createEmployee = (_body) => {
                 return;
             }
             resolve({ code: 200, message: "Employee added successfully", data: {} });
+        })
+    })
+}
+export const updateUser = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                if (_body.decisionValue==1)
+                {
+                    const employeeUpdate = {
+                        name: 'update-employees',
+                        text:employeeQuery.updateEmployee,
+                        values:[_body.empId,_body.firstName,_body.lastName,_body.roleId,_body.phoneNumber]
+                    }
+                    await client.query(employeeUpdate);
+                }
+                else
+                {
+                    const employeeDelete = {
+                        name: 'list-employees',
+                        text:employeeQuery.deleteEmployee,
+                        values:[_body.empId]
+                    }
+                    await client.query(employeeDelete);
+                }
+                await client.query('COMMIT');
+                resolve({ code: 200, message: "Employees updated successfully", data:{} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
+export const getUserDetails = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                    const employeeData = {
+                        name: 'data-employees',
+                        text:employeeQuery.getEmployeeData,
+                        values:[_body.empId]
+                    }
+                    var result=await client.query(employeeData)
+                await client.query('COMMIT');
+                resolve({ code: 200, message: "Employees updated successfully", data:{employee:result.rows[0]} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
 }

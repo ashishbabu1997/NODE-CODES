@@ -2,7 +2,7 @@ import { get_Details,update_Details} from './companyProfile.manager';
 import sendResponse from '../common/response/response';
 
 export const getDetails = (req, res) => {
-    const body = req.params.companyId;
+    const body = req.query;
     get_Details(body).then((response: any) => sendResponse(res, response.code, 1,200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0,400, error.message, error.data))
 }

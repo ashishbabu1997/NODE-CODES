@@ -7,7 +7,7 @@ export const get_Details = (_body) => {
         const query = {
             name: 'get_details',
             text: companyQuery.getProfiles,
-            values: [_body],
+            values: [_body.companyId],
         }
         database().query(query, (error, results) => {
             if (error) {

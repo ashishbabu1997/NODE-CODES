@@ -1,37 +1,96 @@
 import jobReceivedQuery from './query/jobreceived.query';
 import database from '../common/database/database';
 import * as format from 'pg-format';
+import { createNotification } from '../common/notifications/notifications';
+import { sendMail } from '../middlewares/mailer'
+import * as handlebars from 'handlebars'
+import * as fs from 'fs'
+import config from '../config/config'
+
 
 export const getAllJobReceived = (_body) => {
-
+    
     return new Promise((resolve, reject) => {
-
+        
         var selectQuery = jobReceivedQuery.getAllJobReceived;
-
-        if (_body.filter) {
-            selectQuery = selectQuery + " AND (LOWER(position_name ) LIKE '%" + _body.filter.toLowerCase() + "%' OR LOWER(position_name ) LIKE '%" + _body.filter.toLowerCase() + "%') "
+        var queryText='', queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',searchQuery='',body=_body.query, sort = '', searchKey = '';
+        
+        const orderBy = {
+            "position": 'p.position_id',
+            "positionName": 'p.position_name',
+            "companyName": 'c.company_name',
+            "createdOn":'p.created_on',
+            "updatedOn":'p.updated_on',
+            "candidateCount":'"candidateCount"',
+            "resourceCount":'p.developer_count', 
+            "duration":'p.contract_duration',
+            "startDate":'p.contract_start_date'
         }
-
-        if (_body.sortBy) {
-            selectQuery = selectQuery + ' ORDER BY position_name ' + _body.sortBy.toUpperCase();
+        
+        if(filter)
+        {            
+            if(filter.submittedProfile)
+            {
+                filterQuery=filterQuery+' AND p.submittedProfile'
+                queryValues = Object.assign({submittedprofile:filter.submittedProfile})
+            }
+            if(filter.numberOfOpenings)
+            {
+                filterQuery=filterQuery+' AND p.developer_count = $openings'
+                queryValues =  Object.assign({openings:filter.numberOfOpenings},queryValues)
+            }
+            if(filter.positionStatus)
+            {  
+                filterQuery=filterQuery+' AND p.job_status=$positionstatus'
+                queryValues=Object.assign({positionstatus:filter.positionStatus},queryValues)
+            }
+            if(filter.duration)
+            {
+                filterQuery=filterQuery+' AND p.contract_duration= $duration'
+                queryValues=Object.assign({duration:filter.duration},queryValues)
+            }
+            if(filter.durationStart && filter.durationEnd)
+            {
+                filterQuery=filterQuery+' AND p.contract_duration BETWEEN $durationstart AND $durationend'
+                queryValues=Object.assign({durationstart:filter.durationStart,durationend:filter.durationEnd},queryValues)
+            }
         }
-
-        if (_body.limit && _body.skip) {
-            selectQuery = selectQuery + ' LIMIT ' + _body.limit + ' OFFSET ' + _body.skip;
+        
+        if(![undefined,null,''].includes(body.filter))
+        {
+            searchKey='%' + body.filter + '%';
+            searchQuery = " AND (position_name ILIKE $searchkey OR company_name ILIKE $searchkey) "
+            queryValues=Object.assign({searchkey:searchKey},queryValues)
         }
+        
+        if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
+        {
+            sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
+        }
+        queryText = selectQuery + filterQuery + searchQuery + sort;
+        queryValues =  Object.assign({companyid:body.companyId,employeeid:body.employeeId},queryValues)
+        
         const query = {
-            name: 'get-AllActivePositions',
-            text: selectQuery,
-            values: [_body.companyId]
+            name: 'get-all-positions-provider',
+            text: queryText,
+            values: queryValues
         }
         database().query(query, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            if (error) {              
+                console.log("error : ",error);
+                reject({ code: 400, message: "Database error", data : error });
                 return;
             }
-            console.log(results.rows)
-            resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs: results.rows } });
+            let Jobs = results.rows;
+
+            if(Array.isArray(Jobs))
+            Jobs = results.rows.filter(element => element.jobStatus != 8 || element.totalCount != 0)
+            resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs} });
+            
         })
+    }).catch((err)=>{
+        console.log("error raised : ",err);
+        return ({ code: 400, message: "Database error", data: err });
     })
 }
 
@@ -40,7 +99,7 @@ export const getJobReceivedByJobReceivedId = (_body) => {
         const query = {
             name: 'get-JobReceivedByJobReceivedId',
             text: jobReceivedQuery.getJobReceivedById,
-            values: [parseInt(_body.jobReceivedId), parseInt(_body.sellerCompanyId)]
+            values: [parseInt(_body.jobReceivedId), parseInt(_body.companyId)]
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -52,34 +111,15 @@ export const getJobReceivedByJobReceivedId = (_body) => {
     })
 }
 
-export const updateflagForJobReceived = (_body) => {
-    return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
-        const query = {
-            name: 'update-position-flag',
-            text: jobReceivedQuery.updateFlag,
-            values: [_body.jobReceivedId, _body.companyId, _body.flag, _body.userId, currentTime]
-        }
-
-        database().query(query, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                return;
-            }
-            resolve({ code: 200, message: "Flag updated successfully", data: {} });
-        })
-    })
-}
-
 export const updateIsRejectForJobReceived = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
         const query = {
             name: 'update-JobReceived-reject',
             text: jobReceivedQuery.updateReject,
-            values: [_body.jobReceivedId, _body.companyId, _body.reject, _body.userId, currentTime]
+            values: [_body.jobReceivedId, _body.companyId, _body.reject, _body.employeeId, currentTime]
         }
-
+        
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
@@ -89,26 +129,35 @@ export const updateIsRejectForJobReceived = (_body) => {
         })
     })
 }
-export const editCandidateDetails = (_body) => {
+
+export const getProfileByCompanyId = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
-        console.log(currentTime)
-        const editQuery = {
-            name: 'update-JobReceived-reject',
-            text: jobReceivedQuery.editDetailsCandidate,
-            values: [_body.candidateId, _body.firstName, _body.lastName, _body.email, _body.phoneNumber, _body.rate, _body.billingTypeId, _body.resume, _body.currencyTypeId, _body.coverNote, _body.candidateStatus,_body.companyId]
+        var selectQuery=jobReceivedQuery.getProfile
+        const orderBy = {
+            "candidateFirstName": 'ca.candidate_first_name',
         }
-        database().query(editQuery, (error, results) => {
+        
+        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+        {
+            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+        }
+        const query = {
+            name: 'get-ProfileByCompanyId',
+            text: selectQuery,
+            values: [parseInt(_body.companyId), parseInt(_body.positionId)]
+        }
+        
+        database().query(query, (error, results) => {
             if (error) {
                 console.log(error)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 return;
             }
-            resolve({ code: 200, message: "Candidate profile updated successfully", data: {} });
+            resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
         })
+        
     })
 }
-
 export const saveCandidateProfile = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -116,33 +165,196 @@ export const saveCandidateProfile = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                const candidatesArray = _body.candidates;
-                let candidates = candidatesArray.map(c => {
-                    return [c.candidateFirstName, c.candidateLastName, c.companyId, c.jobReceivedId, c.coverNote,
-                    c.rate, c.billingTypeId, c.currencyTypeId, c.email, c.phoneNumber, c.resume, c.positionId,
-                        currentTime, currentTime,c.userId,c.userId, c.candidateStatus]
-                })
+                let sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
+                let candidates = [_body.firstName, _body.lastName, sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
                 const saveCandidateQuery = {
                     name: 'add-Profile',
-                    text: format(jobReceivedQuery.addProfile, candidates),
+                    text: format(jobReceivedQuery.addProfile, [candidates]),
                 }
-                await client.query(saveCandidateQuery);
-                const query = {
-                    name: 'get-total-candidate-count',
-                    text: jobReceivedQuery.getTotalCountOfCandidatesSubmitted,
-                    values: [_body.candidates[0].positionId, _body.candidates[0].companyId],
+                var addCandidateResult = await client.query(saveCandidateQuery);
+                let candidateId = addCandidateResult.rows[0].candidate_id;
+                if (![null, undefined, ''].includes(_body.positionId)) {
+                    const addPositionQuery = {
+                        name: 'add-position',
+                        text: jobReceivedQuery.addCandidatePosition,
+                        values: [_body.positionId, candidateId, _body.jobReceivedId, _body.billingTypeId, _body.currencyTypeId, _body.employeeId, currentTime],
+                    }
+                    await client.query(addPositionQuery);
+                    
+                    const getJobStatusQuery = {
+                        name: 'get-Job-status',
+                        text: jobReceivedQuery.getJobStatus,
+                        values: [_body.positionId],
+                    }
+                    const response = await client.query(getJobStatusQuery);
+                    let jobStatus = response.rows[0].jobStatus;
+                    
+                    const updateCompanyJobStatusQuery = {
+                        name: 'update-company-job-status',
+                        text: jobReceivedQuery.updateCompanyJobStatus,
+                        values: [_body.jobReceivedId, jobStatus, sellerCompanyId, _body.employeeId, currentTime],
+                    }
+                    await client.query(updateCompanyJobStatusQuery);
                 }
-                const response = await client.query(query);
-                console.log(response)
-                const status = (response.rows[0].developerCount - response.rows[0].candidateCount) <= 0 ? 3 : 9
-                const updateCompanyJobStatusQuery = {
-                    name: 'update-company-job-status',
-                    text: jobReceivedQuery.updateCompanyJobStatus,
-                    values: [_body.candidates[0].jobReceivedId,status, _body.candidates[0].companyId,_body.candidates[0].userId, currentTime],
-                }
-                await client.query(updateCompanyJobStatusQuery);
+                
                 await client.query('COMMIT');
-                resolve({ code: 200, message: "Candidate profiles added", data: {} });
+                resolve({ code: 200, message: "Candidate profile added", data: {candidateId} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
+
+export const submitCandidateProfile = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+                var readHTMLFile = function(path, callback) {
+                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                        if (err) {
+                            throw err;
+                            callback(err);
+                        }
+                        else {
+                            callback(null, html);
+                        }
+                    });
+                };
+                await client.query('BEGIN');
+                let candidateId = _body.candidateId;
+                const updateCandidateStatus = {
+                    name: 'update-candidate-status',
+                    text: jobReceivedQuery.updateCandidateStatus,
+                    values: [candidateId, _body.employeeId, currentTime],
+                }
+                let result = await client.query(updateCandidateStatus);
+        
+                const addDefaultTraits = {
+                    name: 'add-default-traits',
+                    text: jobReceivedQuery.addDefaultAssessmentTraits,
+                    values: [candidateId, _body.employeeId, currentTime],
+                }
+                await client.query(addDefaultTraits);
+                const addSkillRelatedTraits = {
+                    name: 'add-skill-based-traits',
+                    text: jobReceivedQuery.addSkillBasedAssesmentTraits,
+                    values: [candidateId, _body.employeeId, currentTime],
+                }
+                await client.query(addSkillRelatedTraits);
+                
+                await client.query('COMMIT');
+                let candidateFirstName=result.rows[0].candidate_first_name;
+                let candidateLastName=result.rows[0].candidate_last_name;
+                let companyId = result.rows[0].company_id;
+                let jobReceivedId = result.rows[0].job_received_id;
+                let positionName = _body.positionName;
+                var subject='New candidate notification'
+                if(![null,undefined,""].includes(_body.positionId))
+                {
+                    const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
+                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position' })    
+                    readHTMLFile('src/emailTemplates/candidateAdditionText.html', function(err, html) {
+                        var template = handlebars.compile(html);
+                        var replacements = {
+                            first:candidateFirstName,
+                            last:candidateLastName,
+                            position:positionName,     
+                        };
+                        var htmlToSend = template(replacements);
+                        sendMail(config.adminEmail,subject,htmlToSend, function (err, data) {
+                            if (err) {
+                                console.log(err)
+                                reject({ code: 400, message: "Mailer Error", data: {} });
+                                return;
+                            }
+                            console.log('Notification mail to admin has been sent !!!');
+                            // resolve({ code: 200, message: "User Approval Successfull", data: {} });
+                        });
+                    }) 
+                }
+                
+                resolve({ code: 200, message: "Candidate profile submitted", data: {} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
+
+
+export const editSkills = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database().connect()
+            try {
+                var candidateId=_body.candidateId
+                console.log(candidateId)
+                let skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];
+                let competentSkillSet = ![undefined, null].includes(_body.skills) ? _body.skills.filter(a=> a.competency==2 || a.competency==3).map(a => a.skill.skillId) :[];
+                const deleteCandidateSkillsQuery = {
+                    name: 'delete-candidate-skills',
+                    text: jobReceivedQuery.deleteCandidateSkills,
+                    values: [candidateId, skillSet],
+                }
+                console.log(deleteCandidateSkillsQuery)
+                await client.query(deleteCandidateSkillsQuery)
+                if (Array.isArray(_body.skills))
+                {
+                    let promise=[];
+                    _body.skills.forEach(element => { 
+                        let competency=element.competency
+                        let preffered=element.preferred
+                        let skillId=element.skill["skillId"]
+                        let yearsOfExperience=element.yoe
+                        let skillVersion = element.skillVersion
+                        const addSkills = {
+                            name: 'add-candidate-skills',
+                            text: jobReceivedQuery.addCandidateSkills,
+                            values: [candidateId, skillId,competency,preffered,yearsOfExperience,skillVersion,currentTime,_body.employeeId,true],
+                        }
+                        promise.push(client.query(addSkills))
+                    });
+                    await Promise.all(promise);
+                }
+                
+                if(_body.candidateStatus == 3)
+                {
+                    const deleteCandidateAssesmentTraitsQuery = {
+                        name: 'delete-candidate-assessment-traits',
+                        text: jobReceivedQuery.deleteCandidateAssesmentTraits,
+                        values: [candidateId, competentSkillSet],
+                    }
+                    await client.query(deleteCandidateAssesmentTraitsQuery);
+                    const addSkillRelatedTraits = {
+                        name: 'add-skill-based-traits',
+                        text: jobReceivedQuery.addSkillBasedAssesmentTraits,
+                        values: [candidateId, _body.employeeId, currentTime],
+                    }
+                    await client.query(addSkillRelatedTraits);
+                }
+                
+                
+                
+                resolve({ code: 200, message: "Candidate skills updated successfully", data: {} });
+                
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
@@ -154,46 +366,6 @@ export const saveCandidateProfile = (_body) => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
-}
-
-
-export const getProfileByCompanyId = (_body) => {
-    return new Promise((resolve, reject) => {
-        if(_body.companyId)
-        {
-            const query = {
-                     name: 'get-ProfileByCompanyId',
-                    text: jobReceivedQuery.getProfile,
-                    values: [parseInt(_body.companyId), parseInt(_body.jobReceivedId)]
-            }
-
-            database().query(query, (error, results) => {
-            if (error) {
-                console.log(error)
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                return;
-            }
-            resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
-            })
-        }
-        else
-        {
-
-            const listJobCandidatesQuery = {
-                name: 'get-Profile',
-               text: jobReceivedQuery.getProfileByJobReceived,
-               values: [parseInt(_body.jobReceivedId)]
-       }
-
-       database().query(listJobCandidatesQuery, (error, results) => {
-       if (error) {
-           console.log(error)
-           reject({ code: 400, message: "Failed. Please try again.", data: {} });
-           return;
-       }
-       resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
-       })
-        }   
-
-    })
+    // reject({ code: 400, message: "Failed. Please try again.", data: {} });
+    
 }
