@@ -9,7 +9,7 @@ export const getAllJobReceived = (_body) => {
         
         var selectQuery = jobReceivedQuery.getAllJobReceived;
         var queryText='', queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',searchQuery='',body=_body.query, sort = '', searchKey = '';
-
+        
         const orderBy = {
             "position": 'p.position_id',
             "positionName": 'p.position_name',
@@ -21,7 +21,7 @@ export const getAllJobReceived = (_body) => {
             "duration":'p.contract_duration',
             "startDate":'p.contract_start_date'
         }
-
+        
         if(filter)
         {            
             if(filter.submittedProfile)
@@ -50,21 +50,21 @@ export const getAllJobReceived = (_body) => {
                 queryValues=Object.assign({durationstart:filter.durationStart,durationend:filter.durationEnd},queryValues)
             }
         }
-
+        
         if(![undefined,null,''].includes(body.filter))
         {
             searchKey='%' + body.filter + '%';
             searchQuery = " AND (position_name ILIKE $searchkey OR company_name ILIKE $searchkey) "
             queryValues=Object.assign({searchkey:searchKey},queryValues)
         }
-
+        
         if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
         {
             sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
         }
         queryText = selectQuery + filterQuery + searchQuery + sort;
         queryValues =  Object.assign({companyid:body.companyId,employeeid:body.employeeId},queryValues)
-
+        
         const query = {
             name: 'get-all-positions-provider',
             text: queryText,
@@ -75,8 +75,13 @@ export const getAllJobReceived = (_body) => {
                 console.log("error : ",error);
                 reject({ code: 400, message: "Database error", data : error });
                 return;
-            }            
-            resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs: results.rows} });
+            }
+            let Jobs = results.rows;
+
+            if(Array.isArray(Jobs))
+            Jobs = results.rows.filter(element => element.jobStatus != 8 || element.totalCount != 0)
+            resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs} });
+            
         })
     }).catch((err)=>{
         console.log("error raised : ",err);
@@ -131,20 +136,20 @@ export const getProfileByCompanyId = (_body) => {
         {
             selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
         }
-            const query = {
-                name: 'get-ProfileByCompanyId',
-                text: selectQuery,
-                values: [parseInt(_body.companyId), parseInt(_body.positionId)]
+        const query = {
+            name: 'get-ProfileByCompanyId',
+            text: selectQuery,
+            values: [parseInt(_body.companyId), parseInt(_body.positionId)]
+        }
+        
+        database().query(query, (error, results) => {
+            if (error) {
+                console.log(error)
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                return;
             }
-            
-            database().query(query, (error, results) => {
-                if (error) {
-                    console.log(error)
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                    return;
-                }
-                resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
-            })
+            resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
+        })
         
     })
 }
@@ -186,7 +191,7 @@ export const saveCandidateProfile = (_body) => {
                     }
                     await client.query(updateCompanyJobStatusQuery);
                 }
-
+                
                 await client.query('COMMIT');
                 resolve({ code: 200, message: "Candidate profile added", data: {candidateId} });
             } catch (e) {
@@ -209,7 +214,7 @@ export const submitCandidateProfile = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-
+                
                 await client.query('BEGIN');
                 let candidateId = _body.candidateId;
                 const updateCandidateStatus = {
