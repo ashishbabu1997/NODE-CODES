@@ -1,15 +1,16 @@
-import { addEmployee,addEmployeeByAdmin,getCompanyByEmail } from './employee.controller';
+import { addEmployee,addEmployeeByAdmin,addFreelancer,getCompanyByEmail } from './employee.controller';
  import * as express from 'express';
  import validate from './middleware/validation';
- import createSchema from './schema/create.schema';
+ import {companyRegistrationSchema,freelancerSchema} from './schema/create.schema';
  import { jwtAuth } from './middleware/jwtAuthenticate';
  import setData from './middleware/setData';
 
 const router = express.Router();
 
 router
-    .post('/', validate(createSchema), addEmployee)
+    .post('/', validate(companyRegistrationSchema), addEmployee)
+    .post('/freelancer', validate(freelancerSchema), addFreelancer)
     .get('/getCompanyByEmail', getCompanyByEmail)
-    .post('/addEmployeeByAdmin',jwtAuth, setData(), validate(createSchema), addEmployeeByAdmin)
+    .post('/addEmployeeByAdmin',jwtAuth, setData(), validate(companyRegistrationSchema), addEmployeeByAdmin)
 export default router;
 
