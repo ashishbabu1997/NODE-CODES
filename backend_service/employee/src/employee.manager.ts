@@ -226,7 +226,7 @@ export const createEmployeeByAdmin = (_body) => {
                     length: 10,
                     numbers: true
                 });
-
+                
                 var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
                 const subject = " ellow.io LOGIN PASSWORD "
                 const storePasswordQuery = {
@@ -321,3 +321,119 @@ export const checkCompanyByWorkMail = (_body) => {
         })
     })
 }
+
+export const createFreelancer = (_body) => {
+    return new Promise((resolve, reject) => {
+        const loweremailId = _body.email.toLowerCase()
+        const currentTime = Math.floor(Date.now());
+        
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                var readHTMLFile = function(path, callback) {
+                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                        if (err) {
+                            throw err;
+                            callback(err);
+                        }
+                        else {
+                            callback(null, html);
+                        }
+                    });
+                };
+                // Check if Email already exist reject in case exists        
+                const getEmailQuery = {
+                    name: 'get-email',
+                    text: employeeQuery.getEmail,
+                    values: [loweremailId],
+                }
+                const getEmailResult = await client.query(getEmailQuery);
+                
+                if (getEmailResult.rowCount >= 1) {
+                    var adminStatus = getEmailResult.rows[0].admin_approve_status
+                    var emailId = getEmailResult.rows[0].email
+                    if (emailId == loweremailId) {
+                        if (adminStatus == 1) {
+                            reject({ code: 400, statusCode: 407, message: "Email you're trying to register already exist", data: {} });
+                            return;
+                        }
+                        else {
+                            reject({ code: 400, statusCode: 408, message: "Your account have been blocked by Ellow.io, please contact sales@ellow.io", data: {} });
+                            return;
+                        }
+                    }
+                    
+                }
+                
+                // If email does not exist allow registration
+                const password = passwordGenerator.generate({
+                    length: 10,
+                    numbers: true
+                });
+                var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                
+                const createFreelancerQuery = {
+                    name: 'createEmployee',
+                    text: employeeQuery.createFreelancer,
+                    values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.phone,createdtime:currentTime,pass:hashedPassword},
+                }
+                await client.query(createFreelancerQuery);
+                
+                
+                const subject = " ellow.io LOGIN PASSWORD "
+                readHTMLFile('src/emailTemplates/newUserText.html', function(err, html) {
+                    var template = handlebars.compile(html);
+                    var replacements = {
+                        loginPassword:password
+                    };
+                    var htmlToSend = template(replacements);
+                    sendMail(loweremailId, subject, htmlToSend, function (err, data) {
+                        if (err) {
+                            console.log(err)
+                            reject({ code: 400, message: "Mailer Error", data: {} });
+                            return;
+                        }
+                    });
+                })
+                
+                
+                await client.query('COMMIT')                
+                var Name = _body.firstName + " " + _body.lastName
+                var companyName = _body.companyName
+                var emailAddress = _body.email
+                var number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
+                readHTMLFile('src/emailTemplates/applicationText.html', function(err, html) {
+                    var template = handlebars.compile(html);
+                    var replacements = {
+                        applicantName:Name,
+                        company:companyName,
+                        email:emailAddress,
+                        phoneNumber:number
+                    };
+                    var htmlToSend = template(replacements);
+                    sendMail(config.adminEmail, config.text.subject, htmlToSend, function (err, data) {
+                        if (err) {
+                            console.log(err)
+                            reject({ code: 400, message: "Database Error", data: {} });
+                            return;
+                        }
+                        console.log('Notification mail to admin has been sent !!!');
+                        // resolve({ code: 200, message: "User Approval Successfull", data: {} });
+                    });
+                })
+                
+                resolve({ code: 200, message: "Employee added successfully", data: {} });
+            } catch (e) {
+                console.log(e)
+                console.log("Error e1: ",e.message );
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {e} })
+        })
+        
+    })
+}
+

@@ -77,6 +77,48 @@
 
 /**
 * @swagger
+* /freelancer:
+*   post:
+*     tags:
+*       - Employees
+*     name: Freenlancer Registration
+*     summary: Freelancer registration API call
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             email:
+*               type: string
+*             firstName:
+*               type: string
+*             lastName :
+*               type: string 
+*             yoe:
+*               type: number
+*             telephoneNumber:
+*               type: integer
+*           required: [email,firstName,lastName,telephoneNumber]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /addEmployeeByAdmin:
 *   post:
 *     tags:
