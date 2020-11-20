@@ -1,6 +1,6 @@
 /**
 * @swagger
-* /listCandidates:
+* /candidates/listCandidates:
 *   get:
 *     tags:
 *       - Candidates
@@ -13,11 +13,6 @@
 *     produces:
 *       - application/json
 *     parameters:
-*       - in: query
-*         name: positionId
-*         schema:
-*         required:
-*           type: integer
 *       - in: query
 *         name: sortBy
 *         schema:
@@ -47,7 +42,7 @@
 
 /**
 * @swagger
-* /listFreeCandidates:
+* /candidates/listFreeCandidates:
 *   get:
 *     tags:
 *       - Candidates
@@ -90,7 +85,7 @@
 
 /**
 * @swagger
-* /resume:
+* /candidates/resume:
 *   get:
 *     tags:
 *       - Candidates
@@ -123,7 +118,7 @@
 
 /**
 * @swagger
-* /candidateApproveReject:
+* /candidates/candidateApproveReject:
 *   post:
 *     tags:
 *       - Candidates
@@ -170,7 +165,7 @@
 
 /**
 * @swagger
-* /requestForInterview:
+* /candidates/requestForInterview:
 *   post:
 *     tags:
 *       - Candidates
@@ -209,7 +204,7 @@
 
 /**
 * @swagger
-* /review:
+* /candidates/review:
 *   post:
 *     tags:
 *       - Candidates
@@ -255,7 +250,7 @@
 
 /**
 * @swagger
-* /candidateVettingStatus:
+* /candidates/candidateVettingStatus:
 *   put:
 *     tags:
 *       - Candidates
@@ -296,7 +291,7 @@
 
 /**
 * @swagger
-* /linkCandidateToPosition:
+* /candidates/linkCandidateToPosition:
 *   put:
 *     tags:
 *       - Candidates
@@ -343,7 +338,7 @@
 
 /**
 * @swagger
-* /updateLanguageProficiency:
+* /candidates/updateLanguageProficiency:
 *   put:
 *     tags:
 *       - Candidates
@@ -390,7 +385,7 @@
 
 /**
 * @swagger
-* /updateAvailability:
+* /candidates/updateAvailability:
 *   put:
 *     tags:
 *       - Candidates
@@ -434,7 +429,7 @@
 
 /**
 * @swagger
-* /updateProfileDetails:
+* /candidates/updateProfileDetails:
 *   put:
 *     tags:
 *       - Candidates
@@ -488,7 +483,7 @@
 
 /**
 * @swagger
-* /updateProject:
+* /candidates/updateProject:
 *   put:
 *     tags:
 *       - Candidates
@@ -550,7 +545,7 @@
 
 /**
 * @swagger
-* /updateWorkExperience:
+* /candidates/updateWorkExperience:
 *   put:
 *     tags:
 *       - Candidates
@@ -607,7 +602,7 @@
 
 /**
 * @swagger
-* /updateEducation:
+* /candidates/updateEducation:
 *   put:
 *     tags:
 *       - Candidates
@@ -658,7 +653,7 @@
 
 /**
 * @swagger
-* /updateAward:
+* /candidates/updateAward:
 *   put:
 *     tags:
 *       - Candidates
@@ -703,7 +698,7 @@
 */
 /**
 * @swagger
-* /updateSocialProfile:
+* /candidates/updateSocialProfile:
 *   put:
 *     tags:
 *       - Candidates
@@ -735,10 +730,6 @@
 *               type: boolean
 *             stackoverflowLink:
 *               type: string
-*             kaggle:
-*               type: boolean
-*             kaggleLink:
-*               type: string
 *           required: [candidateId]
 *     responses:
 *       200:
@@ -755,7 +746,7 @@
 
 /**
 * @swagger
-* /updateCloudProficiency:
+* /candidates/updateCloudProficiency:
 *   put:
 *     tags:
 *       - Candidates
@@ -775,16 +766,15 @@
 *           properties:
 *             candidateId:
 *               type: integer
-*             aws:
-*               type: boolean
-*             gcp:
-*               type: boolean
-*             azure:
-*               type: boolean
-*             ibm:
-*               type: boolean
-*             oracle:
-*               type: boolean
+*             cloudProficiency:
+*               type: array
+*               items:
+*                 type: object
+*                 properties:
+*                   cloudProficiencyId:
+*                     type: integer
+*                   cloudProficiencyName:
+*                     type: string
 *           required: [candidateId]
 *     responses:
 *       200:
@@ -802,7 +792,7 @@
 
 /**
 * @swagger
-* /updatePublication:
+* /candidates/updatePublication:
 *   put:
 *     tags:
 *       - Candidates
@@ -850,7 +840,7 @@
 
 /**
 * @swagger
-* /updateResumeFile:
+* /candidates/updateResumeFile:
 *   put:
 *     tags:
 *       - Candidates
@@ -890,7 +880,7 @@
 
 /**
 * @swagger
-* /updateOverallWorkExperience:
+* /candidates/updateOverallWorkExperience:
 *   put:
 *     tags:
 *       - Candidates
@@ -939,7 +929,7 @@
 
 /**
 * @swagger
-* /:
+* /candidates/:
 *   delete:
 *     tags:
 *       - Candidates
@@ -979,7 +969,7 @@
 
 /**
 * @swagger
-* /deleteCandidate:
+* /candidates/deleteCandidate:
 *   delete:
 *     tags:
 *       - Candidates
