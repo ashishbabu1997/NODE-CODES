@@ -6,6 +6,7 @@ import * as crypto from "crypto";
 import config from './config/config'
 import * as handlebars from 'handlebars'
 import * as fs from 'fs'
+import {nanoid} from 'nanoid';
 
 
 export const createEmployee = (_body) => {
@@ -367,36 +368,16 @@ export const createFreelancer = (_body) => {
                 }
                 
                 // If email does not exist allow registration
-                const password = passwordGenerator.generate({
-                    length: 10,
-                    numbers: true
-                });
-                var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                
+
+                var hashedPassword = crypto.createHash("sha256").update(_body.password).digest("hex");
+                let uniqueId = nanoid();
+
                 const createFreelancerQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createFreelancer,
-                    values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.phone,createdtime:currentTime,pass:hashedPassword},
+                    values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.phone,createdtime:currentTime,pass:hashedPassword,token:uniqueId},
                 }
                 await client.query(createFreelancerQuery);
-                
-                
-                const subject = " ellow.io LOGIN PASSWORD "
-                readHTMLFile('src/emailTemplates/newUserText.html', function(err, html) {
-                    var template = handlebars.compile(html);
-                    var replacements = {
-                        loginPassword:password
-                    };
-                    var htmlToSend = template(replacements);
-                    sendMail(loweremailId, subject, htmlToSend, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Mailer Error", data: {} });
-                            return;
-                        }
-                    });
-                })
-                
                 
                 await client.query('COMMIT')                
                 var Name = _body.firstName + " " + _body.lastName
@@ -437,3 +418,31 @@ export const createFreelancer = (_body) => {
     })
 }
 
+export const resetFreelancerToken = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now());        
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                const resetToken = {
+                    name: 'reset-freelancer-token',
+                    text: employeeQuery.resetPassword,
+                    values: {token:_body.token},
+                }
+                await client.query(resetToken);
+                
+                resolve({ code: 200, message: "Employee token reset successfully", data: {} });
+            } catch (e) {
+                console.log(e)
+                console.log("Error e1: ",e );
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error e2: ",e );
+            reject({ code: 400, message: "Failed. Please try again.", data: {e} })
+        })
+        
+    })
+}
