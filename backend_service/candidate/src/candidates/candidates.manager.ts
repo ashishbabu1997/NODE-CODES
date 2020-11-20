@@ -7,6 +7,9 @@ import * as handlebars from 'handlebars'
 import * as fs from 'fs'
 import {nanoid} from 'nanoid';
 
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>> Get the details of an individual candidate
 export const getCandidateDetails = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -14,6 +17,8 @@ export const getCandidateDetails = (_body) => {
             try {
                 let skills =[]
                 await client.query('BEGIN');
+                
+                // Get the basic details of the candidates
                 const listCandidateQuery = {
                     name: 'get-candidate-details',
                     text: candidateQuery.getCandidateDetails,
@@ -21,7 +26,6 @@ export const getCandidateDetails = (_body) => {
                 }
                 let results = await client.query(listCandidateQuery);
                 const candidate = results.rows;
-                const positionId = candidate[0].positionId
                 const getCandidateAssessmentTraitsQuery = {
                     name: 'get-candidate-assessmentTraits',
                     text: candidateQuery.getAssessmentTraits,
@@ -29,6 +33,7 @@ export const getCandidateDetails = (_body) => {
                 }
                 let value = await client.query(getCandidateAssessmentTraitsQuery);
                 
+                // Retrieving the assesment traits added by the admin,about the candidate.
                 let assessmentTraits = value.rows
                 if (_body.admin != 1 && Array.isArray(assessmentTraits) && assessmentTraits.length >= 0) {
                     let flag = false;
@@ -101,6 +106,11 @@ export const getCandidateDetails = (_body) => {
             
         })
     }
+
+
+
+    // >>>>>>> FUNC. >>>>>>>
+    // />>>>>>>> FUnction for listing all the candidates with his/her basic details.
     export const listCandidatesDetails = (_body) => {
         return new Promise((resolve, reject) => {
             var selectQuery = candidateQuery.listCandidates;
@@ -108,6 +118,7 @@ export const getCandidateDetails = (_body) => {
             var adminApproveQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
             body=_body.query, sort = '', searchKey = '%%';
             
+            // Sorting keys to add with the query
             const orderBy = {
                 "updatedOn": 'ca.updated_on',
                 "candidateFirstName": 'ca.candidate_first_name',
@@ -117,6 +128,7 @@ export const getCandidateDetails = (_body) => {
                 "companyName": 'c.company_name'
             }
             
+            // Search for filters to add with the query
             if(filter)
             {            
                 if(filter.name)
@@ -193,12 +205,20 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+
+
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>>>>>Listing all the free candidates from the candidates list.
     export const listFreeCandidatesDetails = (_body) => {
         return new Promise((resolve, reject) => {
             var selectQuery = candidateQuery.listFreeCandidates;
             var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
             body=_body.query, sort = '', searchKey = '%%';
+            
 
+
+            // Sorting keys with values
             const orderBy = {
                 "candidateId": 'ca.candidate_id',
                 "candidateFirstName": 'ca.candidate_first_name',
@@ -209,6 +229,7 @@ export const getCandidateDetails = (_body) => {
                 "updatedOn" : 'ca.updated_on'
             }
 
+            // Search for filters in the body
             if(filter)
             {            
                 if(filter.name)
@@ -271,6 +292,9 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>> Function for approving or rejecting a candidate.
     export const candidateClearance = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -292,10 +316,12 @@ export const getCandidateDetails = (_body) => {
                     var adminApproveStatus;
                     var comment;
                     var subj;
-                    var textFormat;
                     var candidateQueries;
                     var makeOffer;
                     var value;
+                    let message = ``
+
+                    // Get the details of a candidate.
                     const getCandidateName = {
                         name: 'get-candidate-names',
                         text: candidateQuery.getCandidateNames,
@@ -304,9 +330,10 @@ export const getCandidateDetails = (_body) => {
                     const results = await client.query(getCandidateName);
                     const candidateDetails = results.rows[0];
                     const { firstName, lastName, jobReceivedId, companyName, positionName } = candidateDetails;
-                    let message = ``
-                    let candidateFirstName = firstName.fontsize(3).bold()
-                    let candidateCompanyName = companyName.fontsize(3).bold()
+
+                    // Checking :
+                    //          a)If the decision is approve or reject (decisionValue 1 or 2)
+                    //          b)If the login user is a ellow recruiter or hirer.    ( 1-ellow recruiter,2-admin)
                     if (_body.decisionValue == 1) {
                         if (_body.userRoleId == 1) {
                             adminApproveStatus = 1
@@ -322,6 +349,8 @@ export const getCandidateDetails = (_body) => {
                             comment = _body.comment;
                             value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, makeOffer, _body.employeeId, currentTime]
                             candidateQueries = candidateQuery.candidateAdminApprovalQuery
+
+                            // Sending a approval mail to the admin , with candidates details
                             subj = "Candidate Selection Mail";
                             readHTMLFile('src/emailTemplates/selectionMailText.html', function (err, html) {
                                 var template = handlebars.compile(html);
@@ -366,6 +395,8 @@ export const getCandidateDetails = (_body) => {
                                     pName: positionName
                                 };
                                 var htmlToSend = template(replacements);
+
+                                // Sending a rejection mail to the admin , with candidates details
                                 sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
                                     if (err) {
                                         console.log(err)
@@ -392,7 +423,10 @@ export const getCandidateDetails = (_body) => {
                     await client.query(updateQuery);
                     
                     await client.query('COMMIT');
+
+                    // Function for notification to the  admin
                     _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
+                    
                     resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
                     
                 } catch (e) {
@@ -408,6 +442,12 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>> Function for requesting interview to a candidate
+    // The hirer views a ellow shortlisted candidate and request for an interview him/her.
+    // A notification and a mail will be sent to the admin about the interview request.
     export const interviewRequestFunction = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -426,12 +466,15 @@ export const getCandidateDetails = (_body) => {
                             }
                         });
                     };
+                    // Insert make offer status of a candidate.
                     const insertQuery = {
                         name: 'insert-make-offer-status',
                         text: candidateQuery.insertMakeOfferStatus,
                         values: [_body.candidateId, _body.positionId, _body.employeeId, currentTime],
                     }
                     await client.query(insertQuery);
+
+                    // Retrieving the candidate's basic details.
                     const candidateDetails = {
                         name: 'get-interview-details',
                         text: candidateQuery.getInterviewDetails,
@@ -452,7 +495,6 @@ export const getCandidateDetails = (_body) => {
                     var positionName = interviewDetails[0].positionName === null ? '' : interviewDetails[0].positionName
                     var email = interviewDetails[0].emailAddress === null ? '' : interviewDetails[0].emailAddress
                     var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber
-                    // var description = interviewDetails[0].description === null ? '' : interviewDetails[0].description.fontsize(3).bold()
                     var subject = "Request for Interview from " + hirerCompanyName;
                     readHTMLFile('src/emailTemplates/interviewRequestMailText.html', function (err, html) {
                         var template = handlebars.compile(html);
@@ -465,6 +507,8 @@ export const getCandidateDetails = (_body) => {
                             telephoneNumber: phoneNumber
                         };
                         var htmlToSend = template(replacements);
+
+                        // Sending the mail to the admin.
                         sendMail(config.adminEmail, subject, htmlToSend, function (err, data) {
                             if (err) {
                                 console.log(err)
@@ -487,6 +531,9 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>>>>>>>> Function for admin to add reviews,assesment comments about the candidate
     export const addCandidateReview = (_body) => {
         return new Promise((resolve, reject) => {
             const data = _body.assessmentTraits;
@@ -499,6 +546,8 @@ export const getCandidateDetails = (_body) => {
                 const client = await database().connect()
                 try {
                     await client.query('BEGIN');
+
+                    // Insert assesment comments about the candidate
                     const insertQuery = {
                         name: 'insert-assessment-comment',
                         text: candidateQuery.updateAssessmentComment,
@@ -506,6 +555,7 @@ export const getCandidateDetails = (_body) => {
                     }
                     promise.push(client.query(insertQuery));
                     
+                    // Update assesment ratings about the candidate.
                     data.forEach(element => {
                         const candidateDetails = {
                             name: 'update-candidate-assesment-rating',
@@ -514,6 +564,9 @@ export const getCandidateDetails = (_body) => {
                         }
                         promise.push(client.query(candidateDetails));
                     });
+
+
+                    // Check for the test links 
                     if (Array.isArray(_body.assesmentLink))
                     {
                         _body.assesmentLink.forEach(element => { 
@@ -531,6 +584,8 @@ export const getCandidateDetails = (_body) => {
                             }
                         })
                     }
+
+                    // Insert all the test links about the candidate
                     const insertLinks = {
                         name: 'insert-assessment-links',
                         text: candidateQuery.updateAssesmentLinks,
@@ -554,6 +609,11 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+
+
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>>>>>>>>>Function to edit the vetting status of the candidate.
     export const editVettingStatus = (_body) => {
         return new Promise((resolve, reject) => {
             const candidateId = _body.candidateId;
@@ -563,6 +623,8 @@ export const getCandidateDetails = (_body) => {
                 const client = await database().connect()
                 try {
                     await client.query('BEGIN');
+
+                    // Inserting the integer representing the vetting status value.
                     const updateQuery = {
                         name: 'update-candidate-vetting',
                         text: candidateQuery.updateCandidateVetting,
@@ -587,6 +649,8 @@ export const getCandidateDetails = (_body) => {
     }
     
     
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>> Function to remove a candidate from a position by admin and sending a notification email to the provider who added this candidate.
     export const removeCandidateFromPosition = (_body) => {
         return new Promise((resolve, reject) => {
             var jobReceivedId;
@@ -610,16 +674,22 @@ export const getCandidateDetails = (_body) => {
                             }
                         });
                     };
+
+
                     var candidateId = _body.candidateId;
                     var positionId = _body.positionId;
-                    console.log("hai", candidateId, positionId)
+
+        
                     await client.query('BEGIN');
+                    // Query to change the status of a candidate to false.
                     const removeCandidateQuery = {
                         name: 'delete-candidate-from-position',
                         text: candidateQuery.deleteCandidateFromPosition,
                         values: [candidateId, positionId, _body.employeeId, currentTime],
                     }
                     await client.query(removeCandidateQuery);
+
+                    // Retreving the details of the candidate to add to the mail
                     const getPositionDetails = {
                         name: 'delete-position-details',
                         text: candidateQuery.getPositionDetails,
@@ -628,6 +698,9 @@ export const getCandidateDetails = (_body) => {
                     var positionDetail = await client.query(getPositionDetails);
                     positionName = positionDetail.rows[0].positionName
                     hirerName = positionDetail.rows[0].hirerName
+
+
+                    // query to retrieve the provider's(seller's) email address.
                     const getSellerEmailQuery = {
                         name: 'get-email-details',
                         text: candidateQuery.getSellerMail,
@@ -648,6 +721,8 @@ export const getCandidateDetails = (_body) => {
                             name2: candidateLastName
                         };
                         var htmlToSend = template(replacements);
+
+                        // Sending an email notification describing his/her removed candidate's details
                         sendMail(sellerMail, subject, htmlToSend, function (err, data) {
                             if (err) {
                                 console.log("mailer", err)
@@ -674,6 +749,10 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>> Link the candidates to a particular position .
     export const linkCandidateWithPosition = (_body) => {
         return new Promise((resolve, reject) => {
             const candidateList = _body.candidates;
@@ -686,6 +765,7 @@ export const getCandidateDetails = (_body) => {
                     let promise = [];
                     
                     candidateList.forEach(element => {
+                        // Inserting position details to the candidates field.
                         const linkCandidateQuery = {
                             name: 'link-candidate-with-position',
                             text: candidateQuery.linkCandidateWithPosition,
@@ -695,6 +775,8 @@ export const getCandidateDetails = (_body) => {
                     });
                     
                     candidateList.forEach(element => {
+
+                        // Update the seller rate.
                         const updateSellerRate = {
                             name: 'update-seller-rate',
                             text: candidateQuery.updateSellerRate,
@@ -718,20 +800,24 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>> Remove a freely added candidate.
     export const removeCandidate = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
             (async () => {
                 const client = await database().connect()
                 try {
+
+                    // Updating the status of the candidate to false.
                     const deleteCandidateQuery = {
                         name: 'delete-candidate',
                         text: candidateQuery.deleteCandidate,
                         values: [_body.candidateId, currentTime, _body.employeeId],
                     }
                     await client.query(deleteCandidateQuery);
-                    
-                    // await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange' })
                     resolve({ code: 200, message: "Candidate deleted successfully", data: {} });
                     
                 } catch (e) {
@@ -747,6 +833,11 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+
+
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>> Function to update the candidate's profile details
     export const modifyProfileDetails = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -775,12 +866,18 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+      // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>> Function to add or update a candidate's language proficiency.
+    // Checks if the action is add or update.
     export const modifyLanguageProficiency = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
             (async () => {
                 const client = await database().connect()
                 try {
+
+                    // Inserting language proficiency of the candidate.
                     if(_body.action=='add')
                     {
                         const insertLanguageProficiencyQuery = {
@@ -790,6 +887,9 @@ export const getCandidateDetails = (_body) => {
                         }
                         await client.query(insertLanguageProficiencyQuery);
                     }
+
+
+                    // Updating language proficiency of the candidate.
                     else if(![null,undefined,''].includes(_body.candidateLanguageId) && _body.action=='update')
                     {
                         const modifyLanguageProficiencyQuery = {
@@ -824,6 +924,10 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>> Function to update the candidate's avalibilty status; whether full time ,part time or partial.
     export const modifyCandidateAvailability = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -851,37 +955,19 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
-    // {
-    //     "projectName": "Automated Calculator",
-    //     "clientName": "Tcs",
-    //     "skills": [
-    //       {
-    //         "skillId": 1172,
-    //         "skillName": "Material-UI",
-    //         "topRated": 0
-    //       },
-    //       {
-    //         "skillId": 1174,
-    //         "skillName": "AppRun",
-    //         "topRated": 0
-    //       }
-    //     ],
-    //     "projectDescription": "Good",
-    //     "contribution": "Devleoepr",
-    //     "doneFor": "Doog",
-    //     "role": "Testing",
-    //     "projectLink": "hhtp://dfg.com",
-    //     "candidateId": 2,
-    //     "extraProject": false,
-    //     "action": "add"
-    //   }
+   
+   
     
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>>> Insert,update or delete projects done by the candidate.
     export const modifyCandidateProject = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
             (async () => {
                 const client = await database().connect()
                 try {
+
+                    // Inserting the project details
                     if(_body.action === 'add')
                     {
                         var skills=JSON.stringify(_body.skills)
@@ -892,6 +978,9 @@ export const getCandidateDetails = (_body) => {
                         }
                         await client.query(insertCandidateProjectsQuery);
                     }
+
+
+                    // Updating the projet details
                     else if(![null,undefined,''].includes(_body.candidateProjectId) && _body.action==='update')
                     {
                         var skills=JSON.stringify(_body.skills)
@@ -902,6 +991,8 @@ export const getCandidateDetails = (_body) => {
                         }
                         await client.query(modifyCandidateProjectsQuery);
                     }
+
+                    // Deleting the project details
                     else if( ![null,undefined,''].includes(_body.candidateProjectId) && _body.action === 'delete')
                     {
                         const deleteCandidateProjectsQuery = {
@@ -928,6 +1019,8 @@ export const getCandidateDetails = (_body) => {
     }
     
     
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>> Insert,update or delete work hostory of candidate
     export const modifyCandidateWorkHistory = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -979,6 +1072,9 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>> Insert,update or delete educational qualifications of candidate
     export const modifyEducation = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -1028,6 +1124,10 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>> Update cloud proficiencies acheived by the candidate
     export const modifyCloudProficiency = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -1069,6 +1169,11 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+
+    
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>> Update social media links of the candidate
     export const modifySocialPresence = (_body) =>{
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -1098,6 +1203,11 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+
+    
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>> Update any publications done by the candidate
     export const modifyPublication = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -1147,6 +1257,10 @@ export const getCandidateDetails = (_body) => {
         })
     }
     
+
+    
+    // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>> Update any awards acheived by the candidate
     export const modifyAward = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
@@ -1196,6 +1310,12 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
+
+
+
+
+     // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>> Fetch resume details about the candidate.  ( Resume Page)
     export const getResume = (_body) => {
         return new Promise((resolve, reject) => {
             const candidateId = _body.candidateId;
@@ -1402,6 +1522,11 @@ export const getCandidateDetails = (_body) => {
                 })
             })
         }
+
+
+        
+     // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>> Add work experience of the candidate.  ( Resume Page)
         export const addWorkExperience = (_body) => {
             return new Promise((resolve, reject) => {
                 const currentTime = Math.floor(Date.now() / 1000);
@@ -1429,6 +1554,11 @@ export const getCandidateDetails = (_body) => {
                 })
             })
         }
+
+
+        
+     // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>>Give a unique id to candidate for sharing resume for references  ( Resume Page)
         export const addResumeShareLink = (_body) => {
             return new Promise((resolve, reject) => {
                 const currentTime = Math.floor(Date.now());
@@ -1439,7 +1569,6 @@ export const getCandidateDetails = (_body) => {
                         {
                             
                             let uniqueId = nanoid();
-                            console.log("uniqueId : ",uniqueId);
                             const addResumeShare = {
                                 name: 'add-resume-share',
                                 text: candidateQuery.addResumeShare,
@@ -1466,6 +1595,11 @@ export const getCandidateDetails = (_body) => {
             })
         }
         
+
+
+        
+     // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>> Fetch resume datas about the candidate using unique id.  ( Resume Page)
         export const fetchResumeData = (_body) => {
             return new Promise((resolve, reject) => {
                 const currentTime = Math.floor(Date.now() / 1000);
@@ -1504,6 +1638,10 @@ export const getCandidateDetails = (_body) => {
             
         }
         
+
+        
+     // >>>>>>> FUNC. >>>>>>>
+    // >>>>>>>>>>>>> Update resume name of the candidate.  ( Resume Page)
         export const modifyResumeFile = (_body) => {
             return new Promise((resolve, reject) => {
                 const currentTime = Math.floor(Date.now() / 1000);

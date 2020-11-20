@@ -4,9 +4,14 @@ import {Promise} from 'es6-promise'
 import {sendMail} from '../middlewares/mailer'
 import Query from './query/query';
 import database from '../common/database/database';
-import config from '../config/config'
 import * as handlebars from 'handlebars'
 import * as fs from 'fs'
+
+
+
+// FUNC. 
+// Once when a user forgets his/her password, he clicks forgot forgot password button
+// where a he has to enter his email. After submission , a reset password link is sent to his email.
 export const sendLink = (_body) => {
   return new Promise((resolve, reject) => {
     var readHTMLFile = function(path, callback) {
@@ -20,6 +25,8 @@ export const sendLink = (_body) => {
           }
       });
     };
+
+    // Checks whether the entered email is his/her own email.
     var lowerEmail=_body.email.toLowerCase()
     const checkEMail = {
       name: 'check-email',
@@ -36,6 +43,8 @@ export const sendLink = (_body) => {
         var payload = { email:lowerEmail,
                         userRoleId:results.rows[0].userRoleId
                       }
+
+        // Generates a token and stores the token on DB.
         var secret = jwtConfig.jwtSecretKey
         var token = jwt.encode(payload, secret);
         const insertTokenQuery = {
@@ -48,6 +57,8 @@ export const sendLink = (_body) => {
           reject({ code: 400, message: "Database connection Error !!!!", data:  {} });
           return;
         }
+
+        // Sends the link with token attached at the end of the link.
         var link=_body.host+"/passwordset/"+token
         const subject="ellow.ai RESET PASSWORD LINK"
         readHTMLFile('src/emailTemplates/forgotPasswordText.html', function(err, html) {
