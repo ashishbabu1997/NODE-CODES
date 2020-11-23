@@ -433,7 +433,7 @@ export const resetFreelancerToken = (_body) => {
                 let result = await client.query(resetToken);
                 await client.query('COMMIT')
 
-                if(Array.isArray(result.rows) && ![undefined,null].includes(result.rows[0].employee_id))
+                if(Array.isArray(result.rows) && ![undefined,null].includes((result.rows[0])) && ![undefined,null].includes(result.rows[0].employee_id))
                     resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {} });
                 else
                     reject({ code: 400, message: "Invalid token id or token expired", data: {} });
