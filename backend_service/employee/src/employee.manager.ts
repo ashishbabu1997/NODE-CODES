@@ -369,13 +369,11 @@ export const createFreelancer = (_body) => {
                 
                 // If email does not exist allow registration
 
-                var hashedPassword = crypto.createHash("sha256").update(_body.password).digest("hex");
                 let uniqueId = nanoid();
-
                 const createFreelancerQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createFreelancer,
-                    values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.phone,createdtime:currentTime,pass:hashedPassword,token:uniqueId},
+                    values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.phone,createdtime:currentTime,token:uniqueId},
                 }
                 await client.query(createFreelancerQuery);
                 
@@ -425,14 +423,21 @@ export const resetFreelancerToken = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
+                var hashedPassword = crypto.createHash("sha256").update(_body.password).digest("hex");
+
                 const resetToken = {
                     name: 'reset-freelancer-token',
                     text: employeeQuery.resetPassword,
-                    values: {token:_body.token},
+                    values: {token:_body.token,pass:hashedPassword},
                 }
-                await client.query(resetToken);
-                
-                resolve({ code: 200, message: "Employee token reset successfully", data: {} });
+                let result = await client.query(resetToken);
+                await client.query('COMMIT')
+
+                if(Array.isArray(result.rows) && ![undefined,null].includes(result.rows[0].employee_id))
+                    resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {} });
+                else
+                    reject({ code: 400, message: "Invalid token id or token expired", data: {} });
+
             } catch (e) {
                 console.log(e)
                 console.log("Error e1: ",e );

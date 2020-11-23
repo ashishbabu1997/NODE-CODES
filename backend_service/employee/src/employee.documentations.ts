@@ -103,9 +103,7 @@
 *               type: number
 *             telephoneNumber:
 *               type: integer
-*             password:
-*               type:string
-*           required: [email,firstName,lastName,telephoneNumber,password]
+*           required: [email,firstName,lastName,telephoneNumber]
 *     responses:
 *       200:
 *         description: Api success
@@ -121,12 +119,12 @@
 
 /**
 * @swagger
-* /resetFreelancerToken:
+* /freelancer/setTokenAndPassword:
 *   post:
 *     tags:
 *       - Employees
-*     name: Freenlancer Reset token
-*     summary: Freelancer reset token API call
+*     name: Freenlancer Reset token and set password
+*     summary: Freelancer reset token and set password API call
 *     consumes:
 *       - application/json
 *     produces:
@@ -139,7 +137,9 @@
 *           properties:
 *             token:
 *               type: string
-*           required: [token]
+*             password:
+*               type: string
+*           required: [token,password]
 *     responses:
 *       200:
 *         description: Api success
