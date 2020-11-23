@@ -1,11 +1,11 @@
-import { candidateDetails,updateCloudProficiency,sharedResumeData,resumeShareLink,updateSocialProfile, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience } from './candidates.controller';
+import { candidateDetails,updateSkill,updateCloudProficiency,sharedResumeData,resumeShareLink,updateSocialProfile, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience } from './candidates.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import approveRejectSchema from './schemas/approveRejectSchema';
 import interviewRequestSchema from './schemas/interviewRequestSchema';
 import candidateVettingSchema from './schemas/candidateVettingSchema';
 import addCandidateToPositionSchema from './schemas/addCandidateToPositionSchema';
-import {languageProficiencySchema,availabilitySchema,profileDetailSchema,projectSchema,workExperienceSchema,educationSchema,awardSchema,publicationSchema} from './schemas/modifyCandidateDetailsSchema';
+import {languageProficiencySchema,skillSchema,availabilitySchema,profileDetailSchema,projectSchema,workExperienceSchema,educationSchema,awardSchema,publicationSchema} from './schemas/modifyCandidateDetailsSchema';
 
 import { jwtAuth } from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
@@ -29,6 +29,7 @@ router
     .put('/updateWorkExperience',jwtAuth, setData(),validate(workExperienceSchema), updateWorkExperience)
     .put('/updateEducation',jwtAuth, setData(),validate(educationSchema), updateEducation)
     .put('/updateAward',jwtAuth, setData(),validate(awardSchema), updateAward)
+    .put('/updateSkill',jwtAuth, setData(),validate(skillSchema), updateSkill)
     .put('/updateSocialProfile',jwtAuth, setData(),validate(profileDetailSchema), updateSocialProfile)
     .put('/updateCloudProficiency',jwtAuth, setData(),validate(profileDetailSchema), updateCloudProficiency)
     .put('/updatePublication',jwtAuth, setData(),validate(publicationSchema), updatePublication)

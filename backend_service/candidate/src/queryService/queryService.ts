@@ -197,6 +197,29 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateAwardId,currentTime,_body.employeeId],
         }
     }
+    export const insertCandidateSkillQuery = (_body) => {
+        return {
+            name: 'insert-candidate-skill',
+            text: candidateQuery.insertCandidateSkill,
+            values: {candidateid:_body.candidateId,skillid:_body.skillId,preferred:_body.preferred, competency:_body.competency,yoe:_body.yoe, skillversion:_body.skillVersion,currenttime:currentTime, employeeid:_body.employeeId},
+        }
+    }
+    
+    export const modifyCandidateSkillQuery = (_body) => {
+        return {
+            name: 'modify-candidate-skill',
+            text: candidateQuery.modifyCandidateSkill,
+            values: {candidateskillid:_body.candidateSkillId,skillid:_body.skillId,preferred:_body.preferred, competency:_body.competency,yoe:_body.yoe,skillversion:_body.skillVersion,currenttime:currentTime, employeeid:_body.employeeId},
+        }
+    }
+    
+    export const deleteCandidateSkillQuery = (_body) => {
+        return {
+            name: 'delete-candidate-skill',
+            text: candidateQuery.deleteCandidateSkill,
+            values: [_body.candidateSkillId],
+        }
+    }
     export const updateResumeFile = (_body) => {
         return {
             name: 'update-resumeFile',

@@ -1118,6 +1118,47 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
+    export const modifySkill = (_body) => {
+        return new Promise((resolve, reject) => {
+            const currentTime = Math.floor(Date.now() / 1000);
+            (async () => {
+                const client = await database().connect()
+                try {
+                    switch(_body.action)
+                    {
+                        case 'add':
+                        await client.query(queryService.insertCandidateSkillQuery(_body));
+                        break;
+                        
+                        case 'update' :
+                        case ![null,undefined,''].includes(_body.candidateSkillId):
+                        await client.query(queryService.modifyCandidateSkillQuery(_body));
+                        break;
+                        
+                        case 'delete':
+                        case ![null,undefined,''].includes(_body.candidateSkillId):
+                        await client.query(queryService.deleteCandidateSkillQuery(_body));
+                        break;
+                        
+                        default:
+                        reject({ code: 400, message: "Invalid candidateSkillId or action ", data: {} });
+                    }
+                    
+                    resolve({ code: 200, message: "Candidate Skill updated successfully", data: {} });
+                    
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            })
+        })
+    }
+
     export const getResume = (_body) => {
         return new Promise((resolve, reject) => {
             const candidateId = _body.candidateId;
