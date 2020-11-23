@@ -350,6 +350,13 @@ export const insertCandidatePublicationQuery = (_body) => {
     // *******************************************************************************************************************************//
     // -------------------------------------------Freelancer submit profile-------------------------------------------------//
     
+    export const listJobPositions = (filterQuery:string,queryValues:object) => {
+        return {
+            name: 'list-freelancer-jobs',
+            text: freelancerQuery.listFreelancerJobs + filterQuery,
+            values: queryValues,
+        }
+    }
     
     export const modifySocialProfileAndStatusUpdate = (_body) => {
         return {

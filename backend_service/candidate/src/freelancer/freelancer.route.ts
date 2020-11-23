@@ -6,6 +6,7 @@ import * as freelancerController from './freelancer.controller';
 
 const router = express.Router();
 router
-    .put('/updateGeneralInfo',jwtAuth, setData(), freelancerController.updateGeneralInfo)
-    .put('/updateOtherInfoAndSubmit',jwtAuth, setData(), freelancerController.updateOtherInfoAndSubmit)
+.get('/fetchJobList', freelancerController.fetchJobLists)
+.put('/updateGeneralInfo',jwtAuth, setData(), freelancerController.updateGeneralInfo)
+.put('/updateOtherInfoAndSubmit',jwtAuth, setData(), freelancerController.updateOtherInfoAndSubmit)
 export default router;
