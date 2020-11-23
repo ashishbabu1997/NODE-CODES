@@ -1224,7 +1224,7 @@ export const getCandidateDetails = (_body) => {
         return new Promise((resolve, reject) => {
             const currentTime = Math.floor(Date.now() / 1000);
             (async () => {
-                const client = await database().connect()
+                const client = await database()
                 try {
                     switch(_body.action)
                     {
@@ -1256,9 +1256,9 @@ export const getCandidateDetails = (_body) => {
                     await client.query('ROLLBACK')
                     reject({ code: 400, message: "Failed. Please try again.", data: {} });
                 } finally {
-                    client.release();
                 }
             })().catch(e => {
+                console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} })
             })
         })
