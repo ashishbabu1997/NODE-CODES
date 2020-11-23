@@ -139,6 +139,8 @@
 *               type: string
 *             password:
 *               type: string
+*             url:
+*               type:string
 *           required: [token,password]
 *     responses:
 *       200:
