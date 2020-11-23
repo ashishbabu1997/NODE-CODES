@@ -5,10 +5,12 @@ import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
 import config from './config/config'
 import * as handlebars from 'handlebars'
-import * as fs from 'fs'
 import {nanoid} from 'nanoid';
+import {readHTMLFile} from './middleware/htmlReader'
+import { createNotification } from './common/notifications/notifications';
 
-
+ // >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>> Registration of a new employee(company)
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
         const mailId = _body.email
@@ -19,17 +21,6 @@ export const createEmployee = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                var readHTMLFile = function(path, callback) {
-                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                        if (err) {
-                            throw err;
-                            callback(err);
-                        }
-                        else {
-                            callback(null, html);
-                        }
-                    });
-                };
                 //Check if Email already exist reject in case exists        
                 const getEmailQuery = {
                     name: 'get-email',
@@ -157,6 +148,9 @@ export const createEmployee = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>> Registration of an employee(company) by admin  
 export const createEmployeeByAdmin = (_body) => {
     return new Promise((resolve, reject) => {
         const loweremailId = _body.email.toLowerCase()
@@ -166,17 +160,6 @@ export const createEmployeeByAdmin = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                var readHTMLFile = function(path, callback) {
-                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                        if (err) {
-                            throw err;
-                            callback(err);
-                        }
-                        else {
-                            callback(null, html);
-                        }
-                    });
-                };
                 //Check if Email already exist reject in case exists        
                 const getEmailQuery = {
                     name: 'get-email',
@@ -293,6 +276,9 @@ export const createEmployeeByAdmin = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Verifying email address of a registered user
 export const checkCompanyByWorkMail = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -323,6 +309,9 @@ export const checkCompanyByWorkMail = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>>>>>Registration of a freelance employee
 export const createFreelancer = (_body) => {
     return new Promise((resolve, reject) => {
         const loweremailId = _body.email.toLowerCase()
@@ -332,17 +321,6 @@ export const createFreelancer = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                var readHTMLFile = function(path, callback) {
-                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                        if (err) {
-                            throw err;
-                            callback(err);
-                        }
-                        else {
-                            callback(null, html);
-                        }
-                    });
-                };
                 // Check if Email already exist reject in case exists        
                 const getEmailQuery = {
                     name: 'get-email',
@@ -382,6 +360,7 @@ export const createFreelancer = (_body) => {
                 var companyName = _body.companyName
                 var emailAddress = _body.email
                 var number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
+                var verificationLink=_body.url+'/'+uniqueId
                 readHTMLFile('src/emailTemplates/applicationText.html', function(err, html) {
                     var template = handlebars.compile(html);
                     var replacements = {
@@ -398,6 +377,23 @@ export const createFreelancer = (_body) => {
                             return;
                         }
                         console.log('Notification mail to admin has been sent !!!');
+                        // resolve({ code: 200, message: "User Approval Successfull", data: {} });
+                    });
+                })
+                readHTMLFile('src/emailTemplates/sendLinkText.html', function(err, html) {
+                    var template = handlebars.compile(html);
+                    var replacements = {
+                        applicantName:Name,
+                        link:verificationLink,
+                    };
+                    var htmlToSend = template(replacements);
+                    sendMail(loweremailId, config.text.userSubject, htmlToSend, function (err, data) {
+                        if (err) {
+                            console.log(err)
+                            reject({ code: 400, message: "Database Error", data: {} });
+                            return;
+                        }
+                        console.log('Verification link has been sent to the user !!!');
                         // resolve({ code: 200, message: "User Approval Successfull", data: {} });
                     });
                 })
@@ -424,17 +420,41 @@ export const resetFreelancerToken = (_body) => {
             try {
                 await client.query('BEGIN');
                 var hashedPassword = crypto.createHash("sha256").update(_body.password).digest("hex");
-
+                
                 const resetToken = {
                     name: 'reset-freelancer-token',
                     text: employeeQuery.resetPassword,
                     values: {token:_body.token,pass:hashedPassword},
                 }
+                const getMailAddress = {
+                    name: 'get-user-mail',
+                    text: employeeQuery.getRegisteredEmail,
+                    values: [_body.employeeId],
+                }
                 let result = await client.query(resetToken);
+                let emailAddress = await client.query(getMailAddress);
+
                 await client.query('COMMIT')
 
                 if(Array.isArray(result.rows) && ![undefined,null].includes((result.rows[0])) && ![undefined,null].includes(result.rows[0].employee_id))
+                    {
+                        readHTMLFile('src/emailTemplates/resetConfirmationText.html', function(err, html) {
+                            var template = handlebars.compile(html);
+                            var replacements = {
+                            };
+                            var htmlToSend = template(replacements);
+                            sendMail(emailAddress, config.text.resetConfirmSubject, htmlToSend, function (err, data) {
+                                if (err) {
+                                    console.log(err)
+                                    reject({ code: 400, message: "Database Error", data: {} });
+                                    return;
+                                }
+                                console.log('Confirmation mail has been sent to the user !!!');
+                                // resolve({ code: 200, message: "User Approval Successfull", data: {} });
+                            });
+                        })
                     resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {} });
+                    }
                 else
                     reject({ code: 400, message: "Invalid token id or token expired", data: {} });
 

@@ -5,6 +5,7 @@ import config from '../config/config';
 import * as crypto from 'crypto';
 
 
+// FUNC. Login for a registered user
 export const employeeLoginMethod = (_body) => {
     return new Promise((resolve, reject) => {
         var emailID=_body.email.toLowerCase()
@@ -25,10 +26,9 @@ export const employeeLoginMethod = (_body) => {
                 
                 let results = await client.query(query);
                 const data = results.rows
-                console.log("data : ", data);
-                
+
+                // Check if the password is correct
                 if (data.length > 0) {
-                    
                     const value = data[0];
                     let candidateId = null;
                     const token = jwt.sign({
@@ -37,6 +37,7 @@ export const employeeLoginMethod = (_body) => {
                         userRoleId:value.userRoleId.toString()
                     }, config.jwtSecretKey, { expiresIn: '24h' });
 
+                    // Check if the login user is a freelancer
                     if(value.userRoleId == 4)
                     {
                         const candidateQuery = {
@@ -49,7 +50,8 @@ export const employeeLoginMethod = (_body) => {
                         candidateId = candidateResult.rows[0].candidate_id;
                     }
                     await client.query('COMMIT')
-
+                    // On success, user bearer token holding his/her companyId,userRoleId and employeeId; plus other details
+                    // are being given to the front end.
                     resolve({
                         code: 200, message: "Login successful", data: {
                             token: `Bearer ${token}`,

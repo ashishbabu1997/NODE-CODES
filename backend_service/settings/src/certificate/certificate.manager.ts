@@ -1,6 +1,9 @@
 import certificateQuery from './query/certificate.query';
 import database from '../common/database/database';
 
+
+ // >>>>>>> FUNC. >>>>>>>  
+//>>>>>>>>>>>>>>>>>>Get all certifications list from database
 export const getCertificates = (_body) => {
     return new Promise((resolve, reject) => {
     const query = {
@@ -18,6 +21,8 @@ export const getCertificates = (_body) => {
 }
 
 
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Create a new certification
 export const createCertificate = (_body) => {
     return new Promise((resolve, reject) => {
     const currentTime = Math.floor(Date.now() / 1000);
@@ -37,6 +42,9 @@ export const createCertificate = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update certifications
 export const updateCertificate = (_body) => {
     return new Promise((resolve, reject) => {
     const currentTime = Math.floor(Date.now() / 1000);
@@ -55,6 +63,9 @@ export const updateCertificate = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Delete certifications
 export const deleteCertificate = (_body) => {
     return new Promise((resolve, reject) => {
     const query = {

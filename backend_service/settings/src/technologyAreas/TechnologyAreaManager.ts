@@ -1,6 +1,10 @@
 import technologyAreaQuery from './query/TechnologyAreaQuery';
 import database from '../common/database/database';
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get Technology areas from database
 export const getTechnologyAreas = () => {
     return new Promise((resolve, reject) => {
         const query = {
@@ -18,6 +22,10 @@ export const getTechnologyAreas = () => {
     });
 }
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Create new technology area
 export const createNewTechnologyArea = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -36,6 +44,10 @@ export const createNewTechnologyArea = (_body) => {
     })
 }
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update technology areas
 export const updateTechnologyAreaType = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -54,6 +66,10 @@ export const updateTechnologyAreaType = (_body) => {
     })
 }
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Delete technology areas
 export const deleteTechnologyAreaType = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);

@@ -4,10 +4,11 @@ import * as format from 'pg-format';
 import { createNotification } from '../common/notifications/notifications';
 import { sendMail } from '../middlewares/mailer'
 import * as handlebars from 'handlebars'
-import * as fs from 'fs'
 import config from '../config/config'
+import {readHTMLFile} from '../middlewares/htmlReader'
 
-
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get all job received details of a company
 export const getAllJobReceived = (_body) => {
     
     return new Promise((resolve, reject) => {
@@ -94,6 +95,9 @@ export const getAllJobReceived = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get all job received details using job received id
 export const getJobReceivedByJobReceivedId = (_body) => {
     return new Promise((resolve, reject) => {
         const query = {
@@ -111,6 +115,9 @@ export const getJobReceivedByJobReceivedId = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update job received status of a user company
 export const updateIsRejectForJobReceived = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -130,6 +137,9 @@ export const updateIsRejectForJobReceived = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Fetch profile details of a company by using company id
 export const getProfileByCompanyId = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery=jobReceivedQuery.getProfile
@@ -158,6 +168,9 @@ export const getProfileByCompanyId = (_body) => {
         
     })
 }
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Save the candidate profile details
 export const saveCandidateProfile = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -213,23 +226,14 @@ export const saveCandidateProfile = (_body) => {
     })
 }
 
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Submit the candidate profile by sending a notificatin mail to the admin
 export const submitCandidateProfile = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
         (async () => {
             const client = await database().connect()
             try {
-                var readHTMLFile = function(path, callback) {
-                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                        if (err) {
-                            throw err;
-                            callback(err);
-                        }
-                        else {
-                            callback(null, html);
-                        }
-                    });
-                };
                 await client.query('BEGIN');
                 let candidateId = _body.candidateId;
                 const updateCandidateStatus = {
@@ -299,6 +303,8 @@ export const submitCandidateProfile = (_body) => {
 }
 
 
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update the skills of a candidate
 export const editSkills = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -306,7 +312,6 @@ export const editSkills = (_body) => {
             const client = await database().connect()
             try {
                 var candidateId=_body.candidateId
-                console.log(candidateId)
                 let skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];
                 let competentSkillSet = ![undefined, null].includes(_body.skills) ? _body.skills.filter(a=> a.competency==2 || a.competency==3).map(a => a.skill.skillId) :[];
                 const deleteCandidateSkillsQuery = {
@@ -314,7 +319,6 @@ export const editSkills = (_body) => {
                     text: jobReceivedQuery.deleteCandidateSkills,
                     values: [candidateId, skillSet],
                 }
-                console.log(deleteCandidateSkillsQuery)
                 await client.query(deleteCandidateSkillsQuery)
                 if (Array.isArray(_body.skills))
                 {
@@ -366,6 +370,6 @@ export const editSkills = (_body) => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
-    // reject({ code: 400, message: "Failed. Please try again.", data: {} });
+
     
 }

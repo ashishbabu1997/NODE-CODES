@@ -3,9 +3,11 @@ import database from '../common/database/database';
 import { sendMail } from '../middleware/mailer'
 import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
-import config from '../config/config'
 import * as handlebars from 'handlebars'
-import * as fs from 'fs'
+import {readHTMLFile} from '../middleware/htmlReader'
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>List all the users
 export const listUsersDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = admineQuery.listUsers;
@@ -33,12 +35,15 @@ export const listUsersDetails = (_body) => {
                 reject({ code: 400, message: "Database Error", data: {} });
                 return;
             }
-            console.log(results.rowCount)
             resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows } });
         })
     })
 }
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>List all registered users 
 export const allUsersList = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = admineQuery.allRegisteredUsersList;
@@ -57,9 +62,8 @@ export const allUsersList = (_body) => {
             "companyName":'c.company_name'
 
         }
-        
-        // var orderBy = ' ORDER BY e.updated_on DESC';
-        // selectQuery = selectQuery + orderBy;
+
+
         if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
                 {
                     selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
@@ -76,12 +80,14 @@ export const allUsersList = (_body) => {
                 reject({ code: 400, message: "Database Error", data: {} });
                 return;
             }
-            console.log(results.rowCount)
             resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows } });
         })
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get details of a single user.
 export const getUserDetails = (_body) => {
     return new Promise((resolve, reject) => {
         const userInfo = {
@@ -113,25 +119,20 @@ export const getUserDetails = (_body) => {
         })
     })
 }
+
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Function for admin to approve or reject a user who has signed up
 export const clearance = (_body) => {
     return new Promise((resolve, reject) => {
-        var readHTMLFile = function(path, callback) {
-            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                if (err) {
-                    throw err;
-                    callback(err);
-                }
-                else {
-                    callback(null, html);
-                }
-            });
-        };
         const currentTime = Math.floor(Date.now() / 1000);
         (async () => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                
+
+                // Approving a user
                 if (_body.decisionValue == 1) {
                     
                     const password = passwordGenerator.generate({
@@ -147,6 +148,8 @@ export const clearance = (_body) => {
                     var approveResult = await client.query(adminApprovalQuery);
                     var email = approveResult.rows[0].email;
                     const subject = " ellow.io LOGIN PASSWORD "
+
+                    // Sending an email with login credentials
                     readHTMLFile('src/emailTemplates/adminApproveText.html', function(err, html) {
                         var template = handlebars.compile(html);
                         var replacements = {
@@ -165,15 +168,19 @@ export const clearance = (_body) => {
                     resolve({ code: 200, message: "User Approval Successfull", data: {} });
                 }
                 else {
+
+                    // Rejecting a user
                     const adminRejectQuery = {
                         name: 'admin-panel',
                         text: admineQuery.clearanceQuery,
                         values: [_body.selectedEmployeeId, false, 0,currentTime]
                     }
                     await client.query(adminRejectQuery);
-                    
+            
                     var desc = _body.description
                     var subject = "ellow.io ACCOUNT REJECTION MAIL "
+
+                    // Rejection mail to the user
                     readHTMLFile('src/emailTemplates/adminRejectText.html', function(err, html) {
                         var template = handlebars.compile(html);
                         var replacements = {

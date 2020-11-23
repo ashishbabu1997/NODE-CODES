@@ -17,32 +17,6 @@ export default {
         "user": "sales@ellow.io",
         "password": "yteinevvuuchtmvb"
     },
-    "nextLine":"<br>",
-    "approvalMail": {
-        "firstLine": "Hello,",
-        "secondLine": "    has been approved by the admin company !</h3>",
-        "thirdLine": "With regards,",
-        "fourthLine": "Team ellow.io"
-    },
-    "rejectionMail": {
-        "firstLine": "Hello,",
-        "secondLine": "   has been rejected by the admin company !</h3>",
-        "thirdLine": "With regards",
-        "fourthLine": "Team ellow.io"
-    },
-    "space":" ",
-    "break":"<br>",
-    "RequestText":{
-        "firstLine": "has been requested to schedule an interview for a candidate with the below details",
-        "secondLine": "Name:",
-        "thirdLine": "Position:",
-        "fourthLine": "Email Address:",
-        "fifthLine": "Phone Number:",
-        "sixthLine": "Description:",
-        "seventhLine":"With regards,",
-        "eigthLine":"Team ellow.io"
-
-    },
     "jwtSecretKey": "elL0wA!",
     "countries":[
         {
