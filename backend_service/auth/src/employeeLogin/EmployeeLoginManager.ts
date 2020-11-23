@@ -28,6 +28,7 @@ export const employeeLoginMethod = (_body) => {
                 const data = results.rows
 
                 // Check if the password is correct
+                
                 if (data.length > 0) {
                     const value = data[0];
                     let candidateId = null;
@@ -55,9 +56,9 @@ export const employeeLoginMethod = (_body) => {
                     resolve({
                         code: 200, message: "Login successful", data: {
                             token: `Bearer ${token}`,
-                            companyId: value.companyId, companyName: value.companyName, companyLogo: value.companyLogo,
+                            companyName: value.companyName, companyLogo: value.companyLogo,
                             candidateId ,  
-                            email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,employeeId:value.employeeId,
+                            email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,
                             masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile,userRoleId:value.userRoleId
                         }
                     });
