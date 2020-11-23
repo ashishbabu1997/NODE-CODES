@@ -426,16 +426,22 @@ export const resetFreelancerToken = (_body) => {
                     text: employeeQuery.resetPassword,
                     values: {token:_body.token,pass:hashedPassword},
                 }
+                
+                let result = await client.query(resetToken);
+                let employeeId=result.rows[0].employee_id
+                let companyId=result.rows[0].company_id
+
                 const getMailAddress = {
                     name: 'get-user-mail',
                     text: employeeQuery.getRegisteredEmail,
-                    values: [_body.employeeId],
+                    values: [employeeId],
                 }
-                let result = await client.query(resetToken);
-                let emailAddress = await client.query(getMailAddress);
-
+                let getResults = await client.query(getMailAddress);
+                var emailAddress=getResults.rows[0].email
+                var firstName=getResults.rows[0].firstname
+                var lastName=getResults.rows[0].lastname
                 await client.query('COMMIT')
-
+                const message = `A new employee, ${firstName + ' ' + lastName}  has been registered with us as a freelancer.`
                 if(Array.isArray(result.rows) && ![undefined,null].includes((result.rows[0])) && ![undefined,null].includes(result.rows[0].employee_id))
                     {
                         readHTMLFile('src/emailTemplates/resetConfirmationText.html', function(err, html) {
@@ -449,8 +455,9 @@ export const resetFreelancerToken = (_body) => {
                                     reject({ code: 400, message: "Database Error", data: {} });
                                     return;
                                 }
-                                console.log('Confirmation mail has been sent to the user !!!');
-                                // resolve({ code: 200, message: "User Approval Successfull", data: {} });
+                                console.log('Confirmation mail has been sent to the !!!');
+                                createNotification({companyId:companyId,message:message, notificationType: 'employee'})
+
                             });
                         })
                     resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {} });
