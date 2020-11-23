@@ -696,6 +696,60 @@
 *       500:
 *         description: Server down
 */
+
+/**
+* @swagger
+* /candidates/updateSkill:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Update skills 
+*     description:  action ['add' ,'update' ,'delete']
+*     summary: Add or edit candidate skill details
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer
+*             candidateSkillId:
+*               type: string
+*             skillId:
+*               type: integer
+*             yoe:
+*               type: number
+*             skillVersion:
+*               type: string
+*             competency:
+*               type: number
+*             preferred:
+*               type: boolean
+*             action:
+*               type: string
+*           required:
+*             - candidateId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
 /**
 * @swagger
 * /candidates/updateSocialProfile:

@@ -345,6 +345,67 @@ export const awardSchema = Joi.object().keys({
     }),
 }).unknown(true);
 
+export const skillSchema = Joi.object().keys({
+    action: Joi.string().required().valid('add','update','delete').error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "any.required":
+                err.message = "Action should not be empty!";
+                break;
+                case "number.base":
+                err.message = "Action must be a string"
+                break;
+                default:
+                err.message = "Invalid action"
+                break;
+            }
+        });
+        return errors;
+    }),
+    candidateId: Joi.number()
+    .when('action',{
+        is:['add','update'],
+        then:Joi.number().required().error(errors => {
+            errors.forEach(err => {
+                switch (err.code) {
+                    case "any.required":
+                    err.message = "Candidate Id should not be empty!";
+                    break;
+                    case "number.base":
+                    err.message = "Candidate Id must be a number"
+                    break;
+                    default:
+                    err.message = "Invalid Candidate Id"
+                    break;
+                }
+            });
+            return errors;
+        }),
+        otherwise:Joi.optional()
+    }),
+    candidateSkillId : Joi.number()
+    .when('action',{
+        is:['update','delete'],
+        then:Joi.number().required().error(errors => {
+            errors.forEach(err => {
+                switch (err.code) {
+                    case "any.required":
+                    err.message = "Candidate Skill Id should not be empty!";
+                    break;
+                    case "number.base":
+                    err.message = "Candidate Skill Id must be a number"
+                    break;
+                    default:
+                    err.message = "Invalid Skill Id"
+                    break;
+                }
+            });
+            return errors;
+        }),
+        otherwise:Joi.optional()
+    }),
+}).unknown(true);
+
 export const publicationSchema = Joi.object().keys({
     action: Joi.string().required().valid('add','update','delete').error(errors => {
         errors.forEach(err => {
