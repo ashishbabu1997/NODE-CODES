@@ -4,7 +4,8 @@ import { sendMail } from '../middlewares/mailer'
 import config from '../config/config';
 import { createNotification } from '../common/notifications/notifications';
 import * as handlebars from 'handlebars'
-import * as fs from 'fs'
+import {readHTMLFile} from '../middlewares/htmlReader'
+
 import {nanoid} from 'nanoid';
 
 
@@ -302,17 +303,6 @@ export const getCandidateDetails = (_body) => {
                 const client = await database().connect()
                 try {
                     await client.query('BEGIN');
-                    var readHTMLFile = function (path, callback) {
-                        fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
-                            if (err) {
-                                throw err;
-                                callback(err);
-                            }
-                            else {
-                                callback(null, html);
-                            }
-                        });
-                    };
                     var adminApproveStatus;
                     var comment;
                     var subj;
@@ -343,7 +333,6 @@ export const getCandidateDetails = (_body) => {
                         }
                         else if (_body.userRoleId == 2) {
                             message = `${firstName + ' ' + lastName} from ${companyName} has been selected for the position:${positionName}`;
-                            var approveMessage = firstName.fontsize(3).bold() + '  ' + lastName.fontsize(3).bold() + '   ' + 'from' + '   ' + companyName.fontsize(3).bold() + '   ' + 'has been selected for the position' + '   ' + positionName.fontsize(3).bold()
                             makeOffer = 1
                             adminApproveStatus = 1;
                             comment = _body.comment;
@@ -455,17 +444,7 @@ export const getCandidateDetails = (_body) => {
                 const client = await database().connect()
                 try {
                     await client.query('BEGIN');
-                    var readHTMLFile = function (path, callback) {
-                        fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
-                            if (err) {
-                                throw err;
-                                callback(err);
-                            }
-                            else {
-                                callback(null, html);
-                            }
-                        });
-                    };
+                    
                     // Insert make offer status of a candidate.
                     const insertQuery = {
                         name: 'insert-make-offer-status',
@@ -663,17 +642,7 @@ export const getCandidateDetails = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-                    var readHTMLFile = function (path, callback) {
-                        fs.readFile(path, { encoding: 'utf-8' }, function (err, html) {
-                            if (err) {
-                                throw err;
-                                callback(err);
-                            }
-                            else {
-                                callback(null, html);
-                            }
-                        });
-                    };
+                   
 
 
                     var candidateId = _body.candidateId;
@@ -732,7 +701,6 @@ export const getCandidateDetails = (_body) => {
                         })
                     })
                     await client.query('COMMIT')
-                    console.log(message)
                     await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange' })
                     resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });
                     

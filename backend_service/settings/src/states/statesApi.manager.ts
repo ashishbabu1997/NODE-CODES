@@ -1,4 +1,9 @@
 import config from '../config/config'
+
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>List the states
 export const listStates = (_body)=> {
     return new Promise((resolve, reject) => {
             const states=config.states

@@ -1,6 +1,9 @@
 import domainsQuery from './query/DomainsQuery';
 import database from '../common/database/database';
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get all domains list from database
 export const getDomainsList = () => {
     return new Promise((resolve, reject) => {
         const query = {
@@ -18,6 +21,9 @@ export const getDomainsList = () => {
     });
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Create  new domain 
 export const createNewDomains = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -36,6 +42,9 @@ export const createNewDomains = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update domains
 export const updateDomainType = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -54,6 +63,9 @@ export const updateDomainType = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Delete domains
 export const deleteDomainType = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);

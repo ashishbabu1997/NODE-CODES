@@ -5,9 +5,11 @@ import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
 import config from './config/config'
 import * as handlebars from 'handlebars'
-import * as fs from 'fs'
+import {readHTMLFile} from './middleware/htmlReader'
 
 
+ // >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>> Registration of a new employee(company)
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
         const mailId = _body.email
@@ -18,17 +20,6 @@ export const createEmployee = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                var readHTMLFile = function(path, callback) {
-                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                        if (err) {
-                            throw err;
-                            callback(err);
-                        }
-                        else {
-                            callback(null, html);
-                        }
-                    });
-                };
                 //Check if Email already exist reject in case exists        
                 const getEmailQuery = {
                     name: 'get-email',
@@ -156,6 +147,9 @@ export const createEmployee = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>> Registration of an employee(company) by admin  
 export const createEmployeeByAdmin = (_body) => {
     return new Promise((resolve, reject) => {
         const loweremailId = _body.email.toLowerCase()
@@ -165,17 +159,6 @@ export const createEmployeeByAdmin = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                var readHTMLFile = function(path, callback) {
-                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                        if (err) {
-                            throw err;
-                            callback(err);
-                        }
-                        else {
-                            callback(null, html);
-                        }
-                    });
-                };
                 //Check if Email already exist reject in case exists        
                 const getEmailQuery = {
                     name: 'get-email',
@@ -292,6 +275,9 @@ export const createEmployeeByAdmin = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Verifying email address of a registered user
 export const checkCompanyByWorkMail = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -322,6 +308,9 @@ export const checkCompanyByWorkMail = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>>>>>Registration of a freelance employee
 export const createFreelancer = (_body) => {
     return new Promise((resolve, reject) => {
         const loweremailId = _body.email.toLowerCase()
@@ -331,17 +320,6 @@ export const createFreelancer = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                var readHTMLFile = function(path, callback) {
-                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                        if (err) {
-                            throw err;
-                            callback(err);
-                        }
-                        else {
-                            callback(null, html);
-                        }
-                    });
-                };
                 // Check if Email already exist reject in case exists        
                 const getEmailQuery = {
                     name: 'get-email',

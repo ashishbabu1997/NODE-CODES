@@ -6,6 +6,7 @@ import Query from './query/query';
 import database from '../common/database/database';
 import * as handlebars from 'handlebars'
 import * as fs from 'fs'
+import {readHTMLFile} from '../middlewares/htmlReader'
 
 
 
@@ -14,18 +15,6 @@ import * as fs from 'fs'
 // where a he has to enter his email. After submission , a reset password link is sent to his email.
 export const sendLink = (_body) => {
   return new Promise((resolve, reject) => {
-    var readHTMLFile = function(path, callback) {
-      fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-          if (err) {
-              throw err;
-              callback(err);
-          }
-          else {
-              callback(null, html);
-          }
-      });
-    };
-
     // Checks whether the entered email is his/her own email.
     var lowerEmail=_body.email.toLowerCase()
     const checkEMail = {

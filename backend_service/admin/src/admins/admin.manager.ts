@@ -4,9 +4,10 @@ import { sendMail } from '../middleware/mailer'
 import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
 import * as handlebars from 'handlebars'
-import * as fs from 'fs'
+import {readHTMLFile} from '../middleware/htmlReader'
 
-// FUNC. List all the users
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>List all the users
 export const listUsersDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = admineQuery.listUsers;
@@ -41,7 +42,8 @@ export const listUsersDetails = (_body) => {
 
 
 
-// FUNC. List all registered users 
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>List all registered users 
 export const allUsersList = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = admineQuery.allRegisteredUsersList;
@@ -84,8 +86,8 @@ export const allUsersList = (_body) => {
 }
 
 
-
-// FUNC. Get details of a single user.
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get details of a single user.
 export const getUserDetails = (_body) => {
     return new Promise((resolve, reject) => {
         const userInfo = {
@@ -120,21 +122,10 @@ export const getUserDetails = (_body) => {
 
 
 
-
-// FUNC.  Function for admin to approve or reject a user who has signed up
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Function for admin to approve or reject a user who has signed up
 export const clearance = (_body) => {
     return new Promise((resolve, reject) => {
-        var readHTMLFile = function(path, callback) {
-            fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                if (err) {
-                    throw err;
-                    callback(err);
-                }
-                else {
-                    callback(null, html);
-                }
-            });
-        };
         const currentTime = Math.floor(Date.now() / 1000);
         (async () => {
             const client = await database().connect()

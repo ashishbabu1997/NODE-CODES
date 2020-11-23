@@ -4,8 +4,12 @@ import { createNotification } from '../common/notifications/notifications';
 import { sendMail } from '../middlewares/mailer'
 import config from '../config/config'
 import * as handlebars from 'handlebars'
-import * as fs from 'fs'
+import {readHTMLFile} from '../middlewares/htmlReader'
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get the position detils of a company
 export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
         var queryText='', queryValues={}, filterQuery='', filter=_body.body.filter,
@@ -86,6 +90,9 @@ export const getCompanyPositions = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Create a new position for a company
 export const createCompanyPositions = async (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -108,9 +115,6 @@ export const createCompanyPositions = async (_body) => {
                     }
                     const getCompanyNameResponse = await client.query(getCompanyNameQuery);
                     const companyName = getCompanyNameResponse.rows[0].companyName
-                    const company=companyName.fontsize(3).bold()
-                    const positionName=_body.positionName.fontsize(3).bold()
-                    const locationName=_body.locationName.fontsize(3).bold()
                     const companyPositionResponse = await client.query(addCompanyPositionsQuery);
                     const positionId = companyPositionResponse.rows[0].position_id
                     const companyId = _body.positionCreatedCompanyId
@@ -158,6 +162,9 @@ export const createCompanyPositions = async (_body) => {
         })
     }
     
+
+     // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Fetch the details of a position created by a company
     export const fetchPositionDetails = (_body) => {
         return new Promise((resolve, reject) => {
             const query = {
@@ -232,6 +239,9 @@ export const createCompanyPositions = async (_body) => {
                 });
             }
             
+
+             // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update company position details
             export const updateCompanyPositions = async (_body) => {
                 return new Promise((resolve, reject) => {
                     const currentTime = Math.floor(Date.now() / 1000);
@@ -322,7 +332,10 @@ export const createCompanyPositions = async (_body) => {
                         })
                     }
                     
+
                     
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Publish the position details so that it will be visible to all other users (providers)
                     export const publishCompanyPositions = async (_body) => {
                         return new Promise((resolve, reject) => {
                             const currentTime = Math.floor(Date.now() / 1000);
@@ -330,17 +343,7 @@ export const createCompanyPositions = async (_body) => {
                                 const client = await database().connect()
                                 try {
                                     await client.query('BEGIN');
-                                    var readHTMLFile = function(path, callback) {
-                                        fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                                            if (err) {
-                                                throw err;
-                                                callback(err);
-                                            }
-                                            else {
-                                                callback(null, html);
-                                            }
-                                        });
-                                    };
+                                    
                                     const positionId = _body.positionId;
                                     const changePositionStatusQuery = {
                                         name: 'change-position-status',
@@ -367,9 +370,10 @@ export const createCompanyPositions = async (_body) => {
                                     const message = `A new position named ${positionName} has been created by ${companyName}.`
                                     var cName=companyName
                                     var cpName=positionName
-                                    // var msg= 'A new position named'+' '+cpName+' '+'has been created by'+' '+cName
                                     await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position' })
                                     var subject='New position notification'
+
+                                    // Sending a notification mail about position creation; to the admin
                                     readHTMLFile('src/emailTemplates/positionCreationText.html', function(err, html) {
                                         var template = handlebars.compile(html);
                                         var replacements = {
@@ -384,7 +388,6 @@ export const createCompanyPositions = async (_body) => {
                                                 return;
                                             }
                                             console.log('Notification mail to admin has been sent !!!');
-                                            // resolve({ code: 200, message: "User Approval Successfull", data: {} });
                                         });
                                     })
                                     resolve({ code: 200, message: "Position published successfully", data: {} });
@@ -400,6 +403,10 @@ export const createCompanyPositions = async (_body) => {
                             })
                         })
                     }
+
+
+                     // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>> Change job status for a position
                     export const changeJobStatus = (_body) => {
                         return new Promise((resolve, reject) => {
                             const currentTime = Math.floor(Date.now() / 1000);
@@ -412,17 +419,6 @@ export const createCompanyPositions = async (_body) => {
                                     var jobReceivedId;
                                     var message;
                                     let positionName;
-                                    var readHTMLFile = function(path, callback) {
-                                        fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                                            if (err) {
-                                                throw err;
-                                                callback(err);
-                                            }
-                                            else {
-                                                callback(null, html);
-                                            }
-                                        });
-                                    };
                                     const positionQuery = {
                                         name: 'change-job-status',
                                         text: positionsQuery.changeJobStatus,
@@ -446,6 +442,7 @@ export const createCompanyPositions = async (_body) => {
                                                 return;
                                             }
                                             else {
+                                                // If job status is 6, it means admin is reopening a position
                                                 if (_body.jobStatus==6)
                                                 {
                                                     const getMailAddress = {
@@ -464,6 +461,7 @@ export const createCompanyPositions = async (_body) => {
                                                         var emailAddress=results.rows[0].email
                                                         message=`A position named ${positionName} has been reopened.`
                                                         createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position' })
+                                                        // A notification is sent to the hirer about his/her reopened position
                                                         readHTMLFile('src/emailTemplates/positionReopenText.html', function(err, html) {
                                                             var template = handlebars.compile(html);
                                                             var replacements = {
@@ -483,6 +481,8 @@ export const createCompanyPositions = async (_body) => {
                                                         })
                                                     
                                                 }
+
+                                                // If job status is 8,then the position is closed.
                                                 else if(_body.jobStatus==8)
                                                 {
                                                     const mailAddress = {
@@ -560,6 +560,9 @@ export const createCompanyPositions = async (_body) => {
                             })
                         })
                     }
+
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get the list of the companies with details
                     export const getCompanies = (_body) => {
                         return new Promise((resolve, reject) => {
                             const CompanyQuery = {
@@ -581,23 +584,14 @@ export const createCompanyPositions = async (_body) => {
                     }
                     
                     
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Delete a position from a users position page
                     export const deletePositions = (_body) => {
                         return new Promise((resolve, reject) => {
                             (async () => {
                                 const client = await database().connect()
                                 try {
                                     await client.query('BEGIN');
-                                    var readHTMLFile = function(path, callback) {
-                                        fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-                                            if (err) {
-                                                throw err;
-                                                callback(err);
-                                            }
-                                            else {
-                                                callback(null, html);
-                                            }
-                                        });
-                                    };
                                     const positionId = _body.positionId;
                                     
                                     const currentTime = Math.floor(Date.now() / 1000);
@@ -667,6 +661,8 @@ export const createCompanyPositions = async (_body) => {
                         })
                     }
                     
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Change read status of a position
                     export const changeReadStatus = (_body) => {
                         const currentTime = Math.floor(Date.now() / 1000);
                         

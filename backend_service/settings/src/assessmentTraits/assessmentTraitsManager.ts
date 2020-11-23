@@ -1,6 +1,9 @@
 import assessmentTraitsQuery from './query/AssessmentTraitsQuery';
 import database from '../common/database/database';
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Fetch all the assesment trits from database
 export const getAssessmentTraits = () => {
     return new Promise((resolve, reject) => {
         const query = {
@@ -18,6 +21,9 @@ export const getAssessmentTraits = () => {
     });
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Create a new assesment trait
 export const createNewAssessmentTraits = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -36,6 +42,9 @@ export const createNewAssessmentTraits = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update assesment traits
 export const updateAssessmentTraits = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -54,6 +63,9 @@ export const updateAssessmentTraits = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Delete an assesment trait
 export const deleteAssessmentTraits = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
