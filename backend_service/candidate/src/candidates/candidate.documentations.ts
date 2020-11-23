@@ -721,9 +721,12 @@
 *             candidateId:
 *               type: integer
 *             candidateSkillId:
-*               type: string
-*             skillId:
 *               type: integer
+*             skill:
+*               type: object
+*               properties:
+*                 skillId:
+*                   type: integer
 *             yoe:
 *               type: number
 *             skillVersion:

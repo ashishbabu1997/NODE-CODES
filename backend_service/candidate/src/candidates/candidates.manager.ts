@@ -1229,16 +1229,19 @@ export const getCandidateDetails = (_body) => {
                     switch(_body.action)
                     {
                         case 'add':
+                        _body.skillId = ![null,undefined,''].includes(_body.skill)?_body.skill.skillId:null;
                         await client.query(queryService.insertCandidateSkillQuery(_body));
                         break;
                         
                         case 'update' :
                         case ![null,undefined,''].includes(_body.candidateSkillId):
+                        _body.skillId = ![null,undefined,''].includes(_body.skill)?_body.skill.skillId:null;
                         await client.query(queryService.modifyCandidateSkillQuery(_body));
                         break;
                         
                         case 'delete':
                         case ![null,undefined,''].includes(_body.candidateSkillId):
+                        _body.skillId = ![null,undefined,''].includes(_body.skill)?_body.skill.skillId:null;
                         await client.query(queryService.deleteCandidateSkillQuery(_body));
                         break;
                         
