@@ -25,7 +25,6 @@ export const employeeLoginMethod = (_body) => {
                 
                 let results = await client.query(query);
                 const data = results.rows
-                console.log("data : ", data);
                 
                 if (data.length > 0) {
                     
@@ -53,9 +52,9 @@ export const employeeLoginMethod = (_body) => {
                     resolve({
                         code: 200, message: "Login successful", data: {
                             token: `Bearer ${token}`,
-                            companyId: value.companyId, companyName: value.companyName, companyLogo: value.companyLogo,
+                            companyName: value.companyName, companyLogo: value.companyLogo,
                             candidateId ,  
-                            email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,employeeId:value.employeeId,
+                            email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,
                             masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile,userRoleId:value.userRoleId
                         }
                     });
