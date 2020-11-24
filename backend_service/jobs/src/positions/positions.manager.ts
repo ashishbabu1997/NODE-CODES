@@ -5,6 +5,7 @@ import { sendMail } from '../middlewares/mailer'
 import config from '../config/config'
 import * as handlebars from 'handlebars'
 import {readHTMLFile} from '../middlewares/htmlReader'
+import * as emailClient from '../emailService/emailService';
 
 
 
@@ -374,22 +375,13 @@ export const createCompanyPositions = async (_body) => {
                                     var subject='New position notification'
 
                                     // Sending a notification mail about position creation; to the admin
-                                    readHTMLFile('src/emailTemplates/positionCreationText.html', function(err, html) {
-                                        var template = handlebars.compile(html);
-                                        var replacements = {
-                                            company:cName,
-                                            position:cpName  
-                                        };
-                                        var htmlToSend = template(replacements);
-                                        sendMail(config.adminEmail, subject,htmlToSend, function (err, data) {
-                                            if (err) {
-                                                console.log(err)
-                                                reject({ code: 400, message: "Database Error", data: {} });
-                                                return;
-                                            }
-                                            console.log('Notification mail to admin has been sent !!!');
-                                        });
-                                    })
+                                    let path = 'src/emailTemplates/positionCreationText.html';
+                                    var userReplacements = {
+                                        company:cName,
+                                        position:cpName  
+                                    };
+                                    emailClient.emailManager(config.adminEmail,subject,path,userReplacements);
+                                    
                                     resolve({ code: 200, message: "Position published successfully", data: {} });
                                 } catch (e) {
                                     console.log(e)
@@ -462,21 +454,12 @@ export const createCompanyPositions = async (_body) => {
                                                         message=`A position named ${positionName} has been reopened.`
                                                         createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position' })
                                                         // A notification is sent to the hirer about his/her reopened position
-                                                        readHTMLFile('src/emailTemplates/positionReopenText.html', function(err, html) {
-                                                            var template = handlebars.compile(html);
-                                                            var replacements = {
-                                                                position:positionName
-                                                            };
-                                                            var htmlToSend = template(replacements);
-                                                            var subj="Position Reopen Notification"
-                                                            sendMail(emailAddress, subj, htmlToSend, function (err, data) {
-                                                                if (err) {
-                                                                    console.log(err)
-                                                                    reject({ code: 400, message: "Mailer Error.", data: {} });
-                                                                    return;
-                                                                }
-                                                            });
-                                                        })
+                                                        let subj="Position Reopen Notification"
+                                                        let path = 'src/emailTemplates/positionReopenText.html';
+                                                        var userReplacements = {
+                                                            position:positionName
+                                                        };
+                                                        emailClient.emailManager(emailAddress,subj,path,userReplacements);
 
                                                         })
                                                     
@@ -503,39 +486,21 @@ export const createCompanyPositions = async (_body) => {
                                                         createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position' })
                                                         if(_body.userRoleId==1)
                                                         {
-                                                            readHTMLFile('src/emailTemplates/positionCloseText.html', function(err, html) {
-                                                                var template = handlebars.compile(html);
-                                                                var replacements = {
-                                                                    position:positionName
-                                                                };
-                                                                var htmlToSend = template(replacements);
-                                                                var subj="Close Position Notification"
-                                                                sendMail(emailId, subj, htmlToSend, function (err, data) {
-                                                                    if (err) {
-                                                                        console.log(err)
-                                                                        reject({ code: 400, message: "Mailer Error.", data: {} });
-                                                                        return;
-                                                                    }
-                                                                });
-                                                            })
+                                                            let subj="Close Position Notification"
+                                                            let path = 'src/emailTemplates/positionCloseText.html';
+                                                            var userReplacements ={
+                                                                position:positionName
+                                                            };
+                                                            emailClient.emailManager(emailId,subj,path,userReplacements);
                                                         }
                                                         else
                                                         {
-                                                            readHTMLFile('src/emailTemplates/positionCloseText.html', function(err, html) {
-                                                                var template = handlebars.compile(html);
-                                                                var replacements = {
-                                                                    position:positionName
-                                                                };
-                                                                var htmlToSend = template(replacements);
-                                                                var subj="Close Position Notification"
-                                                                sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
-                                                                    if (err) {
-                                                                        console.log(err)
-                                                                        reject({ code: 400, message: "Mailer Error.", data: {} });
-                                                                        return;
-                                                                    }
-                                                                });
-                                                            })
+                                                            let subj="Close Position Notification"
+                                                            let path = 'src/emailTemplates/positionCloseText.html';
+                                                            var userReplacements = {
+                                                                position:positionName
+                                                            };
+                                                            emailClient.emailManager(config.adminEmail,subj,path,userReplacements);
                                                         }
                                                     })
                                                 }   
@@ -630,21 +595,12 @@ export const createCompanyPositions = async (_body) => {
                                     var positionName=employeeData.rows[0].position_name
                                     var emailAddress=employeeData.rows[0].email
                                     await client.query('COMMIT');
-                                    readHTMLFile('src/emailTemplates/positionDeletionText.html', function(err, html) {
-                                        var template = handlebars.compile(html);
-                                        var replacements = {
-                                            position:positionName
-                                        };
-                                        var htmlToSend = template(replacements);
-                                        sendMail(emailAddress, config.PositionText.subject, htmlToSend, function (err, data) {
-                                            if (err) {
-                                                console.log(err)
-                                                reject({ code: 400, message: "Mailer Error.", data: {} });
-                                                return;
-                                            }
-                                            console.log(positionName,emailAddress)
-                                        });
-                                    })
+                                    
+                                    let path = 'src/emailTemplates/positionDeletionText.html';
+                                    var userReplacements = {
+                                        position:positionName
+                                    };
+                                    emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);
                                     const message=`The position named ${positionName}  has been removed .`
                                     await createNotification({ positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList' })
                                     resolve({ code: 200, message: "Position deletion successfull", data: {} });

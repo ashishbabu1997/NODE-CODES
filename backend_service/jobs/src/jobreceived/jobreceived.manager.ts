@@ -2,10 +2,10 @@ import jobReceivedQuery from './query/jobreceived.query';
 import database from '../common/database/database';
 import * as format from 'pg-format';
 import { createNotification } from '../common/notifications/notifications';
-import { sendMail } from '../middlewares/mailer'
 import * as handlebars from 'handlebars'
 import config from '../config/config'
 import {readHTMLFile} from '../middlewares/htmlReader'
+import * as emailClient from '../emailService/emailService';
 
  // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Get all job received details of a company
@@ -266,25 +266,14 @@ export const submitCandidateProfile = (_body) => {
                 if(![null,undefined,""].includes(_body.positionId))
                 {
                     const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
-                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position' })    
-                    readHTMLFile('src/emailTemplates/candidateAdditionText.html', function(err, html) {
-                        var template = handlebars.compile(html);
-                        var replacements = {
-                            first:candidateFirstName,
-                            last:candidateLastName,
-                            position:positionName,     
-                        };
-                        var htmlToSend = template(replacements);
-                        sendMail(config.adminEmail,subject,htmlToSend, function (err, data) {
-                            if (err) {
-                                console.log(err)
-                                reject({ code: 400, message: "Mailer Error", data: {} });
-                                return;
-                            }
-                            console.log('Notification mail to admin has been sent !!!');
-                            // resolve({ code: 200, message: "User Approval Successfull", data: {} });
-                        });
-                    }) 
+                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position' })   
+                    let path = 'src/emailTemplates/candidateAdditionText.html';
+                    var userReplacements =  {
+                        first:candidateFirstName,
+                        last:candidateLastName,
+                        position:positionName,     
+                    };
+                    emailClient.emailManager(config.adminEmail,subject,path,userReplacements);
                 }
                 
                 resolve({ code: 200, message: "Candidate profile submitted", data: {} });

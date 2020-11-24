@@ -1,12 +1,9 @@
 import * as jwt from 'jwt-simple';
 import jwtConfig from '../config/config'
 import {Promise} from 'es6-promise'
-import {sendMail} from '../middlewares/mailer'
 import Query from './query/query';
 import database from '../common/database/database';
-import * as handlebars from 'handlebars'
-import * as fs from 'fs'
-import {readHTMLFile} from '../middlewares/htmlReader'
+import * as emailClient from '../emailService/emailService';
 
 
 
@@ -46,26 +43,14 @@ export const sendLink = (_body) => {
           reject({ code: 400, message: "Database connection Error !!!!", data:  {} });
           return;
         }
-
         // Sends the link with token attached at the end of the link.
         var link=_body.host+"/passwordset/"+token
         const subject="ellow.ai RESET PASSWORD LINK"
-        readHTMLFile('src/emailTemplates/forgotPasswordText.html', function(err, html) {
-          var template = handlebars.compile(html);
-          var replacements = {
-               resetLink: link
+        let path = 'src/emailTemplates/forgotPasswordText.html';
+        let replacements =  {
+            resetLink: link
           };
-          var htmlToSend = template(replacements);
-        sendMail(lowerEmail, subject,htmlToSend, function(err,data) {
-                if (err) {
-                  console.log("........Email ERROR:.........",err)
-                  reject({ code: 400, message: "Cannot send email", data:{}});
-                  return;
-                }
-                console.log('Email sent successfully');
-                resolve({ code: 200, message: "A Link to reset your password has been sent to your email successfully", data:{} });
-            });
-          })
+        emailClient.emailManager(lowerEmail,subject,path,replacements);
           })
       }
       else

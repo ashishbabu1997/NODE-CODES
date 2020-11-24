@@ -5,6 +5,8 @@ import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
 import * as handlebars from 'handlebars'
 import {readHTMLFile} from '../middleware/htmlReader'
+import * as emailClient from '../emailService/emailService';
+
 
  // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>List all the users
@@ -150,20 +152,11 @@ export const clearance = (_body) => {
                     const subject = " ellow.io LOGIN PASSWORD "
 
                     // Sending an email with login credentials
-                    readHTMLFile('src/emailTemplates/adminApproveText.html', function(err, html) {
-                        var template = handlebars.compile(html);
-                        var replacements = {
-                            loginPassword: password
-                        };
-                        var htmlToSend = template(replacements);
-                        sendMail(email, subject, htmlToSend, function (err, data) {
-                            if (err) {
-                                console.log(err)
-                                reject({ code: 400, message: "Mailer Error", data: {} });
-                                return;
-                            }
-                        });
-                    })
+                    let path = 'src/emailTemplates/adminApproveText.html';
+                    let replacements = {
+                        loginPassword: password
+                    };
+                    emailClient.emailManager(email,subject,path,replacements);
                     await client.query('COMMIT'); 
                     resolve({ code: 200, message: "User Approval Successfull", data: {} });
                 }
@@ -176,25 +169,15 @@ export const clearance = (_body) => {
                         values: [_body.selectedEmployeeId, false, 0,currentTime]
                     }
                     await client.query(adminRejectQuery);
-            
                     var desc = _body.description
                     var subject = "ellow.io ACCOUNT REJECTION MAIL "
 
                     // Rejection mail to the user
-                    readHTMLFile('src/emailTemplates/adminRejectText.html', function(err, html) {
-                        var template = handlebars.compile(html);
-                        var replacements = {
-                            description: desc
-                        };
-                        var htmlToSend = template(replacements);
-                        sendMail(email, subject, htmlToSend, function (err, data) {
-                            if (err) {
-                                console.log(err)
-                                reject({ code: 400, message: "Mailer Error", data: {} });
-                                return;
-                            }
-                        });
-                    })
+                    let path = 'src/emailTemplates/adminRejectText.html';
+                    var userReplacements = {
+                        description: desc
+                    };
+                    emailClient.emailManager(email,subject,path,userReplacements);
                     await client.query('COMMIT'); 
                     resolve({ code: 200, message: "User Rejection Successfull", data: {} });
                 }
