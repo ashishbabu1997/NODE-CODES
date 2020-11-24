@@ -1,12 +1,9 @@
 import candidateQuery from './query/candidates.query';
 import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
-import { sendMail } from '../middlewares/mailer'
 import config from '../config/config';
 import { createNotification } from '../common/notifications/notifications';
-import * as handlebars from 'handlebars'
-import {readHTMLFile} from '../middlewares/htmlReader'
-
+import * as emailClient from '../emailService/emailService';
 import {nanoid} from 'nanoid';
 
 
@@ -343,24 +340,15 @@ export const getCandidateDetails = (_body) => {
                             
                             // Sending a approval mail to the admin , with candidates details
                             subj = "Candidate Selection Mail";
-                            readHTMLFile('src/emailTemplates/selectionMailText.html', function (err, html) {
-                                var template = handlebars.compile(html);
-                                var replacements = {
-                                    fName: firstName,
-                                    lName: lastName,
-                                    cName: companyName,
-                                    pName: positionName
-                                };
-                                var htmlToSend = template(replacements);
-                                sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
-                                    if (err) {
-                                        console.log(err)
-                                        reject({ code: 400, message: "Database Error", data: {} });
-                                        return;
-                                    }
-                                    console.log('Admin Approval Mail has been sent !!!');
-                                });
-                            })
+                            let path = 'src/emailTemplates/selectionMailText.html';
+                            let adminReplacements = {
+                                        fName: firstName,
+                                        lName: lastName,
+                                        cName: companyName,
+                                        pName: positionName
+                                    };
+            
+                            emailClient.emailManager(config.adminEmail,subj,path,adminReplacements);
                         }
                     } else {
                         if (_body.userRoleId == 1) {
@@ -377,28 +365,15 @@ export const getCandidateDetails = (_body) => {
                             value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, makeOffer, _body.employeeId, currentTime]
                             candidateQueries = candidateQuery.candidateAdminApprovalQuery
                             subj = "Candidate Rejection Mail";
-                            readHTMLFile('src/emailTemplates/rejectionMailText.html', function (err, html) {
-                                var template = handlebars.compile(html);
-                                var replacements = {
-                                    fName: firstName,
-                                    lName: lastName,
-                                    cName: companyName,
-                                    pName: positionName
-                                };
-                                var htmlToSend = template(replacements);
-                                
-                                // Sending a rejection mail to the admin , with candidates details
-                                sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
-                                    if (err) {
-                                        console.log(err)
-                                        reject({ code: 400, message: "Database Error", data: {} });
-                                        return;
-                                    }
-                                    console.log('Candidate Rejection Mail has been sent !!!');
-                                });
-                            })
-                        }
-                        
+                            let path = 'src/emailTemplates/rejectionMailText.html';
+                            let adminReplacements = {
+                                        fName: firstName,
+                                        lName: lastName,
+                                        cName: companyName,
+                                        pName: positionName
+                                    };
+                            emailClient.emailManager(config.adminEmail,subj,path,adminReplacements);
+                        }  
                     }
                     const candidateApprovalQuery = {
                         name: 'admin',
@@ -412,12 +387,11 @@ export const getCandidateDetails = (_body) => {
                         values: [_body.candidateId, 1, _body.employeeId, currentTime],
                     }
                     await client.query(updateQuery);
-                    
                     await client.query('COMMIT');
                     
+
                     // Function for notification to the  admin
                     _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
-                    
                     resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
                     
                 } catch (e) {
@@ -477,27 +451,16 @@ export const getCandidateDetails = (_body) => {
                     var email = interviewDetails[0].emailAddress === null ? '' : interviewDetails[0].emailAddress
                     var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber
                     var subject = "Request for Interview from " + hirerCompanyName;
-                    readHTMLFile('src/emailTemplates/interviewRequestMailText.html', function (err, html) {
-                        var template = handlebars.compile(html);
-                        var replacements = {
-                            hirerName: hirerCompanyName,
-                            firstName: candidateFirstName,
-                            lastName: candidateLastName,
-                            position: positionName,
-                            emailId: email,
-                            telephoneNumber: phoneNumber
-                        };
-                        var htmlToSend = template(replacements);
-                        
-                        // Sending the mail to the admin.
-                        sendMail(config.adminEmail, subject, htmlToSend, function (err, data) {
-                            if (err) {
-                                console.log(err)
-                                reject({ code: 400, message: "Email Error", data: {} });
-                                return;
-                            }
-                        });
-                    })
+                    let path = 'src/emailTemplates/interviewRequestMailText.html';
+                    let adminReplacements = {
+                                hirerName: hirerCompanyName,
+                                firstName: candidateFirstName,
+                                lastName: candidateLastName,
+                                position: positionName,
+                                emailId: email,
+                                telephoneNumber: phoneNumber
+                            };
+                    emailClient.emailManager(config.adminEmail,subject,path,adminReplacements);
                     resolve({ code: 200, message: "Interview request has been sent successfully", data: {} });
                 } catch (e) {
                     console.log(e)
@@ -644,12 +607,8 @@ export const getCandidateDetails = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-                    
-                    
-                    
                     var candidateId = _body.candidateId;
                     var positionId = _body.positionId;
-                    
                     
                     await client.query('BEGIN');
                     // Query to change the status of a candidate to false.
@@ -683,25 +642,14 @@ export const getCandidateDetails = (_body) => {
                     var sellerMail = emailResults.rows[0].email
                     var subject = "Candidate Deletion Notification";
                     message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position named ${positionName} has been removed `
-                    readHTMLFile('src/emailTemplates/candidateDeletionMailText.html', function (err, html) {
-                        var template = handlebars.compile(html);
-                        var replacements = {
-                            hirer: hirerName,
-                            position: positionName,
-                            name1: candidateFirstName,
-                            name2: candidateLastName
-                        };
-                        var htmlToSend = template(replacements);
-                        
-                        // Sending an email notification describing his/her removed candidate's details
-                        sendMail(sellerMail, subject, htmlToSend, function (err, data) {
-                            if (err) {
-                                console.log("mailer", err)
-                                reject({ code: 400, message: "Email Error", data: {} });
-                                return;
-                            }
-                        })
-                    })
+                    let path = 'src/emailTemplates/candidateDeletionMailText.html';
+                    let replacements ={
+                        hirer: hirerName,
+                        position: positionName,
+                        name1: candidateFirstName,
+                        name2: candidateLastName
+                    };
+                    emailClient.emailManager(sellerMail,subject,path,replacements);
                     await client.query('COMMIT')
                     await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange' })
                     resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });

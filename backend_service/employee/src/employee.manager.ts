@@ -93,7 +93,7 @@ export const createEmployee = (_body) => {
 
                     let path = 'src/emailTemplates/newUserText.html';
                     let userReplacements = { loginPassword:password };
-                    emailClient.emailManager(config.adminEmail,config.text.subject,path,userReplacements);
+                    emailClient.emailManager(loweremailId,subject,path,userReplacements);
                 }
                 
                 let Name = _body.firstName + " " + _body.lastName
@@ -102,20 +102,20 @@ export const createEmployee = (_body) => {
                 let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
                 let path = 'src/emailTemplates/applicationText.html';
                 let adminReplacements = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number };
-
                 emailClient.emailManager(config.adminEmail,config.text.subject,path,adminReplacements);
                 
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
-                console.log(e)
+                console.log("Error1",e)
                 await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed. Please try again.", data:e.message });
             } finally {
                 client.release();
             }
         })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            console.log("Error2",e)
+            reject({ code: 400, message: "Failed. Please try again.", data:e.message })
         })
         
     })
@@ -211,14 +211,15 @@ export const createEmployeeByAdmin = (_body) => {
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
-                console.log(e)
+                console.log("Error1",e)
                 await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             } finally {
                 client.release();
             }
         })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            console.log("Error2",e)
+            reject({ code: 400, message: "Failed. Please try again.", data:e.message})
         })
         
     })

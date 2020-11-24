@@ -3,6 +3,7 @@ import database from '../common/database/database';
 import * as jwt from 'jsonwebtoken';
 import config from '../config/config';
 import * as crypto from 'crypto';
+import * as emailClient from '../emailService/emailService';
 
 
 // FUNC. Login for a registered user
