@@ -3,10 +3,10 @@ import validate from '../middlewares/joiVaildation';
 import { jwtAuth } from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
 import * as freelancerController from './freelancer.controller';
-
+import * as freelancerSchema from './schema/freelancerSchema';
 const router = express.Router();
 router
-.get('/fetchJobList', freelancerController.fetchJobLists)
-.put('/updateGeneralInfo',jwtAuth, setData(), freelancerController.updateGeneralInfo)
+.get('/fetchJobList', jwtAuth, setData(),freelancerController.fetchJobLists)
+.put('/updateGeneralInfo',jwtAuth, setData(),freelancerSchema.candidateIdSchema, freelancerController.updateGeneralInfo)
 .put('/updateOtherInfoAndSubmit',jwtAuth, setData(), freelancerController.updateOtherInfoAndSubmit)
 export default router;
