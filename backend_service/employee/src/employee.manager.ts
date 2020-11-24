@@ -1,15 +1,13 @@
 import employeeQuery from './query/employee.query';
 import database from './common/database/database';
-import { sendMail } from './middleware/mailer'
 import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
 import config from './config/config'
-import * as handlebars from 'handlebars'
 import {nanoid} from 'nanoid';
-import {readHTMLFile} from './middleware/htmlReader'
 import { createNotification } from './common/notifications/notifications';
+import * as emailClient from './emailService/emailService';
 
- // >>>>>>> FUNC. >>>>>>>
+// >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>> Registration of a new employee(company)
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
@@ -92,47 +90,22 @@ export const createEmployee = (_body) => {
                         values: [hashedPassword,loweremailId],
                     }
                     await client.query(storePasswordQuery);
-                    readHTMLFile('src/emailTemplates/newUserText.html', function(err, html) {
-                        var template = handlebars.compile(html);
-                        var replacements = {
-                            loginPassword:password
-                        };
-                        var htmlToSend = template(replacements);
-                        sendMail(loweremailId, subject, htmlToSend, function (err, data) {
-                            if (err) {
-                                console.log(err)
-                                reject({ code: 400, message: "Mailer Error", data: {} });
-                                return;
-                            }
-                        });
-                    })
+
+                    let path = 'src/emailTemplates/newUserText.html';
+                    let userReplacements = { loginPassword:password };
+                    emailClient.emailManager(config.adminEmail,config.text.subject,path,userReplacements);
                 }
                 
-                await client.query('COMMIT')                
-                var Name = _body.firstName + " " + _body.lastName
-                var companyName = _body.companyName
-                var emailAddress = _body.email
-                var number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
-                readHTMLFile('src/emailTemplates/applicationText.html', function(err, html) {
-                    var template = handlebars.compile(html);
-                    var replacements = {
-                        applicantName:Name,
-                        company:companyName,
-                        email:emailAddress,
-                        phoneNumber:number
-                    };
-                    var htmlToSend = template(replacements);
-                    sendMail(config.adminEmail, config.text.subject, htmlToSend, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Database Error", data: {} });
-                            return;
-                        }
-                        console.log('Notification mail to admin has been sent !!!');
-                        // resolve({ code: 200, message: "User Approval Successfull", data: {} });
-                    });
-                })
+                let Name = _body.firstName + " " + _body.lastName
+                let companyName = _body.companyName
+                let emailAddress = _body.email
+                let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
+                let path = 'src/emailTemplates/applicationText.html';
+                let adminReplacements = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number };
+
+                emailClient.emailManager(config.adminEmail,config.text.subject,path,adminReplacements);
                 
+                await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
                 console.log(e)
@@ -149,7 +122,7 @@ export const createEmployee = (_body) => {
 }
 
 
- // >>>>>>> FUNC. >>>>>>>
+// >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>> Registration of an employee(company) by admin  
 export const createEmployeeByAdmin = (_body) => {
     return new Promise((resolve, reject) => {
@@ -220,47 +193,22 @@ export const createEmployeeByAdmin = (_body) => {
                 }
                 await client.query(storePasswordQuery);
                 
-                readHTMLFile('src/emailTemplates/newUserText.html', function(err, html) {
-                    var template = handlebars.compile(html);
-                    var replacements = {
-                        loginPassword:password
-                    };
-                    var htmlToSend = template(replacements);
-                    sendMail(loweremailId, subject, htmlToSend, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Mailer Error", data: {} });
-                            return;
-                        }
-                    });
-                })
+                let path = 'src/emailTemplates/newUserText.html';
+                var userReplacements = {
+                    loginPassword:password
+                };
+                emailClient.emailManager(loweremailId,subject,path,userReplacements);
                 
+                let Name = _body.firstName + " " + _body.lastName
+                let companyName = _body.companyName
+                let emailAddress = _body.email
+                let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:"";
+                path = 'src/emailTemplates/applicationText.html';
+                let adminReplacements = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number };
                 
-                await client.query('COMMIT')                
-                var Name = _body.firstName + " " + _body.lastName
-                var companyName = _body.companyName
-                var emailAddress = _body.email
-                var number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
-                readHTMLFile('src/emailTemplates/applicationText.html', function(err, html) {
-                    var template = handlebars.compile(html);
-                    var replacements = {
-                        applicantName:Name,
-                        company:companyName,
-                        email:emailAddress,
-                        phoneNumber:number
-                    };
-                    var htmlToSend = template(replacements);
-                    sendMail(config.adminEmail, config.text.subject, htmlToSend, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Database Error", data: {} });
-                            return;
-                        }
-                        console.log('Notification mail to admin has been sent !!!');
-                        // resolve({ code: 200, message: "User Approval Successfull", data: {} });
-                    });
-                })
+                emailClient.emailManager(config.adminEmail,config.text.subject,path,adminReplacements);
                 
+                await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
                 console.log(e)
@@ -277,7 +225,7 @@ export const createEmployeeByAdmin = (_body) => {
 }
 
 
- // >>>>>>> FUNC. >>>>>>> 
+// >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Verifying email address of a registered user
 export const checkCompanyByWorkMail = (_body) => {
     return new Promise((resolve, reject) => {
@@ -310,7 +258,7 @@ export const checkCompanyByWorkMail = (_body) => {
 }
 
 
- // >>>>>>> FUNC. >>>>>>>
+// >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>>>>>>Registration of a freelance employee,email verification
 export const createFreelancer = (_body) => {
     return new Promise((resolve, reject) => {
@@ -346,7 +294,7 @@ export const createFreelancer = (_body) => {
                 }
                 
                 // If email does not exist allow registration
-
+                
                 let uniqueId = nanoid();
                 const createFreelancerQuery = {
                     name: 'createEmployee',
@@ -355,48 +303,24 @@ export const createFreelancer = (_body) => {
                 }
                 await client.query(createFreelancerQuery);
                 
-                await client.query('COMMIT')                
-                var Name = _body.firstName + " " + _body.lastName
-                var companyName = _body.companyName
-                var emailAddress = _body.email
-                var number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
-                var verificationLink=_body.url+'/'+'create-password'+'/'+uniqueId
-                readHTMLFile('src/emailTemplates/applicationText.html', function(err, html) {
-                    var template = handlebars.compile(html);
-                    var replacements = {
-                        applicantName:Name,
-                        company:companyName,
-                        email:emailAddress,
-                        phoneNumber:number
-                    };
-                    var htmlToSend = template(replacements);
-                    sendMail(config.adminEmail, config.text.subject, htmlToSend, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Database Error", data: {} });
-                            return;
-                        }
-                        console.log('Notification mail to admin has been sent !!!');
-                        // resolve({ code: 200, message: "User Approval Successfull", data: {} });
-                    });
-                })
-                readHTMLFile('src/emailTemplates/sendLinkText.html', function(err, html) {
-                    var template = handlebars.compile(html);
-                    var replacements = {
-                        applicantName:Name,
-                        link:verificationLink,
-                    };
-                    var htmlToSend = template(replacements);
-                    sendMail(loweremailId, config.text.userSubject, htmlToSend, function (err, data) {
-                        if (err) {
-                            console.log(err)
-                            reject({ code: 400, message: "Database Error", data: {} });
-                            return;
-                        }
-                        console.log('Verification link has been sent to the user !!!');
-                        // resolve({ code: 200, message: "User Approval Successfull", data: {} });
-                    });
-                })
+                await client.query('COMMIT')
+                let Name = _body.firstName + " " + _body.lastName
+                let companyName = _body.companyName
+                let emailAddress = _body.email
+                let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
+                let verificationLink=_body.url+'/create-password/'+uniqueId;
+                
+                let adminReplacement = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number};
+                let path = 'src/emailTemplates/applicationText.html';
+                
+                emailClient.emailManager(config.adminEmail,config.text.subject,path,adminReplacement);
+                let freelancerReplacements = {
+                    applicantName:Name,
+                    link:verificationLink,
+                };
+                
+                path ='src/emailTemplates/sendLinkText.html';
+                emailClient.emailManager(loweremailId,config.text.userSubject,path,freelancerReplacements);
                 
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
@@ -413,7 +337,7 @@ export const createFreelancer = (_body) => {
 }
 
 
- // >>>>>>> FUNC. >>>>>>>
+// >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>>>>>>Password reset for freelancer  
 export const resetFreelancerToken = (_body) => {
     return new Promise((resolve, reject) => {
@@ -431,36 +355,27 @@ export const resetFreelancerToken = (_body) => {
                 }
                 
                 let result = await client.query(resetToken);
-            
+                
                 await client.query('COMMIT')
                 if(Array.isArray(result.rows) && ![undefined,null].includes((result.rows[0])) && ![undefined,null].includes(result.rows[0].employee_id))
-                    {
-                        let companyId=result.rows[0].company_id
-                        var emailAddress=result.rows[0].email
-                        var firstName=result.rows[0].firstname
-                        var lastName=result.rows[0].lastname
-                        const message = `A new employee, ${firstName + ' ' + lastName}  has been registered with us as a freelancer.`
-                        readHTMLFile('src/emailTemplates/resetConfirmationText.html', function(err, html) {
-                            var template = handlebars.compile(html);
-                            var replacements = {
-                            };
-                            var htmlToSend = template(replacements);
-                            sendMail(emailAddress, config.text.resetConfirmSubject, htmlToSend, function (err, data) {
-                                if (err) {
-                                    console.log(err)
-                                    reject({ code: 400, message: "Database Error", data: {} });
-                                    return;
-                                }
-                                console.log('Confirmation mail has been sent to the !!!');
-                                createNotification({companyId:companyId,message:message, notificationType: 'employee'})
-
-                            });
-                        })
+                {
+                    let companyId=result.rows[0].company_id
+                    let emailAddress=result.rows[0].email
+                    let firstName=result.rows[0].firstname
+                    let lastName=result.rows[0].lastname
+                    let replacements = {
+                    };
+                    let path = 'src/emailTemplates/resetConfirmationText.html';
+                    const message = `A new employee, ${firstName + ' ' + lastName}  has been registered with us as a freelancer.`
+                    
+                    emailClient.emailManager(emailAddress,config.text.resetConfirmSubject,path,replacements);
+                    createNotification({companyId:companyId,message:message, notificationType: 'employee'})
+                    
                     resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {} });
-                    }
+                }
                 else
-                    reject({ code: 400, message: "Invalid token id or token expired", data: {} });
-
+                reject({ code: 400, message: "Invalid token id or token expired", data: {} });
+                
             } catch (e) {
                 console.log("Error e1: ",e );
                 await client.query('ROLLBACK')
