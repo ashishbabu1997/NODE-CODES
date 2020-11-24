@@ -1222,7 +1222,6 @@ export const getCandidateDetails = (_body) => {
     
     export const modifySkill = (_body) => {
         return new Promise((resolve, reject) => {
-            const currentTime = Math.floor(Date.now() / 1000);
             (async () => {
                 const client = await database()
                 try {
@@ -1252,14 +1251,14 @@ export const getCandidateDetails = (_body) => {
                     resolve({ code: 200, message: "Candidate Skill updated successfully", data: {} });
                     
                 } catch (e) {
-                    console.log(e)
+                    console.log('Error 1 : ',e)
                     await client.query('ROLLBACK')
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
                 } finally {
                 }
             })().catch(e => {
-                console.log(e)
-                reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                console.log('Error 2 : ',e)
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
             })
         })
     }
