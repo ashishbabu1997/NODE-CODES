@@ -260,7 +260,7 @@ export const checkCompanyByWorkMail = (_body) => {
 
 
 // >>>>>>> FUNC. >>>>>>>
-//>>>>>>>>>>>>>>>>>>Registration of a freelance employee,email verification
+// >>>>>>>>>>>>>>>>>>Registration of a freelance employee,email verification
 export const createFreelancer = (_body) => {
     return new Promise((resolve, reject) => {
         const loweremailId = _body.email.toLowerCase()

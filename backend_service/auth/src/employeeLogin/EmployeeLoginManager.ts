@@ -32,7 +32,7 @@ export const employeeLoginMethod = (_body) => {
                 
                 if (data.length > 0) {
                     const value = data[0];
-                    let candidateId = null;
+                    let candidateId = null,candidateStatus=null;
                     const token = jwt.sign({
                         employeeId: value.employeeId.toString(),
                         companyId: value.companyId.toString(),
@@ -50,6 +50,7 @@ export const employeeLoginMethod = (_body) => {
                         
                         let candidateResult = await client.query(candidateQuery);
                         candidateId = candidateResult.rows[0].candidate_id;
+                        candidateStatus = candidateResult.rows[0].candidate_status;
                     }
                     await client.query('COMMIT')
                     // On success, user bearer token holding his/her companyId,userRoleId and employeeId; plus other details
@@ -58,7 +59,7 @@ export const employeeLoginMethod = (_body) => {
                         code: 200, message: "Login successful", data: {
                             token: `Bearer ${token}`,
                             companyName: value.companyName, companyLogo: value.companyLogo,
-                            candidateId ,  
+                            candidateId ,  candidateStatus,
                             email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,
                             masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile,userRoleId:value.userRoleId
                         }
