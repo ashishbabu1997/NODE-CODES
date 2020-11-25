@@ -309,7 +309,7 @@ export const createFreelancer = (_body) => {
                 let companyName = _body.companyName
                 let emailAddress = _body.email
                 let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
-                let verificationLink=_body.url+'/create-password/'+uniqueId;
+                let verificationLink=_body.host+'/create-password/'+uniqueId;
                 
                 let adminReplacement = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number};
                 let path = 'src/emailTemplates/applicationText.html';
