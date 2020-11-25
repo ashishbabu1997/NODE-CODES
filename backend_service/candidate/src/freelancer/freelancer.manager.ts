@@ -81,7 +81,7 @@ export const modifyOtherInfoAndSubmit = (_body) => {
                 await client.query(queryService.addDefaultTraits(_body));
                 await client.query(queryService.addSkillRelatedTraits(_body));
                 await client.query(queryService.modifySocialProfileAndStatusUpdate(_body));
-                
+                await client.query(queryService.candidateStatusUpdate(_body));
                 await client.query('COMMIT');
                 
                 resolve({ code: 200, message: "Freelancer other info updated and submitted successfully", data: {} });

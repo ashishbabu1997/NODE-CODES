@@ -381,3 +381,12 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateId, _body.employeeId, currentTime],
         }
     }
+    
+    export const candidateStatusUpdate = (_body) => {
+        return {
+            name: 'update-candidate-status',
+            text: freelancerQuery.updateCandidateStatus,
+            values: [_body.candidateId, _body.employeeId, currentTime],
+        }
+    }
+    
