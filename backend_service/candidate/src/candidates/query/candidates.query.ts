@@ -69,5 +69,5 @@ export default {
     addResumeShare : 'insert into candidate_resume_share (candidate_id, unique_key, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$3,$4,$4) on conflict (candidate_id) do nothing',
     fetchResumeDatafromUniqueId : 'select candidate_id from candidate_resume_share where unique_key like $1',
     codeTestLinkUpdate:'UPDATE candidate SET code_test_link=$2, code_test_status=$3, updated_by = $4, updated_on = $5 WHERE candidate_id = $1',
-    interviewTestLinkUpdate:'UPDATE candidate SET interview_test_link=$2, interview_test_status=$3, updated_by = $4, updated_on = $5 WHERE candidate_id = $1',
+    interviewTestLinkUpdate:'UPDATE candidate SET interview_test_link=$2, interview_test_status=$3, updated_by = $4, updated_on = $5 WHERE candidate_id = $1', 
 }
