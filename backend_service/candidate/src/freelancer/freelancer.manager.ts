@@ -16,8 +16,9 @@ export const listJobs = (_body) => {
                 if(![null,undefined,''].includes(_body.filterSkillId))
                 {
                     filterQuery='HAVING $skillid = ANY(ARRAY_AGG(s.skill_id))'
-                    queryValues = Object.assign({skillid:_body.filterSkillId})
+                    queryValues = Object.assign({skillid:_body.filterSkillId},queryValues)
                 }
+
                 if(![null,undefined,''].includes(_body.searchKey))
                 {
                     queryValues.search = '%'+_body.searchKey+'%';
