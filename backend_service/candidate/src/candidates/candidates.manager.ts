@@ -518,10 +518,6 @@ export const getCandidateDetails = (_body) => {
                             {
                                 algorithmLink=element.link
                             }
-                            else if (element.type == 'programmingTestLink')
-                            {
-                                programmingLink=element.link
-                            }
                             else if (element.type == 'interviewLink')
                             {
                                 interviewLink=element.link
@@ -533,7 +529,7 @@ export const getCandidateDetails = (_body) => {
                     const insertLinks = {
                         name: 'insert-assessment-links',
                         text: candidateQuery.updateAssesmentLinks,
-                        values: [_body.candidateId,algorithmLink,programmingLink,interviewLink],
+                        values: [_body.candidateId,algorithmLink,interviewLink],
                     }
                     promise.push(client.query(insertLinks));
                     const results = await Promise.all(promise);
@@ -692,16 +688,6 @@ export const getCandidateDetails = (_body) => {
                         promise.push(client.query(linkCandidateQuery));
                     });
                     
-                    candidateList.forEach(element => {
-                        
-                        // Update the seller rate.
-                        const updateSellerRate = {
-                            name: 'update-seller-rate',
-                            text: candidateQuery.updateSellerRate,
-                            values: [element.candidateId, element.sellerFee, _body.employeeId, currentTime],
-                        }
-                        promise.push(client.query(updateSellerRate));
-                    });
                     await Promise.all(promise);
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
@@ -1248,7 +1234,6 @@ export const getCandidateDetails = (_body) => {
                     var assesmentLinksList=
                     [
                         { type:"algorithmTestLink",name:"Algorithm Test Link",link: assesementsLinks.rows[0].algorithm_test_link },
-                        { type:"programmingTestLink",name:"Programming Test Link",link: assesementsLinks.rows[0].programming_test_link },
                         { type:"interviewLink",name:"Interview Link",link: assesementsLinks.rows[0].interview_link }
                     ]
                     
@@ -1408,3 +1393,30 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }  
+
+
+    
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>> Update code and interview test to database
+    export const updateTestResults = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database().connect()
+                try {
+                    if((_body.codeTest || _body.interviewTest) !=null ||(_body.codeTest || _body.interviewTest) !=undefined)
+                    {
+                        await client.query(queryService.updateTestResults(_body));
+                        resolve({ code: 200, message: "Candidate test results updated successfully", data: _body.uniqueId });
+                    }
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data:e.message })
+            })
+        })
+    }

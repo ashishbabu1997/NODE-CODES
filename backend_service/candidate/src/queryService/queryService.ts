@@ -390,3 +390,11 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
+    export const updateTestResults =(_body)=> {
+        return {
+            name: 'update-results',
+            text: candidateQuery.testResultUpdate,
+            values: [_body.candidateId,_body.codeTest,_body.interviewTest],
+        }
+    }
+    
