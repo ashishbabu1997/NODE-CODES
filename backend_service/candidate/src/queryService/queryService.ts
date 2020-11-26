@@ -271,6 +271,22 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [candidateId]
         }
     }
+
+    export const updateCodeTestLinks =(_body)=> {
+        return {
+            name: 'update-code-test',
+            text: candidateQuery.codeTestLinkUpdate,
+            values: [_body.candidateId,_body.codeTestLink,_body.codeTestStatus,_body.employeeId,currentTime],
+        }
+    }
+    
+    export const updateInterviewTestLinks =(_body)=> {
+        return {
+            name: 'update-interview-test',
+            text: candidateQuery.interviewTestLinkUpdate,
+            values: [_body.candidateId,_body.interviewTestLink,_body.interviewTestStatus,_body.employeeId,currentTime],
+        }
+    }
     
     export const fetchWorkExperience =(candidateId)=> {
         return {
@@ -389,12 +405,3 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateId, _body.employeeId, currentTime],
         }
     }
-    
-    export const updateTestResults =(_body)=> {
-        return {
-            name: 'update-results',
-            text: candidateQuery.testResultUpdate,
-            values: [_body.candidateId,_body.codeTest,_body.interviewTest],
-        }
-    }
-    

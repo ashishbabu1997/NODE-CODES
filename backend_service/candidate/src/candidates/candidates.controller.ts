@@ -1,4 +1,4 @@
-import { getCandidateDetails,modifySkill,fetchResumeData,modifyResumeFile,addResumeShareLink,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience } from './candidates.manager';
+import { getCandidateDetails,updateTestResults,modifySkill,fetchResumeData,modifyResumeFile,addResumeShareLink,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience } from './candidates.manager';
 import sendResponse from '../common/response/response';
 
 export const candidateDetails = (req, res) => {
@@ -33,6 +33,15 @@ export const candidateReview = (req, res) => {
     addCandidateReview(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
 }
+
+
+export const updateAssesmentLinkAndStatus = (req, res) => {
+    const body = req.body;
+    updateTestResults(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
+}
+
+
 export const candidateVettingStatus = (req, res) => {
     const body = req.body;
     editVettingStatus(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))

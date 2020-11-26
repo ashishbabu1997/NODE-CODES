@@ -481,9 +481,6 @@ export const getCandidateDetails = (_body) => {
     export const addCandidateReview = (_body) => {
         return new Promise((resolve, reject) => {
             const data = _body.assessmentTraits;
-            var algorithmLink;
-            var programmingLink;
-            var interviewLink;
             const currentTime = Math.floor(Date.now() / 1000);
             let promise = [];
             (async () => {
@@ -509,30 +506,7 @@ export const getCandidateDetails = (_body) => {
                         promise.push(client.query(candidateDetails));
                     });
                     
-                    
-                    // Check for the test links 
-                    if (Array.isArray(_body.assesmentLink))
-                    {
-                        _body.assesmentLink.forEach(element => { 
-                            if (element.type == 'algorithmTestLink')
-                            {
-                                algorithmLink=element.link
-                            }
-                            else if (element.type == 'interviewLink')
-                            {
-                                interviewLink=element.link
-                            }
-                        })
-                    }
-                    
-                    // Insert all the test links about the candidate
-                    const insertLinks = {
-                        name: 'insert-assessment-links',
-                        text: candidateQuery.updateAssesmentLinks,
-                        values: [_body.candidateId,algorithmLink,interviewLink],
-                    }
-                    promise.push(client.query(insertLinks));
-                    const results = await Promise.all(promise);
+                    await Promise.all(promise);
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });
                     
@@ -1215,7 +1189,7 @@ export const getCandidateDetails = (_body) => {
                     var skills=await client.query(queryService.fetchSkills(candidateId));
                     var projects=await client.query(queryService.fetchProjects(candidateId));
                     var assesements=await client.query(queryService.fetchAssesements(candidateId));
-                    var assesementsLinks=await client.query(queryService.fetchAssesementsLinks(candidateId));
+                    var assesmentLink=await client.query(queryService.fetchAssesementsLinks(candidateId));
                     var workExperiences=await client.query(queryService.fetchWorkExperience(candidateId));
                     var educations=await client.query(queryService.fetchEducations(candidateId));
                     var socialProfileDetails=await client.query(queryService.fetchSocialProfile(candidateId));
@@ -1231,11 +1205,7 @@ export const getCandidateDetails = (_body) => {
                     companyJson = Object.assign({0:'On personal capacity'},companyJson);
                     workExperiences.rows.forEach(element => { companyJson[element.candidateWorkExperienceId]=element.companyName });
                     
-                    var assesmentLinksList=
-                    [
-                        { type:"algorithmTestLink",name:"Algorithm Test Link",link: assesementsLinks.rows[0].algorithm_test_link },
-                        { type:"interviewLink",name:"Interview Link",link: assesementsLinks.rows[0].interview_link }
-                    ]
+                    
                     
                     if (Array.isArray(projects.rows))
                     {
@@ -1308,7 +1278,7 @@ export const getCandidateDetails = (_body) => {
                         skills:skills.rows,
                         projects:projectArray,
                         assesments:assesements.rows,
-                        assesmentLink:assesmentLinksList,
+                        assesmentLink:assesmentLink.rows[0],
                         assesementComment,
                         workExperience:workExperiences.rows,
                         education:educations.rows,
@@ -1403,11 +1373,21 @@ export const getCandidateDetails = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-                    if((_body.codeTest || _body.interviewTest) !=null ||(_body.codeTest || _body.interviewTest) !=undefined)
+                    switch(_body.type)
                     {
-                        await client.query(queryService.updateTestResults(_body));
-                        resolve({ code: 200, message: "Candidate test results updated successfully", data: _body.uniqueId });
+                        case 'codeTest':
+                            await client.query(queryService.updateCodeTestLinks(_body));
+                            break;
+                        case 'interviewTest':
+                            await client.query(queryService.updateInterviewTestLinks(_body));
+                            break;
+                        default:
+                             reject({ code: 400, message: "Assessment test link type not found", data: {} });
+                             return;
                     }
+
+                    resolve({ code: 200, message: "Assesment links and status updated succesfully", data:{} });
+
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')

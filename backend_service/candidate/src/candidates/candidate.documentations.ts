@@ -894,6 +894,55 @@
 *         description: Server down
 */
 
+/**
+* @swagger
+* /candidates/updateAssesmentLinkAndStatus:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Update assessment links and status
+*     description:  type ('codeTest','interviewTest') when type is codeTest interviewTestLink & interviewTestStatus is not required and vice versa
+*     summary: Edit candidate assesment links and test realted status
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer
+*             type:
+*               type: string
+*               description: codeTest or interviewTest
+*             codeTestLink:
+*               type: string
+*             codeTestStatus:
+*               type: integer
+*               description: by default will be null, 1 -> completed
+*             interviewTestLink:
+*               type: string
+*             interviewTestStatus:
+*               type: integer
+*               description: by default will be null, 1 -> completed, 2 -> interview scheduled
+*           required: [candidateId,type]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
 
 /**
 * @swagger
