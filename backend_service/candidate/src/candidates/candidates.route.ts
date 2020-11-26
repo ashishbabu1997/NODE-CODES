@@ -38,5 +38,5 @@ router
     .put('/updateOverallWorkExperience',jwtAuth, setData(),validate(profileDetailSchema), WorkExperience)
     .get('/resume',jwtAuth, setData(), resumeDetails)
     .get('/resumeShareLink',jwtAuth, setData(), resumeShareLink)
-    .get('/sharedResumeData',sharedResumeData)
+    .get('/sharedResumeData',sharedResumeData) 
 export default router;
