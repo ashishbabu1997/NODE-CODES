@@ -1179,6 +1179,7 @@ export const getCandidateDetails = (_body) => {
             const candidateId = _body.candidateId;
             
             var projectArray=[];
+            var assesmentArray=[]
             const currentTime = Math.floor(Date.now() / 1000);
             (async () => {
                 const client = await database().connect()
@@ -1205,8 +1206,24 @@ export const getCandidateDetails = (_body) => {
                     companyJson = Object.assign({0:'On personal capacity'},companyJson);
                     workExperiences.rows.forEach(element => { companyJson[element.candidateWorkExperienceId]=element.companyName });
                     
-                    
-                    
+                          
+                    if (Array.isArray(assesements.rows))
+                    {
+                        assesements.rows.forEach(element => {
+                            assesmentArray.push({
+                                candidateAssesmentId:element.candidateAssesmentId,
+                                candidateId:element.candidateId,
+                                assesmentComment:element.assesmentComment,
+                                rating:element.rating,
+                                assementType:element.assementType,
+                                isLinkAvailable:element.isLinkAvailable,
+                                link: element.isLinkAvailable ? element.assesementComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestLink : assesmentLink.rows[0].interviewTestLink : "",
+                                status: element.isLinkAvailable ? element.assesementComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestStatus : assesmentLink.rows[0].interviewTestStatus : ""
+                            })
+                            
+                        });
+                    }
+                   
                     if (Array.isArray(projects.rows))
                     {
                         projects.rows.forEach(element => {
@@ -1262,9 +1279,7 @@ export const getCandidateDetails = (_body) => {
                         typeOfAvailability : allProfileDetails.rows[0].typeOfAvailability,
                         readyToStart : allProfileDetails.rows[0].readyToStart
                     }
-                    
                     let assesementComment = allProfileDetails.rows[0].assessmentComment;
-                    
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Resume listed successfully", 
                     data: 
@@ -1277,7 +1292,7 @@ export const getCandidateDetails = (_body) => {
                         candidateCloudProficiency:cloudProficiencyDetails.rows,
                         skills:skills.rows,
                         projects:projectArray,
-                        assesments:assesements.rows,
+                        assesments:assesmentArray,
                         assesmentLink:assesmentLink.rows[0],
                         assesementComment,
                         workExperience:workExperiences.rows,
