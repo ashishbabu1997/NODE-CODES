@@ -276,7 +276,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'update-code-test',
             text: candidateQuery.codeTestLinkUpdate,
-            values: [_body.candidateId,_body.codeTestLink,_body.codeTestStatus,_body.employeeId,currentTime],
+            values: [_body.candidateId,_body.link,_body.status,_body.employeeId,currentTime],
         }
     }
     
@@ -284,7 +284,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'update-interview-test',
             text: candidateQuery.interviewTestLinkUpdate,
-            values: [_body.candidateId,_body.interviewTestLink,_body.interviewTestStatus,_body.employeeId,currentTime],
+            values: [_body.candidateId,_body.link,_body.status,_body.employeeId,currentTime],
         }
     }
     

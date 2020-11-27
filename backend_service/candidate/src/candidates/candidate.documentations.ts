@@ -920,16 +920,11 @@
 *             type:
 *               type: string
 *               description: codeTest or interviewTest
-*             codeTestLink:
+*             link:
 *               type: string
-*             codeTestStatus:
+*             status:
 *               type: integer
-*               description: by default will be null, 1 -> completed
-*             interviewTestLink:
-*               type: string
-*             interviewTestStatus:
-*               type: integer
-*               description: by default will be null, 1 -> completed, 2 -> interview scheduled
+*               description: by default will be null.For codeTest,status will be 1.For interview test,it will be 1-scheduled,2-completed
 *           required: [candidateId,type]
 *     responses:
 *       200:
