@@ -1217,12 +1217,12 @@ export const getCandidateDetails = (_body) => {
                                 rating:element.rating,
                                 assementType:element.assementType,
                                 isLinkAvailable:element.isLinkAvailable,
-                                link: element.isLinkAvailable ? element.assesementComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestLink : assesmentLink.rows[0].interviewTestLink : "",
-                                status: element.isLinkAvailable ? element.assesementComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestStatus : assesmentLink.rows[0].interviewTestStatus : ""
+                                link: element.isLinkAvailable ? element. assesmentComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestLink : assesmentLink.rows[0].interviewTestLink : "",
+                                status: element.isLinkAvailable ? element. assesmentComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestStatus : assesmentLink.rows[0].interviewTestStatus : ""
                             })
                             
                         });
-                    }
+                    }                    
                    
                     if (Array.isArray(projects.rows))
                     {
