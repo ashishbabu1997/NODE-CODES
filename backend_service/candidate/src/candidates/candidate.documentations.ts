@@ -1104,3 +1104,36 @@
 *       500:
 *         description: Server down
 */
+
+/**
+* @swagger
+* /candidates/getAssesmentLinks:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Fetch assesment links
+*     summary: Fetch all the assesment links of the candidate
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*         required:
+*           type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

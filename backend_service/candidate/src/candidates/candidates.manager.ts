@@ -1415,3 +1415,24 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
+    export const getAssesmentLinks = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database().connect()
+                try {
+                    var candidateId=_body.candidateId
+                    var assesmentLink=await client.query(queryService.fetchAssesementsLinks(candidateId));
+                    resolve({ code: 200, message: "Assesment links listed succesfully", data:{assesmentLinks:assesmentLink} });
+
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data:e.message })
+            })
+        })
+    }
