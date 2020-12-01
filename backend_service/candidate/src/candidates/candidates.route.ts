@@ -1,4 +1,4 @@
-import { candidateDetails,updateSkill,updateAssesmentLinkAndStatus,updateCloudProficiency,sharedResumeData,resumeShareLink,updateSocialProfile, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience,fetchAssesmentLinks } from './candidates.controller';
+import { candidateDetails,resumeSharedEmails,updateSkill,updateAssesmentLinkAndStatus,updateCloudProficiency,sharedResumeData,resumeShareLink,updateSocialProfile, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience,fetchAssesmentLinks } from './candidates.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import approveRejectSchema from './schemas/approveRejectSchema';
@@ -37,7 +37,8 @@ router
     .put('/updateResumeFile',jwtAuth,setData(),validate(profileDetailSchema),updateResumeFile)
     .put('/updateOverallWorkExperience',jwtAuth, setData(),validate(profileDetailSchema), WorkExperience)
     .get('/resume',jwtAuth, setData(), resumeDetails)
-    .get('/resumeShareLink',jwtAuth, setData(), resumeShareLink)
+    .get('/resumeSharedEmails',resumeSharedEmails)
+    .post('/resumeShareLink',resumeShareLink)
     .get('/sharedResumeData',sharedResumeData)
     .get('/getAssesmentLinks',jwtAuth, setData(), fetchAssesmentLinks)
 

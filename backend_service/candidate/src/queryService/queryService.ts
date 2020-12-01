@@ -347,11 +347,26 @@ export const insertCandidatePublicationQuery = (_body) => {
     // *******************************************************************************************************************************//
     // -------------------------------------------Resume share queries-------------------------------------------------//
     
+    export const getSharedEmails =(_body)=> {
+        return {
+            name: 'fetch-shared-emails',
+            text: candidateQuery.getSharedEmails,
+            values: [_body.candidateId],
+        }
+    }
+
     export const addResumeShare =(_body)=> {
         return {
             name: 'add-resume-share',
             text: candidateQuery.addResumeShare,
-            values: [_body.candidateId,_body.uniqueId,_body.employeeId,currentTime],
+            values: [_body.candidateId,_body.uniqueId,_body.sharedEmails,_body.employeeId,currentTime],
+        }
+    }
+    export const getDomainFromEmployeeId = (_body)=> {
+        return {
+            name: 'fetch-domain-from-employeeid',
+            text: candidateQuery.getDomainFromEmployeeId,
+            values: [_body.employeeId],
         }
     }
     
@@ -402,6 +417,6 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'update-candidate-status',
             text: freelancerQuery.updateCandidateStatus,
-            values: [_body.candidateId, _body.employeeId, currentTime],
+            values: [_body.candidateId, _body.employeeId, currentTime, _body.candidateStatus],
         }
     }

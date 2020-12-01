@@ -70,7 +70,7 @@ export const modifyOtherInfoAndSubmit = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                
+                _body.candidateStatus = 9; 
                 
                 _body.idSet = Array.isArray(_body.cloudProficiency)?_body.cloudProficiency.map(a => a.cloudProficiencyId).filter(Number):false;
                 if(_body.idSet)
@@ -79,13 +79,38 @@ export const modifyOtherInfoAndSubmit = (_body) => {
                     await client.query(queryService.insertCandidateCloudQuery(_body));
                 }
                 
-                await client.query(queryService.addDefaultTraits(_body));
-                await client.query(queryService.addSkillRelatedTraits(_body));
                 await client.query(queryService.modifySocialProfileAndStatusUpdate(_body));
                 await client.query(queryService.candidateStatusUpdate(_body));
                 await client.query('COMMIT'); 
                 
-                resolve({ code: 200, message: "Freelancer other info updated and submitted successfully", data: {} });
+                resolve({ code: 200, message: "Freelancer other info updated and finished successfully", data: {} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+export const submitFreelancerProfile = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                _body.candidateStatus = 3; 
+                
+                await client.query(queryService.addDefaultTraits(_body));
+                await client.query(queryService.addSkillRelatedTraits(_body));
+                await client.query(queryService.candidateStatusUpdate(_body));
+                await client.query('COMMIT'); 
+                
+                resolve({ code: 200, message: "Freelancer submitted successfully", data: {} });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
