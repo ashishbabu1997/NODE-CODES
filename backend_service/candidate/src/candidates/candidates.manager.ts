@@ -342,12 +342,12 @@ export const getCandidateDetails = (_body) => {
                             subj = "Candidate Selection Mail";
                             let path = 'src/emailTemplates/selectionMailText.html';
                             let adminReplacements = {
-                                        fName: firstName,
-                                        lName: lastName,
-                                        cName: companyName,
-                                        pName: positionName
-                                    };
-            
+                                fName: firstName,
+                                lName: lastName,
+                                cName: companyName,
+                                pName: positionName
+                            };
+                            
                             emailClient.emailManager(config.adminEmail,subj,path,adminReplacements);
                         }
                     } else {
@@ -367,11 +367,11 @@ export const getCandidateDetails = (_body) => {
                             subj = "Candidate Rejection Mail";
                             let path = 'src/emailTemplates/rejectionMailText.html';
                             let adminReplacements = {
-                                        fName: firstName,
-                                        lName: lastName,
-                                        cName: companyName,
-                                        pName: positionName
-                                    };
+                                fName: firstName,
+                                lName: lastName,
+                                cName: companyName,
+                                pName: positionName
+                            };
                             emailClient.emailManager(config.adminEmail,subj,path,adminReplacements);
                         }  
                     }
@@ -389,7 +389,7 @@ export const getCandidateDetails = (_body) => {
                     await client.query(updateQuery);
                     await client.query('COMMIT');
                     
-
+                    
                     // Function for notification to the  admin
                     _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
                     resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
@@ -453,13 +453,13 @@ export const getCandidateDetails = (_body) => {
                     var subject = "Request for Interview from " + hirerCompanyName;
                     let path = 'src/emailTemplates/interviewRequestMailText.html';
                     let adminReplacements = {
-                                hirerName: hirerCompanyName,
-                                firstName: candidateFirstName,
-                                lastName: candidateLastName,
-                                position: positionName,
-                                emailId: email,
-                                telephoneNumber: phoneNumber
-                            };
+                        hirerName: hirerCompanyName,
+                        firstName: candidateFirstName,
+                        lastName: candidateLastName,
+                        position: positionName,
+                        emailId: email,
+                        telephoneNumber: phoneNumber
+                    };
                     emailClient.emailManager(config.adminEmail,subject,path,adminReplacements);
                     resolve({ code: 200, message: "Interview request has been sent successfully", data: {} });
                 } catch (e) {
@@ -1206,7 +1206,7 @@ export const getCandidateDetails = (_body) => {
                     companyJson = Object.assign({0:'On personal capacity'},companyJson);
                     workExperiences.rows.forEach(element => { companyJson[element.candidateWorkExperienceId]=element.companyName });
                     
-                          
+                    
                     if (Array.isArray(assesements.rows))
                     {
                         assesements.rows.forEach(element => {
@@ -1223,7 +1223,7 @@ export const getCandidateDetails = (_body) => {
                             
                         });
                     }                    
-                   
+                    
                     if (Array.isArray(projects.rows))
                     {
                         projects.rows.forEach(element => {
@@ -1327,8 +1327,53 @@ export const getCandidateDetails = (_body) => {
                     if(!isNaN(_body.candidateId))
                     {
                         _body.uniqueId = nanoid();
-                        await client.query(queryService.addResumeShare(_body));
-                        resolve({ code: 200, message: "Candidate resume share link updated", data: _body.uniqueId });
+                        let sharedEmails=[],domain='';
+
+                        _body.employeeId=1;
+                        let domainResult = await client.query(queryService.getDomainFromEmployeeId(_body));
+                        domain = domainResult.rows[0].domain;
+
+                        let filteredEmails = _body.sharedEmails.filter((element)=> element.endsWith('@'+domain));
+                        _body.sharedEmails = filteredEmails;                        
+
+                        let result = await client.query(queryService.addResumeShare(_body));
+                        if(![null,undefined].includes(result.rows) && result.rows.length > 0)
+                        {
+                            _body.uniqueId = result.rows[0].unique_key;
+                            sharedEmails = result.rows[0].shared_emails;
+                        }
+                        
+                        resolve({ code: 200, message: "Candidate resume share link updated", data: sharedEmails });
+                    }
+                    else
+                    {
+                        reject({ code: 400, message: "Invalid candidateId", data: {} });
+                    }
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data:e.message })
+            })
+        })
+    }
+
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>> Fetch shared emails for resume
+    export const getSharedEmails = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database().connect()
+                try {
+                    if(!isNaN(_body.candidateId))
+                    {
+                        let result = await client.query(queryService.getSharedEmails(_body));
+                        let sharedEmails = [undefined,null].includes(result.rows[0])?[]:result.rows[0].sharedEmails;
+                        resolve({ code: 200, message: "Candidate shared emails retrieved", data: sharedEmails });
                     }
                     else
                     {
@@ -1378,8 +1423,8 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }  
-
-
+    
+    
     
     // >>>>>>> FUNC. >>>>>>>
     //>>>>>>>> Update code and interview test to database
@@ -1391,18 +1436,18 @@ export const getCandidateDetails = (_body) => {
                     switch(_body.type)
                     {
                         case 'codeTest':
-                            await client.query(queryService.updateCodeTestLinks(_body));
-                            break;
+                        await client.query(queryService.updateCodeTestLinks(_body));
+                        break;
                         case 'interviewTest':
-                            await client.query(queryService.updateInterviewTestLinks(_body));
-                            break;
+                        await client.query(queryService.updateInterviewTestLinks(_body));
+                        break;
                         default:
-                             reject({ code: 400, message: "Assessment test link type not found", data: {} });
-                             return;
+                        reject({ code: 400, message: "Assessment test link type not found", data: {} });
+                        return;
                     }
-
+                    
                     resolve({ code: 200, message: "Assesment links and status updated succesfully", data:{} });
-
+                    
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
@@ -1423,7 +1468,7 @@ export const getCandidateDetails = (_body) => {
                     var candidateId=_body.candidateId
                     var assesmentLink=await client.query(queryService.fetchAssesementsLinks(candidateId));
                     resolve({ code: 200, message: "Assesment links listed succesfully", data:{assesmentLinks:assesmentLink} });
-
+                    
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')

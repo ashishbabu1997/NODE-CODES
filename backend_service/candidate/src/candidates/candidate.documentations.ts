@@ -118,6 +118,81 @@
 
 /**
 * @swagger
+* /candidates/resumeSharedEmails:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Fetch emails shared for a resume
+*     summary: Fetch all emails the resume have been shared to
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*         required:
+*           type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/resumeShareLink:
+*   post:
+*     tags:
+*       - Candidates
+*     name: Share resume link
+*     summary: Generate a sharable link for resumes for shared emails.
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer            
+*             sharedEmails:
+*               type: array
+*               items:
+*                 type: string
+*           required:
+*             - candidateId
+*             - sharedEmails
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /candidates/candidateApproveReject:
 *   post:
 *     tags:
@@ -977,6 +1052,7 @@
 *       500:
 *         description: Server down
 */
+
 
 
 /**

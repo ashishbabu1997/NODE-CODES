@@ -34,6 +34,36 @@
 
 /**
 * @swagger
+* /freelancer/getCandidateStatuses:
+*   get:
+*     tags:
+*       - Freelancer
+*     name: List candidate status
+*     summary: list candidate vetted and candidate status
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*           type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /freelancer/updateGeneralInfo:
 *   put:
 *     tags:
@@ -109,8 +139,8 @@
 *   put:
 *     tags:
 *       - Freelancer
-*     name: Update other info and submit profile
-*     summary: Edit other info and submit profile
+*     name: Update other info and finish profile
+*     summary: Edit other info and finish profile
 *     security:
 *       - bearerAuth: []
 *     consumes:
@@ -162,21 +192,27 @@
 
 /**
 * @swagger
-* /freelancer/getCandidateStatuses:
-*   get:
+* /freelancer/submitFreelancerProfile:
+*   put:
 *     tags:
 *       - Freelancer
-*     name: List candidate status
-*     summary: list candidate vetted and candidate status
+*     name: Submit freelancer profile
+*     summary: Submit freelancer profile
+*     security:
+*       - bearerAuth: []
 *     consumes:
 *       - application/json
 *     produces:
 *       - application/json
 *     parameters:
-*       - in: query
-*         name: candidateId
+*       - name: body
+*         in: body
 *         schema:
-*           type: integer
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer
+*           required: [candidateId]
 *     responses:
 *       200:
 *         description: Api success
