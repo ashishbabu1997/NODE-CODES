@@ -389,3 +389,42 @@ export const resetFreelancerToken = (_body) => {
         
     })
 }
+
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>>>>>Password reset for freelancer  
+export const tokenCheck = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now());        
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                const checkToken = {
+                    name: 'check-token',
+                    text: employeeQuery.checkTokenExistance,
+                    values: {token:_body.token},
+                }
+                
+                let result = await client.query(checkToken);
+                
+                await client.query('COMMIT')
+                if(result.rowCount==1)
+                {
+                    resolve({ code: 200, message: "Token Expired", data: {} });
+                }
+                else{
+                    reject({ code: 400, message: "Failed", data: {} })
+                }
+            } catch (e) {
+                console.log("Error e1: ",e );
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error e2: ",e );
+            reject({ code: 400, message: "Failed. Please try again.", data: {e} })
+        })
+        
+    })
+}

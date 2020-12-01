@@ -1,4 +1,4 @@
-import { addEmployee,addEmployeeByAdmin,resetToken,addFreelancer,getCompanyByEmail } from './employee.controller';
+import { addEmployee,addEmployeeByAdmin,resetToken,addFreelancer,getCompanyByEmail,checkVerificationLink } from './employee.controller';
  import * as express from 'express';
  import validate from './middleware/validation';
  import {companyRegistrationSchema,freelancerSchema,tokenSchema} from './schema/create.schema';
@@ -13,5 +13,7 @@ router
     .post('/freelancer/setTokenAndPassword', validate(tokenSchema), resetToken)
     .get('/getCompanyByEmail', getCompanyByEmail)
     .post('/addEmployeeByAdmin',jwtAuth, setData(), validate(companyRegistrationSchema), addEmployeeByAdmin)
+    .get('/verifyToken', checkVerificationLink)
+
 export default router;
 

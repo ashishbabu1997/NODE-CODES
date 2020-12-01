@@ -159,3 +159,33 @@
 *       500:
 *         description: Server down
 */
+
+/**
+* @swagger
+* /freelancer/getCandidateStatuses:
+*   get:
+*     tags:
+*       - Freelancer
+*     name: List candidate status
+*     summary: list candidate vetted and candidate status
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*           type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

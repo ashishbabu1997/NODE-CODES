@@ -1,4 +1,4 @@
-import {createEmployee,resetFreelancerToken,checkCompanyByWorkMail,createEmployeeByAdmin,createFreelancer } from './employee.manager';
+import {createEmployee,resetFreelancerToken,checkCompanyByWorkMail,createEmployeeByAdmin,createFreelancer,tokenCheck } from './employee.manager';
 import sendResponse from './common/response/response';
 import response from './common/response/response';
 
@@ -41,6 +41,14 @@ export const addEmployeeByAdmin = (req, res) => {
 export const getCompanyByEmail = (req, res) => {
     const body = req.query;
     checkCompanyByWorkMail(body).then((response: any) => {
+        sendResponse(res, response.code, 1,202, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0,error.statusCode, error.message, error.data)
+    })
+}
+export const checkVerificationLink = (req, res) => {
+    const body = req.query;
+    tokenCheck(body).then((response: any) => {
         sendResponse(res, response.code, 1,202, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0,error.statusCode, error.message, error.data)

@@ -98,3 +98,27 @@ export const modifyOtherInfoAndSubmit = (_body) => {
         })
     })
 }
+
+
+
+export const getFreelancerStatus = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+             
+                var result=await client.query(queryService.getCandidateStatuses(_body));
+                resolve({ code: 200, message: "Candidate status listed successfully", data: {data:result.rows[0]} });
+            } catch (e) {
+                console.log("Error raised from try : ",e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            console.log("Error raised from async : ",e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}

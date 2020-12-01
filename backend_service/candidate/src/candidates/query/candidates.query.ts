@@ -70,4 +70,6 @@ export default {
     fetchResumeDatafromUniqueId : 'select candidate_id from candidate_resume_share where unique_key like $1',
     codeTestLinkUpdate:'UPDATE candidate SET code_test_link=$2, code_test_status=$3, updated_by = $4, updated_on = $5 WHERE candidate_id = $1',
     interviewTestLinkUpdate:'UPDATE candidate SET interview_test_link=$2, interview_test_status=$3, updated_by = $4, updated_on = $5 WHERE candidate_id = $1', 
+    getStatus:'SELECT candidate_vetted as "candidateVetted",candidate_status as "candidateStatus" FROM candidate WHERE candidate_id=$1'
+
 }

@@ -26,3 +26,12 @@ export const updateOtherInfoAndSubmit = (req, res) => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)
     })
 }
+
+export const candidateStatus = (req, res) => {
+    const body = req.query;
+    freelancerManager.getFreelancerStatus(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}

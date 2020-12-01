@@ -8,4 +8,5 @@ export default {
     "resetPassword":"update employee set status=true,token=null,password=$pass where token like $token returning employee_id,company_id,email,firstname,lastname",
     "checkEmailForCompany":'SELECT c.company_name, c.company_id, e.admin_approve_status,e.account_type FROM company c left join employee e on c.company_id = e.company_id WHERE e.email ILIKE $1 order by e.created_on LIMIT 1',
     "getRegisteredEmail":"SELECT firstname,lastname,email FROM employee WHERE employee_id=$1",
+    "checkTokenExistance":"SELECT employee_id FROM employee WHERE token like $token"
 }

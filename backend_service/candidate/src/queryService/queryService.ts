@@ -405,3 +405,11 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateId, _body.employeeId, currentTime],
         }
     }
+
+    export const getCandidateStatuses = (_body) => {
+        return {
+            name: 'get-candidate-status',
+            text: candidateQuery.getStatus,
+            values:[_body.candidateId]
+        }
+    }
