@@ -4,6 +4,11 @@ export default {
     "http": {
         "port":4005
     },
+    "text":{
+
+        "submitProfileSubject":"Profile Submission Notification",
+        "shareEmailSubject":"ellow Resume Share Notification"
+    },
     "db": {
         "user": "devdb_user",
         "host": "52.66.51.51",

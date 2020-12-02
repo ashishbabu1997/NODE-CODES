@@ -1,8 +1,8 @@
 import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
-import { sendMail } from '../middlewares/mailer'
-import config from '../config/config';
-import { createNotification } from '../common/notifications/notifications';
+import * as emailClient from '../emailService/emailService';
+import config from '../config/config'
+
 
 
 export const listJobs = (_body) => {
@@ -104,12 +104,18 @@ export const submitFreelancerProfile = (_body) => {
             try {
                 await client.query('BEGIN');
                 _body.candidateStatus = 3; 
-                
                 await client.query(queryService.addDefaultTraits(_body));
                 await client.query(queryService.addSkillRelatedTraits(_body));
-                await client.query(queryService.candidateStatusUpdate(_body));
-                await client.query('COMMIT'); 
-                
+                var result=await client.query(queryService.candidateStatusUpdate(_body));
+                await client.query('COMMIT');
+                var firstName=result.rows[0].candidate_first_name
+                var lastName=result.rows[0].candidate_last_name
+                let replacements = {
+                    fName:firstName,
+                    lName:lastName
+                };
+                let path = 'src/emailTemplates/freelancerSubmitText.html';
+                emailClient.emailManager(config.adminEmail,config.text.submitProfileSubject,path,replacements);
                 resolve({ code: 200, message: "Freelancer submitted successfully", data: {} });
             } catch (e) {
                 console.log(e)

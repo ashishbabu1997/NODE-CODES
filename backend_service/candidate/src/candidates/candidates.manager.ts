@@ -1335,12 +1335,29 @@ export const getCandidateDetails = (_body) => {
 
                         let filteredEmails = _body.sharedEmails.filter((element)=> element.endsWith('@'+domain));
                         _body.sharedEmails = filteredEmails;                        
-
+                        var link=_body.host+'/shareResume'+_body.uniqueId
                         let result = await client.query(queryService.addResumeShare(_body));
+                        let results = await client.query(queryService.getNames(_body));
                         if(![null,undefined].includes(result.rows) && result.rows.length > 0)
                         {
                             _body.uniqueId = result.rows[0].unique_key;
                             sharedEmails = result.rows[0].shared_emails;
+
+                            if (Array.isArray(sharedEmails))
+                            {
+                                sharedEmails.forEach(element => {
+                                    var firstName=results.rows[0].first_name
+                                    var lastName=results.rows[0].last_name
+                                    let replacements = {
+                                        fName:firstName,
+                                        lName:lastName,
+                                        link:link
+                                    };
+                                    let path = 'src/emailTemplates/resumeShareText.html';
+                                    emailClient.emailManager(config.adminEmail,config.text.shareEmailSubject,path,replacements);
+                                    
+                                });
+                            } 
                         }
                         
                         resolve({ code: 200, message: "Candidate resume share link updated", data: sharedEmails });

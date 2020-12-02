@@ -74,4 +74,5 @@ export default {
     getSharedEmails : 'select shared_emails as "sharedEmails" from candidate_resume_share where candidate_id=$1',
     fetchResumeDatafromUniqueId : 'select candidate_id from candidate_resume_share where unique_key like $1',
     getDomainFromEmployeeId : 'select substring(email,\'[^@]+$\') as domain from employee where employee_id=$1',
+    getEmployeeName:'SELECT first_name,last_name FROM employee WHERE employee_id=$1'
 }

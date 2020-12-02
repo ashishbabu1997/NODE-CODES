@@ -428,3 +428,11 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId]
         }
     }
+
+    export const getNames =(_body)=> {
+        return {
+            name: 'get-employee-name',
+            text: candidateQuery.getEmployeeName,
+            values: [_body.employeeId],
+        }
+    }
