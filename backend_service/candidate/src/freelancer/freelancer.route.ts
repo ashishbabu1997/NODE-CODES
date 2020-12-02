@@ -9,6 +9,6 @@ router
 .get('/fetchJobList', jwtAuth, setData(),freelancerController.fetchJobLists)
 .put('/updateGeneralInfo',jwtAuth, setData(),validate(freelancerSchema.candidateIdSchema), freelancerController.updateGeneralInfo)
 .put('/updateOtherInfoAndSubmit',jwtAuth, setData(), freelancerController.updateOtherInfoAndSubmit)
-.put('/getCandidateStatuses',jwtAuth, setData(), freelancerController.candidateStatus)
+.get('/getCandidateStatuses',jwtAuth, setData(), freelancerController.candidateStatus)
 .put('/submitFreelancerProfile',jwtAuth, setData(), freelancerController.submitProfile)
 export default router;
