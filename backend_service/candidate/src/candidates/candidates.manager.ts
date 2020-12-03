@@ -5,7 +5,8 @@ import config from '../config/config';
 import { createNotification } from '../common/notifications/notifications';
 import * as emailClient from '../emailService/emailService';
 import {nanoid} from 'nanoid';
-
+import * as passwordGenerator from 'generate-password'
+import * as crypto from "crypto";
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> Get the details of an individual candidate
@@ -391,7 +392,7 @@ export const getCandidateDetails = (_body) => {
                     
                     
                     // Function for notification to the  admin
-                    _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' });
+                    _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId });
                     resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
                     
                 } catch (e) {
@@ -442,7 +443,7 @@ export const getCandidateDetails = (_body) => {
                     let { jobReceivedId, candidateFirstName, candidateLastName } = interviewDetails[0];
                     
                     const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}.`
-                    await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate' })
+                    await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId })
                     
                     var hirerCompanyName = interviewDetails[0].hirerCompanyName.toUpperCase()
                     candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName
@@ -621,7 +622,7 @@ export const getCandidateDetails = (_body) => {
                     };
                     emailClient.emailManager(sellerMail,subject,path,replacements);
                     await client.query('COMMIT')
-                    await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange' })
+                    await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange',userRoleId:_body.userRoleId })
                     resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });
                     
                 } catch (e) {
@@ -1335,7 +1336,7 @@ export const getCandidateDetails = (_body) => {
 
                         let filteredEmails = _body.sharedEmails.filter((element)=> element.endsWith('@'+domain));
                         _body.sharedEmails = filteredEmails;                        
-                        var link=_body.host+'/shareResume'+_body.uniqueId
+                        var link=_body.host+'/shareResume/'+_body.uniqueId
                         let result = await client.query(queryService.addResumeShare(_body));
                         let results = await client.query(queryService.getNames(_body));
                         if(![null,undefined].includes(result.rows) && result.rows.length > 0)
@@ -1408,7 +1409,71 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
-    
+    export const shareResumeSignup = (_body) => {
+        return new Promise((resolve, reject) => {
+            const currentTime = Math.floor(Date.now() / 1000);
+            (async () => {
+                const client = await database().connect()
+                try {
+                   
+                        let result = await client.query(queryService.getSharedEmailsWithToken(_body));
+                        if(result.rows[0].sharedEmails.includes(_body.email))
+                        {
+                            let emailCheck = await client.query(queryService.getEmail(_body));
+                           if(emailCheck.rowCount==0)
+                           {
+                            const getId = {
+                                name: 'get-company-id',
+                                text: candidateQuery.getCompanyId,
+                                values: [result.rows[0].updatedBy],
+                            }
+                            let cmpId=await client.query(getId)
+                            const password = passwordGenerator.generate({
+                                length: 10,
+                                numbers: true
+                            });
+                            var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                            const insertData = {
+                                name: 'insert-values',
+                                text: candidateQuery.insertUserDetails,
+                                values: [_body.firstName,_body.lastName,_body.email,_body.telephoneNumber,cmpId,hashedPassword,currentTime],
+                            }
+                            await client.query(insertData)
+                            let replacements = {
+                                fName:_body.firstName,
+                                password:password
+                            };
+                            let path = 'src/emailTemplates/newUserText.html';
+                            emailClient.emailManager(_body.email,config.text.newUserTextSubject,path,replacements);
+                            let adminReplacements = {
+                                firstName:_body.firstName,
+                                lastName:_body.lastName,
+                                email:_body.email,
+                                phone:_body.telephoneNumber
+        
+                            };
+                            let adminPath = 'src/emailTemplates/newUserAdminText.html';
+                            emailClient.emailManager(config.adminEmail,config.text.newUserAdminTextSubject,adminPath,adminReplacements);
+                            await client.query('COMMIT')
+                            resolve({ code: 200, message: "Employee Added Successfully", data: {}})
+                        }
+                        else{
+                            reject({ code: 400, message: "User already registered", data: {} });
+                        }
+                    }           
+                    
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data:e.message })
+            })
+        })
+    }
     
     // >>>>>>> FUNC. >>>>>>>
     //>>>>>>>> Get the details in a candidate's resume

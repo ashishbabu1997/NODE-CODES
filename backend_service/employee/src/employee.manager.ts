@@ -323,7 +323,7 @@ export const createFreelancer = (_body) => {
                 const message = `A new employee, ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer.`
                 path ='src/emailTemplates/sendLinkText.html';
                 emailClient.emailManager(loweremailId,config.text.userSubject,path,freelancerReplacements);
-                createNotification({companyId:companyId,message:message, notificationType: 'employee'})
+                createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId})
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
                 console.log(e)
@@ -371,7 +371,7 @@ export const resetFreelancerToken = (_body) => {
                     const message = `A new employee, ${firstName + ' ' + lastName}  has been registered with us as a freelancer.`
                     
                     emailClient.emailManager(emailAddress,config.text.resetConfirmSubject,path,replacements);
-                    createNotification({companyId:companyId,message:message, notificationType: 'employee'})
+                    createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId})
                     
                     resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {} });
                 }

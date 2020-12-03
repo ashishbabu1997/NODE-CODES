@@ -371,7 +371,7 @@ export const createCompanyPositions = async (_body) => {
                                     const message = `A new position named ${positionName} has been created by ${companyName}.`
                                     var cName=companyName
                                     var cpName=positionName
-                                    await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position' })
+                                    await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId })
                                     var subject='New position notification'
 
                                     // Sending a notification mail about position creation; to the admin
@@ -452,7 +452,7 @@ export const createCompanyPositions = async (_body) => {
                                                         positionName=results.rows[0].position_name
                                                         var emailAddress=results.rows[0].email
                                                         message=`A position named ${positionName} has been reopened.`
-                                                        createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position' })
+                                                        createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId })
                                                         // A notification is sent to the hirer about his/her reopened position
                                                         let subj="Position Reopen Notification"
                                                         let path = 'src/emailTemplates/positionReopenText.html';
@@ -483,7 +483,7 @@ export const createCompanyPositions = async (_body) => {
                                                         positionName=results.rows[0].position_name
                                                         var emailId=results.rows[0].email
                                                         message=`A position named ${positionName} has been closed.`
-                                                        createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position' })
+                                                        createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId })
                                                         if(_body.userRoleId==1)
                                                         {
                                                             let subj="Close Position Notification"
@@ -602,7 +602,7 @@ export const createCompanyPositions = async (_body) => {
                                     };
                                     emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);
                                     const message=`The position named ${positionName}  has been removed .`
-                                    await createNotification({ positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList' })
+                                    await createNotification({ positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId })
                                     resolve({ code: 200, message: "Position deletion successfull", data: {} });
                                 } catch (e) {
                                     console.log(e)

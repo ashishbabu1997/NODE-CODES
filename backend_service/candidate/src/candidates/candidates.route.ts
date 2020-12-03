@@ -1,4 +1,4 @@
-import { candidateDetails,resumeSharedEmails,updateSkill,updateAssesmentLinkAndStatus,updateCloudProficiency,sharedResumeData,resumeShareLink,updateSocialProfile, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience,fetchAssesmentLinks } from './candidates.controller';
+import { candidateDetails,resumeSharedEmails,updateSkill,updateAssesmentLinkAndStatus,updateCloudProficiency,sharedResumeData,resumeShareLink,updateSocialProfile, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience,fetchAssesmentLinks,newUserSignup } from './candidates.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import approveRejectSchema from './schemas/approveRejectSchema';
@@ -41,5 +41,8 @@ router
     .post('/resumeShareLink',resumeShareLink)
     .get('/sharedResumeData',sharedResumeData)
     .get('/getAssesmentLinks',jwtAuth, setData(), fetchAssesmentLinks)
+    .post('/userSignup',jwtAuth, setData(), newUserSignup)
+
+    
 
 export default router;

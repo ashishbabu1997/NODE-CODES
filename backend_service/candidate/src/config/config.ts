@@ -7,7 +7,9 @@ export default {
     "text":{
 
         "submitProfileSubject":"Profile Submission Notification",
-        "shareEmailSubject":"ellow Resume Share Notification"
+        "shareEmailSubject":"ellow Resume Share Notification",
+        "newUserTextSubject":"ellow LOGIN PASSWORD",
+        "newUserAdminTextSubject":"NEW EMPLOYEE NOTIFICATION"
     },
     "db": {
         "user": "devdb_user",

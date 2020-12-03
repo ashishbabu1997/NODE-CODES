@@ -436,3 +436,26 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.employeeId],
         }
     }
+    export const getSharedEmailsWithToken =(_body)=> {
+        return {
+            name: 'fetch-shared-emails',
+            text: candidateQuery.getSharedEmailsWithTokens,
+            values: [_body.token],
+        }
+    }
+    
+    export const getEmail =(_body)=> {
+        return {
+            name: 'fetch-email',
+            text: candidateQuery.checkEMail,
+            values: [_body.email],
+        }
+    }
+
+    export const getCompanyId =(_body)=> {
+        return {
+            name: 'fetch-shared-emails',
+            text: candidateQuery.getCompanyId,
+            values: [_body.token],
+        }
+    }
