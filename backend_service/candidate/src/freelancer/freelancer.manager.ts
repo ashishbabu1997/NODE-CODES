@@ -161,7 +161,7 @@ export const getPositionDetails = (_body) => {
             try {
              
                 var result=await client.query(queryService.getDetailsPosition(_body));
-                resolve({ code: 200, message: "Candidate positions details listed successfully", data: {data:result.rows[0]} });
+                resolve({ code: 200, message: "Candidate positions details listed successfully", data:result.rows });
             } catch (e) {
                 console.log("Error raised from try : ",e)
                 await client.query('ROLLBACK')

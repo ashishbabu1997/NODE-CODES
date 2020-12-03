@@ -77,7 +77,7 @@ export default {
     fetchCandidateIdfromResumeId : 'select candidate_id,shared_emails from candidate_resume_share where unique_key like $1 and status=true',
     getDomainFromEmployeeId : 'select substring(email,\'[^@]+$\') as domain from employee where employee_id=$1',
     getEmployeeName:'SELECT firstname,lastname FROM employee WHERE employee_id=$1',
-    getSharedEmailsWithTokens:'select shared_emails as "sharedEmails",updated_by as "updatedBy" from candidate_resume_share where token=$1',
+    getSharedEmailsWithTokens:'select shared_emails as "sharedEmails",updated_by as "updatedBy" from candidate_resume_share where unique_id=$1',
     getCompanyId:'SELECT company_id FROM employee WHERE employee_id=$1',
     insertUserDetails:'INSERT INTO employee (firstname,lastname,email,telephone_number,company_id,password,created_on,updated_on) VALUES ($1,$2,$3,$4,$5,$6,$7,$7)',
     checkEMail:'SELECT * from employee WHERE email=$1',
