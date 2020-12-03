@@ -297,7 +297,7 @@ export const getCandidateDetails = (_body) => {
     //>>>>>>>> Function for approving or rejecting a candidate.
     export const candidateClearance = (_body) => {
         return new Promise((resolve, reject) => {
-            const currentTime = Math.floor(Date.now() / 1000);
+            const currentTime = Math.floor(Date.now());
             (async () => {
                 const client = await database().connect()
                 try {
@@ -415,7 +415,7 @@ export const getCandidateDetails = (_body) => {
     // A notification and a mail will be sent to the admin about the interview request.
     export const interviewRequestFunction = (_body) => {
         return new Promise((resolve, reject) => {
-            const currentTime = Math.floor(Date.now() / 1000);
+            const currentTime = Math.floor(Date.now());
             (async () => {
                 const client = await database().connect()
                 try {
@@ -481,7 +481,7 @@ export const getCandidateDetails = (_body) => {
     export const addCandidateReview = (_body) => {
         return new Promise((resolve, reject) => {
             const data = _body.assessmentTraits;
-            const currentTime = Math.floor(Date.now() / 1000);
+            const currentTime = Math.floor(Date.now());
             let promise = [];
             (async () => {
                 const client = await database().connect()
@@ -532,7 +532,7 @@ export const getCandidateDetails = (_body) => {
         return new Promise((resolve, reject) => {
             const candidateId = _body.candidateId;
             const vettingStatus = _body.candidateVetted;
-            const currentTime = Math.floor(Date.now() / 1000);
+            const currentTime = Math.floor(Date.now());
             (async () => {
                 const client = await database().connect()
                 try {
@@ -573,7 +573,7 @@ export const getCandidateDetails = (_body) => {
             var message;
             var positionName;
             var hirerName;
-            const currentTime = Math.floor(Date.now() / 1000);
+            const currentTime = Math.floor(Date.now());
             (async () => {
                 const client = await database().connect()
                 try {
@@ -645,7 +645,7 @@ export const getCandidateDetails = (_body) => {
         return new Promise((resolve, reject) => {
             const candidateList = _body.candidates;
             const positionId = _body.positionId;
-            const currentTime = Math.floor(Date.now() / 1000);
+            const currentTime = Math.floor(Date.now());
             (async () => {
                 const client = await database().connect()
                 try {
@@ -684,7 +684,7 @@ export const getCandidateDetails = (_body) => {
     // >>>>>>>>>> Remove a freely added candidate.
     export const removeCandidate = (_body) => {
         return new Promise((resolve, reject) => {
-            const currentTime = Math.floor(Date.now() / 1000);
+            const currentTime = Math.floor(Date.now());
             (async () => {
                 const client = await database().connect()
                 try {
@@ -1045,7 +1045,7 @@ export const getCandidateDetails = (_body) => {
     // >>>>>>>>>>>>> Update any publications done by the candidate
     export const modifyPublication = (_body) => {
         return new Promise((resolve, reject) => {
-            const currentTime = Math.floor(Date.now() / 1000);
+            const currentTime = Math.floor(Date.now());
             (async () => {
                 const client = await database().connect()
                 try {
@@ -1089,7 +1089,7 @@ export const getCandidateDetails = (_body) => {
     // >>>>>>>>>>>>> Update any awards acheived by the candidate
     export const modifyAward = (_body) => {
         return new Promise((resolve, reject) => {
-            const currentTime = Math.floor(Date.now() / 1000);
+            const currentTime = Math.floor(Date.now());
             (async () => {
                 const client = await database().connect()
                 try {
@@ -1180,7 +1180,7 @@ export const getCandidateDetails = (_body) => {
             
             var projectArray=[];
             var assesmentArray=[]
-            const currentTime = Math.floor(Date.now() / 1000);
+            const currentTime = Math.floor(Date.now());
             (async () => {
                 const client = await database().connect()
                 try {

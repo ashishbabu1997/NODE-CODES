@@ -59,7 +59,7 @@
 *         name: sortBy
 *         schema:
 *           type: string
-*         enum: [candidateId,candidateFirstName,candidatelastName,email,phoneNumber,companyName]
+*         enum: [candidateId,candidateFirstName,candidatelastName,email,phoneNumber,companyName,updatedOn]
 *       - in: query
 *         name: sortType
 *         schema:
