@@ -34,6 +34,36 @@
 
 /**
 * @swagger
+* /freelancer/getCandidatePositionDetails:
+*   get:
+*     tags:
+*       - Freelancer
+*     name: List candidate position details
+*     summary: list candidate positions details which he/she had applied
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*           type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /freelancer/getCandidateStatuses:
 *   get:
 *     tags:
