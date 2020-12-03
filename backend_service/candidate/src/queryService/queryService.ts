@@ -271,22 +271,6 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [candidateId]
         }
     }
-
-    export const updateCodeTestLinks =(_body)=> {
-        return {
-            name: 'update-code-test',
-            text: candidateQuery.codeTestLinkUpdate,
-            values: [_body.candidateId,_body.link,_body.status,_body.employeeId,currentTime],
-        }
-    }
-    
-    export const updateInterviewTestLinks =(_body)=> {
-        return {
-            name: 'update-interview-test',
-            text: candidateQuery.interviewTestLinkUpdate,
-            values: [_body.candidateId,_body.link,_body.status,_body.employeeId,currentTime],
-        }
-    }
     
     export const fetchWorkExperience =(candidateId)=> {
         return {
@@ -434,5 +418,39 @@ export const insertCandidatePublicationQuery = (_body) => {
             name: 'get-employee-name',
             text: candidateQuery.getEmployeeName,
             values: [_body.employeeId],
+        }
+    }
+
+    // *******************************************************************************************************************************//
+    // -------------------------------------------Assesment traits realted queries-------------------------------------------------//
+    export const updateCommentAndLinks =(_body)=> {
+        return {
+        name: 'insert-assessment-comment',
+        text: candidateQuery.updateAssessmentComment,
+        values: [_body.candidateId, _body.assessmentComment,_body.codeTestLink,_body.interviewTestLink,_body.employeeId,currentTime],
+        }
+    }   
+    
+    export const candidateDetails =(_body)=> {
+        return {
+            name: 'update-candidate-assesment-rating',
+            text: candidateQuery.updateCandidateAssesment,
+            values: [_body.candidateAssesmentId, _body.rating, _body.employeeId, currentTime],
+        }
+    }
+
+    export const updateCodeTestStatus =(_body)=> {
+        return {
+            name: 'update-code-test-status',
+            text: candidateQuery.codeTestStatusUpdate,
+            values: [_body.candidateId,_body.status,_body.employeeId,currentTime],
+        }
+    }
+
+    export const updateInterviewTestStatus =(_body)=> {
+        return {
+            name: 'update-interview-test-link',
+            text: candidateQuery.interviewTestStatusUpdate,
+            values: [_body.candidateId,_body.status,_body.employeeId,currentTime],
         }
     }

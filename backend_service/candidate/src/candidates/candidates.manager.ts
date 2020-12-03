@@ -481,30 +481,24 @@ export const getCandidateDetails = (_body) => {
     export const addCandidateReview = (_body) => {
         return new Promise((resolve, reject) => {
             const data = _body.assessmentTraits;
-            const currentTime = Math.floor(Date.now());
             let promise = [];
             (async () => {
                 const client = await database().connect()
                 try {
                     await client.query('BEGIN');
                     
-                    // Insert assesment comments about the candidate
-                    const insertQuery = {
-                        name: 'insert-assessment-comment',
-                        text: candidateQuery.updateAssessmentComment,
-                        values: [_body.candidateId, _body.assessmentComment],
-                    }
-                    promise.push(client.query(insertQuery));
-                    
                     // Update assesment ratings about the candidate.
                     data.forEach(element => {
-                        const candidateDetails = {
-                            name: 'update-candidate-assesment-rating',
-                            text: candidateQuery.updateCandidateAssesment,
-                            values: [element.candidateAssesmentId, element.rating, _body.employeeId, currentTime],
-                        }
-                        promise.push(client.query(candidateDetails));
+                        _body.candidateAssesmentId = element.candidateAssesmentId;
+                        _body.rating = element.rating;
+                        element.isLinkAvailable?(element.assesmentComment=="Code|Algorithm Test"?_body.codeTestLink=element.link:element.assesmentComment=="Interview Test"?_body.interviewTestLink=element.link:""):"";
+                        promise.push(client.query(queryService.candidateDetails(_body)));
                     });
+                    
+                    console.log("_body  L ",_body);
+                    
+                    // Insert assesment comments about the candidate
+                    promise.push(client.query(queryService.updateCommentAndLinks(_body)));
                     
                     await Promise.all(promise);
                     await client.query('COMMIT')
@@ -1328,11 +1322,11 @@ export const getCandidateDetails = (_body) => {
                     {
                         _body.uniqueId = nanoid();
                         let sharedEmails=[],domain='';
-
+                        
                         _body.employeeId=1;
                         let domainResult = await client.query(queryService.getDomainFromEmployeeId(_body));
                         domain = domainResult.rows[0].domain;
-
+                        
                         let filteredEmails = _body.sharedEmails.filter((element)=> element.endsWith('@'+domain));
                         _body.sharedEmails = filteredEmails;                        
                         var link=_body.host+'/shareResume'+_body.uniqueId
@@ -1342,7 +1336,7 @@ export const getCandidateDetails = (_body) => {
                         {
                             _body.uniqueId = result.rows[0].unique_key;
                             sharedEmails = result.rows[0].shared_emails;
-
+                            
                             if (Array.isArray(sharedEmails))
                             {
                                 sharedEmails.forEach(element => {
@@ -1378,7 +1372,7 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
-
+    
     // >>>>>>> FUNC. >>>>>>>
     //>>>>>>>> Fetch shared emails for resume
     export const getSharedEmails = (_body) => {
@@ -1453,17 +1447,17 @@ export const getCandidateDetails = (_body) => {
                     switch(_body.type)
                     {
                         case 'codeTest':
-                        await client.query(queryService.updateCodeTestLinks(_body));
+                        await client.query(queryService.updateCodeTestStatus(_body));
                         break;
                         case 'interviewTest':
-                        await client.query(queryService.updateInterviewTestLinks(_body));
+                        await client.query(queryService.updateInterviewTestStatus(_body));
                         break;
                         default:
-                        reject({ code: 400, message: "Assessment test link type not found", data: {} });
+                        reject({ code: 400, message: "Assessment test status type not found", data: {} });
                         return;
                     }
                     
-                    resolve({ code: 200, message: "Assesment links and status updated succesfully", data:{} });
+                    resolve({ code: 200, message: "Assesment status updated succesfully", data:{} });
                     
                 } catch (e) {
                     console.log(e)
