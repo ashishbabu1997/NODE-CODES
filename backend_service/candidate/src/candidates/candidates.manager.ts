@@ -1479,13 +1479,27 @@ export const getCandidateDetails = (_body) => {
                     let result = await client.query(queryService.getCandidateId(_body));
                     if(result.rows[0])
                     {
-                        let candidateId = result.rows[0].candidate_id;
-                        _body.candidateId = candidateId;
-                        let data = await getResume(_body);                                                        
-                        resolve({ code: 200, message: "Candidate resume listed successfully", data:data["data"] });
+                        let emailResult = await client.query(queryService.getEmailFromEmployeeId(_body));
+
+                        
+                        if(result.rows[0].shared_emails.includes(emailResult.rows[0].email))
+                        {
+                            let candidateId = result.rows[0].candidate_id;
+                            _body.candidateId = candidateId;
+                            let data = await getResume(_body);            
+                            delete data["data"].assesmentLink;
+                            delete data["data"].assesementComment;
+                            delete data["data"].assesments;
+
+                            resolve({ code: 200, message: "Candidate resume listed successfully", data:data["data"] });
+                        }
+                        else
+                        {
+                            reject({ code: 400, message: "You do not have access to this content", data: {} });
+                        }         
                     }
                     else{
-                        reject({ code: 400, message: "Id does not match with data available", data: {} });
+                        reject({ code: 400, message: "Token expired or does not exist", data: {} });
                     }
                 } catch (e) {
                     console.log(e)
@@ -1498,9 +1512,84 @@ export const getCandidateDetails = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message })
             })
         })
-    }  
+    }
     
-    
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>> Get initial details of a candidate's resume
+    export const initialSharedResumeData = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database().connect()
+                try {
+                    let result = await client.query(queryService.getCandidateId(_body));
+                    if(result.rows[0])
+                    {
+                        let candidateId = result.rows[0].candidate_id;
+                        _body.candidateId = candidateId;
+                        
+                        var allProfileDetails=await client.query(queryService.fetchProfile(candidateId));
+                        var skills=await client.query(queryService.fetchSkills(candidateId));
+                        var projects=await client.query(queryService.fetchProjects(candidateId));
+                        let citizenship = allProfileDetails.rows[0].citizenship;
+                        let citizenshipName = ![null,undefined,""].includes(citizenship)?config.countries.filter(element=>element.id == citizenship)[0].name:'';
+                        let residence = allProfileDetails.rows[0].residence;
+                        
+                        let profileDetails = {
+                            firstName : allProfileDetails.rows[0].firstName,
+                            lastName : allProfileDetails.rows[0].lastName,
+                            candidatePositionName:allProfileDetails.rows[0].candidatePositionName,
+                            description : allProfileDetails.rows[0].description,
+                            candidateStatus : allProfileDetails.rows[0].candidateStatus,
+                            sellerCompanyId : allProfileDetails.rows[0].sellerCompanyId,
+                            image : allProfileDetails.rows[0].image,
+                            citizenship,
+                            citizenshipName,
+                            residence,
+                            phoneNumber : allProfileDetails.rows[0].phoneNumber,
+                            email : allProfileDetails.rows[0].email,
+                            candidateVetted : allProfileDetails.rows[0].candidateVetted
+                        }
+                        
+                        let overallWorkExperience = {
+                            cost:allProfileDetails.rows[0].rate,
+                            ellowRate:allProfileDetails.rows[0].ellowRate,
+                            workExperience:allProfileDetails.rows[0].workExperience,
+                            remoteWorkExperience:allProfileDetails.rows[0].remoteWorkExperience,
+                            billingTypeId:allProfileDetails.rows[0].billingTypeId,
+                            currencyTypeId:allProfileDetails.rows[0].currencyTypeId,
+                            candidatePositionName:allProfileDetails.rows[0].candidatePositionName,
+                        }
+                        let availability = {
+                            availability : allProfileDetails.rows[0].availability,
+                            typeOfAvailability : allProfileDetails.rows[0].typeOfAvailability,
+                            readyToStart : allProfileDetails.rows[0].readyToStart
+                        }
+                        await client.query('COMMIT')
+                        resolve({ code: 200, message: "Initial Resume data listed successfully", 
+                        data: 
+                        {candidateId:Number(_body.candidateId),
+                            profile:profileDetails,
+                            resume : allProfileDetails.rows[0].resume,
+                            overallWorkExperience,
+                            availability,
+                            skills:skills.rows
+                        } });
+                    }
+                    else{
+                        reject({ code: 400, message: "Token expired or does not exist", data: {} });
+                    }
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            })
+        })
+    }
     
     // >>>>>>> FUNC. >>>>>>>
     //>>>>>>>> Update code and interview test to database

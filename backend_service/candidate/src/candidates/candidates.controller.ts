@@ -1,4 +1,5 @@
-import { getCandidateDetails,getSharedEmails,updateTestResults,modifySkill,fetchResumeData,modifyResumeFile,addResumeShareLink,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience,getAssesmentLinks,shareResumeSignup } from './candidates.manager';
+import { getCandidateDetails,initialSharedResumeData,getSharedEmails,updateTestResults,modifySkill,fetchResumeData,modifyResumeFile,addResumeShareLink,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience,getAssesmentLinks,shareResumeSignup } from './candidates.manager';
+
 import sendResponse from '../common/response/response';
 
 export const candidateDetails = (req, res) => {
@@ -202,6 +203,15 @@ export const resumeShareLink = (req, res) => {
 export const resumeSharedEmails = (req, res) => {
     const body = req.query;
     getSharedEmails(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
+export const initialResumeData = (req, res) => {
+    const body = req.query;
+    initialSharedResumeData(body).then((response: any) => {
         sendResponse(res, response.code, 1, 201, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)

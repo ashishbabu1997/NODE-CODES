@@ -74,11 +74,13 @@ export default {
     // Queries related to resume sharing
     addResumeShare : 'insert into candidate_resume_share (candidate_id, unique_key,shared_emails, created_by, updated_by, created_on, updated_on) values ($1,$2,$3, $4, $4, $5,$5) on conflict (candidate_id) do update set shared_emails = $3 returning unique_key,shared_emails',
     getSharedEmails : 'select shared_emails as "sharedEmails" from candidate_resume_share where candidate_id=$1',
-    fetchResumeDatafromUniqueId : 'select candidate_id from candidate_resume_share where unique_key like $1',
+    fetchCandidateIdfromResumeId : 'select candidate_id,shared_emails from candidate_resume_share where unique_key like $1 and status=true',
     getDomainFromEmployeeId : 'select substring(email,\'[^@]+$\') as domain from employee where employee_id=$1',
     getEmployeeName:'SELECT firstname,lastname FROM employee WHERE employee_id=$1',
     getSharedEmailsWithTokens:'select shared_emails as "sharedEmails",updated_by as "updatedBy" from candidate_resume_share where token=$1',
     getCompanyId:'SELECT company_id FROM employee WHERE employee_id=$1',
     insertUserDetails:'INSERT INTO employee (firstname,lastname,email,telephone_number,company_id,password,created_on,updated_on) VALUES ($1,$2,$3,$4,$5,$6,$7,$7)',
-    checkEMail:'SELECT * from employee WHERE email=$1'
+    checkEMail:'SELECT * from employee WHERE email=$1',
+    getEmployeeEmailFromId:'SELECT email FROM employee WHERE employee_id=$1'
+
 }
