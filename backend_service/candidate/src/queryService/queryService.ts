@@ -357,10 +357,19 @@ export const insertCandidatePublicationQuery = (_body) => {
     export const getCandidateId =(_body)=> {
         return {
             name: 'fetch-candidateid',
-            text: candidateQuery.fetchResumeDatafromUniqueId,
-            values: [_body.uniqueId],
+            text: candidateQuery.fetchCandidateIdfromResumeId,
+            values: [_body.token],
         }
     }
+
+    export const getEmailFromEmployeeId =(_body)=> {
+        return {
+            name: 'fetch-email-from-employeeid',
+            text: candidateQuery.getEmployeeEmailFromId,
+            values: [_body.employeeId],
+        }
+    }
+    
     
     // *******************************************************************************************************************************//
     // -------------------------------------------Freelancer submit profile-------------------------------------------------//
