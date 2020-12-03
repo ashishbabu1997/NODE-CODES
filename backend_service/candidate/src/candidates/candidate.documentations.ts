@@ -1037,7 +1037,7 @@
 /**
 * @swagger
 * /candidates/userSignup:
-*   put:
+*   post:
 *     tags:
 *       - Candidates
 *     name: New user signup
