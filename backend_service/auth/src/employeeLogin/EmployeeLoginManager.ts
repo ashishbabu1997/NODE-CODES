@@ -27,15 +27,13 @@ export const employeeLoginMethod = (_body) => {
                 
                 let results = await client.query(query);
                 const data = results.rows
-                
+
                 // Check if the password is correct
-                
                 if (data.length > 0) {
                     const value = data[0];
-                    console.log("value : ",value);
-                    
                     if(value.status)
                     {
+                       
                         const token = jwt.sign({
                             employeeId: value.employeeId.toString(),
                             companyId: value.companyId.toString(),
@@ -75,6 +73,7 @@ export const employeeLoginMethod = (_body) => {
                 client.release();
             }
         })().catch(e => {
+            console.log(e)
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
         

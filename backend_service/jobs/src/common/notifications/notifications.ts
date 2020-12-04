@@ -18,12 +18,14 @@ export const createNotification = async (_body) => {
                 await client.query('COMMIT');
                 resolve({ code: 200, message: "Notifiaction added successfully", data: {} });
             } catch (e) {
+                console.log("Error1",e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             } finally {
                 client.release();
             }
         })().catch(e => {
+            console.log("Error2",e)
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })

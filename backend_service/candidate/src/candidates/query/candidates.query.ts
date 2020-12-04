@@ -79,7 +79,7 @@ export default {
     getEmployeeName:'SELECT firstname,lastname FROM employee WHERE employee_id=$1',
     getSharedEmailsWithTokens:'select shared_emails as "sharedEmails",updated_by as "updatedBy" from candidate_resume_share where unique_key=$1',
     getCompanyId:'SELECT company_id FROM employee WHERE employee_id=$1',
-    insertUserDetails:'INSERT INTO employee (firstname,lastname,email,telephone_number,company_id,password,created_on,updated_on,status) VALUES ($1,$2,$3,$4,$5,$6,$7,$7,$8)',
+    insertUserDetails:'INSERT INTO employee (firstname,lastname,email,telephone_number,company_id,password,created_on,updated_on,status,account_type,user_role_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$7,$8,$8)',
     checkEMail:'SELECT * from employee WHERE email=$1',
     getEmployeeEmailFromId:'SELECT email FROM employee WHERE employee_id=$1'
 

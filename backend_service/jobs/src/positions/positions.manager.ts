@@ -344,7 +344,6 @@ export const createCompanyPositions = async (_body) => {
                                 const client = await database().connect()
                                 try {
                                     await client.query('BEGIN');
-                                    
                                     const positionId = _body.positionId;
                                     const changePositionStatusQuery = {
                                         name: 'change-position-status',
@@ -366,14 +365,13 @@ export const createCompanyPositions = async (_body) => {
                                     }
                                     const details = await client.query(getNotificationDetailsQuery);
                                     await client.query('COMMIT');
-                                    
                                     const { companyId, companyName,positionName } = details.rows[0];
                                     const message = `A new position named ${positionName} has been created by ${companyName}.`
                                     var cName=companyName
                                     var cpName=positionName
-                                    await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId })
+                                    console.log({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position',userRoleId:1 })
+                                    await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId})
                                     var subject='New position notification'
-
                                     // Sending a notification mail about position creation; to the admin
                                     let path = 'src/emailTemplates/positionCreationText.html';
                                     var userReplacements = {
@@ -381,16 +379,16 @@ export const createCompanyPositions = async (_body) => {
                                         position:cpName  
                                     };
                                     emailClient.emailManager(config.adminEmail,subject,path,userReplacements);
-                                    
                                     resolve({ code: 200, message: "Position published successfully", data: {} });
                                 } catch (e) {
-                                    console.log(e)
+                                    console.log("Error1",e)
                                     await client.query('ROLLBACK')
                                     reject({ code: 400, message: "Failed. Please try again.", data: {} });
                                 } finally {
                                     client.release();
                                 }
                             })().catch(e => {
+                                console.log("Error2",e.message)
                                 reject({ code: 400, message: "Failed. Please try again.", data: {} })
                             })
                         })

@@ -1331,14 +1331,13 @@ export const getCandidateDetails = (_body) => {
                         
                         let filteredEmails = _body.sharedEmails.filter((element)=> element.endsWith('@'+domain));
                         _body.sharedEmails = filteredEmails;                        
-                        var link=_body.host+'/shareResume/'+_body.uniqueId
                         let result = await client.query(queryService.addResumeShare(_body));
                         let results = await client.query(queryService.getNames(_body));
                         if(![null,undefined].includes(result.rows) && result.rows.length > 0)
                         {
                             _body.uniqueId = result.rows[0].unique_key;
                             sharedEmails = result.rows[0].shared_emails;
-                            
+                            var link=_body.host+'/shareResume/'+_body.uniqueId
                             if (Array.isArray(sharedEmails))
                             {
                                 sharedEmails.forEach(element => {
@@ -1432,7 +1431,7 @@ export const getCandidateDetails = (_body) => {
                             const insertData = {
                                 name: 'insert-values',
                                 text: candidateQuery.insertUserDetails,
-                                values: [_body.firstName,_body.lastName,_body.email,_body.telephoneNumber,cmpId,hashedPassword,currentTime,true],
+                                values: [_body.firstName,_body.lastName,_body.email,_body.telephoneNumber,cmpId,hashedPassword,currentTime,true,2],
                             }
                             await client.query(insertData)
                             let replacements = {
