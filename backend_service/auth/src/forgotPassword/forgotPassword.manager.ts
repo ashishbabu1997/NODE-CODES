@@ -55,7 +55,7 @@ export const sendLink = (_body) => {
       }
       else
       {
-        reject({ code: 400, message: "Email does'nt Exist", data:{}});
+        reject({ code: 400, message: "Provided email is not registered with ellow.io ! Please signup to continue", data:{}});
         return;
 
       }
