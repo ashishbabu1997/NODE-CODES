@@ -10,6 +10,8 @@
 *       - application/json
 *     produces:
 *       - application/json
+*     security:
+*       - bearerAuth: []
 *     parameters:
 *       - in: query
 *         name: searchKey
@@ -44,6 +46,8 @@
 *       - application/json
 *     produces:
 *       - application/json
+*     security:
+*       - bearerAuth: []
 *     parameters:
 *       - in: query
 *         name: candidateId
@@ -74,6 +78,8 @@
 *       - application/json
 *     produces:
 *       - application/json
+*     security:
+*       - bearerAuth: []
 *     parameters:
 *       - in: query
 *         name: candidateId
