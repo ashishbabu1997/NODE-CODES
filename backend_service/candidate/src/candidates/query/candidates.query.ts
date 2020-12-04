@@ -47,7 +47,7 @@ export default {
     modifyCloud:'insert into candidate_cloud(candidate_id, cloud_proficiency_id, created_by, updated_by, created_on, updated_on) values ($1, unnest($2::int[]),$3, $3, $4, $4) on conflict on constraint candidate_id_cloud_proficiency_id_unique_key do update set status=true, updated_by=$3, updated_on=$4',
     modifySocial:'insert into candidate_social(candidate_id, github, github_link, linkedin, linkedin_link, stackoverflow, stackoverflow_link, kaggle, kaggle_link, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$10,$11,$11) on conflict(candidate_id) do update set github=$2, github_link=$3, linkedin=$4, linkedin_link=$5, stackoverflow=$6,stackoverflow_link=$7,kaggle=$8,kaggle_link=$9,updated_by=$10,updated_on=$11;',
     modifyCandidateAward: `update candidate_certifications set candidate_id=$2, certification_id = $3, certified_year = $4, updated_on = $5, updated_by = $6 where candidate_certification_id = $1`,
-    insertCandidateAward:'insert into candidate_skill(candidate_id, skill_id, created_by, updated_by, created_on, updated_on, competency, years_of_experience, skill_version,preferred) values ($candidateid, $skillid, $employeeid, $employeeid, $currenttime, $currenttime, $competency,$yoe,$skillversion,$preferred)',
+    insertCandidateAward:'insert into candidate_certifications(candidate_id,certification_id, certified_year,created_by, updated_by, created_on, updated_on) values ($1, $2, $3, $4, $4, $5,$5)',
     deleteCandidateAward:'update candidate_certifications set status=false, updated_on = $2, updated_by = $3 where candidate_certification_id = $1',
 
     modifyCandidateSkill: `update candidate_skill set skill_id = $skillid, preferred = $preferred, competency = $competency, years_of_experience = $yoe, skill_version = $skillversion, updated_on = $currenttime, updated_by = $employeeid where candidate_skill_id = $candidateskillid`,
@@ -77,9 +77,9 @@ export default {
     fetchCandidateIdfromResumeId : 'select candidate_id,shared_emails from candidate_resume_share where unique_key like $1 and status=true',
     getDomainFromEmployeeId : 'select substring(email,\'[^@]+$\') as domain from employee where employee_id=$1',
     getEmployeeName:'SELECT firstname,lastname FROM employee WHERE employee_id=$1',
-    getSharedEmailsWithTokens:'select shared_emails as "sharedEmails",updated_by as "updatedBy" from candidate_resume_share where token=$1',
+    getSharedEmailsWithTokens:'select shared_emails as "sharedEmails",updated_by as "updatedBy" from candidate_resume_share where unique_key=$1',
     getCompanyId:'SELECT company_id FROM employee WHERE employee_id=$1',
-    insertUserDetails:'INSERT INTO employee (firstname,lastname,email,telephone_number,company_id,password,created_on,updated_on) VALUES ($1,$2,$3,$4,$5,$6,$7,$7)',
+    insertUserDetails:'INSERT INTO employee (firstname,lastname,email,telephone_number,company_id,password,created_on,updated_on,status,account_type,user_role_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$7,$8,$8)',
     checkEMail:'SELECT * from employee WHERE email=$1',
     getEmployeeEmailFromId:'SELECT email FROM employee WHERE employee_id=$1'
 

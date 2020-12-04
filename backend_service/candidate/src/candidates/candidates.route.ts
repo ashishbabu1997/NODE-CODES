@@ -43,7 +43,7 @@ router
     .get('/initialSharedResumeData',initialResumeData)
     .get('/sharedResumeData',jwtAuth, setData(),sharedResumeData)
     .get('/getAssesmentLinks',jwtAuth, setData(), fetchAssesmentLinks)
-    .post('/userSignup',jwtAuth, setData(), newUserSignup)
+    .post('/userSignup', newUserSignup)
 
     
 
