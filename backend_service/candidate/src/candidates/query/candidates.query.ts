@@ -70,7 +70,7 @@ export default {
     codeTestStatusUpdate:'UPDATE candidate SET code_test_status=$2, updated_by = $3, updated_on = $4 WHERE candidate_id = $1',
     interviewTestStatusUpdate:'UPDATE candidate SET interview_test_status=$2, updated_by = $3, updated_on = $4 WHERE candidate_id = $1', 
 
-    getStatus:'SELECT candidate_vetted as "candidateVetted",candidate_status as "candidateStatus",code_test_status as "codeTestStatus",interview_test_status as "interviewTestStatus,candidate_position_name as "candidatePositionName"" FROM candidate WHERE candidate_id=$1',
+    getStatus:'SELECT candidate_vetted as "candidateVetted",candidate_status as "candidateStatus",code_test_status as "codeTestStatus",interview_test_status as "interviewTestStatus",candidate_position_name as "candidatePositionName" FROM candidate WHERE candidate_id=$1',
     // Queries related to resume sharing
     addResumeShare : 'insert into candidate_resume_share (candidate_id, unique_key,shared_emails, created_by, updated_by, created_on, updated_on) values ($1,$2,$3, $4, $4, $5,$5) on conflict (candidate_id) do update set shared_emails = $3 returning unique_key,shared_emails',
     getSharedEmails : 'select shared_emails as "sharedEmails" from candidate_resume_share where candidate_id=$1',
