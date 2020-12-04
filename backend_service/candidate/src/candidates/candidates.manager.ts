@@ -1118,6 +1118,7 @@ export const getCandidateDetails = (_body) => {
                     client.release();
                 }
             })().catch(e => {
+                console.log("E",e)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} })
             })
         })
@@ -1430,7 +1431,7 @@ export const getCandidateDetails = (_body) => {
                             const insertData = {
                                 name: 'insert-values',
                                 text: candidateQuery.insertUserDetails,
-                                values: [_body.firstName,_body.lastName,_body.email,_body.telephoneNumber,cmpId,hashedPassword,currentTime],
+                                values: [_body.firstName,_body.lastName,_body.email,_body.telephoneNumber,cmpId,hashedPassword,currentTime,true],
                             }
                             await client.query(insertData)
                             let replacements = {
