@@ -1422,7 +1422,8 @@ export const getCandidateDetails = (_body) => {
                                 text: candidateQuery.getCompanyId,
                                 values: [result.rows[0].updatedBy],
                             }
-                            let cmpId=await client.query(getId)
+                            var getcompanyId=await client.query(getId)
+                            var cmpId=getcompanyId.rows[0].company_id
                             const password = passwordGenerator.generate({
                                 length: 10,
                                 numbers: true
