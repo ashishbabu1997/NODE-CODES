@@ -8,10 +8,10 @@
 *     summary: list all positions available
 *     consumes:
 *       - application/json
-*     produces:
-*       - application/json
 *     security:
 *       - bearerAuth: []
+*     produces:
+*       - application/json
 *     parameters:
 *       - in: query
 *         name: searchKey
@@ -44,10 +44,10 @@
 *     summary: list candidate positions details which he/she had applied
 *     consumes:
 *       - application/json
-*     produces:
-*       - application/json
 *     security:
 *       - bearerAuth: []
+*     produces:
+*       - application/json
 *     parameters:
 *       - in: query
 *         name: candidateId
@@ -76,10 +76,10 @@
 *     summary: list candidate vetted and candidate status
 *     consumes:
 *       - application/json
-*     produces:
-*       - application/json
 *     security:
 *       - bearerAuth: []
+*     produces:
+*       - application/json
 *     parameters:
 *       - in: query
 *         name: candidateId
