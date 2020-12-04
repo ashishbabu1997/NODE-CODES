@@ -1341,15 +1341,15 @@ export const getCandidateDetails = (_body) => {
                             if (Array.isArray(sharedEmails))
                             {
                                 sharedEmails.forEach(element => {
-                                    var firstName=results.rows[0].first_name
-                                    var lastName=results.rows[0].last_name
+                                    var firstName=results.rows[0].firstname
+                                    var lastName=results.rows[0].lastname
                                     let replacements = {
                                         fName:firstName,
                                         lName:lastName,
                                         link:link
                                     };
                                     let path = 'src/emailTemplates/resumeShareText.html';
-                                    emailClient.emailManager(config.adminEmail,config.text.shareEmailSubject,path,replacements);
+                                    emailClient.emailManager(element,config.text.shareEmailSubject,path,replacements);
                                     
                                 });
                             } 
