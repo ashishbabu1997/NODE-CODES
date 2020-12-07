@@ -2,6 +2,8 @@ import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
 import * as emailClient from '../emailService/emailService';
 import config from '../config/config'
+import { createNotification } from '../common/notifications/notifications';
+import freelancerQuery from './query/freelancer.query';
 
 
 
@@ -115,6 +117,8 @@ export const submitFreelancerProfile = (_body) => {
                     lName:lastName
                 };
                 let path = 'src/emailTemplates/freelancerSubmitText.html';
+                let message=`${firstName + ' ' + lastName}; a registered freelancer, has submitted his profile for review `
+                await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'freelancer',userRoleId:_body.userRoleId })
                 emailClient.emailManager(config.adminEmail,config.text.submitProfileSubject,path,replacements);
                 resolve({ code: 200, message: "Freelancer submitted successfully", data: {} });
             } catch (e) {

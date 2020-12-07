@@ -306,7 +306,7 @@ export const createFreelancer = (_body) => {
                 
                 await client.query('COMMIT')
                 let Name = _body.firstName + " " + _body.lastName
-                let companyName = _body.companyName
+                let companyName = "Freelancer"
                 let emailAddress = _body.email
                 let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
                 let verificationLink=_body.host+'/create-password/'+uniqueId;

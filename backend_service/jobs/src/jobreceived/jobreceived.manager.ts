@@ -262,7 +262,7 @@ export const submitCandidateProfile = (_body) => {
                 let companyId = result.rows[0].company_id;
                 let jobReceivedId = result.rows[0].job_received_id;
                 let positionName = _body.positionName;
-                var subject='New candidate notification'
+                var subject='New Candidate Notification'
                 if(![null,undefined,""].includes(_body.positionId))
                 {
                     const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
