@@ -1409,11 +1409,19 @@ export const getCandidateDetails = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-                   
+                        console.log("1");
+                        
                         let result = await client.query(queryService.getSharedEmailsWithToken(_body));
-                        if(result.rows[0].sharedEmails.includes(_body.email))
+                        console.log("result : ",result.rows);
+
+                        if(result.rows[0]['sharedEmails'].includes(_body.email))
                         {
+                            console.log("inside if ");
+
                             let emailCheck = await client.query(queryService.getEmail(_body));
+
+                            console.log("email check ",emailCheck);
+
                            if(emailCheck.rowCount==0)
                            {
                             const getId = {
@@ -1453,9 +1461,13 @@ export const getCandidateDetails = (_body) => {
                             resolve({ code: 200, message: "Employee Added Successfully", data: {}})
                         }
                         else{
-                            reject({ code: 400, message: "User already registered", data: {} });
+                            reject({ code: 400, message: "User already registered pleases use signin to continue", data: {} });
                         }
-                    }           
+                    } 
+                    else{
+                        reject({ code: 400, message: "You do not have sufficient permissions to access this resume", data: {} });
+
+                    }          
                     
                 } catch (e) {
                     console.log(e)
