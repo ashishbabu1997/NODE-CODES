@@ -1,6 +1,11 @@
 import skillsQuery from './query/SkillsQuery';
 import database from '../common/database/database';
 
+
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get skills added by the company
 export const getCompanySkills = (_body) => {
     return new Promise((resolve, reject) => {
         if (_body.jobCategoryId)
@@ -36,6 +41,10 @@ export const getCompanySkills = (_body) => {
     });
 }
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Create  new skill for a company
 export const createNewSkills = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -71,6 +80,11 @@ export const createNewSkills = (_body) => {
     })
 }
 
+
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update skills added by the company
 export const updateComppanySkills = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -89,6 +103,10 @@ export const updateComppanySkills = (_body) => {
     })
 }
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Delete company skills added by the user
 export const deleteCompanySkills = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);

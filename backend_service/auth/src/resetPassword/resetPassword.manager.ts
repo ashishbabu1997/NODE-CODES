@@ -4,6 +4,11 @@ import { Promise } from 'es6-promise'
 import * as crypto from 'crypto'
 import * as jwt from 'jsonwebtoken';
 import config from '../config/config';
+
+
+// FUNC.
+// Continuation of forgotPassword routes.
+// When the user clicks on the link in the mail, it redirects to page to enter a recovery new password.
 export const addPassword = (_body) => {
   return new Promise((resolve, reject) => {
     if (_body.newPassword == _body.confirmPassword)

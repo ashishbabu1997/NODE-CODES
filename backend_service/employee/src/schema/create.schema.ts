@@ -147,3 +147,38 @@ export const freelancerSchema = Joi.object().keys({
         return errors;
     })
 }).unknown(true);
+
+export const tokenSchema = Joi.object().keys({ 
+    token: Joi.string().required().error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "any.required":
+                err.message = "Token should not be empty";
+                break;
+                case "string.base":
+                err.message = "Token must be a string"
+                break;
+                default:
+                err.message = "Invalid Token"
+                break;
+            }
+        });
+        return errors;
+    }),
+    password: Joi.string().required().error(errors => {
+        errors.forEach(err => {
+            switch (err.code) {
+                case "any.required":
+                err.message = "Pasword should not be empty";
+                break;
+                case "string.base":
+                err.message = "Pasword must be a string"
+                break;
+                default:
+                err.message = "Invalid Pasword"
+                break;
+            }
+        });
+        return errors;
+    })
+}).unknown(true);

@@ -12,7 +12,7 @@ const swaggerDefinition = {
     description: 'Endpoints to test the user candidates routes',
   },
   
-  basePath: `/api/${AppConfig.version}/candidates`,
+  basePath: `/api/${AppConfig.version}/`,
   securityDefinitions: {
     bearerAuth: {
       type: 'apiKey',
@@ -25,6 +25,6 @@ const swaggerDefinition = {
 
 const options = {
     swaggerDefinition,
-    apis:[`./src/candidates/*.ts`]
+    apis:[`./src/candidates/*.ts`,`./src/freelancer/*.ts`]
   };
  export const swaggerSpec = swaggerJsDoc(options);

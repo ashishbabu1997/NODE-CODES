@@ -3,8 +3,10 @@ import database from '../common/database/database';
 import * as jwt from 'jsonwebtoken';
 import config from '../config/config';
 import * as crypto from 'crypto';
+import * as emailClient from '../emailService/emailService';
 
 
+// FUNC. Login for a registered user
 export const employeeLoginMethod = (_body) => {
     return new Promise((resolve, reject) => {
         var emailID=_body.email.toLowerCase()
@@ -16,49 +18,49 @@ export const employeeLoginMethod = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-
+                let userRole = _body.type === 'freelancer'?[4]:[1,2,3]
                 const query = {
                     name: 'employee-login',
                     text: employeeLoginQuery.employeeLogin,
-                    values: [emailID, hashedPassword],
+                    values: [emailID, hashedPassword,userRole],
                 } 
                 
                 let results = await client.query(query);
                 const data = results.rows
-                console.log("data : ", data);
-                
+
+                // Check if the password is correct
                 if (data.length > 0) {
-                    
                     const value = data[0];
-                    let candidateId = null;
-                    const token = jwt.sign({
-                        employeeId: value.employeeId.toString(),
-                        companyId: value.companyId.toString(),
-                        userRoleId:value.userRoleId.toString()
-                    }, config.jwtSecretKey, { expiresIn: '24h' });
-
-                    if(value.userRoleId == 4)
+                    if(value.status)
                     {
-                        const candidateQuery = {
-                            name: 'candidate-details-fetch',
-                            text: employeeLoginQuery.getCandidateDetail,
-                            values: [value.employeeId],
-                        }
+                       
+                        const token = jwt.sign({
+                            employeeId: value.employeeId.toString(),
+                            companyId: value.companyId.toString(),
+                            userRoleId:value.userRoleId.toString()
+                        }, config.jwtSecretKey, { expiresIn: '24h' });
                         
-                        let candidateResult = await client.query(candidateQuery);
-                        candidateId = candidateResult.rows[0].candidate_id;
+                        // Check if the login user is a freelancer
+                        await client.query('COMMIT')
+                        // On success, user bearer token holding his/her companyId,userRoleId and employeeId; plus other details
+                        // are being given to the front end.
+                        resolve({
+                            code: 200, message: "Login successful", data: {
+                                token: `Bearer ${token}`,
+                                companyName: value.companyName, companyLogo: value.companyLogo,
+                                candidateId:value.candidateId ,  candidateStatus:value.candidateStatus,
+                                email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,
+                                masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile,userRoleId:value.userRoleId
+                            }
+                        });
                     }
-                    await client.query('COMMIT')
-
-                    resolve({
-                        code: 200, message: "Login successful", data: {
-                            token: `Bearer ${token}`,
-                            companyId: value.companyId, companyName: value.companyName, companyLogo: value.companyLogo,
-                            candidateId ,  
-                            email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,employeeId:value.employeeId,
-                            masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile,userRoleId:value.userRoleId
-                        }
-                    });
+                    else
+                    {
+                        value.token != null?
+                        reject({ code: 400, message: "Please verify your email to login", data: {} }):
+                        reject({ code: 400, message: "Invalid email or password", data: {} });
+                    }
+                    
                 } else {
                     reject({ code: 400, message: "Invalid email or password", data: {} });
                 }
@@ -71,6 +73,7 @@ export const employeeLoginMethod = (_body) => {
                 client.release();
             }
         })().catch(e => {
+            console.log(e)
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
         

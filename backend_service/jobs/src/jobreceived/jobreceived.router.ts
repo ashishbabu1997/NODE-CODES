@@ -1,10 +1,8 @@
 import {getJobReceived, getJobReceivedById, updateReject, addProfile, submitProfile,getProfile,skillEdits} from './jobreceived.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
-import addProfileSchema from './schemas/addProfileSchema';
-import {schemaFlag, schemaReject} from './schemas/flagOrRejectSchema';
+import {schemaReject} from './schemas/flagOrRejectSchema';
 import {getJobReceivedSchema, getJobReceivedByIdSchema} from './schemas/getJobSchema';
-import editprofileSchema from './schemas/editprofileSchema'
 import { jwtAuth } from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
 const router = express.Router();
