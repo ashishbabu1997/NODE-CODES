@@ -266,7 +266,7 @@ export const submitCandidateProfile = (_body) => {
                 if(![null,undefined,""].includes(_body.positionId))
                 {
                     const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
-                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position',userRoleId:_body.userRoleId })   
+                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     let path = 'src/emailTemplates/candidateAdditionText.html';
                     var userReplacements =  {
                         first:candidateFirstName,

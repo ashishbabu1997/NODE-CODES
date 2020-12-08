@@ -495,3 +495,11 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId]
         }
     }
+
+    export const getImageDetails = (_body) => {
+        return {
+            name: 'get-image-names',
+            text: freelancerQuery.getImageNames,
+            values:[_body.candidateId]
+        }
+    }

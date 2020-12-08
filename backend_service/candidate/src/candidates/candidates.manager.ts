@@ -392,7 +392,8 @@ export const getCandidateDetails = (_body) => {
                     
                     
                     // Function for notification to the  admin
-                    _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId });
+                    let imageResults=await client.query(queryService.getImageDetails(_body))
+                    _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name });
                     resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
                     
                 } catch (e) {
@@ -443,7 +444,8 @@ export const getCandidateDetails = (_body) => {
                     let { jobReceivedId, candidateFirstName, candidateLastName } = interviewDetails[0];
                     
                     const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}.`
-                    await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId })
+                    let imageResults=await client.query(queryService.getImageDetails(_body))
+                    await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                     
                     var hirerCompanyName = interviewDetails[0].hirerCompanyName.toUpperCase()
                     candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName
@@ -606,6 +608,7 @@ export const getCandidateDetails = (_body) => {
                     candidateLastName = emailResults.rows[0].cLastName
                     var sellerMail = emailResults.rows[0].email
                     var subject = "Candidate Deletion Notification";
+                    let imageResults=await client.query(queryService.getImageDetails(_body))
                     message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position named ${positionName} has been removed `
                     let path = 'src/emailTemplates/candidateDeletionMailText.html';
                     let replacements ={
@@ -616,7 +619,7 @@ export const getCandidateDetails = (_body) => {
                     };
                     emailClient.emailManager(sellerMail,subject,path,replacements);
                     await client.query('COMMIT')
-                    await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange',userRoleId:_body.userRoleId })
+                    await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                     resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });
                     
                 } catch (e) {
