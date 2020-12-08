@@ -1323,13 +1323,14 @@ export const getCandidateDetails = (_body) => {
                     if(!isNaN(_body.candidateId))
                     {
                         _body.uniqueId = nanoid();
-                        let sharedEmails=[],domain='';
+                        let sharedEmails=[],domain='',flag=0;
                         
-                        _body.employeeId=1;
                         let domainResult = await client.query(queryService.getDomainFromEmployeeId(_body));
                         domain = domainResult.rows[0].domain;
-                        
+
                         let filteredEmails = _body.sharedEmails.filter((element)=> element.endsWith('@'+domain));
+                        _body.sharedEmails.length!=filteredEmails.length?flag=1:'';
+
                         _body.sharedEmails = filteredEmails;                        
                         let result = await client.query(queryService.addResumeShare(_body));
                         let results = await client.query(queryService.getNames(_body));
@@ -1354,8 +1355,12 @@ export const getCandidateDetails = (_body) => {
                                 });
                             } 
                         }
-                        
+
+                        if(flag==0)
                         resolve({ code: 200, message: "Candidate resume share link updated", data: sharedEmails });
+                        else
+                        resolve({ code: 201, message: "Some of the emails shared does not belong to your company email domain", data: sharedEmails });
+
                     }
                     else
                     {
