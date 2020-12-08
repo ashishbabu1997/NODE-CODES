@@ -283,7 +283,7 @@ export const createFreelancer = (_body) => {
                     var emailId = getEmailResult.rows[0].email
                     if (emailId == loweremailId) {
                         if (adminStatus == 1) {
-                            reject({ code: 400, statusCode: 407, message: "Email you're trying to register already exist", data: {} });
+                            reject({ code: 400, statusCode: 407, message: "Email you're trying to register already exists", data: {} });
                             return;
                         }
                         else {
