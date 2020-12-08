@@ -408,15 +408,15 @@ export const tokenCheck = (_body) => {
                 }
                 
                 let result = await client.query(checkToken);
-                
-                await client.query('COMMIT')
                 if(result.rowCount==1)
                 {
-                    resolve({ code: 200, message: "Token Expired", data: {} });
+                    resolve({ code: 200, message: "Success", data: {email:result.rows[0].email} });
                 }
                 else{
-                    reject({ code: 400, message: "Failed", data: {} })
+                    reject({ code: 400, message: "Password already set.", data: {} })
                 }
+
+                await client.query('COMMIT')
             } catch (e) {
                 console.log("Error e1: ",e );
                 await client.query('ROLLBACK')

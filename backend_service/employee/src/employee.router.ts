@@ -14,6 +14,6 @@ router
     .get('/getCompanyByEmail', getCompanyByEmail)
     .post('/addEmployeeByAdmin',jwtAuth, setData(), validate(companyRegistrationSchema), addEmployeeByAdmin)
     .get('/verifyToken', checkVerificationLink)
-
+    
 export default router;
 
