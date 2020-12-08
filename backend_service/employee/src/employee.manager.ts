@@ -320,10 +320,10 @@ export const createFreelancer = (_body) => {
                     link:verificationLink,
                 };
                 var companyId=22
-                const message = `A new employee, ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer.`
+                const message = `A new employee ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer`
                 path ='src/emailTemplates/sendLinkText.html';
                 emailClient.emailManager(loweremailId,config.text.userSubject,path,freelancerReplacements);
-                createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
+                createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId,employeeId:_body.employeeId,firstName:_body.firstName,lastName:_body.lastName})
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
                 console.log(e)

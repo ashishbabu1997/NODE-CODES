@@ -118,7 +118,7 @@ export const submitFreelancerProfile = (_body) => {
                 };
                 let path = 'src/emailTemplates/freelancerSubmitText.html';
                 let imageResults=await client.query(queryService.getImageDetails(_body))
-                let message=`${firstName + ' ' + lastName}; a registered freelancer, has submitted his profile for review `
+                let message=`${firstName + ' ' + lastName} has submitted his profile for review`
                 await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'freelancer',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                 emailClient.emailManager(config.adminEmail,config.text.submitProfileSubject,path,replacements);
                 resolve({ code: 200, message: "Freelancer submitted successfully", data: {} });

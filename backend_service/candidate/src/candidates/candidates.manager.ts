@@ -443,7 +443,7 @@ export const getCandidateDetails = (_body) => {
                     
                     let { jobReceivedId, candidateFirstName, candidateLastName } = interviewDetails[0];
                     
-                    const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}.`
+                    const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}`
                     let imageResults=await client.query(queryService.getImageDetails(_body))
                     await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                     
@@ -609,7 +609,7 @@ export const getCandidateDetails = (_body) => {
                     var sellerMail = emailResults.rows[0].email
                     var subject = "Candidate Deletion Notification";
                     let imageResults=await client.query(queryService.getImageDetails(_body))
-                    message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position named ${positionName} has been removed `
+                    message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position ${positionName} has been removed `
                     let path = 'src/emailTemplates/candidateDeletionMailText.html';
                     let replacements ={
                         hirer: hirerName,

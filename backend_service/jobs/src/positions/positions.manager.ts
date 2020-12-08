@@ -372,7 +372,7 @@ export const fetchPositionDetails = (_body) => {
                                 const details = await client.query(getNotificationDetailsQuery);
                                 await client.query('COMMIT');
                                 const { companyId, companyName,positionName } = details.rows[0];
-                                const message = `A new position named ${positionName} has been created by ${companyName}.`
+                                const message = `A new position named ${positionName} has been created by ${companyName}`
                                 var cName=companyName
                                 var cpName=positionName
                                 console.log({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position',userRoleId:1 })
