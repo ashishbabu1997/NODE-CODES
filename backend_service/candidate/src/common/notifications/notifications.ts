@@ -4,7 +4,7 @@ import database from '../database/database';
 
 export const createNotification = async (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
+        const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database().connect()
             try {
@@ -12,7 +12,7 @@ export const createNotification = async (_body) => {
                 const changePositionStatusQuery = {
                     name: 'create-notification',
                     text: notificationsQuery.createNotification,
-                    values: [_body.positionId, _body.candidateId, _body.message, _body.companyId, _body.notificationType, _body.jobReceivedId, currentTime,_body.userRoleId]
+                    values: [_body.positionId, _body.candidateId, _body.message, _body.companyId, _body.notificationType, _body.jobReceivedId, currentTime,_body.userRoleId,_body.employeeId,_body.image,_body.firstName,_body.lastName]
                 }
                 await client.query(changePositionStatusQuery);
                 await client.query('COMMIT');

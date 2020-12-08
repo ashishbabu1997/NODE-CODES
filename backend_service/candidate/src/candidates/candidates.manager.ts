@@ -392,7 +392,8 @@ export const getCandidateDetails = (_body) => {
                     
                     
                     // Function for notification to the  admin
-                    _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId });
+                    let imageResults=await client.query(queryService.getImageDetails(_body))
+                    _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name });
                     resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
                     
                 } catch (e) {
@@ -442,8 +443,9 @@ export const getCandidateDetails = (_body) => {
                     
                     let { jobReceivedId, candidateFirstName, candidateLastName } = interviewDetails[0];
                     
-                    const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}.`
-                    await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId })
+                    const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}`
+                    let imageResults=await client.query(queryService.getImageDetails(_body))
+                    await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                     
                     var hirerCompanyName = interviewDetails[0].hirerCompanyName.toUpperCase()
                     candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName
@@ -606,7 +608,8 @@ export const getCandidateDetails = (_body) => {
                     candidateLastName = emailResults.rows[0].cLastName
                     var sellerMail = emailResults.rows[0].email
                     var subject = "Candidate Deletion Notification";
-                    message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position named ${positionName} has been removed `
+                    let imageResults=await client.query(queryService.getImageDetails(_body))
+                    message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position ${positionName} has been removed `
                     let path = 'src/emailTemplates/candidateDeletionMailText.html';
                     let replacements ={
                         hirer: hirerName,
@@ -616,7 +619,7 @@ export const getCandidateDetails = (_body) => {
                     };
                     emailClient.emailManager(sellerMail,subject,path,replacements);
                     await client.query('COMMIT')
-                    await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange',userRoleId:_body.userRoleId })
+                    await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                     resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });
                     
                 } catch (e) {
@@ -1323,13 +1326,14 @@ export const getCandidateDetails = (_body) => {
                     if(!isNaN(_body.candidateId))
                     {
                         _body.uniqueId = nanoid();
-                        let sharedEmails=[],domain='';
+                        let sharedEmails=[],domain='',flag=0;
                         
-                        _body.employeeId=1;
                         let domainResult = await client.query(queryService.getDomainFromEmployeeId(_body));
                         domain = domainResult.rows[0].domain;
-                        
+
                         let filteredEmails = _body.sharedEmails.filter((element)=> element.endsWith('@'+domain));
+                        _body.sharedEmails.length!=filteredEmails.length?flag=1:'';
+
                         _body.sharedEmails = filteredEmails;                        
                         let result = await client.query(queryService.addResumeShare(_body));
                         let results = await client.query(queryService.getNames(_body));
@@ -1354,8 +1358,12 @@ export const getCandidateDetails = (_body) => {
                                 });
                             } 
                         }
-                        
+
+                        if(flag==0)
                         resolve({ code: 200, message: "Candidate resume share link updated", data: sharedEmails });
+                        else
+                        resolve({ code: 201, message: "Some of the emails shared does not belong to your company email domain", data: sharedEmails });
+
                     }
                     else
                     {

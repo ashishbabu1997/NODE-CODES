@@ -283,7 +283,7 @@ export const createFreelancer = (_body) => {
                     var emailId = getEmailResult.rows[0].email
                     if (emailId == loweremailId) {
                         if (adminStatus == 1) {
-                            reject({ code: 400, statusCode: 407, message: "Email you're trying to register already exist", data: {} });
+                            reject({ code: 400, statusCode: 407, message: "Email you're trying to register already exists", data: {} });
                             return;
                         }
                         else {
@@ -320,10 +320,10 @@ export const createFreelancer = (_body) => {
                     link:verificationLink,
                 };
                 var companyId=22
-                const message = `A new employee, ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer.`
+                const message = `A new employee ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer`
                 path ='src/emailTemplates/sendLinkText.html';
                 emailClient.emailManager(loweremailId,config.text.userSubject,path,freelancerReplacements);
-                createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId})
+                createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId,employeeId:_body.employeeId,firstName:_body.firstName,lastName:_body.lastName})
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
                 console.log(e)
@@ -371,7 +371,7 @@ export const resetFreelancerToken = (_body) => {
                     const message = `A new employee, ${firstName + ' ' + lastName}  has been registered with us as a freelancer.`
                     
                     emailClient.emailManager(emailAddress,config.text.resetConfirmSubject,path,replacements);
-                    createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId})
+                    createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId,employeeId:_body.employeeId,firstName:firstName,lastName:lastName})
                     
                     resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {} });
                 }
@@ -413,7 +413,7 @@ export const tokenCheck = (_body) => {
                     resolve({ code: 200, message: "Success", data: {email:result.rows[0].email} });
                 }
                 else{
-                    reject({ code: 400, message: "Password already set.", data: {} })
+                    reject({ code: 400, message: "Password already updated", data: {} })
                 }
 
                 await client.query('COMMIT')
