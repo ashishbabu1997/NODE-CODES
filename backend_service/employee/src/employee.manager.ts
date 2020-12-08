@@ -300,7 +300,7 @@ export const createFreelancer = (_body) => {
                 const createFreelancerQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createFreelancer,
-                    values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.phone,createdtime:currentTime,token:uniqueId},
+                    values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.telephoneNumber,createdtime:currentTime,token:uniqueId},
                 }
                 await client.query(createFreelancerQuery);
                 
