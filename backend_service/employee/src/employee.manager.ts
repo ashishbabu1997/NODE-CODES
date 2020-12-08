@@ -413,7 +413,7 @@ export const tokenCheck = (_body) => {
                     resolve({ code: 200, message: "Success", data: {email:result.rows[0].email} });
                 }
                 else{
-                    reject({ code: 400, message: "Password already set.", data: {} })
+                    reject({ code: 400, message: "Password already updated", data: {} })
                 }
 
                 await client.query('COMMIT')
