@@ -1,6 +1,9 @@
 import CloudProficiencyQuery from './query/CloudProficiencyQuery';
 import database from '../common/database/database';
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Fetch all cloud proficiency lists from database
 export const fetchCloudProficiency = () => {
     return new Promise((resolve, reject) => {
         const query = {
@@ -18,6 +21,9 @@ export const fetchCloudProficiency = () => {
     });
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Create a new cloud proficiency
 export const createNewCloudProficiency = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -36,6 +42,9 @@ export const createNewCloudProficiency = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update cloud proficiency details
 export const modifyCloudProficiency = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -54,6 +63,9 @@ export const modifyCloudProficiency = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Remove cloud proficiency from database
 export const removeCloudProficiency = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);

@@ -1,6 +1,9 @@
 import servicesQuery from './query/ServicesQuery';
 import database from '../common/database/database';
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get all services from database
 export const getServices = () => {
     return new Promise((resolve, reject) => {
         const query = {
@@ -18,6 +21,9 @@ export const getServices = () => {
     });
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Create new service 
 export const createNewServices = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -36,6 +42,9 @@ export const createNewServices = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update services
 export const updateServiceType = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -54,6 +63,10 @@ export const updateServiceType = (_body) => {
     })
 }
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Delete services
 export const deleteServiceType = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);

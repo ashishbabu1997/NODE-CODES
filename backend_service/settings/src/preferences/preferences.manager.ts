@@ -1,6 +1,10 @@
 import preferencesQuery from './query/preferences.query';
 import database from '../common/database/database';
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get the company currency preference
 export const getPreferences = (_body) => {
     return new Promise((resolve, reject) => {
         const fetchQuery = {
@@ -19,6 +23,10 @@ export const getPreferences = (_body) => {
     });
 }
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update cthe preference
 export const updateCompanyProfilePreferences = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -37,6 +45,9 @@ export const updateCompanyProfilePreferences = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Hide the details of company while projection
 export const enableMasking = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);

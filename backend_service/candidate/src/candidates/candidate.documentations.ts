@@ -1,6 +1,6 @@
 /**
 * @swagger
-* /listCandidates:
+* /candidates/listCandidates:
 *   get:
 *     tags:
 *       - Candidates
@@ -47,7 +47,7 @@
 
 /**
 * @swagger
-* /listFreeCandidates:
+* /candidates/listFreeCandidates:
 *   get:
 *     tags:
 *       - Candidates
@@ -64,7 +64,7 @@
 *         name: sortBy
 *         schema:
 *           type: string
-*         enum: [candidateId,candidateFirstName,candidatelastName,email,phoneNumber,companyName]
+*         enum: [candidateId,candidateFirstName,candidatelastName,email,phoneNumber,companyName,updatedOn]
 *       - in: query
 *         name: sortType
 *         schema:
@@ -90,7 +90,7 @@
 
 /**
 * @swagger
-* /resume:
+* /candidates/resume:
 *   get:
 *     tags:
 *       - Candidates
@@ -123,7 +123,146 @@
 
 /**
 * @swagger
-* /candidateApproveReject:
+* /candidates/sharedResumeData:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Fetch resume data
+*     summary: Fetch all the datas required for displaying shared resume
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: token
+*         schema:
+*         required:
+*           type: string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/initialSharedResumeData:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Fetch resume data
+*     summary: Fetch few details for displaying shared resume
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: token
+*         schema:
+*         required:
+*           type: string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/resumeSharedEmails:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Fetch emails shared for a resume
+*     summary: Fetch all emails the resume have been shared to
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*         required:
+*           type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/resumeShareLink:
+*   post:
+*     tags:
+*       - Candidates
+*     name: Share resume link
+*     summary: Generate a sharable link for resumes for shared emails.
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer            
+*             sharedEmails:
+*               type: array
+*               items:
+*                 type: string
+*           required:
+*             - candidateId
+*             - sharedEmails
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/candidateApproveReject:
 *   post:
 *     tags:
 *       - Candidates
@@ -170,7 +309,7 @@
 
 /**
 * @swagger
-* /requestForInterview:
+* /candidates/requestForInterview:
 *   post:
 *     tags:
 *       - Candidates
@@ -209,7 +348,7 @@
 
 /**
 * @swagger
-* /review:
+* /candidates/review:
 *   post:
 *     tags:
 *       - Candidates
@@ -255,7 +394,7 @@
 
 /**
 * @swagger
-* /candidateVettingStatus:
+* /candidates/candidateVettingStatus:
 *   put:
 *     tags:
 *       - Candidates
@@ -296,7 +435,7 @@
 
 /**
 * @swagger
-* /linkCandidateToPosition:
+* /candidates/linkCandidateToPosition:
 *   put:
 *     tags:
 *       - Candidates
@@ -343,7 +482,7 @@
 
 /**
 * @swagger
-* /updateLanguageProficiency:
+* /candidates/updateLanguageProficiency:
 *   put:
 *     tags:
 *       - Candidates
@@ -390,7 +529,7 @@
 
 /**
 * @swagger
-* /updateAvailability:
+* /candidates/updateAvailability:
 *   put:
 *     tags:
 *       - Candidates
@@ -434,7 +573,7 @@
 
 /**
 * @swagger
-* /updateProfileDetails:
+* /candidates/updateProfileDetails:
 *   put:
 *     tags:
 *       - Candidates
@@ -488,7 +627,7 @@
 
 /**
 * @swagger
-* /updateProject:
+* /candidates/updateProject:
 *   put:
 *     tags:
 *       - Candidates
@@ -550,7 +689,7 @@
 
 /**
 * @swagger
-* /updateWorkExperience:
+* /candidates/updateWorkExperience:
 *   put:
 *     tags:
 *       - Candidates
@@ -607,7 +746,7 @@
 
 /**
 * @swagger
-* /updateEducation:
+* /candidates/updateEducation:
 *   put:
 *     tags:
 *       - Candidates
@@ -658,7 +797,7 @@
 
 /**
 * @swagger
-* /updateAward:
+* /candidates/updateAward:
 *   put:
 *     tags:
 *       - Candidates
@@ -701,9 +840,66 @@
 *       500:
 *         description: Server down
 */
+
 /**
 * @swagger
-* /updateSocialProfile:
+* /candidates/updateSkill:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Update skills 
+*     description:  action ['add' ,'update' ,'delete']
+*     summary: Add or edit candidate skill details
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer
+*             candidateSkillId:
+*               type: integer
+*             skill:
+*               type: object
+*               properties:
+*                 skillId:
+*                   type: integer
+*             yoe:
+*               type: number
+*             skillVersion:
+*               type: string
+*             competency:
+*               type: number
+*             preferred:
+*               type: boolean
+*             action:
+*               type: string
+*           required:
+*             - candidateId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+/**
+* @swagger
+* /candidates/updateSocialProfile:
 *   put:
 *     tags:
 *       - Candidates
@@ -735,10 +931,6 @@
 *               type: boolean
 *             stackoverflowLink:
 *               type: string
-*             kaggle:
-*               type: boolean
-*             kaggleLink:
-*               type: string
 *           required: [candidateId]
 *     responses:
 *       200:
@@ -755,7 +947,7 @@
 
 /**
 * @swagger
-* /updateCloudProficiency:
+* /candidates/updateCloudProficiency:
 *   put:
 *     tags:
 *       - Candidates
@@ -775,16 +967,15 @@
 *           properties:
 *             candidateId:
 *               type: integer
-*             aws:
-*               type: boolean
-*             gcp:
-*               type: boolean
-*             azure:
-*               type: boolean
-*             ibm:
-*               type: boolean
-*             oracle:
-*               type: boolean
+*             cloudProficiency:
+*               type: array
+*               items:
+*                 type: object
+*                 properties:
+*                   cloudProficiencyId:
+*                     type: integer
+*                   cloudProficiencyName:
+*                     type: string
 *           required: [candidateId]
 *     responses:
 *       200:
@@ -802,7 +993,7 @@
 
 /**
 * @swagger
-* /updatePublication:
+* /candidates/updatePublication:
 *   put:
 *     tags:
 *       - Candidates
@@ -850,7 +1041,98 @@
 
 /**
 * @swagger
-* /updateResumeFile:
+* /candidates/userSignup:
+*   post:
+*     tags:
+*       - Candidates
+*     name: New user signup
+*     description:  user signup using resume share
+*     summary: new user signsup using resume share link
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             firstName:
+*               type: string
+*             lastName:
+*               type: string
+*             email:
+*               type: string
+*             telephoneNumber:
+*               type: string
+*             token:
+*               type: string
+*           required: [email,firstName,token]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+/**
+* @swagger
+* /candidates/updateAssesmentLinkAndStatus:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Update assessment links and status
+*     description:  type ('codeTest','interviewTest') when type is codeTest interviewTestLink & interviewTestStatus is not required and vice versa
+*     summary: Edit candidate assesment links and test realted status
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer
+*             type:
+*               type: string
+*               description: codeTest or interviewTest
+*             link:
+*               type: string
+*             status:
+*               type: integer
+*               description: by default will be null.For codeTest,status will be 1.For interview test,it will be 1-scheduled,2-completed
+*           required: [candidateId,type]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/updateResumeFile:
 *   put:
 *     tags:
 *       - Candidates
@@ -888,9 +1170,10 @@
 */
 
 
+
 /**
 * @swagger
-* /updateOverallWorkExperience:
+* /candidates/updateOverallWorkExperience:
 *   put:
 *     tags:
 *       - Candidates
@@ -939,7 +1222,7 @@
 
 /**
 * @swagger
-* /:
+* /candidates/:
 *   delete:
 *     tags:
 *       - Candidates
@@ -979,7 +1262,7 @@
 
 /**
 * @swagger
-* /deleteCandidate:
+* /candidates/deleteCandidate:
 *   delete:
 *     tags:
 *       - Candidates
@@ -1001,6 +1284,39 @@
 *               type: integer
 *           required:
 *             - candidateId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/getAssesmentLinks:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Fetch assesment links
+*     summary: Fetch all the assesment links of the candidate
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*         required:
+*           type: integer
 *     responses:
 *       200:
 *         description: Api success

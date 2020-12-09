@@ -18,24 +18,9 @@ export default {
         "user": "sales@ellow.io",
         "password": "yteinevvuuchtmvb"
     },
-    "text": {
-        "firstLine": "Hello,",
-        "secondLine": "<h3>A position has been created by a company!</h3>",
-        "thirdLine": "<h3>Given below are the details</h3>",
-        "subject":"Position Creation Notification",
-        "name":"Company Name",
-        "positionName":"Position Name",
-        "fourthLine":"With regards,",
-        "fifthLine": "Team ellow.io"
-
-
-    },
+   
     "PositionText": {
-        "subject":"Position Deletion Alert",
-        "firstLine": "Hello,",
-        "secondLine": "For queries contact us at sales@ellow.io",
-        "thirdLine": "With regards,",
-        "fourthLine": "Team ellow.io"
+        "subject":"Position Deletion Alert"
     },
     "nextLine": "<br>",
     "colon":":"

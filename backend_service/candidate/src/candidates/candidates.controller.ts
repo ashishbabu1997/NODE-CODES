@@ -1,4 +1,5 @@
-import { getCandidateDetails,fetchResumeData,modifyResumeFile,addResumeShareLink,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience } from './candidates.manager';
+import { getCandidateDetails,initialSharedResumeData,getSharedEmails,updateTestResults,modifySkill,fetchResumeData,modifyResumeFile,addResumeShareLink,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience,getAssesmentLinks,shareResumeSignup } from './candidates.manager';
+
 import sendResponse from '../common/response/response';
 
 export const candidateDetails = (req, res) => {
@@ -33,6 +34,15 @@ export const candidateReview = (req, res) => {
     addCandidateReview(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
 }
+
+
+export const updateAssesmentLinkAndStatus = (req, res) => {
+    const body = req.body;
+    updateTestResults(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
+}
+
+
 export const candidateVettingStatus = (req, res) => {
     const body = req.body;
     editVettingStatus(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
@@ -149,6 +159,16 @@ export const updateAward = (req, res) => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)
     })
 }
+
+export const updateSkill = (req, res) => {
+    const body = req.body;
+    modifySkill(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
 export const updatePublication = (req, res) => {
     const body = req.body;
     modifyPublication(body).then((response: any) => {
@@ -172,8 +192,26 @@ export const WorkExperience = (req, res) => {
 }
 
 export const resumeShareLink = (req, res) => {
-    const body = req.query;
+    const body = req.body;
     addResumeShareLink(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
+export const resumeSharedEmails = (req, res) => {
+    const body = req.query;
+    getSharedEmails(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
+export const initialResumeData = (req, res) => {
+    const body = req.query;
+    initialSharedResumeData(body).then((response: any) => {
         sendResponse(res, response.code, 1, 201, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)
@@ -187,4 +225,15 @@ export const sharedResumeData = (req, res) => {
     }).catch(error => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)
     })
+}
+export const fetchAssesmentLinks = (req, res) => {
+    const body = req.query;
+    getAssesmentLinks(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
+
+export const newUserSignup = (req, res) => {
+    const body = req.body;
+    shareResumeSignup(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
