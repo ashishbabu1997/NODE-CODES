@@ -302,9 +302,7 @@ export const createFreelancer = (_body) => {
                     text: employeeQuery.createFreelancer,
                     values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.telephoneNumber,createdtime:currentTime,token:uniqueId},
                 }
-                await client.query(createFreelancerQuery);
-                
-                await client.query('COMMIT')
+                let result=await client.query(createFreelancerQuery);
                 let Name = _body.firstName + " " + _body.lastName
                 let companyName = "Freelancer"
                 let emailAddress = _body.email
@@ -313,17 +311,17 @@ export const createFreelancer = (_body) => {
                 
                 let adminReplacement = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number};
                 let path = 'src/emailTemplates/applicationText.html';
-                
+                const message = `A new employee ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer`
+                createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:4,employeeId:null,firstName:_body.firstName,lastName:_body.lastName})
                 emailClient.emailManager(config.adminEmail,config.text.subject,path,adminReplacement);
                 let freelancerReplacements = {
                     applicantName:Name,
                     link:verificationLink,
                 };
                 var companyId=22
-                const message = `A new employee ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer`
                 path ='src/emailTemplates/sendLinkText.html';
                 emailClient.emailManager(loweremailId,config.text.userSubject,path,freelancerReplacements);
-                await createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId,employeeId:_body.employeeId,firstName:_body.firstName,lastName:_body.lastName})
+                await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
                 console.log(e)
