@@ -503,3 +503,4 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId]
         }
     }
+ 

@@ -657,9 +657,21 @@ export const getCandidateDetails = (_body) => {
                             text: candidateQuery.linkCandidateWithPosition,
                             values: [positionId, element.candidateId, _body.employeeId, currentTime],
                         }
+                        const getPositionNames = {
+                            name: 'get-position-details',
+                            text: candidateQuery.getPositionDetails,
+                            values: [_body.positionId],
+                        }
+                        var positionResult=client.query(getPositionNames)
+                        var positionName=positionResult.rows[0].positionName
+                        var jobReceivedId=positionResult.rows[0].jobReceivedId
+                        let imageResults= client.query(queryService.getImageDetails(element))
+                        var firstName=imageResults.rows[0].candidate_first_name
+                        var lastName=imageResults.rows[0].candidate_last_name
+                        let message=`${firstName + ' ' + lastName} has been added for the position ${positionName}`
+                        createNotification({ positionId, jobReceivedId:jobReceivedId, companyId: _body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'candidateChange',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                         promise.push(client.query(linkCandidateQuery));
                     });
-                    
                     await Promise.all(promise);
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
