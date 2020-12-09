@@ -5,7 +5,7 @@ export default {
         "port": 4003
     },
     "jwtSecretKey": "elL0wA!",
-    "adminEmail":"jjoseph@ellow.io",
+    "adminEmail":"lakshmi.n@ellow.io",
     "db": {
         "user": "devdb_user",
         "host": "52.66.51.51",
