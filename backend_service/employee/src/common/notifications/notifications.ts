@@ -12,7 +12,7 @@ export const createNotification = async (_body) => {
                 const changePositionStatusQuery = {
                     name: 'create-notification',
                     text: notificationsQuery.createNotification,
-                    values: [ _body.message, _body.companyId, _body.notificationType, currentTime,_body.userRoleId,_body.employeeId,_body.firstName,_body.lastName]
+                    values: [_body.companyId, _body.notificationType, currentTime,_body.userRoleId,_body.employeeId,_body.firstName,_body.lastName, _body.message]
                 }
                 await client.query(changePositionStatusQuery);
                 await client.query('COMMIT');
