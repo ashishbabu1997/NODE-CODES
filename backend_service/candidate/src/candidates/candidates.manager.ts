@@ -641,17 +641,19 @@ export const getCandidateDetails = (_body) => {
     // >>>>>>>>>> Link the candidates to a particular position .
     export const linkCandidateWithPosition = (_body) => {
         return new Promise((resolve, reject) => {
-            const candidateList = _body.candidates;
-            const positionId = _body.positionId;
-            var positionName='';
-            var names=''
-            const currentTime = Math.floor(Date.now());
             (async () => {
                 const client = await database().connect()
                 try {
                     await client.query('BEGIN');
                     let promise = [];
-
+                    const candidateList = _body.candidates;
+                    const positionId = _body.positionId;
+                    let positionName='';
+                    let hirerName='';
+                    var names:string=''
+                    let count=0
+                    const currentTime = Math.floor(Date.now());
+                   
                     // Get position realted details
                     const getPositionNames = {
                         name: 'get-position-details',
@@ -660,6 +662,7 @@ export const getCandidateDetails = (_body) => {
                     }
                     var positionResult=await client.query(getPositionNames);
                     positionName=positionResult.rows[0].positionName
+                    hirerName=positionResult.rows[0].hirerName
                     var jobReceivedId=positionResult.rows[0].jobReceivedId
                     
                     // Inserting candidates to candidate_positions table
@@ -669,26 +672,36 @@ export const getCandidateDetails = (_body) => {
                             text: candidateQuery.linkCandidateWithPosition,
                             values: [positionId, element.candidateId, _body.employeeId, currentTime],
                         }
+                        count=count+1
                         promise.push(client.query(linkCandidateQuery));
                     });
                     await Promise.all(promise);
                     
                     // Sending notification to ellow recuiter for each candidate linked to a position
                     candidateList.forEach(async element => {
-                        let imageResults = await client.query(queryService.getImageDetails(element))                        
+                        let imageResults =  await client.query(queryService.getImageDetails(element))                        
                         var firstName=imageResults.rows[0].candidate_first_name
                         var lastName=imageResults.rows[0].candidate_last_name
-                        names=names+"\n"+firstName+" "+lastName
-                        let message=`${firstName + ' ' + lastName} has been added for the position ${positionName}`
-                        createNotification({ positionId, jobReceivedId:jobReceivedId, companyId: _body.companyId, message:message, candidateId:element.candidateId, notificationType: 'candidateChange',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
-                    });
-                    
-                    let replacements = {
+                        names=names+"/n"+firstName+" "+lastName
+                        var email=imageResults.rows[0].email_address
+                        let replacements = {
+                        name:firstName,
                         positionName:positionName,
-                        names:names
-                    };
-                    let path = 'src/emailTemplates/addCandidatesText.html';
-                    emailClient.emailManager(config.adminEmail,config.text.addCandidatesTextSubject,path,replacements);
+                        companyName:hirerName
+                        };
+                        let path = 'src/emailTemplates/addCandidatesUsersText.html';
+                        emailClient.emailManager(email,config.text.addCandidatesUsersTextSubject,path,replacements);
+                    });  
+                    let message=`${count} candidates has been added for the position ${positionName}`
+                    createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId: _body.companyId, message:message, candidateId:null, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:null,firstName:null,lastName:null})
+                    // console.log(names)
+                    // let replacements = {
+                    //     positionName:positionName,
+                    //     names:names
+                    // };
+                    // let path = 'src/emailTemplates/addCandidatesText.html';
+                    // emailClient.emailManager(config.adminEmail,config.text.addCandidatesTextSubject,path,replacements);
+                    
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
                 } catch (e) {

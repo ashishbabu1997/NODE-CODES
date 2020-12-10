@@ -10,7 +10,8 @@ export default {
         "shareEmailSubject":"ellow Resume Share Notification",
         "newUserTextSubject":"ellow LOGIN PASSWORD",
         "newUserAdminTextSubject":"New Employee Notification",
-        "addCandidatesTextSubject":"Added Candidates List"
+        "addCandidatesTextSubject":"Added Candidates List",
+        "addCandidatesUsersTextSubject":"Profile Selection Notification"
     },
     "db": {
         "user": "devdb_user",
@@ -19,7 +20,7 @@ export default {
         "password": "DevD8u5er",
         "port": 5432
     },
-    "adminEmail":"deena.s@ellow.io",
+    "adminEmail":"ashish.babu@ellow.io",
     "mail": {
         "service": "gmail",
         "user": "sales@ellow.io",
