@@ -67,6 +67,9 @@ export const createEmployee = (_body) => {
                     text: employeeQuery.createEmployee,
                     values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus],
                 }
+                let message=`A new user ${_body.firstName + ' ' + _body.lastName} with company name ${_body.companyName} has registered with us`
+                createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:2,employeeId:null,firstName:_body.firstName,lastName:_body.lastName})
+
                 await client.query(createEmployeeQuery);
                 
                 // create an entry in settings table later used for company preferences like currency

@@ -81,6 +81,7 @@ export default {
     getCompanyId:'SELECT company_id FROM employee WHERE employee_id=$1',
     insertUserDetails:'INSERT INTO employee (firstname,lastname,email,telephone_number,company_id,password,created_on,updated_on,status,account_type,user_role_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$7,$8,$8)',
     checkEMail:'SELECT * from employee WHERE email like $1',
-    getEmployeeEmailFromId:'SELECT email FROM employee WHERE employee_id=$1'
+    getEmployeeEmailFromId:'SELECT email FROM employee WHERE employee_id=$1',
+    getPositionName:'select position_name as "positionName" from positions where position_id=$1'
 
 }

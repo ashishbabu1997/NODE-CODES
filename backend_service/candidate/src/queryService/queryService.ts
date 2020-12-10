@@ -503,3 +503,12 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId]
         }
     }
+    
+    export const getPositionsDetails = (_body) => {
+        console.log(_body.positionId)
+        return {
+            name: 'get-image-names',
+            text: candidateQuery.getPositionName,
+            values:[_body.positionId]
+        }
+    }

@@ -641,27 +641,69 @@ export const getCandidateDetails = (_body) => {
     // >>>>>>>>>> Link the candidates to a particular position .
     export const linkCandidateWithPosition = (_body) => {
         return new Promise((resolve, reject) => {
-            const candidateList = _body.candidates;
-            const positionId = _body.positionId;
-            const currentTime = Math.floor(Date.now());
             (async () => {
                 const client = await database().connect()
                 try {
                     await client.query('BEGIN');
                     let promise = [];
+                    const candidateList = _body.candidates;
+                    const positionId = _body.positionId;
+                    let positionName='';
+                    let hirerName='';
+                    var names=''
+                    let count=0
+                    const currentTime = Math.floor(Date.now());
+                   
+                    // Get position realted details
+                    const getPositionNames = {
+                        name: 'get-position-details',
+                        text: candidateQuery.getPositionDetails,
+                        values: [_body.positionId],
+                    }
+                    var positionResult=await client.query(getPositionNames);
+                    positionName=positionResult.rows[0].positionName
+                    hirerName=positionResult.rows[0].hirerName
+                    var jobReceivedId=positionResult.rows[0].jobReceivedId
                     
+                    // Inserting candidates to candidate_positions table
                     candidateList.forEach(element => {
-                        // Inserting position details to the candidates field.
                         const linkCandidateQuery = {
                             name: 'link-candidate-with-position',
                             text: candidateQuery.linkCandidateWithPosition,
                             values: [positionId, element.candidateId, _body.employeeId, currentTime],
                         }
+                        count=count+1
                         promise.push(client.query(linkCandidateQuery));
                     });
-                    
                     await Promise.all(promise);
+                    
+                    // Sending notification to ellow recuiter for each candidate linked to a position
+                    candidateList.forEach(async element => {
+                        let imageResults =  await client.query(queryService.getImageDetails(element))                        
+                        var firstName=imageResults.rows[0].candidate_first_name
+                        var lastName=imageResults.rows[0].candidate_last_name
+                        names=
+                        names=names+"\n"+firstName+" "+lastName+","
+                        var email=imageResults.rows[0].email_address
+                        let replacements = {
+                        name:firstName,
+                        positionName:positionName,
+                        companyName:hirerName
+                        };
+                        let path = 'src/emailTemplates/addCandidatesUsersText.html';
+                        emailClient.emailManager(email,config.text.addCandidatesUsersTextSubject,path,replacements);
+                    });  
                     await client.query('COMMIT')
+                    let message=`${count} candidates has been added for the position ${positionName}`
+                    createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId: _body.companyId, message:message, candidateId:null, notificationType: 'candidateList',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:null,firstName:null,lastName:null})
+                    console.log(names)
+                    let replacements = {
+                        positionName:positionName,
+                        names:names
+                    };
+                    let path = 'src/emailTemplates/addCandidatesText.html';
+                    emailClient.emailManager(config.adminEmail,config.text.addCandidatesTextSubject,path,replacements);
+                    
                     resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
                 } catch (e) {
                     console.log(e)
@@ -675,9 +717,6 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
-    
-    
-    
     // >>>>>>> FUNC. >>>>>>>
     // >>>>>>>>>> Remove a freely added candidate.
     export const removeCandidate = (_body) => {
@@ -1330,10 +1369,10 @@ export const getCandidateDetails = (_body) => {
                         
                         let domainResult = await client.query(queryService.getDomainFromEmployeeId(_body));
                         domain = domainResult.rows[0].domain;
-
+                        
                         let filteredEmails = _body.sharedEmails.filter((element)=> element.endsWith('@'+domain));
                         _body.sharedEmails.length!=filteredEmails.length?flag=1:'';
-
+                        
                         _body.sharedEmails = filteredEmails;                        
                         let result = await client.query(queryService.addResumeShare(_body));
                         let results = await client.query(queryService.getNames(_body));
@@ -1358,12 +1397,12 @@ export const getCandidateDetails = (_body) => {
                                 });
                             } 
                         }
-
+                        
                         if(flag==0)
                         resolve({ code: 200, message: "Candidate resume share link updated", data: sharedEmails });
                         else
                         resolve({ code: 201, message: "Some of the emails shared does not belong to your company email domain", data: sharedEmails });
-
+                        
                     }
                     else
                     {
@@ -1417,21 +1456,21 @@ export const getCandidateDetails = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-                        console.log("1");
+                    console.log("1");
+                    
+                    let result = await client.query(queryService.getSharedEmailsWithToken(_body));
+                    console.log("result : ",result.rows);
+                    
+                    if(result.rows[0]['sharedEmails'].includes(_body.email))
+                    {
+                        console.log("inside if ");
                         
-                        let result = await client.query(queryService.getSharedEmailsWithToken(_body));
-                        console.log("result : ",result.rows);
-
-                        if(result.rows[0]['sharedEmails'].includes(_body.email))
+                        let emailCheck = await client.query(queryService.getEmail(_body));
+                        
+                        console.log("email check ",emailCheck);
+                        
+                        if(emailCheck.rowCount==0)
                         {
-                            console.log("inside if ");
-
-                            let emailCheck = await client.query(queryService.getEmail(_body));
-
-                            console.log("email check ",emailCheck);
-
-                           if(emailCheck.rowCount==0)
-                           {
                             const getId = {
                                 name: 'get-company-id',
                                 text: candidateQuery.getCompanyId,
@@ -1461,7 +1500,7 @@ export const getCandidateDetails = (_body) => {
                                 lastName:_body.lastName,
                                 email:_body.email,
                                 phone:_body.telephoneNumber
-        
+                                
                             };
                             let adminPath = 'src/emailTemplates/newUserAdminText.html';
                             emailClient.emailManager(config.adminEmail,config.text.newUserAdminTextSubject,adminPath,adminReplacements);
@@ -1474,7 +1513,7 @@ export const getCandidateDetails = (_body) => {
                     } 
                     else{
                         reject({ code: 400, message: "You do not have sufficient permissions to access this resume", data: {} });
-
+                        
                     }          
                     
                 } catch (e) {
@@ -1501,7 +1540,7 @@ export const getCandidateDetails = (_body) => {
                     if(result.rows[0])
                     {
                         let emailResult = await client.query(queryService.getEmailFromEmployeeId(_body));
-
+                        
                         
                         if(result.rows[0].shared_emails.includes(emailResult.rows[0].email))
                         {
@@ -1511,7 +1550,7 @@ export const getCandidateDetails = (_body) => {
                             delete data["data"].assesmentLink;
                             delete data["data"].assesementComment;
                             delete data["data"].assesments;
-
+                            
                             resolve({ code: 200, message: "Candidate resume listed successfully", data:data["data"] });
                         }
                         else
