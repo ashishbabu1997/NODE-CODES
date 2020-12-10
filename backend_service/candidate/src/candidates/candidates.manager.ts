@@ -695,7 +695,7 @@ export const getCandidateDetails = (_body) => {
                     });  
                     await client.query('COMMIT')
                     let message=`${count} candidates has been added for the position ${positionName}`
-                    createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId: _body.companyId, message:message, candidateId:null, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:null,firstName:null,lastName:null})
+                    createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId: _body.companyId, message:message, candidateId:null, notificationType: 'candidateList',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:null,firstName:null,lastName:null})
                     console.log(names)
                     let replacements = {
                         positionName:positionName,
