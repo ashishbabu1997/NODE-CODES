@@ -696,9 +696,6 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
-    
-    
-    
     // >>>>>>> FUNC. >>>>>>>
     // >>>>>>>>>> Remove a freely added candidate.
     export const removeCandidate = (_body) => {

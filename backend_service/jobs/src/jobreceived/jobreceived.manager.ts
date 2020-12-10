@@ -265,6 +265,7 @@ export const submitCandidateProfile = (_body) => {
                 var subject='New Candidate Notification'
                 if(![null,undefined,""].includes(_body.positionId))
                 {
+
                     const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been submitted for the position ${positionName} `
                     await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     let path = 'src/emailTemplates/candidateAdditionText.html';
@@ -274,6 +275,19 @@ export const submitCandidateProfile = (_body) => {
                         position:positionName,     
                     };
                     emailClient.emailManager(config.adminEmail,subject,path,userReplacements);
+                }
+                else
+                {
+                    const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been submitted for veting `
+                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
+                    var status='vetting';
+                    let path = 'src/emailTemplates/candidateAdditionText.html';
+                    var replacements =  {
+                        first:candidateFirstName,
+                        last:candidateLastName,
+                        position:status   
+                    };
+                    emailClient.emailManager(config.adminEmail,subject,path,replacements); 
                 }
                 
                 resolve({ code: 200, message: "Candidate profile submitted", data: {} });
