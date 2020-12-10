@@ -650,7 +650,7 @@ export const getCandidateDetails = (_body) => {
                     const positionId = _body.positionId;
                     let positionName='';
                     let hirerName='';
-                    var names:string=''
+                    var names=''
                     let count=0
                     const currentTime = Math.floor(Date.now());
                    
@@ -682,7 +682,8 @@ export const getCandidateDetails = (_body) => {
                         let imageResults =  await client.query(queryService.getImageDetails(element))                        
                         var firstName=imageResults.rows[0].candidate_first_name
                         var lastName=imageResults.rows[0].candidate_last_name
-                        names=names+"/n"+firstName+" "+lastName
+                        names=
+                        names=names+"\n"+firstName+" "+lastName+","
                         var email=imageResults.rows[0].email_address
                         let replacements = {
                         name:firstName,
@@ -692,17 +693,17 @@ export const getCandidateDetails = (_body) => {
                         let path = 'src/emailTemplates/addCandidatesUsersText.html';
                         emailClient.emailManager(email,config.text.addCandidatesUsersTextSubject,path,replacements);
                     });  
+                    await client.query('COMMIT')
                     let message=`${count} candidates has been added for the position ${positionName}`
                     createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId: _body.companyId, message:message, candidateId:null, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:null,firstName:null,lastName:null})
-                    // console.log(names)
-                    // let replacements = {
-                    //     positionName:positionName,
-                    //     names:names
-                    // };
-                    // let path = 'src/emailTemplates/addCandidatesText.html';
-                    // emailClient.emailManager(config.adminEmail,config.text.addCandidatesTextSubject,path,replacements);
+                    console.log(names)
+                    let replacements = {
+                        positionName:positionName,
+                        names:names
+                    };
+                    let path = 'src/emailTemplates/addCandidatesText.html';
+                    emailClient.emailManager(config.adminEmail,config.text.addCandidatesTextSubject,path,replacements);
                     
-                    await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
                 } catch (e) {
                     console.log(e)
