@@ -90,6 +90,54 @@
 
 /**
 * @swagger
+* /candidates/listForAddFromListCandidates:
+*   get:
+*     tags:
+*       - Candidates
+*     name: List available candidates
+*     summary: list available candidates for applying against a position
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: positionId
+*         schema:
+*         required:
+*           type: integer
+*       - in: query
+*         name: sortBy
+*         schema:
+*           type: string
+*         enum: [candidateId,candidateFirstName,candidatelastName,email,phoneNumber,companyName,updatedOn]
+*       - in: query
+*         name: sortType
+*         schema:
+*           type: string
+*         enum: [asc,desc]
+*         example: asc
+*       - in: query
+*         name: filter
+*         schema:
+*           type: string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /candidates/resume:
 *   get:
 *     tags:
