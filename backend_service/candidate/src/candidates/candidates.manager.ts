@@ -666,17 +666,33 @@ export const getCandidateDetails = (_body) => {
                     var jobReceivedId=positionResult.rows[0].jobReceivedId
                     
                     // Inserting candidates to candidate_positions table
-                    candidateList.forEach(element => {
-                        const linkCandidateQuery = {
-                            name: 'link-candidate-with-position',
-                            text: candidateQuery.linkCandidateWithPosition,
-                            values: [positionId, element.candidateId, _body.employeeId, currentTime],
-                        }
-                        count=count+1
-                        promise.push(client.query(linkCandidateQuery));
-                    });
-                    await Promise.all(promise);
-                    
+                    if (_body.userRoleId==1)
+                    {
+                        candidateList.forEach(element => {
+                            const linkCandidateByAdminQuery = {
+                                name: 'link-candidate-with-position',
+                                text: candidateQuery.linkCandidateWithPositionByAdmin,
+                                values: [positionId, element.candidateId, _body.employeeId, currentTime,_body.ellowRate,_body.currencyTypeId,_body.billingType,_body.adminComment,1],
+                            }
+                            count=count+1
+                            promise.push(client.query(linkCandidateByAdminQuery));
+                        });
+                        await Promise.all(promise);
+                    }
+                    else{
+                        candidateList.forEach(element => {
+                            const linkCandidateQuery = {
+                                name: 'link-candidate-with-position',
+                                text: candidateQuery.linkCandidateWithPosition,
+                                values: [positionId, element.candidateId, _body.employeeId, currentTime],
+                            // ellowrate,currencytypeid,billing type,admincomment,admin approve status -1
+                            // check user role id 
+                            }
+                            count=count+1
+                            promise.push(client.query(linkCandidateQuery));
+                        });
+                        await Promise.all(promise);
+                    }
                     // Sending notification to ellow recuiter for each candidate linked to a position
                     candidateList.forEach(async element => {
                         let imageResults =  await client.query(queryService.getImageDetails(element))                        
