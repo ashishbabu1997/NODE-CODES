@@ -18,7 +18,7 @@ export default {
     getSellerMail: 'SELECT e.email as "email",c.candidate_first_name as "cFirstName",c.candidate_last_name as "cLastName" FROM employee e LEFT JOIN candidate c ON c.company_id=e.company_id WHERE c.candidate_id=$1',
     getPositionDetails: 'SELECT p.position_name as "positionName",c.company_name as "hirerName",j.job_received_id as "jobReceivedId" FROM positions p LEFT JOIN company c ON c.company_id=p.company_id LEFT JOIN job_received j ON j.position_id=p.position_id WHERE p.position_id=$1',
     linkCandidateWithPosition: `INSERT INTO candidate_position(position_id, candidate_id, job_receievd_id, billing_type, currency_type_id, created_by, updated_by, created_on, updated_on) select position_id, $2, job_category_id, billing_type, currency_type_id, $3, $3, $4, $4 from positions where position_id = $1 on conflict on constraint candidate_position_candidate_id_position_id_unique_key do update set updated_on=$4, updated_by=$3, status= true`,
-    linkCandidateWithPositionByAdmin:`INSERT INTO candidate_position(position_id, candidate_id, job_receievd_id, billing_type, currency_type_id, created_by, updated_by, created_on, updated_on,ellow_rate,currency_type_id,billing_type,admin_comment,admin_approve_status ) select position_id, $2, job_category_id,$3, $3, $4, $4,$5,$6,$7,$8,$9 from positions where position_id = $1 on conflict on constraint candidate_position_candidate_id_position_id_unique_key do update set updated_on=$4, updated_by=$3, status= true`,
+    linkCandidateWithPositionByAdmin:`INSERT INTO candidate_position(position_id, candidate_id, job_receievd_id,created_by, updated_by, created_on, updated_on,ellow_rate,currency_type_id,billing_type,admin_comment,admin_approve_status ) select position_id, $2, job_category_id,$3, $3, $4, $4,$5,$6,$7,$8,$9 from positions where position_id = $1 on conflict on constraint candidate_position_candidate_id_position_id_unique_key do update set updated_on=$4, updated_by=$3,ellow_rate=$5,currency_type_id=$6,billing_type=$7,admin_comment=$8,admin_approve_status=$9, status= true`,
 
     deleteCandidate: `update candidate set status = false, updated_on=$2, updated_by = $3 where candidate_id = $1`,
     
@@ -81,7 +81,7 @@ export default {
     getEmployeeName:'SELECT firstname,lastname FROM employee WHERE employee_id=$1',
     getSharedEmailsWithTokens:'select shared_emails as "sharedEmails",updated_by as "updatedBy" from candidate_resume_share where unique_key like $1',
     getCompanyId:'SELECT company_id FROM employee WHERE employee_id=$1',
-    insertUserDetails:'INSERT INTO employee (firstname,lastname,email,telephone_number,company_id,password,created_on,updated_on,status,account_type,user_role_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$7,$8,$8)',
+    insertUserDetails:'INSERT INTO employee (firstname,lastname,email,telephone_number,company_id,password,created_on,updated_on,status,account_type,user_role_id) VALUES ($1,$2,$3,$4,$5,$6,$7,$7,$8,$9,$9)',
     checkEMail:'SELECT * from employee WHERE email like $1',
     getEmployeeEmailFromId:'SELECT email FROM employee WHERE employee_id=$1',
     getPositionName:'select position_name as "positionName" from positions where position_id=$1',
