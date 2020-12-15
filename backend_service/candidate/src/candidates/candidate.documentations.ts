@@ -455,6 +455,14 @@
 *           properties:
 *             positionId:
 *               type: integer
+*             ellowRate:
+*               type: integer
+*             currencyTypeId:
+*               type: integer
+*             billingType:
+*               type: integer
+*             adminComment:
+*               type: string
 *             candidates:
 *               type: array
 *               items:
