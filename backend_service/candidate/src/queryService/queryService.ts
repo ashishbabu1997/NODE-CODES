@@ -1,5 +1,7 @@
 import candidateQuery from '../candidates/query/candidates.query';
 import freelancerQuery from '../freelancer/query/freelancer.query';
+import filterQuery from '../filter/query/filter.query';
+
 
 const currentTime = Math.floor(Date.now() );
 
@@ -505,10 +507,36 @@ export const insertCandidatePublicationQuery = (_body) => {
     }
     
     export const getPositionsDetails = (_body) => {
-        console.log(_body.positionId)
         return {
             name: 'get-image-names',
             text: candidateQuery.getPositionName,
             values:[_body.positionId]
         }
     }
+
+
+    // *******************************************************************************************************************************//
+    // -------------------------------------------Candidate filter related queries------------------------------------------------//
+
+    export const getCompanyNames = (_body) => {
+        return {
+            name: 'get-distinct-company-names',
+            text: filterQuery.getDistinctCompanyNames,
+        }
+    }
+
+    export const getfullNameAdmin = (_body) => {
+        return {
+            name: 'get-distinct-company-names',
+            text: filterQuery.getfullNameAdmin,
+        }
+    }
+
+    export const getPositionsAdmin = (_body) => {
+        return {
+            name: 'get-distinct-company-names',
+            // text: filterQuery.getfullNameAdmin,
+        }
+    }
+
+    
