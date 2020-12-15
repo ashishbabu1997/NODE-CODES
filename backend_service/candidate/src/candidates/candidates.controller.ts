@@ -1,4 +1,4 @@
-import { getCandidateDetails,initialSharedResumeData,getSharedEmails,updateTestResults,modifySkill,fetchResumeData,modifyResumeFile,addResumeShareLink,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience,getAssesmentLinks,shareResumeSignup } from './candidates.manager';
+import { getCandidateDetails,listAddFromListCandidates,initialSharedResumeData,getSharedEmails,updateTestResults,modifySkill,fetchResumeData,modifyResumeFile,addResumeShareLink,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience,getAssesmentLinks,shareResumeSignup } from './candidates.manager';
 
 import sendResponse from '../common/response/response';
 
@@ -17,6 +17,13 @@ export const listFreeCandidates = (req, res) => {
     listFreeCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
+
+export const listForAddFromListCandidates = (req, res) => {
+    const body = req;
+    listAddFromListCandidates(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
+
 export const approveRejectCandidates = (req, res) => {
     const body = req.body;
     candidateClearance(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
