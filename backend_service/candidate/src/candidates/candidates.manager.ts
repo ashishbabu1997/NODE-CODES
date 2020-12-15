@@ -292,6 +292,91 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
+
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>>>>>Listing required candidates for add from list from the candidates list.
+    export const listAddFromListCandidates = (_body) => {
+        return new Promise((resolve, reject) => {
+            var selectQuery = candidateQuery.getCandidateForAddFromList;
+            var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
+            body=_body.query, sort = '', searchKey = '%%';
+            
+            
+            
+            // Sorting keys with values
+            const orderBy = {
+                "candidateId": 'ca.candidate_id',
+                "candidateFirstName": 'ca.candidate_first_name',
+                "candidatelastName": 'ca.candidate_last_name',
+                "email": 'ca.email_address',
+                "phoneNumber": 'ca.phone_number',
+                "companyName": 'c.company_name',
+                "updatedOn" : 'ca.updated_on'
+            }
+            
+            
+            // Search for filters in the body
+            if(filter)
+            {            
+                if(filter.name)
+                {   
+                    filterQuery=filterQuery+' AND (ca.candidate_first_name ILIKE $name OR ca.candidate_last_name ILIKE $name) '
+                    queryValues = Object.assign({name:filter.candidateName})
+                }
+                if(filter.experience)
+                {
+                    filterQuery=filterQuery+' AND ca.work_experience = $experience'
+                    queryValues =  Object.assign({experience:filter.experience},queryValues)
+                }
+            }
+            
+            if(![undefined,null,''].includes(body.filter))
+            {
+                searchKey='%' + body.filter + '%';
+                searchQuery = " AND (ca.candidate_first_name ILIKE $searchkey OR ca.candidate_last_name ILIKE $searchkey OR c.company_name ILIKE $searchkey) "
+                queryValues=Object.assign({searchkey:searchKey},queryValues)
+            }
+            
+            if (body.userRoleId != 1) {
+                roleBasedQuery = " AND c.company_id = $companyid"
+                queryValues=Object.assign({companyid:body.companyId},queryValues)
+            }
+            else {
+                roleBasedQuery =  " AND (ca.candidate_status = 3 or (ca.candidate_status = 4 and ca.created_by= $employeeid))" 
+                queryValues=Object.assign({employeeid:body.employeeId},queryValues)
+            }
+            
+            if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+                sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;                
+            }
+            
+            (async () => {
+                const client = await database()
+                try {
+                    await client.query('BEGIN');
+                    queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+sort;
+                    queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
+                    
+                    const listCandidates = {
+                        name: 'get-addfromlist-candidates',
+                        text: queryText,
+                        values: queryValues
+                    }
+                    const candidatesResult = await client.query(listCandidates);
+                    await client.query('COMMIT')
+                    resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows } });
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            })
+        })
+    }
     
     
     // >>>>>>> FUNC. >>>>>>>
