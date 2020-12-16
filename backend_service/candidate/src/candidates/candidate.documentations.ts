@@ -489,6 +489,7 @@
 *       - Candidates
 *     name: Link to position
 *     summary: Add a candidate to a given open position
+*     description: For ellow recruiter,candidates array consists of candidateId,ellowrate,billingtype,currencytypeid,admincomment. For other users, candidates rray consists of only candidateId
 *     security:
 *       - bearerAuth: []
 *     consumes:
@@ -503,14 +504,6 @@
 *           properties:
 *             positionId:
 *               type: integer
-*             ellowRate:
-*               type: integer
-*             currencyTypeId:
-*               type: integer
-*             billingType:
-*               type: integer
-*             adminComment:
-*               type: string
 *             candidates:
 *               type: array
 *               items:
@@ -518,8 +511,14 @@
 *                 properties:
 *                   candidateId:
 *                     type: integer
-*                   sellerFee:
-*                     type: number
+*                   ellowRate:
+*                     type: integer
+*                   currencyTypeId:
+*                     type: integer
+*                   billingType:
+*                     type: integer
+*                   adminComment:
+*                     type: string
 *           required:
 *             - positionId
 *     responses:
