@@ -16,13 +16,28 @@ export const sendMail = (email, subject, html, callback) => {
         to: email, 
         subject,
         html,
-        // attachments:{
-        //     filename: 'sample.pdf',
-        //     path:'http://www.africau.edu/images/default/sample.pdf'
-        // }
     };
     
     transporter.sendMail(mailOptions, function (err, data) {
+        if (err) {
+            return callback(err, null);
+        }
+        return callback(null, data);
+    });
+}
+export const sendMailWithAttachments = (email, subject, html,attach, callback) => {
+    const mailOptions = {
+        from: config.mail.user, 
+        to: email, 
+        subject,
+        html,
+        attachments:{
+            filename: 'resume.pdf',
+            content:attach
+        }
+    };
+    
+    transporter.sendMailWithAttachments(mailOptions, function (err, data) {
         if (err) {
             return callback(err, null);
         }

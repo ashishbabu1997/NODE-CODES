@@ -1813,36 +1813,6 @@ export const getCandidateDetails = (_body) => {
         })
     }
 
-    export const checks = (_body) => {
-        return new Promise((resolve, reject) => {
-            const currentTime = Math.floor(Date.now() / 1000);
-            (async () => {
-                const client = await database().connect()
-                try {
-                            let adminReplacements = {
-                                firstName:"Ashish",
-                                lastName:"Babu",
-                                email:"Email",
-                                phone:"9874673748"
-                                
-                            };
-                            let adminPath = 'src/emailTemplates/newUserAdminText.html';
-                            emailClient.emailManager('lakshmi.n@ellow.io',config.text.newUserAdminTextSubject,adminPath,adminReplacements);
-                            await client.query('COMMIT')
-                            resolve({ code: 200, message: "Employee Added Successfully", data: {}})
-                        } catch (e) {
-                            console.log(e)
-                            await client.query('ROLLBACK')
-                            reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-                        } finally {
-                            client.release();
-                        }
-                    })().catch(e => {
-                        reject({ code: 400, message: "Failed. Please try again.", data:e.message })
-                    })
-                })
-            }   
-    
     
     // create pdf
     
@@ -1860,17 +1830,29 @@ export const getCandidateDetails = (_body) => {
                     
                     let oldEmailResult = await client.query(queryService.saveSharedEmailsForpdf(_body));
                     console.log("oldEmails : ",oldEmailResult.rows[0]);
-                    
-                    let options = { format: 'A4',path:'resume.pdf',printBackground:true };
+                    let options = { format: 'A4',printBackground:true,args :['--no-sandbox'] };
                     // Example of options with args //
                     // let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] };
                     // console.log(`Current directory: ${process.cwd()}`);
                     //  let file = {content: fs.readFileSync('./resume.html', 'utf8')};
                     
-                    let file = { url: "https://dev.ellow.io/sharePdf/"+uniqueId };
+                    // let file = { url: "https://dev.ellow.io/sharePdf/"+uniqueId };
+                    let file = { url:"https://en.wikipedia.org/wiki/Sunset"};
+                  
                     // or //
-                    await htmlToPdf.generatePdf(file, options).then(pdfBuffer => {
-                        console.log("PDF Buffer:-", pdfBuffer);
+                    await htmlToPdf.generatePdf(file, options).then(pdfBuffer => 
+                        {
+                            if (Array.isArray(_body.sharedEmails))
+                            {
+                                _body.sharedEmails.forEach(element => {
+                                    
+                                        let replacements = {
+                        
+                                        };
+                                        let path = 'src/emailTemplates/newUserAdminText.html';
+                                        emailClient.emailManagerWithAttachments(element,config.text.newUserAdminTextSubject,path,replacements,pdfBuffer);
+                                    })
+                                }
                         // fs.writeFileSync('some.pdf', pdfBuffer);
                     });
                     
