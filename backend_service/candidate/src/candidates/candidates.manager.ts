@@ -1849,8 +1849,8 @@ export const getCandidateDetails = (_body) => {
                                         let replacements = {
                         
                                         };
-                                        let path = 'src/emailTemplates/newUserAdminText.html';
-                                        emailClient.emailManagerWithAttachments(element,config.text.newUserAdminTextSubject,path,replacements,pdfBuffer);
+                                        let path = 'src/emailTemplates/sharePdfText.html';
+                                        emailClient.emailManagerWithAttachments(element,config.text.sharePdfTextSubject,path,replacements,pdfBuffer);
                                     })
                                 }
                         // fs.writeFileSync('some.pdf', pdfBuffer);

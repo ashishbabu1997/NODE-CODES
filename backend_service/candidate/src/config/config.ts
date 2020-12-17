@@ -11,7 +11,8 @@ export default {
         "newUserTextSubject":"ellow LOGIN PASSWORD",
         "newUserAdminTextSubject":"New Employee Notification",
         "addCandidatesTextSubject":"Added Candidates List",
-        "addCandidatesUsersTextSubject":"Profile Selection Notification"
+        "addCandidatesUsersTextSubject":"Profile Selection Notification",
+        "sharePdfTextSubject":"Resume PDF share Notification"
     },
     "db": {
         "user": "devdb_user",
