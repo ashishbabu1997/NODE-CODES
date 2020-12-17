@@ -1824,22 +1824,22 @@ export const getCandidateDetails = (_body) => {
                     var candidateId=_body.candidateId
                     let uniqueId = nanoid();
                     myCache.set( uniqueId, candidateId );
-
                     console.log("uniqueId ",uniqueId);
-                    
-                    
                     let oldEmailResult = await client.query(queryService.saveSharedEmailsForpdf(_body));
                     console.log("oldEmails : ",oldEmailResult.rows[0]);
-                    let options = { format: 'A4',printBackground:true,args :['--no-sandbox'] };
+                    _body.sharedEmails = _body.sharedEmails.filter(elements=> elements!=null);
+                    console.log("sharedEmails : ", _body.sharedEmails);
+                    
+                    let options = { format: 'A4',path:'resume.pdf',printBackground:true,args: ['--no-sandbox', '--disable-setuid-sandbox'] };
                     // Example of options with args //
                     // let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] };
                     // console.log(`Current directory: ${process.cwd()}`);
                     //  let file = {content: fs.readFileSync('./resume.html', 'utf8')};
                     
-                     let file = { url: "https://dev.ellow.io/sharePdf/"+uniqueId };
+                     let file = { url: _body.host+"/sharePdf/"+uniqueId };
+                     console.log('file : ',file);
+                     
                    
-                  
-                    // or //
                     await htmlToPdf.generatePdf(file, options).then(pdfBuffer => 
                         {
                             if (Array.isArray(_body.sharedEmails))
@@ -1853,7 +1853,6 @@ export const getCandidateDetails = (_body) => {
                                         emailClient.emailManagerWithAttachments(element,config.text.sharePdfTextSubject,path,replacements,pdfBuffer);
                                     })
                                 }
-                        // fs.writeFileSync('some.pdf', pdfBuffer);
                     });
                     
                     await client.query('COMMIT')
@@ -1915,7 +1914,9 @@ export const getCandidateDetails = (_body) => {
                 try {
                     
                     let sharedEmails = await client.query(queryService.getSharedEmailsPdf(_body));
-                    resolve({ code: 200, message: "Candidate resume listed successfully", data:sharedEmails.rows[0]});
+                    console.log("sharedEmails : ",sharedEmails.rows);
+                    
+                    resolve({ code: 200, message: "Shared emails listed successfully", data:sharedEmails.rows});
                         
                     
                   
