@@ -1836,8 +1836,8 @@ export const getCandidateDetails = (_body) => {
                     // console.log(`Current directory: ${process.cwd()}`);
                     //  let file = {content: fs.readFileSync('./resume.html', 'utf8')};
                     
-                    // let file = { url: "https://dev.ellow.io/sharePdf/"+uniqueId };
-                    let file = { url:"https://en.wikipedia.org/wiki/Sunset"};
+                     let file = { url: "https://dev.ellow.io/sharePdf/"+uniqueId };
+                   
                   
                     // or //
                     await htmlToPdf.generatePdf(file, options).then(pdfBuffer => 
