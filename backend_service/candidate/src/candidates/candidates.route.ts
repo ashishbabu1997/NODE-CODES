@@ -47,5 +47,5 @@ router
     .post('/userSignup', newUserSignup)
     .put('/sharePdf',jwtAuth, setData(),getPdf)
     .get('/getSharedEmailsForPdf',jwtAuth, setData(),getSharedEmailsForPdf)
-    .get('/sharedResumePdfData',jwtAuth, setData(),sharedResumePdfData)
+    .get('/sharedResumePdfData',sharedResumePdfData)
 export default router;
