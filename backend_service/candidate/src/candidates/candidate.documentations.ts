@@ -171,6 +171,72 @@
 
 /**
 * @swagger
+* /candidates/getSharedEmailsForPdf:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Fetch shared emails
+*     summary: Fetch emails for shared resume as pdf for a candidate
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*         required:
+*           type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/sharedResumePdfData:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Fetch shared pdf data
+*     summary: Fetch data for pdf generation
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: uniqueId
+*         schema:
+*         required:
+*           type: string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /candidates/sharedResumeData:
 *   get:
 *     tags:
@@ -292,6 +358,50 @@
 *               type: array
 *               items:
 *                 type: string
+*           required:
+*             - candidateId
+*             - sharedEmails
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/sharePdf:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Share pdf data
+*     summary: Generate a pdf from candidate details for given candidate and send mail to recipients with pdf attachments
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer            
+*             sharedEmails:
+*               type: array
+*               items:
+*                 type: string
+*             host:
+*               type: string
 *           required:
 *             - candidateId
 *             - sharedEmails

@@ -7,9 +7,15 @@ import * as emailClient from '../emailService/emailService';
 import {nanoid} from 'nanoid';
 import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
-
+import * as htmlToPdf from "html-pdf-node";
+// import * as fs from 'fs'
+import * as nodeCache from 'node-cache';
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> Get the details of an individual candidate
+const myCache = new nodeCache();
+
+
+
 export const getCandidateDetails = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -292,7 +298,7 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
-
+    
     // >>>>>>> FUNC. >>>>>>>
     //>>>>>>>>>>>Listing required candidates for add from list from the candidates list.
     export const listAddFromListCandidates = (_body) => {
@@ -737,7 +743,7 @@ export const getCandidateDetails = (_body) => {
                     var names=''
                     let count=0
                     const currentTime = Math.floor(Date.now());
-                   
+                    
                     // Get position realted details
                     const getPositionNames = {
                         name: 'get-position-details',
@@ -769,8 +775,8 @@ export const getCandidateDetails = (_body) => {
                                 name: 'link-candidate-with-position',
                                 text: candidateQuery.linkCandidateWithPosition,
                                 values: [positionId, element.candidateId, _body.employeeId, currentTime],
-                            // ellowrate,currencytypeid,billing type,admincomment,admin approve status -1
-                            // check user role id 
+                                // ellowrate,currencytypeid,billing type,admincomment,admin approve status -1
+                                // check user role id 
                             }
                             count=count+1
                             promise.push(client.query(linkCandidateQuery));
@@ -786,9 +792,9 @@ export const getCandidateDetails = (_body) => {
                         names=names+"\n"+firstName+" "+lastName+","
                         var email=imageResults.rows[0].email_address
                         let replacements = {
-                        name:firstName,
-                        positionName:positionName,
-                        companyName:hirerName
+                            name:firstName,
+                            positionName:positionName,
+                            companyName:hirerName
                         };
                         let path = 'src/emailTemplates/addCandidatesUsersText.html';
                         emailClient.emailManager(email,config.text.addCandidatesUsersTextSubject,path,replacements);
@@ -1836,3 +1842,111 @@ export const getCandidateDetails = (_body) => {
                     })
                 })
             }   
+    
+    
+    // create pdf
+    
+    export const createPdfFromHtml = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database()
+                try {
+                    var candidateId=_body.candidateId
+                    let uniqueId = nanoid();
+                    myCache.set( uniqueId, candidateId );
+
+                    console.log("uniqueId ",uniqueId);
+                    
+                    
+                    let oldEmailResult = await client.query(queryService.saveSharedEmailsForpdf(_body));
+                    console.log("oldEmails : ",oldEmailResult.rows[0]);
+                    
+                    let options = { format: 'A4',path:'resume.pdf',printBackground:true };
+                    // Example of options with args //
+                    // let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+                    // console.log(`Current directory: ${process.cwd()}`);
+                    //  let file = {content: fs.readFileSync('./resume.html', 'utf8')};
+                    
+                    let file = { url: "https://dev.ellow.io/sharePdf/"+uniqueId };
+                    // or //
+                    await htmlToPdf.generatePdf(file, options).then(pdfBuffer => {
+                        console.log("PDF Buffer:-", pdfBuffer);
+                        // fs.writeFileSync('some.pdf', pdfBuffer);
+                    });
+                    
+                    await client.query('COMMIT')
+
+                    resolve({ code: 200, message: "Created pdf succesfully", data:{} });
+                    
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data:e.message })
+            })
+        })
+    }
+    
+    // fetch data for pdf share
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>> Get the details in a candidate's resume
+    export const fetchResumeDataForPdf = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database()
+                try {
+                    if(myCache.has(_body.uniqueId))
+                    {
+                        let candidateId = myCache.take(_body.uniqueId);                                        
+                        _body.candidateId = candidateId;
+                        let data = await getResume(_body);            
+                        delete data["data"].assesmentLink;
+                        delete data["data"].assesementComment;
+                        delete data["data"].assesments;
+                        
+                        resolve({ code: 200, message: "Candidate resume shared data fetched successfully", data:data["data"] });
+                        
+                    }
+                    else{
+                        reject({ code: 400, message: "UniqueId expired or does not exist", data: {} });
+                    }
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            })
+        })
+    }
+
+     // fetch data for pdf share
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>> Get the details in a candidate's resume
+    export const fetchSharedEmailsForPdf = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database().connect()
+                try {
+                    
+                    let sharedEmails = await client.query(queryService.getSharedEmailsPdf(_body));
+                    resolve({ code: 200, message: "Candidate resume listed successfully", data:sharedEmails.rows[0]});
+                        
+                    
+                  
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            })
+        })
+    }
+    

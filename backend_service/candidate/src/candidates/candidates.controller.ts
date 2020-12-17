@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { getCandidateDetails,listAddFromListCandidates,initialSharedResumeData,getSharedEmails,updateTestResults,modifySkill,fetchResumeData,modifyResumeFile,addResumeShareLink,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience,getAssesmentLinks,shareResumeSignup,checks } from './candidates.manager';
+=======
+import { getCandidateDetails,fetchSharedEmailsForPdf,fetchResumeDataForPdf,createPdfFromHtml,listAddFromListCandidates,initialSharedResumeData,getSharedEmails,updateTestResults,modifySkill,fetchResumeData,modifyResumeFile,addResumeShareLink,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience,getAssesmentLinks,shareResumeSignup } from './candidates.manager';
+>>>>>>> 4576c561bfe7818af55925963fdf0c0dc9bbafba
 
 import sendResponse from '../common/response/response';
 
@@ -7,6 +11,13 @@ export const candidateDetails = (req, res) => {
     getCandidateDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
+
+export const getPdf = (req, res) => {
+    const body = req.body;
+    createPdfFromHtml(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
+
 export const listCandidates = (req, res) => {
     const body = req;
     listCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
@@ -233,6 +244,27 @@ export const sharedResumeData = (req, res) => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)
     })
 }
+
+export const getSharedEmailsForPdf = (req, res) => {
+    const body = req.query;
+    fetchSharedEmailsForPdf(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
+
+
+export const sharedResumePdfData = (req, res) => {
+    const body = req.query;
+    fetchResumeDataForPdf(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
 export const fetchAssesmentLinks = (req, res) => {
     const body = req.query;
     getAssesmentLinks(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))

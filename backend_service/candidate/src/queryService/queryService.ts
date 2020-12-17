@@ -340,7 +340,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateId],
         }
     }
-
+    
     export const addResumeShare =(_body)=> {
         return {
             name: 'add-resume-share',
@@ -369,6 +369,22 @@ export const insertCandidatePublicationQuery = (_body) => {
             name: 'fetch-email-from-employeeid',
             text: candidateQuery.getEmployeeEmailFromId,
             values: [_body.employeeId],
+        }
+    }
+
+ //pdf share
+    export const saveSharedEmailsForpdf =(_body)=> {
+        return {
+            name: 'save-resume-share-emails-pdf',
+            text: candidateQuery.saveSharedEmailsForpdf,
+            values: {candidateid:_body.candidateId,sharedemails:_body.sharedEmails,employeeid:_body.employeeId,currenttime:currentTime},
+        }
+    }
+    export const getSharedEmailsPdf =(_body)=> {
+        return {
+            name: 'fetch-resume-share-emails-pdf',
+            text: candidateQuery.getSharedEmailsForpdf,
+            values: [_body.candidateId],
         }
     }
     
