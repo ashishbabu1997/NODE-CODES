@@ -36,8 +36,7 @@ export const sendMailWithAttachments = (email, subject, html,attach, callback) =
             content:attach
         }
     };
-    
-    transporter.sendMailWithAttachments(mailOptions, function (err, data) {
+    transporter.sendMail(mailOptions, function (err, data) {
         if (err) {
             return callback(err, null);
         }
