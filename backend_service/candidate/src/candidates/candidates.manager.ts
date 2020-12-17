@@ -1830,7 +1830,7 @@ export const getCandidateDetails = (_body) => {
                     _body.sharedEmails = _body.sharedEmails.filter(elements=> elements!=null);
                     console.log("sharedEmails : ", _body.sharedEmails);
                     
-                    let options = { format: 'A4',path:'resume.pdf',printBackground:true,headless: false,args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+                    let options = { format: 'A4',printBackground:true,headless: false,args: ['--no-sandbox', '--disable-setuid-sandbox'] };
                     // Example of options with args //
                     // let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] };
                     // console.log(`Current directory: ${process.cwd()}`);
@@ -1880,25 +1880,18 @@ export const getCandidateDetails = (_body) => {
                 try {
                     console.log("fetchResumeDataForPdf");
                     console.log("body : ",_body);
-                    console.log("hasUniqueId : ",myCache.has(_body.uniqueId)                    );
+                    console.log("hasUniqueId : ",myCache.has(_body.uniqueId));
 
-                    
                     if(myCache.has(_body.uniqueId))
                     {
                         let candidateId = myCache.take(_body.uniqueId);                                        
                         _body.candidateId = candidateId;
-
                         console.log("candidateId : ",candidateId);
-
-
                         let data = await getResume(_body);            
                         delete data["data"].assesmentLink;
                         delete data["data"].assesementComment;
                         delete data["data"].assesments;
-                        
                         console.log('data : ',data["data"]);
-                        
-
                         resolve({ code: 200, message: "Candidate resume shared data fetched successfully", data:data["data"] });
                         
                     }
@@ -1924,14 +1917,9 @@ export const getCandidateDetails = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-                    
                     let sharedEmails = await client.query(queryService.getSharedEmailsPdf(_body));
-                    console.log("sharedEmails : ",sharedEmails.rows);
-                    
-                    resolve({ code: 200, message: "Shared emails listed successfully", data:sharedEmails.rows[0].sharedemails});
-                        
-                    
-                  
+                    let reqdEmails = ![undefined,null].includes(sharedEmails.rows[0])?sharedEmails.rows[0].sharedemails:[];
+                    resolve({ code: 200, message: "Shared emails listed successfully", data:reqdEmails});
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
