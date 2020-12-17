@@ -15,7 +15,11 @@ export const sendMail = (email, subject, html, callback) => {
         from: config.mail.user, 
         to: email, 
         subject,
-        html
+        html,
+        // attachments:{
+        //     filename: 'sample.pdf',
+        //     path:'http://www.africau.edu/images/default/sample.pdf'
+        // }
     };
     
     transporter.sendMail(mailOptions, function (err, data) {

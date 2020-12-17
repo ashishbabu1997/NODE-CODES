@@ -1,4 +1,4 @@
-import { candidateDetails,listForAddFromListCandidates,resumeSharedEmails,updateSkill,updateAssesmentLinkAndStatus,updateCloudProficiency,sharedResumeData,resumeShareLink,updateSocialProfile, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience,fetchAssesmentLinks,newUserSignup,initialResumeData } from './candidates.controller';
+import { candidateDetails,listForAddFromListCandidates,resumeSharedEmails,updateSkill,updateAssesmentLinkAndStatus,updateCloudProficiency,sharedResumeData,resumeShareLink,updateSocialProfile, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience,fetchAssesmentLinks,newUserSignup,initialResumeData,check } from './candidates.controller';
 
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
@@ -45,6 +45,7 @@ router
     .get('/sharedResumeData',jwtAuth, setData(),sharedResumeData)
     .get('/getAssesmentLinks',jwtAuth, setData(), fetchAssesmentLinks)
     .post('/userSignup', newUserSignup)
+    // .get('/check',check)
 
     
 

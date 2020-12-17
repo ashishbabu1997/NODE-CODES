@@ -432,8 +432,7 @@ export const getCandidateDetails = (_body) => {
                                 lName: lastName,
                                 cName: companyName,
                                 pName: positionName
-                            };
-                            
+                            }; 
                             emailClient.emailManager(config.adminEmail,subj,path,adminReplacements);
                         }
                     } else {
@@ -1807,3 +1806,33 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
+
+    export const checks = (_body) => {
+        return new Promise((resolve, reject) => {
+            const currentTime = Math.floor(Date.now() / 1000);
+            (async () => {
+                const client = await database().connect()
+                try {
+                            let adminReplacements = {
+                                firstName:"Ashish",
+                                lastName:"Babu",
+                                email:"Email",
+                                phone:"9874673748"
+                                
+                            };
+                            let adminPath = 'src/emailTemplates/newUserAdminText.html';
+                            emailClient.emailManager('lakshmi.n@ellow.io',config.text.newUserAdminTextSubject,adminPath,adminReplacements);
+                            await client.query('COMMIT')
+                            resolve({ code: 200, message: "Employee Added Successfully", data: {}})
+                        } catch (e) {
+                            console.log(e)
+                            await client.query('ROLLBACK')
+                            reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                        } finally {
+                            client.release();
+                        }
+                    })().catch(e => {
+                        reject({ code: 400, message: "Failed. Please try again.", data:e.message })
+                    })
+                })
+            }   
