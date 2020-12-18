@@ -1498,7 +1498,7 @@ export const getCandidateDetails = (_body) => {
                                         link:link
                                     };
                                     let path = 'src/emailTemplates/resumeShareText.html';
-                                    emailClient.emailManager(element,config.text.shareEmailSubject,path,replacements);
+                                    emailClient.emailManagerForNoReply(element,config.text.shareEmailSubject,path,replacements);
                                     
                                 });
                             } 
@@ -1835,26 +1835,27 @@ export const getCandidateDetails = (_body) => {
                     // let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] };
                     // console.log(`Current directory: ${process.cwd()}`);
                     //  let file = {content: fs.readFileSync('./resume.html', 'utf8')};
-
                      let file = { url: _body.host+"/sharePdf/"+uniqueId };
+
                      console.log('file : ',file);
                      
                    
                     await htmlToPdf.generatePdf(file, options).then(pdfBuffer => 
                         {
+                   
+                    
                             if (Array.isArray(_body.sharedEmails))
                             {
                                 _body.sharedEmails.forEach(element => {
-                                        console.log("Email",element)
-                                        let replacements = {
-                        
-                                        };
-                                        let path = 'src/emailTemplates/sharePdfText.html';
-                                        emailClient.emailManagerWithAttachments(element,config.text.sharePdfTextSubject,path,replacements,pdfBuffer);
-                                    })
-                                }
+                                    console.log("Email",element)
+                                    let replacements = {
+                
+                                    };
+                                let path = 'src/emailTemplates/sharePdfText.html';
+                                emailClient.emailManagerWithAttachments(element,config.text.sharePdfTextSubject,path,replacements,pdfBuffer);
+                            })
+                        }
                     });
-                    
                     await client.query('COMMIT')
 
                     resolve({ code: 200, message: "Created pdf succesfully", data:{} });

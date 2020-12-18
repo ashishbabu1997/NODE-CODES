@@ -27,6 +27,11 @@ export default {
         "user": "sales@ellow.io",
         "password": "yteinevvuuchtmvb"
     },
+    "noreplymail": {
+        "service": "gmail",
+        "user": "no-reply@ellow.io",
+        "password": "fqlroidzaxmlhgml"
+    },
     "jwtSecretKey": "elL0wA!",
     "countries":[
         {
