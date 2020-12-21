@@ -32,25 +32,25 @@ export const getCandidateDetails = (_body) => {
                 }
                 let results = await client.query(listCandidateQuery);
                 const candidate = results.rows;
-                const getCandidateAssessmentTraitsQuery = {
-                    name: 'get-candidate-assessmentTraits',
-                    text: candidateQuery.getAssessmentTraits,
-                    values: [_body.candidateId],
-                }
-                let value = await client.query(getCandidateAssessmentTraitsQuery);
+                // const getCandidateAssessmentTraitsQuery = {
+                //     name: 'get-candidate-assessmentTraits',
+                //     text: candidateQuery.getAssessmentTraits,
+                //     values: [_body.candidateId],
+                // }
+                // let value = await client.query(getCandidateAssessmentTraitsQuery);
                 
-                // Retrieving the assesment traits added by the admin,about the candidate.
-                let assessmentTraits = value.rows
-                if (_body.admin != 1 && Array.isArray(assessmentTraits) && assessmentTraits.length >= 0) {
-                    let flag = false;
-                    assessmentTraits.forEach(element => {
-                        element.adminRating != null && element.adminRating > 0 ? flag = true : "";
-                    });
-                    if (!flag) {
-                        assessmentTraits = null;
-                    }
+                // // Retrieving the assesment traits added by the admin,about the candidate.
+                // let assessmentTraits = value.rows
+                // if (_body.admin != 1 && Array.isArray(assessmentTraits) && assessmentTraits.length >= 0) {
+                //     let flag = false;
+                //     assessmentTraits.forEach(element => {
+                //         element.adminRating != null && element.adminRating > 0 ? flag = true : "";
+                //     });
+                //     if (!flag) {
+                //         assessmentTraits = null;
+                //     }
                     
-                }
+                // }
                 const getCandidateSkillsQuery = {
                     name: 'get-candidate-skills',
                     text: candidateQuery.getCandidateSkills,
@@ -93,7 +93,7 @@ export const getCandidateDetails = (_body) => {
                         email: candidate[0].email,
                         workExperience: candidate[0].workExperience,
                         assessmentComment: candidate[0].assessmentComment,
-                        assessmentTraits,
+                        // assessmentTraits,
                         skills
                     };
                     _body.userRoleId == 1 && (result['ellowRate'] = candidate[0].ellowRate)
@@ -585,7 +585,7 @@ export const getCandidateDetails = (_body) => {
                         _body.candidateAssesmentId = element.candidateAssesmentId;
                         _body.rating = element.rating;
                         element.isLinkAvailable?(element.assesmentComment=="Code|Algorithm Test"?_body.codeTestLink=element.link:element.assesmentComment=="Interview Test"?_body.interviewTestLink=element.link:""):"";
-                        promise.push(client.query(queryService.candidateDetails(_body)));
+                        // promise.push(client.query(queryService.candidateDetails(_body)));
                     });
                     
                     console.log("_body  L ",_body);
@@ -1333,7 +1333,7 @@ export const getCandidateDetails = (_body) => {
                     var allProfileDetails=await client.query(queryService.fetchProfile(candidateId));
                     var skills=await client.query(queryService.fetchSkills(candidateId));
                     var projects=await client.query(queryService.fetchProjects(candidateId));
-                    var assesements=await client.query(queryService.fetchAssesements(candidateId));
+                    // var assesements=await client.query(queryService.fetchAssesements(candidateId));
                     var assesmentLink=await client.query(queryService.fetchAssesementsLinks(candidateId));
                     var workExperiences=await client.query(queryService.fetchWorkExperience(candidateId));
                     var educations=await client.query(queryService.fetchEducations(candidateId));
@@ -1351,22 +1351,22 @@ export const getCandidateDetails = (_body) => {
                     workExperiences.rows.forEach(element => { companyJson[element.candidateWorkExperienceId]=element.companyName });
                     
                     
-                    if (Array.isArray(assesements.rows))
-                    {
-                        assesements.rows.forEach(element => {
-                            assesmentArray.push({
-                                candidateAssesmentId:element.candidateAssesmentId,
-                                candidateId:element.candidateId,
-                                assesmentComment:element.assesmentComment,
-                                rating:element.rating,
-                                assementType:element.assementType,
-                                isLinkAvailable:element.isLinkAvailable,
-                                link: element.isLinkAvailable ? element. assesmentComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestLink : assesmentLink.rows[0].interviewTestLink : "",
-                                status: element.isLinkAvailable ? element. assesmentComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestStatus : assesmentLink.rows[0].interviewTestStatus : ""
-                            })
+                    // if (Array.isArray(assesements.rows))
+                    // {
+                    //     assesements.rows.forEach(element => {
+                    //         assesmentArray.push({
+                    //             candidateAssesmentId:element.candidateAssesmentId,
+                    //             candidateId:element.candidateId,
+                    //             assesmentComment:element.assesmentComment,
+                    //             rating:element.rating,
+                    //             assementType:element.assementType,
+                    //             isLinkAvailable:element.isLinkAvailable,
+                    //             link: element.isLinkAvailable ? element. assesmentComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestLink : assesmentLink.rows[0].interviewTestLink : "",
+                    //             status: element.isLinkAvailable ? element. assesmentComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestStatus : assesmentLink.rows[0].interviewTestStatus : ""
+                    //         })
                             
-                        });
-                    }                    
+                    //     });
+                    // }                    
                     
                     if (Array.isArray(projects.rows))
                     {

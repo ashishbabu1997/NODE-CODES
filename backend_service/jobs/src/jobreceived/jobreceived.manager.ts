@@ -248,13 +248,13 @@ export const submitCandidateProfile = (_body) => {
                     text: jobReceivedQuery.addDefaultAssessmentTraits,
                     values: [candidateId, _body.employeeId, currentTime],
                 }
-                await client.query(addDefaultTraits);
+                // await client.query(addDefaultTraits);
                 const addSkillRelatedTraits = {
                     name: 'add-skill-based-traits',
                     text: jobReceivedQuery.addSkillBasedAssesmentTraits,
                     values: [candidateId, _body.employeeId, currentTime],
                 }
-                await client.query(addSkillRelatedTraits);
+                // await client.query(addSkillRelatedTraits);
                 
                 await client.query('COMMIT');
                 let candidateFirstName=result.rows[0].candidate_first_name;
@@ -349,13 +349,13 @@ export const editSkills = (_body) => {
                         text: jobReceivedQuery.deleteCandidateAssesmentTraits,
                         values: [candidateId, competentSkillSet],
                     }
-                    await client.query(deleteCandidateAssesmentTraitsQuery);
+                    // await client.query(deleteCandidateAssesmentTraitsQuery);
                     const addSkillRelatedTraits = {
                         name: 'add-skill-based-traits',
                         text: jobReceivedQuery.addSkillBasedAssesmentTraits,
                         values: [candidateId, _body.employeeId, currentTime],
                     }
-                    await client.query(addSkillRelatedTraits);
+                    // await client.query(addSkillRelatedTraits);
                 }
                 
                 
