@@ -1927,4 +1927,28 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
+
+     // fetch data for pdf share
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>> Get the details in a candidate's resume
+    export const getCandidateAssesmentDetails = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database().connect()
+                try {
+                    let result = await client.query(queryService.getAssesmentDetails(_body));
+        
+                    resolve({ code: 200, message: "Shared emails listed successfully", data:result.rows[0]});
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            })
+        })
+    }
     
