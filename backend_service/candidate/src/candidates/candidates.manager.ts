@@ -574,26 +574,14 @@ export const getCandidateDetails = (_body) => {
     export const addCandidateReview = (_body) => {
         return new Promise((resolve, reject) => {
             const data = _body.assessmentTraits;
-            let promise = [];
             (async () => {
-                const client = await database().connect()
+                const client = await database()
                 try {
                     await client.query('BEGIN');
                     
                     // Update assesment ratings about the candidate.
-                    data.forEach(element => {
-                        _body.candidateAssesmentId = element.candidateAssesmentId;
-                        _body.rating = element.rating;
-                        element.isLinkAvailable?(element.assesmentComment=="Code|Algorithm Test"?_body.codeTestLink=element.link:element.assesmentComment=="Interview Test"?_body.interviewTestLink=element.link:""):"";
-                        promise.push(client.query(queryService.candidateDetails(_body)));
-                    });
+                    await client.query(queryService.updateEllowRecuiterReview(_body));                    
                     
-                    console.log("_body  L ",_body);
-                    
-                    // Insert assesment comments about the candidate
-                    promise.push(client.query(queryService.updateCommentAndLinks(_body)));
-                    
-                    await Promise.all(promise);
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });
                     
@@ -601,8 +589,6 @@ export const getCandidateDetails = (_body) => {
                     console.log(e)
                     await client.query('ROLLBACK')
                     reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                } finally {
-                    client.release();
                 }
             })().catch(e => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} })
