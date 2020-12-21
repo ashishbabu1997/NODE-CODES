@@ -473,6 +473,16 @@ export const insertCandidatePublicationQuery = (_body) => {
 
     // *******************************************************************************************************************************//
     // -------------------------------------------Assesment traits realted queries-------------------------------------------------//
+    export const updateEllowRecuiterReview =(_body)=> {
+        return {
+        name: 'update-ellow-recuiter-review',
+        text: candidateQuery.updateEllowRecuiterReview,
+        values: {comment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime,stagestatus:1},
+        }
+    }
+    
+    
+    
     export const updateCommentAndLinks =(_body)=> {
         return {
         name: 'insert-assessment-comment',
