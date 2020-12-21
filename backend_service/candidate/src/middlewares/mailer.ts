@@ -43,3 +43,19 @@ export const sendMailWithAttachments = (email, subject, html,attach, callback) =
         return callback(null, data);
     });
 }
+
+export const sendMailForNoReply = (email, subject, html, callback) => {
+    const mailOptions = {
+        from: config.noreplymail.user, 
+        to: email, 
+        subject,
+        html,
+    };
+    
+    transporter.sendMail(mailOptions, function (err, data) {
+        if (err) {
+            return callback(err, null);
+        }
+        return callback(null, data);
+    });
+}
