@@ -578,21 +578,10 @@ export const getCandidateDetails = (_body) => {
                 const client = await database()
                 try {
                     await client.query('BEGIN');
-                    
                     // Update assesment ratings about the candidate.
-                    data.forEach(element => {
-                        _body.candidateAssesmentId = element.candidateAssesmentId;
-                        _body.rating = element.rating;
-                        element.isLinkAvailable?(element.assesmentComment=="Code|Algorithm Test"?_body.codeTestLink=element.link:element.assesmentComment=="Interview Test"?_body.interviewTestLink=element.link:""):"";
-                        // promise.push(client.query(queryService.candidateDetails(_body)));
-                    });
-                    
-                    console.log("_body  L ",_body);
-                    await client.query(queryService.updateEllowRecuiterReview(_body));                    
-                    
+                    await client.query(queryService.updateEllowRecuiterReview(_body));    
                     await client.query('COMMIT')
-                    resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });
-                    
+                    resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });                    
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
