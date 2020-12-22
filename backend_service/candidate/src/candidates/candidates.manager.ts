@@ -8,112 +8,8 @@ import {nanoid} from 'nanoid';
 import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
 import * as htmlToPdf from "html-pdf-node";
-// import * as fs from 'fs'
 import * as nodeCache from 'node-cache';
-// >>>>>>> FUNC. >>>>>>>
-//>>>>>>>> Get the details of an individual candidate
 const myCache = new nodeCache();
-
-
-
-export const getCandidateDetails = (_body) => {
-    return new Promise((resolve, reject) => {
-        (async () => {
-            const client = await database().connect()
-            try {
-                let skills =[]
-                await client.query('BEGIN');
-                
-                // Get the basic details of the candidates
-                const listCandidateQuery = {
-                    name: 'get-candidate-details',
-                    text: candidateQuery.getCandidateDetails,
-                    values: [_body.candidateId],
-                }
-                let results = await client.query(listCandidateQuery);
-                const candidate = results.rows;
-                // const getCandidateAssessmentTraitsQuery = {
-                //     name: 'get-candidate-assessmentTraits',
-                //     text: candidateQuery.getAssessmentTraits,
-                //     values: [_body.candidateId],
-                // }
-                // let value = await client.query(getCandidateAssessmentTraitsQuery);
-                
-                // // Retrieving the assesment traits added by the admin,about the candidate.
-                // let assessmentTraits = value.rows
-                // if (_body.admin != 1 && Array.isArray(assessmentTraits) && assessmentTraits.length >= 0) {
-                //     let flag = false;
-                //     assessmentTraits.forEach(element => {
-                //         element.adminRating != null && element.adminRating > 0 ? flag = true : "";
-                //     });
-                //     if (!flag) {
-                //         assessmentTraits = null;
-                //     }
-                    
-                // }
-                const getCandidateSkillsQuery = {
-                    name: 'get-candidate-skills',
-                    text: candidateQuery.getCandidateSkills,
-                    values: [_body.candidateId],
-                }
-                let skillResult = await client.query(getCandidateSkillsQuery);
-                skillResult.rows.forEach(step => {
-                    if (step.skillId != null) {
-                        skills.push(
-                            {
-                                skill:{
-                                    skillId: step.skillId,
-                                    skillName: step.skillName
-                                },
-                                competency:step.competency,
-                                yoe:step.yoe,
-                                preferred:step.preferred
-                            }
-                            )
-                        }
-                    });
-                    let result = {
-                        makeOffer: candidate[0].makeOffer,
-                        adminApproveStatus: candidate[0].adminApproveStatus,
-                        firstName: candidate[0].firstName,
-                        lastName: candidate[0].lastName,
-                        companyName: candidate[0].companyName,
-                        companyId: candidate[0].companyId,
-                        positionName: candidate[0].positionName,
-                        description: candidate[0].description,
-                        candidateStatus: candidate[0].candidateStatus,
-                        coverNote: candidate[0].coverNote,
-                        resume: candidate[0].resume,
-                        rate: candidate[0].rate,
-                        ellowRate: candidate[0].ellowRate,
-                        billingTypeId: candidate[0].billingTypeId,
-                        currencyTypeId: candidate[0].currencyTypeId,
-                        phoneNumber: candidate[0].phoneNumber,
-                        label: candidate[0].label,
-                        email: candidate[0].email,
-                        workExperience: candidate[0].workExperience,
-                        assessmentComment: candidate[0].assessmentComment,
-                        // assessmentTraits,
-                        skills
-                    };
-                    _body.userRoleId == 1 && (result['ellowRate'] = candidate[0].ellowRate)
-                    resolve({ code: 200, message: "Candidate details listed successfully", data: result });
-                    await client.query('COMMIT')
-                } catch (e) {
-                    console.log(e)
-                    await client.query('ROLLBACK')
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                } finally {
-                    client.release();
-                }
-            })().catch(e => {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} })
-            })
-            
-        })
-    }
-    
-    
     
     // >>>>>>> FUNC. >>>>>>>
     // />>>>>>>> FUnction for listing all the candidates with his/her basic details.
@@ -573,7 +469,6 @@ export const getCandidateDetails = (_body) => {
     //>>>>>>>>>>>>>> Function for admin to add reviews,assesment comments about the candidate
     export const addCandidateReview = (_body) => {
         return new Promise((resolve, reject) => {
-            const data = _body.assessmentTraits;
             (async () => {
                 const client = await database()
                 try {
@@ -1317,7 +1212,6 @@ export const getCandidateDetails = (_body) => {
                     var skills=await client.query(queryService.fetchSkills(candidateId));
                     var projects=await client.query(queryService.fetchProjects(candidateId));
                     // var assesements=await client.query(queryService.fetchAssesements(candidateId));
-                    var assesmentLink=await client.query(queryService.fetchAssesementsLinks(candidateId));
                     var workExperiences=await client.query(queryService.fetchWorkExperience(candidateId));
                     var educations=await client.query(queryService.fetchEducations(candidateId));
                     var socialProfileDetails=await client.query(queryService.fetchSocialProfile(candidateId));
@@ -1332,24 +1226,6 @@ export const getCandidateDetails = (_body) => {
                     let companyJson = {};
                     companyJson = Object.assign({0:'On personal capacity'},companyJson);
                     workExperiences.rows.forEach(element => { companyJson[element.candidateWorkExperienceId]=element.companyName });
-                    
-                    
-                    // if (Array.isArray(assesements.rows))
-                    // {
-                    //     assesements.rows.forEach(element => {
-                    //         assesmentArray.push({
-                    //             candidateAssesmentId:element.candidateAssesmentId,
-                    //             candidateId:element.candidateId,
-                    //             assesmentComment:element.assesmentComment,
-                    //             rating:element.rating,
-                    //             assementType:element.assementType,
-                    //             isLinkAvailable:element.isLinkAvailable,
-                    //             link: element.isLinkAvailable ? element. assesmentComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestLink : assesmentLink.rows[0].interviewTestLink : "",
-                    //             status: element.isLinkAvailable ? element. assesmentComment == 'Code|Algorithm Test' ? assesmentLink.rows[0].codeTestStatus : assesmentLink.rows[0].interviewTestStatus : ""
-                    //         })
-                            
-                    //     });
-                    // }                    
                     
                     if (Array.isArray(projects.rows))
                     {
@@ -1406,7 +1282,6 @@ export const getCandidateDetails = (_body) => {
                         typeOfAvailability : allProfileDetails.rows[0].typeOfAvailability,
                         readyToStart : allProfileDetails.rows[0].readyToStart
                     }
-                    let assesementComment = allProfileDetails.rows[0].assessmentComment;
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Resume listed successfully", 
                     data: 
@@ -1420,8 +1295,6 @@ export const getCandidateDetails = (_body) => {
                         skills:skills.rows,
                         projects:projectArray,
                         assesments:assesmentArray,
-                        assesmentLink:assesmentLink.rows[0],
-                        assesementComment,
                         workExperience:workExperiences.rows,
                         education:educations.rows,
                         publications:publications.rows,
@@ -1678,7 +1551,6 @@ export const getCandidateDetails = (_body) => {
                         
                         var allProfileDetails=await client.query(queryService.fetchProfile(candidateId));
                         var skills=await client.query(queryService.fetchSkills(candidateId));
-                        var projects=await client.query(queryService.fetchProjects(candidateId));
                         let citizenship = allProfileDetails.rows[0].citizenship;
                         let citizenshipName = ![null,undefined,""].includes(citizenship)?config.countries.filter(element=>element.id == citizenship)[0].name:'';
                         let residence = allProfileDetails.rows[0].residence;
@@ -1739,63 +1611,6 @@ export const getCandidateDetails = (_body) => {
             })
         })
     }
-    
-    // >>>>>>> FUNC. >>>>>>>
-    //>>>>>>>> Update code and interview test to database
-    export const updateTestResults = (_body) => {
-        return new Promise((resolve, reject) => {
-            (async () => {
-                const client = await database().connect()
-                try {
-                    switch(_body.type)
-                    {
-                        case 'codeTest':
-                        await client.query(queryService.updateCodeTestStatus(_body));
-                        break;
-                        case 'interviewTest':
-                        await client.query(queryService.updateInterviewTestStatus(_body));
-                        break;
-                        default:
-                        reject({ code: 400, message: "Assessment test status type not found", data: {} });
-                        return;
-                    }
-                    
-                    resolve({ code: 200, message: "Assesment status updated succesfully", data:{} });
-                    
-                } catch (e) {
-                    console.log(e)
-                    await client.query('ROLLBACK')
-                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-                } finally {
-                    client.release();
-                }
-            })().catch(e => {
-                reject({ code: 400, message: "Failed. Please try again.", data:e.message })
-            })
-        })
-    }
-    export const getAssesmentLinks = (_body) => {
-        return new Promise((resolve, reject) => {
-            (async () => {
-                const client = await database().connect()
-                try {
-                    var candidateId=_body.candidateId
-                    var assesmentLink=await client.query(queryService.fetchAssesementsLinks(candidateId));
-                    resolve({ code: 200, message: "Assesment links listed succesfully", data:{assesmentLinks:assesmentLink} });
-                    
-                } catch (e) {
-                    console.log(e)
-                    await client.query('ROLLBACK')
-                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-                } finally {
-                    client.release();
-                }
-            })().catch(e => {
-                reject({ code: 400, message: "Failed. Please try again.", data:e.message })
-            })
-        })
-    }
-
     
     // create pdf
     
@@ -1927,7 +1742,7 @@ export const getCandidateDetails = (_body) => {
                 try {
                     let result = await client.query(queryService.getAssesmentDetails(_body));
         
-                    resolve({ code: 200, message: "Shared emails listed successfully", data:result.rows[0]});
+                    resolve({ code: 200, message: "Assessment details listed successfully", data:result.rows});
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')

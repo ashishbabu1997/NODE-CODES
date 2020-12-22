@@ -230,9 +230,9 @@ export const saveCandidateProfile = (_body) => {
 //>>>>>>>>>>>>>>>>>>Submit the candidate profile by sending a notificatin mail to the admin
 export const submitCandidateProfile = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
+        const currentTime = Math.floor(Date.now());
         (async () => {
-            const client = await database().connect()
+            const client = await database()
             try {
                 await client.query('BEGIN');
                 let candidateId = _body.candidateId;
@@ -246,15 +246,9 @@ export const submitCandidateProfile = (_body) => {
                 const addDefaultTraits = {
                     name: 'add-default-traits',
                     text: jobReceivedQuery.addDefaultAssessmentTraits,
-                    values: [candidateId, _body.employeeId, currentTime],
+                    values: {candidateid:_body.candidateId, employeeid:_body.employeeId, currenttime:currentTime},
                 }
-                // await client.query(addDefaultTraits);
-                const addSkillRelatedTraits = {
-                    name: 'add-skill-based-traits',
-                    text: jobReceivedQuery.addSkillBasedAssesmentTraits,
-                    values: [candidateId, _body.employeeId, currentTime],
-                }
-                // await client.query(addSkillRelatedTraits);
+                await client.query(addDefaultTraits);
                 
                 await client.query('COMMIT');
                 let candidateFirstName=result.rows[0].candidate_first_name;
@@ -295,8 +289,6 @@ export const submitCandidateProfile = (_body) => {
                 console.log(e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
-                client.release();
             }
         })().catch(e => {
             console.log(e)
@@ -316,7 +308,6 @@ export const editSkills = (_body) => {
             try {
                 var candidateId=_body.candidateId
                 let skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];
-                let competentSkillSet = ![undefined, null].includes(_body.skills) ? _body.skills.filter(a=> a.competency==2 || a.competency==3).map(a => a.skill.skillId) :[];
                 const deleteCandidateSkillsQuery = {
                     name: 'delete-candidate-skills',
                     text: jobReceivedQuery.deleteCandidateSkills,
@@ -341,24 +332,6 @@ export const editSkills = (_body) => {
                     });
                     await Promise.all(promise);
                 }
-                
-                if(_body.candidateStatus == 3)
-                {
-                    const deleteCandidateAssesmentTraitsQuery = {
-                        name: 'delete-candidate-assessment-traits',
-                        text: jobReceivedQuery.deleteCandidateAssesmentTraits,
-                        values: [candidateId, competentSkillSet],
-                    }
-                    // await client.query(deleteCandidateAssesmentTraitsQuery);
-                    const addSkillRelatedTraits = {
-                        name: 'add-skill-based-traits',
-                        text: jobReceivedQuery.addSkillBasedAssesmentTraits,
-                        values: [candidateId, _body.employeeId, currentTime],
-                    }
-                    // await client.query(addSkillRelatedTraits);
-                }
-                
-                
                 
                 resolve({ code: 200, message: "Candidate skills updated successfully", data: {} });
                 

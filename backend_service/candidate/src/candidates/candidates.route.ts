@@ -1,4 +1,4 @@
-import { candidateDetails,getSharedEmailsForPdf,sharedResumePdfData,getPdf,listForAddFromListCandidates,resumeSharedEmails,updateSkill,updateAssesmentLinkAndStatus,updateCloudProficiency,sharedResumeData,resumeShareLink,updateSocialProfile, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience,fetchAssesmentLinks,newUserSignup,initialResumeData,getAssesments } from './candidates.controller';
+import { getSharedEmailsForPdf,sharedResumePdfData,getPdf,listForAddFromListCandidates,resumeSharedEmails,updateSkill,updateCloudProficiency,sharedResumeData,resumeShareLink,updateSocialProfile, updateResumeFile,updateProfileDetails,candidateVettingStatus,updateEducation,updateAward,updatePublication,updateProject,updateWorkExperience, updateAvailability,updateLanguageProficiency,listCandidates, listFreeCandidates, approveRejectCandidates, interviewRequest, candidateReview, deleteCandidateFromPosition, addCandidateToPosition, deleteCandidate,resumeDetails,WorkExperience,newUserSignup,initialResumeData,getAssesments } from './candidates.controller';
 
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
@@ -6,14 +6,13 @@ import approveRejectSchema from './schemas/approveRejectSchema';
 import interviewRequestSchema from './schemas/interviewRequestSchema';
 import candidateVettingSchema from './schemas/candidateVettingSchema';
 import addCandidateToPositionSchema from './schemas/addCandidateToPositionSchema';
-import {languageProficiencySchema,skillSchema,assementLinkAndStatusSchema,availabilitySchema,profileDetailSchema,projectSchema,workExperienceSchema,educationSchema,awardSchema,publicationSchema} from './schemas/modifyCandidateDetailsSchema';
+import {languageProficiencySchema,skillSchema,availabilitySchema,profileDetailSchema,projectSchema,workExperienceSchema,educationSchema,awardSchema,publicationSchema} from './schemas/modifyCandidateDetailsSchema';
 
 import { jwtAuth } from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
 
 const router = express.Router();
 router
-    .get('/candidateDetails', jwtAuth, setData(),candidateDetails)
     .get('/listCandidates', jwtAuth, setData(), listCandidates)
     .get('/listFreeCandidates', jwtAuth, setData(), listFreeCandidates)
     .get('/listForAddFromListCandidates', jwtAuth, setData(), listForAddFromListCandidates)
@@ -35,7 +34,6 @@ router
     .put('/updateSocialProfile',jwtAuth, setData(),validate(profileDetailSchema), updateSocialProfile)
     .put('/updateCloudProficiency',jwtAuth, setData(),validate(profileDetailSchema), updateCloudProficiency)
     .put('/updatePublication',jwtAuth, setData(),validate(publicationSchema), updatePublication)
-    .put('/updateAssesmentLinkAndStatus',jwtAuth, setData(),validate(assementLinkAndStatusSchema), updateAssesmentLinkAndStatus)
     .put('/updateResumeFile',jwtAuth,setData(),validate(profileDetailSchema),updateResumeFile)
     .put('/updateOverallWorkExperience',jwtAuth, setData(),validate(profileDetailSchema), WorkExperience)
     .get('/resume',jwtAuth, setData(), resumeDetails)
@@ -43,12 +41,9 @@ router
     .post('/resumeShareLink',jwtAuth, setData(),resumeShareLink)
     .get('/initialSharedResumeData',initialResumeData)
     .get('/sharedResumeData',jwtAuth, setData(),sharedResumeData)
-    .get('/getAssesmentLinks',jwtAuth, setData(), fetchAssesmentLinks)
     .post('/userSignup', newUserSignup)
     .put('/sharePdf',jwtAuth, setData(),getPdf)
     .get('/getSharedEmailsForPdf',jwtAuth, setData(),getSharedEmailsForPdf)
     .get('/sharedResumePdfData',sharedResumePdfData)
-    .get('/getAssementOfCandidate',getAssesments)
-
-    
+    .get('/getAssementOfCandidate',jwtAuth, setData(),getAssesments)
 export default router;

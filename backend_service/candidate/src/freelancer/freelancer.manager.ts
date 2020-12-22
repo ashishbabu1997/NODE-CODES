@@ -106,8 +106,7 @@ export const submitFreelancerProfile = (_body) => {
             try {
                 await client.query('BEGIN');
                 _body.candidateStatus = 3; 
-                // await client.query(queryService.addDefaultTraits(_body));
-                // await client.query(queryService.addSkillRelatedTraits(_body));
+                await client.query(queryService.addDefaultTraits(_body));
                 var result=await client.query(queryService.candidateStatusUpdate(_body));
                 await client.query('COMMIT');
                 var firstName=result.rows[0].candidate_first_name
