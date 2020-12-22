@@ -266,14 +266,6 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
-    export const fetchAssesementsLinks =(candidateId)=> {
-        return {
-            name: 'fetch-assesement-links',
-            text: candidateQuery.fetchAssesmentLinks,
-            values: [candidateId]
-        }
-    }
-    
     export const fetchWorkExperience =(candidateId)=> {
         return {
             name: 'fetch-work-experience-details',
@@ -412,15 +404,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'add-default-traits',
             text: freelancerQuery.addDefaultAssessmentTraits,
-            values: [_body.candidateId, _body.employeeId, currentTime],
-        }
-    }
-    
-    export const addSkillRelatedTraits = (_body) => {
-        return {
-            name: 'add-skill-based-traits',
-            text: freelancerQuery.addSkillBasedAssesmentTraits,
-            values: [_body.candidateId, _body.employeeId, currentTime],
+            values: {candidateid:_body.candidateId, employeeid:_body.employeeId, currenttime:currentTime},
         }
     }
     
@@ -474,47 +458,15 @@ export const insertCandidatePublicationQuery = (_body) => {
     // *******************************************************************************************************************************//
     // -------------------------------------------Assesment traits realted queries-------------------------------------------------//
     export const updateEllowRecuiterReview =(_body)=> {
+        console.log('values : ',{assignedto:_body.assignedTo,assessmentid:_body.candidateAssessmentId,assessmentcomment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime,stagestatus:1});
+
+
         return {
         name: 'update-ellow-recuiter-review',
         text: candidateQuery.updateEllowRecuiterReview,
-        values: {comment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime,stagestatus:1},
+        values: {assignedto:_body.assignedTo,assessmentid:_body.candidateAssessmentId,assessmentcomment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime,stagestatus:1},        
         }
     }
-    
-    
-    
-    export const updateCommentAndLinks =(_body)=> {
-        return {
-        name: 'insert-assessment-comment',
-        text: candidateQuery.updateAssessmentComment,
-        values: [_body.candidateId, _body.assessmentComment,_body.codeTestLink,_body.interviewTestLink,_body.employeeId,currentTime],
-        }
-    }   
-    
-    export const candidateDetails =(_body)=> {
-        return {
-            name: 'update-candidate-assesment-rating',
-            text: candidateQuery.updateCandidateAssesment,
-            values: [_body.candidateAssesmentId, _body.rating, _body.employeeId, currentTime],
-        }
-    }
-
-    export const updateCodeTestStatus =(_body)=> {
-        return {
-            name: 'update-code-test-status',
-            text: candidateQuery.codeTestStatusUpdate,
-            values: [_body.candidateId,_body.status,_body.employeeId,currentTime],
-        }
-    }
-
-    export const updateInterviewTestStatus =(_body)=> {
-        return {
-            name: 'update-interview-test-link',
-            text: candidateQuery.interviewTestStatusUpdate,
-            values: [_body.candidateId,_body.status,_body.employeeId,currentTime],
-        }
-    }
-
     
     export const getDetailsPosition = (_body) => {
         return {

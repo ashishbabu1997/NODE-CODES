@@ -138,6 +138,39 @@
 
 /**
 * @swagger
+* /candidates/getAssementOfCandidate:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Get candidate Assessment
+*     summary: Get candidate assessments
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*         required:
+*           type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /candidates/resume:
 *   get:
 *     tags:
@@ -511,7 +544,7 @@
 *     tags:
 *       - Candidates
 *     name: Assesment Traits / Review
-*     summary: Change candidate status to Interview Requested (changes value of make offer)
+*     summary: To add details regarding ellow recuiters assessment of a candidate
 *     security:
 *       - bearerAuth: []
 *     consumes:
@@ -524,19 +557,24 @@
 *         schema:
 *           type: object
 *           properties:
-*             candidateId:
+*             candidateAssessmentId:
 *               type: integer
-*             assessmentTraits:
+*             assessmentComment:
+*               type: string
+*             assessmentLink:
+*               type: string
+*             assessmentLinkText:
+*               type: string
+*             attachments:
 *               type: array
 *               items:
-*                 type: object
-*                 properties:
-*                   candidateAssesmentId:
-*                     type: integer
-*                   rating:
-*                     type: integer
+*                 type: string
+*             rating:
+*               type: integer
+*             assignedTo:
+*               type: integer
 *           required:
-*             - candidateId
+*             - candidateAssessmentId
 *     responses:
 *       200:
 *         description: Api success
