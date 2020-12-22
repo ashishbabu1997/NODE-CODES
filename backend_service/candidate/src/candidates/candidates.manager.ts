@@ -341,6 +341,7 @@ export const getCandidateDetails = (_body) => {
                 searchKey='%' + body.filter + '%';
                 searchQuery = " AND (ca.candidate_first_name ILIKE $searchkey OR ca.candidate_last_name ILIKE $searchkey OR c.company_name ILIKE $searchkey) "
                 queryValues=Object.assign({searchkey:searchKey},queryValues)
+
             }
             
             if (body.userRoleId != 1) {
@@ -1917,6 +1918,7 @@ export const getCandidateDetails = (_body) => {
         })
     }
 
+    
      // fetch data for pdf share
     // >>>>>>> FUNC. >>>>>>>
     //>>>>>>>> Get the details in a candidate's resume
