@@ -1471,7 +1471,7 @@ const myCache = new nodeCache();
                             resolve({ code: 200, message: "Employee Added Successfully", data: {}})
                         }
                         else{
-                            reject({ code: 400, message: "User already registered pleases use signin to continue", data: {} });
+                            reject({ code: 400, message: "User already registered.Please use signin to continue", data: {} });
                         }
                     } 
                     else{
