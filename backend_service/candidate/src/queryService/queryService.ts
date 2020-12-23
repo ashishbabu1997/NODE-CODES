@@ -492,6 +492,31 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
 
+    export const changeCandidateAssignee = (_body) => {
+        return {
+            name: 'change-candidate-assignee',
+            text: candidateQuery.changeAssignee,
+            values:{candidateid:_body.candidateId,assigneeid:_body.assigneeId,employeeid:_body.employeeId,currenttime:currentTime}
+        }
+    }
+
+    export const changeEllowRecruitmentStage = (_body) => {
+        return {
+            name: 'change-candidate-ellow-hiring-stage',
+            text: candidateQuery.changeEllowRecruitmentStage,
+            values:{candidateid:_body.candidateId,stagename:_body.stageName,employeeid:_body.employeeId,currenttime:currentTime}
+        }
+    }
+
+    export const rejectFromCandidateEllowRecruitment = (_body) => {
+        return {
+            name: 'reject-candidate-ellow-hiring',
+            text: candidateQuery.rejectFromCandidateEllowRecruitment,
+            values:{assessmentid:_body.candidateAssessmentId,assignedto:_body.assignedTo,comment:_body.assessmentComment,rating:_body.assessmentRating,link:_body.assessmentLink,linkText:_body.assessmentLinkText,currenttime:currentTime}
+        }
+    }
+    
+
 
     // *******************************************************************************************************************************//
     // -------------------------------------------Candidate filter related queries------------------------------------------------//
