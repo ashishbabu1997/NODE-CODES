@@ -1757,4 +1757,69 @@ const myCache = new nodeCache();
             })
         })
     }
-    
+
+     // Change assignee of a particular candidate
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>> set assignee id to a candidate table 
+    export const changeAssignee = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database().connect()
+                try {
+                    let result = await client.query(queryService.changeCandidateAssignee(_body));
+        
+                    resolve({ code: 200, message: "Assignee changed successfully", data:result.rows});
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            })
+        })
+    }
+
+    // Change stage of ellow recuitment
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>> set corresponding stage values and flags in candidate related db
+    export const changeEllowRecruitmentStage = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database()
+                try {
+                    await client.query(queryService.changeEllowRecruitmentStage(_body));
+                    resolve({ code: 200, message: "Moved to stage successfully", data:{}});
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            })
+        })
+    }
+
+    // Reject at a stage of ellow recruitment
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>> set corresponding stage values and flags in candidate_assesment and candidate db
+    export const rejectFromCandidateEllowRecruitment = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database()
+                try {
+                    await client.query(queryService.rejectFromCandidateEllowRecruitment(_body));
+                    resolve({ code: 200, message: "Rejected candiate successfully", data:{}});
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            })
+        })
+    }

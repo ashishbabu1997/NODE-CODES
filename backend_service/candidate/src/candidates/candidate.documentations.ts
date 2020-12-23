@@ -1425,6 +1425,133 @@
 
 /**
 * @swagger
+* /candidates/changeCandidateAssignee:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Update assginee
+*     summary:  Change default assignee of a candidate
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer
+*             assigneeId:
+*               type: integer
+*           required:
+*             - candidateId
+*             - assigneeId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/updateCandidateEllowStage:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Move ellow hiring stage
+*     summary:  Move a candidate between ellow hiring steps
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer
+*             stageName:
+*               type: string
+*           required:
+*             - candidateId
+*             - stageName
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/rejectCandidateEllowStage:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Reject candidate from ellow recuitment
+*     summary:  Reject a candidate from any of ellow hiring stages
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateAssessmentId:
+*               type: integer
+*             assessmentComment:
+*               type: string
+*             assessmentRating:
+*               type: integer
+*             assessmentLink:
+*               type: string
+*             assessmentLinkText:
+*               type: string
+*             assignedTo:
+*               type: integer
+*           required:
+*             - candidateAssessmentId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /candidates/:
 *   delete:
 *     tags:
@@ -1500,35 +1627,3 @@
 *         description: Server down
 */
 
-/**
-* @swagger
-* /candidates/getAssesmentLinks:
-*   get:
-*     tags:
-*       - Candidates
-*     name: Fetch assesment links
-*     summary: Fetch all the assesment links of the candidate
-*     consumes:
-*       - application/json
-*     security:
-*       - bearerAuth: []
-*     produces:
-*       - application/json
-*     parameters:
-*       - in: query
-*         name: candidateId
-*         schema:
-*         required:
-*           type: integer
-*     responses:
-*       200:
-*         description: Api success
-*       400:
-*         description: Api Failed
-*       401:
-*         description: Unauthorised access
-*       403:
-*         description: Permission denied
-*       500:
-*         description: Server down
-*/
