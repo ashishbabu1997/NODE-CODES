@@ -1767,7 +1767,9 @@ const myCache = new nodeCache();
                 const client = await database().connect()
                 try {
                     let result = await client.query(queryService.changeCandidateAssignee(_body));
-        
+                    _body.auditType=1
+                    _body.auditLogComment=`Assignee for the candidate ${_body.candidateName} has been changed to ${_body.assigneeName}`
+                    await client.query(queryService.insertAuditLog(_body));
                     resolve({ code: 200, message: "Assignee changed successfully", data:result.rows});
                 } catch (e) {
                     console.log(e)
@@ -1791,6 +1793,12 @@ const myCache = new nodeCache();
                 const client = await database()
                 try {
                     await client.query(queryService.changeEllowRecruitmentStage(_body));
+                    _body.auditType=1
+                    _body.auditLogComment=`Candidate ${_body.candidateName} have been moved to ${_body.stageName} by ${_body.assigneeName}`
+                    await client.query(queryService.insertAuditLog(_body));
+                    _body.assigneeComment=`${_body.assigneeName} moved to ${_body.stageName}`
+                    await client.query(queryService.updateAssigneeComment(_body));
+
                     resolve({ code: 200, message: "Moved to stage successfully", data:{}});
                 } catch (e) {
                     console.log(e)
@@ -1812,6 +1820,9 @@ const myCache = new nodeCache();
                 const client = await database()
                 try {
                     await client.query(queryService.rejectFromCandidateEllowRecruitment(_body));
+                    _body.auditType=1
+                    _body.auditLogComment=`Candidate ${_body.candidateName} has been rejected at ${_body.stageName} by ${_body.assigneeName}`
+                    await client.query(queryService.insertAuditLog(_body));
                     resolve({ code: 200, message: "Rejected candiate successfully", data:{}});
                 } catch (e) {
                     console.log(e)

@@ -507,6 +507,13 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:{candidateid:_body.candidateId,stagename:_body.stageName,employeeid:_body.employeeId,currenttime:currentTime}
         }
     }
+    export const updateAssigneeComment = (_body) => {
+        return {
+            name: 'change-candidate-ellow-hiring-stage',
+            text: candidateQuery.updateAssigneeComments,
+            values:[_body.candidateAssesmentId,_body.assigneeComment]
+        }
+    }
 
     export const rejectFromCandidateEllowRecruitment = (_body) => {
         return {
@@ -550,3 +557,11 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
+
+    export const insertAuditLog = (_body) => {
+        return {
+            name: 'get-image-names',
+            text: candidateQuery.getPositionName,
+            values:['ellow hiring stage',_body.auditType,_body.auditLogComment,currentTime,_body.employeeId]
+        }
+    }
