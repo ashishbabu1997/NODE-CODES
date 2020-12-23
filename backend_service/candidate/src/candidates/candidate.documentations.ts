@@ -1429,8 +1429,8 @@
 *   put:
 *     tags:
 *       - Candidates
-*     name: Update workExperience
-*     summary:  Update work experience
+*     name: Update assginee
+*     summary:  Change default assignee of a candidate
 *     security:
 *       - bearerAuth: []
 *     consumes:
@@ -1469,8 +1469,8 @@
 *   put:
 *     tags:
 *       - Candidates
-*     name: Update workExperience
-*     summary:  Update work experience
+*     name: Move ellow hiring stage
+*     summary:  Move a candidate between ellow hiring steps
 *     security:
 *       - bearerAuth: []
 *     consumes:
@@ -1509,8 +1509,8 @@
 *   put:
 *     tags:
 *       - Candidates
-*     name: Update workExperience
-*     summary:  Update work experience
+*     name: Reject candidate from ellow recuitment
+*     summary:  Reject a candidate from any of ellow hiring stages
 *     security:
 *       - bearerAuth: []
 *     consumes:
