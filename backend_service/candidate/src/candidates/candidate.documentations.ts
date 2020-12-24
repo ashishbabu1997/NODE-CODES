@@ -429,7 +429,7 @@
 *           properties:
 *             candidateId:
 *               type: integer            
-*             sharedEmails:
+*             emailList:
 *               type: array
 *               items:
 *                 type: string
