@@ -557,6 +557,14 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
+    export const getAllocatedVettedStatus =(_body)=> {
+        return {
+            name: 'get-assesment-details',
+            text: candidateQuery.getCandidateVettedAllocatedTo,
+            values: [_body.candidateId],
+        }
+    }
+    
 
     export const insertAuditLog = (_body) => {
         return {

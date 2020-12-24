@@ -96,5 +96,8 @@ export default {
     changeEllowRecruitmentStage:'update candidate set candidate_vetted=(select review_steps_id from review_steps where stage_name like $stagename), updated_on=$currenttime,updated_by=$employeeid where candidate_id = $candidateid',
     rejectFromCandidateEllowRecruitment:'WITH src AS ( UPDATE candidate_assesement SET stage_status = 0, stage_completed = true,assigned_to=$assignedto,assessment_comment=$comment,assessment_rating=$rating, assessment_link=$link,assessment_link_text=$linktext,updated_on = $currenttime,updated_by=$employeeid WHERE candidate_assesment_id = $assessmentid returning candidate_id ) UPDATE candidate c SET candidate_vetted = 0, updated_on = $currenttime,updated_by=$employeeid FROM src WHERE c.candidate_id = src.candidate_id',
     insertLogs:'INSERT INTO audit_log (audit_name,audit_type,audit_log_comment,created_on,created_by) VALUES ($1,$2,$3,$4,$5)',
-    updateAssigneeComments:'update candidate_assesement set assignee_comment=$2 where candidate_assesment_id=$1'
+    updateAssigneeComments:'update candidate_assesement set assignee_comment=$2 where candidate_assesment_id=$1',
+    getCandidateVettedAllocatedTo:'select candidate_vetted,allocated_to from candidate where candidate_id=$1',
+    getellowAdmins:"select concat(firstname,' ',lastname) as name ,employee_id as employeeId from employee where status=true and user_role_id=1"
+
 }

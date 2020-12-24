@@ -1626,7 +1626,7 @@ const myCache = new nodeCache();
                     console.log("uniqueId ",uniqueId);
                     let oldEmailResult = await client.query(queryService.saveSharedEmailsForpdf(_body));
                     console.log("oldEmails : ",oldEmailResult.rows[0]);
-                    _body.sharedEmails = _body.sharedEmails.filter(elements=> elements!=null);
+                    _body.emailList = _body.emailList.filter(elements=> elements!=null);
                     console.log("sharedEmails : ", _body.sharedEmails);
                     
                     let options = { format: 'A4',printBackground:true,headless: false,args: ['--no-sandbox', '--disable-setuid-sandbox'] };
@@ -1643,7 +1643,7 @@ const myCache = new nodeCache();
                         {
                    
                     
-                            if (Array.isArray(_body.sharedEmails))
+                            if (Array.isArray(_body.emailList))
                             {
                                 _body.sharedEmails.forEach(element => {
                                     console.log("Email",element)
@@ -1743,8 +1743,18 @@ const myCache = new nodeCache();
                 const client = await database().connect()
                 try {
                     let result = await client.query(queryService.getAssesmentDetails(_body));
-        
-                    resolve({ code: 200, message: "Assessment details listed successfully", data:result.rows});
+                    
+                    let results = await client.query(queryService.getAllocatedVettedStatus(_body));
+                    const adminSignup = {
+                        name: 'admin-signup',
+                        text: candidateQuery.getellowAdmins,
+                        values: []
+                    }
+                   let adminResult=await client.query(adminSignup);
+                    resolve({ code: 200, message: "Assessment details listed successfully", data:{reviews:result.rows,
+                        candidateVetted:results.rows[0].candidate_vetted,allocatedTo:results.rows[0].allocated_to,
+                        admins:adminResult.rows
+                    }});
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
