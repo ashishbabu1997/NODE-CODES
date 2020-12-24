@@ -1342,7 +1342,7 @@ const myCache = new nodeCache();
                         if(![null,undefined].includes(result.rows) && result.rows.length > 0)
                         {
                             _body.uniqueId = result.rows[0].unique_key;
-                            sharedEmails = result.rows[0].shared_emails;
+                            sharedEmails =_body.emailList;
                             var link=_body.host+'/shareResume/'+_body.uniqueId
                             if (Array.isArray(sharedEmails))
                             {
@@ -1623,12 +1623,9 @@ const myCache = new nodeCache();
                     var candidateId=_body.candidateId
                     let uniqueId = nanoid();
                     myCache.set( uniqueId, candidateId );
-                    console.log("uniqueId ",uniqueId);
                     let oldEmailResult = await client.query(queryService.saveSharedEmailsForpdf(_body));
-                    console.log("oldEmails : ",oldEmailResult.rows[0]);
-                    _body.emailList = _body.emailList.filter(elements=> elements!=null);
-                    console.log("sharedEmails : ", _body.sharedEmails);
-                    
+                    _body.sharedEmails = _body.sharedEmails.filter(elements=> elements!=null);
+                  
                     let options = { format: 'A4',printBackground:true,headless: false,args: ['--no-sandbox', '--disable-setuid-sandbox'] };
                     // Example of options with args //
                     // let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] };
@@ -1636,17 +1633,13 @@ const myCache = new nodeCache();
                     //  let file = {content: fs.readFileSync('./resume.html', 'utf8')};
                      let file = { url: _body.host+"/sharePdf/"+uniqueId };
 
-                     console.log('file : ',file);
-                     
-                   
                     await htmlToPdf.generatePdf(file, options).then(pdfBuffer => 
                         {
                    
                     
                             if (Array.isArray(_body.emailList))
                             {
-                                _body.sharedEmails.forEach(element => {
-                                    console.log("Email",element)
+                                _body.emailList.forEach(element => {
                                     let replacements = {
                 
                                     };
