@@ -1342,7 +1342,7 @@ const myCache = new nodeCache();
                         if(![null,undefined].includes(result.rows) && result.rows.length > 0)
                         {
                             _body.uniqueId = result.rows[0].unique_key;
-                            sharedEmails = result.rows[0].shared_emails;
+                            sharedEmails =_body.emailList;
                             var link=_body.host+'/shareResume/'+_body.uniqueId
                             if (Array.isArray(sharedEmails))
                             {
@@ -1471,7 +1471,7 @@ const myCache = new nodeCache();
                             resolve({ code: 200, message: "Employee Added Successfully", data: {}})
                         }
                         else{
-                            reject({ code: 400, message: "User already registered pleases use signin to continue", data: {} });
+                            reject({ code: 400, message: "User already registered.Please use signin to continue", data: {} });
                         }
                     } 
                     else{
@@ -1623,12 +1623,9 @@ const myCache = new nodeCache();
                     var candidateId=_body.candidateId
                     let uniqueId = nanoid();
                     myCache.set( uniqueId, candidateId );
-                    console.log("uniqueId ",uniqueId);
                     let oldEmailResult = await client.query(queryService.saveSharedEmailsForpdf(_body));
-                    console.log("oldEmails : ",oldEmailResult.rows[0]);
                     _body.sharedEmails = _body.sharedEmails.filter(elements=> elements!=null);
-                    console.log("sharedEmails : ", _body.sharedEmails);
-                    
+                  
                     let options = { format: 'A4',printBackground:true,headless: false,args: ['--no-sandbox', '--disable-setuid-sandbox'] };
                     // Example of options with args //
                     // let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] };
@@ -1636,17 +1633,13 @@ const myCache = new nodeCache();
                     //  let file = {content: fs.readFileSync('./resume.html', 'utf8')};
                      let file = { url: _body.host+"/sharePdf/"+uniqueId };
 
-                     console.log('file : ',file);
-                     
-                   
                     await htmlToPdf.generatePdf(file, options).then(pdfBuffer => 
                         {
                    
                     
-                            if (Array.isArray(_body.sharedEmails))
+                            if (Array.isArray(_body.emailList))
                             {
-                                _body.sharedEmails.forEach(element => {
-                                    console.log("Email",element)
+                                _body.emailList.forEach(element => {
                                     let replacements = {
                 
                                     };
@@ -1743,8 +1736,18 @@ const myCache = new nodeCache();
                 const client = await database().connect()
                 try {
                     let result = await client.query(queryService.getAssesmentDetails(_body));
-        
-                    resolve({ code: 200, message: "Assessment details listed successfully", data:result.rows});
+                    
+                    let results = await client.query(queryService.getAllocatedVettedStatus(_body));
+                    const adminSignup = {
+                        name: 'admin-signup',
+                        text: candidateQuery.getellowAdmins,
+                        values: []
+                    }
+                   let adminResult=await client.query(adminSignup);
+                    resolve({ code: 200, message: "Assessment details listed successfully", data:{reviews:result.rows,
+                        candidateVetted:results.rows[0].candidate_vetted,allocatedTo:results.rows[0].allocated_to,
+                        admins:adminResult.rows
+                    }});
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
@@ -1767,7 +1770,9 @@ const myCache = new nodeCache();
                 const client = await database().connect()
                 try {
                     let result = await client.query(queryService.changeCandidateAssignee(_body));
-        
+                    _body.auditType=1
+                    _body.auditLogComment=`Assignee for the candidate ${_body.candidateName} has been changed to ${_body.assigneeName}`
+                    await client.query(queryService.insertAuditLog(_body));
                     resolve({ code: 200, message: "Assignee changed successfully", data:result.rows});
                 } catch (e) {
                     console.log(e)
@@ -1791,6 +1796,12 @@ const myCache = new nodeCache();
                 const client = await database()
                 try {
                     await client.query(queryService.changeEllowRecruitmentStage(_body));
+                    _body.auditType=1
+                    _body.auditLogComment=`Candidate ${_body.candidateName} have been moved to ${_body.stageName} by ${_body.assigneeName}`
+                    await client.query(queryService.insertAuditLog(_body));
+                    _body.assigneeComment=`${_body.assigneeName} moved to ${_body.stageName}`
+                    await client.query(queryService.updateAssigneeComment(_body));
+
                     resolve({ code: 200, message: "Moved to stage successfully", data:{}});
                 } catch (e) {
                     console.log(e)
@@ -1812,6 +1823,9 @@ const myCache = new nodeCache();
                 const client = await database()
                 try {
                     await client.query(queryService.rejectFromCandidateEllowRecruitment(_body));
+                    _body.auditType=1
+                    _body.auditLogComment=`Candidate ${_body.candidateName} has been rejected at ${_body.stageName} by ${_body.assigneeName}`
+                    await client.query(queryService.insertAuditLog(_body));
                     resolve({ code: 200, message: "Rejected candiate successfully", data:{}});
                 } catch (e) {
                     console.log(e)

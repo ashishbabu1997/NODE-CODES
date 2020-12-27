@@ -429,7 +429,7 @@
 *           properties:
 *             candidateId:
 *               type: integer            
-*             sharedEmails:
+*             emailList:
 *               type: array
 *               items:
 *                 type: string
@@ -1447,6 +1447,10 @@
 *               type: integer
 *             assigneeId:
 *               type: integer
+*             assigneeName:
+*               type: string
+*             candidateName:
+*               type: string
 *           required:
 *             - candidateId
 *             - assigneeId
@@ -1486,6 +1490,12 @@
 *             candidateId:
 *               type: integer
 *             stageName:
+*               type: string
+*             candidateAssesmentId:
+*               type: integer
+*             assigneeName:
+*               type: string
+*             candidateName:
 *               type: string
 *           required:
 *             - candidateId
@@ -1535,6 +1545,12 @@
 *               type: string
 *             assignedTo:
 *               type: integer
+*             stageName:
+*               type: string
+*             assigneeName:
+*               type: string
+*             candidateName:
+*               type: string
 *           required:
 *             - candidateAssessmentId
 *     responses:
