@@ -544,7 +544,7 @@ export const insertCandidatePublicationQuery = (_body) => {
 
     export const getAssesmentDetails =(_body)=> {
         return {
-            name: 'get-assesment-details',
+            name: 'get-assesment-details-of-candidate-new',
             text: candidateQuery.getCandidateAssesmentDetails,
             values: [_body.candidateId],
         }
