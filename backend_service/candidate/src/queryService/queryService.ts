@@ -486,7 +486,7 @@ export const insertCandidatePublicationQuery = (_body) => {
     
     export const getPositionsDetails = (_body) => {
         return {
-            name: 'get-image-names',
+            name: 'get-position-based-details',
             text: candidateQuery.getPositionName,
             values:[_body.positionId]
         }
@@ -509,7 +509,7 @@ export const insertCandidatePublicationQuery = (_body) => {
     }
     export const updateAssigneeComment = (_body) => {
         return {
-            name: 'change-candidate-ellow-hiring-stage',
+            name: 'change-candidate-assignee-comment',
             text: candidateQuery.updateAssigneeComments,
             values:[_body.candidateAssesmentId,_body.assigneeComment]
         }
@@ -568,8 +568,8 @@ export const insertCandidatePublicationQuery = (_body) => {
 
     export const insertAuditLog = (_body) => {
         return {
-            name: 'get-image-names',
-            text: candidateQuery.getPositionName,
+            name: 'insert-audit-log',
+            text: candidateQuery.insertLogs,
             values:['ellow hiring stage',_body.auditType,_body.auditLogComment,currentTime,_body.employeeId]
         }
     }
