@@ -1767,7 +1767,7 @@ const myCache = new nodeCache();
     export const changeAssignee = (_body) => {
         return new Promise((resolve, reject) => {
             (async () => {
-                const client = await database().connect()
+                const client = await database()
                 try {
                     let result = await client.query(queryService.changeCandidateAssignee(_body));
                     _body.auditType=1
@@ -1778,8 +1778,6 @@ const myCache = new nodeCache();
                     console.log(e)
                     await client.query('ROLLBACK')
                     reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-                } finally {
-                    client.release();
                 }
             })().catch(e => {
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message })
