@@ -179,11 +179,7 @@ export const saveCandidateProfile = (_body) => {
             try {
                 await client.query('BEGIN');
                 let sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
-<<<<<<< HEAD
-                let candidates = [_body.firstName, _body.lastName, sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.positionName]    
-=======
                 let candidates = [_body.firstName, _body.lastName, sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
->>>>>>> 12a26a2aa9821814a1aa9b5763f1a8c4f2b71ce0
                 const saveCandidateQuery = {
                     name: 'add-Profile',
                     text: format(jobReceivedQuery.addProfile, [candidates]),
