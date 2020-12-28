@@ -19,24 +19,10 @@ export default {
         "password": "yteinevvuuchtmvb"
     },
     "text": {
-        "firstLine": "Hello,",
-        "secondLine": "An applicant has been registered with us!",
-        "thirdLine": "Given below are the applicant's details",
+    
         "subject":"Customer Registration Notification",
-        "name":"Name",
-        "companyName":"Company Name",
-        "email":"Email Address",
-        "phone":"Telephone Number",
-        "fifthLine": "With regards,",
-        "sixthLine":"Team ellow.io"
-    },
-    "usertext": {
-        "firstLine": "<h3>Hello,</h3>",
-        "secondLine": "<h3>Thank you for registering with ellow.io !</h3>",
-        "thirdLine": "<h3>Please enter the password given below to login with us.</h3>",
-        "password": "<h3>Your password is:-    ",
-        "fourthLine": "<h3>With regards,</h3>",
-        "fifthLine": "<h3>Team ellow.io</h3>"
+        "userSubject":"Customer Verification Link",
+        "resetConfirmSubject":" ellow Confirmation Mail"
     },
     "defaultHiringStep": {
         "hiringStepName": "ellow hiring step",

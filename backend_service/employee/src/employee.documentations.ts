@@ -77,6 +77,86 @@
 
 /**
 * @swagger
+* /freelancer:
+*   post:
+*     tags:
+*       - Employees
+*     name: Freenlancer Registration
+*     summary: Freelancer registration API call
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             email:
+*               type: string
+*             firstName:
+*               type: string
+*             lastName :
+*               type: string 
+*             yoe:
+*               type: number
+*             telephoneNumber:
+*               type: integer
+*           required: [email,firstName,lastName,telephoneNumber]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /freelancer/setTokenAndPassword:
+*   post:
+*     tags:
+*       - Employees
+*     name: Freenlancer Reset token and set password
+*     summary: Freelancer reset token and set password API call
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             token:
+*               type: string
+*             password:
+*               type: string
+*             url:
+*               type:string
+*           required: [token,password]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /addEmployeeByAdmin:
 *   post:
 *     tags:
@@ -112,6 +192,38 @@
 *             telephoneNumber:
 *               type: integer
 *           required: [email]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /verifyToken:
+*   get:
+*     tags:
+*       - Employees
+*     name: verify token validity
+*     summary: Check whether the token exists or not
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query 
+*         name: token
+*         schema:
+*         format: token
+*         required:
+*           type: string
 *     responses:
 *       200:
 *         description: Api success

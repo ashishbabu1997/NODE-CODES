@@ -1,25 +1,18 @@
 import * as jwt from 'jwt-simple';
 import jwtConfig from '../config/config'
 import {Promise} from 'es6-promise'
-import {sendMail} from '../middlewares/mailer'
 import Query from './query/query';
 import database from '../common/database/database';
-import config from '../config/config'
-import * as handlebars from 'handlebars'
-import * as fs from 'fs'
+import * as emailClient from '../emailService/emailService';
+
+
+
+// FUNC. 
+// Once when a user forgets his/her password, he clicks forgot forgot password button
+// where a he has to enter his email. After submission , a reset password link is sent to his email.
 export const sendLink = (_body) => {
   return new Promise((resolve, reject) => {
-    var readHTMLFile = function(path, callback) {
-      fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
-          if (err) {
-              throw err;
-              callback(err);
-          }
-          else {
-              callback(null, html);
-          }
-      });
-    };
+    // Checks whether the entered email is his/her own email.
     var lowerEmail=_body.email.toLowerCase()
     const checkEMail = {
       name: 'check-email',
@@ -36,6 +29,8 @@ export const sendLink = (_body) => {
         var payload = { email:lowerEmail,
                         userRoleId:results.rows[0].userRoleId
                       }
+
+        // Generates a token and stores the token on DB.
         var secret = jwtConfig.jwtSecretKey
         var token = jwt.encode(payload, secret);
         const insertTokenQuery = {
@@ -48,29 +43,19 @@ export const sendLink = (_body) => {
           reject({ code: 400, message: "Database connection Error !!!!", data:  {} });
           return;
         }
+        // Sends the link with token attached at the end of the link.
         var link=_body.host+"/passwordset/"+token
         const subject="ellow.ai RESET PASSWORD LINK"
-        readHTMLFile('src/emailTemplates/forgotPasswordText.html', function(err, html) {
-          var template = handlebars.compile(html);
-          var replacements = {
-               resetLink: link
+        let path = 'src/emailTemplates/forgotPasswordText.html';
+        let replacements =  {
+            resetLink: link
           };
-          var htmlToSend = template(replacements);
-        sendMail(lowerEmail, subject,htmlToSend, function(err,data) {
-                if (err) {
-                  console.log("........Email ERROR:.........",err)
-                  reject({ code: 400, message: "Cannot send email", data:{}});
-                  return;
-                }
-                console.log('Email sent successfully');
-                resolve({ code: 200, message: "A Link to reset your password has been sent to your email successfully", data:{} });
-            });
-          })
+        emailClient.emailManager(lowerEmail,subject,path,replacements);
           })
       }
       else
       {
-        reject({ code: 400, message: "Email does'nt Exist", data:{}});
+        reject({ code: 400, message: "Provided email is not registered with ellow.io ! Please signup to continue", data:{}});
         return;
 
       }

@@ -1,6 +1,9 @@
 import certificationQuery from './query/certification.query';
 import database from '../common/database/database';
 
+
+ // >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>> Fetch certifications updated by a company  
 export const fetchCompanyCertifications = (_body) => {
     return new Promise((resolve, reject) => {
         const query = {
@@ -18,6 +21,9 @@ export const fetchCompanyCertifications = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>> Add certification details of a registered company  
 export const createCompanyCertifications = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -64,6 +70,8 @@ export const createCompanyCertifications = (_body) => {
 }
 
 
+ // >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>> Update certification details of a registered company  
 export const updateCompanyCertifications = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -82,6 +90,8 @@ export const updateCompanyCertifications = (_body) => {
     })
 }
 
+ // >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>> Delete certification details of a registered company  
 export const deleteCompanyCertifications = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);

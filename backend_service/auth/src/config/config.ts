@@ -16,14 +16,6 @@ export default {
         "user": "sales@ellow.io",
         "password": "yteinevvuuchtmvb",
     },
-    "text": {
-        "firstLine": "Hello,",
-        "thirdLine": "Please click the link below to reset your password",
-        "fourthLine": "With regards,",
-        "fifthLine": "Team ellow.io"
-
-
-    },
     "emailUsername":"no-reply@ellow.io",
     "adminPassword":"admin@ellow",
     "nextLine":"<br>",

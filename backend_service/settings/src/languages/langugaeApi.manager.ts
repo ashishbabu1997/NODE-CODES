@@ -5,6 +5,8 @@ import CacheService from '../common/cache/nodeCache';
 const ttl = 7 * 24 * 60 * 60; // cache for 1week
 const cache = new CacheService(ttl); // Create a new cache service instance
 
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>List all languages from database
 export const listLanguages = () => {    
     const query = {
         name: 'fetch-language-list',
@@ -23,6 +25,8 @@ export const listLanguages = () => {
     );
 }
 
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Delete unwanted languge caches
 export const flushCache = () => {    
     return new Promise((resolve) => {
         cache.flush();

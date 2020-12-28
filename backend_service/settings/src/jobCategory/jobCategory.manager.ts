@@ -1,6 +1,9 @@
 import jobQuery from './query/jobCategoryQuery';
 import database from '../common/database/database';
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>List all job categories from database
 export const listJobCategories = () => {
     return new Promise((resolve, reject) => {
         const query = {
@@ -18,6 +21,9 @@ export const listJobCategories = () => {
     });
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Create a new job category
 export const createNewJobCategory = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -37,6 +43,9 @@ export const createNewJobCategory = (_body) => {
     })
 }
 
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Update job category details 
 export const updateJobCategory= (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
@@ -55,6 +64,10 @@ export const updateJobCategory= (_body) => {
     })
 }
 
+
+
+ // >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Delete job category details 
 export const deleteJobCategory = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
