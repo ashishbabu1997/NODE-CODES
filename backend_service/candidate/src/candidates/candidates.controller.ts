@@ -1,4 +1,4 @@
-import { getCandidateDetails,modifyResumeFile,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience } from './candidates.manager';
+import { getCandidateDetails,fetchResumeData,modifyResumeFile,addResumeShareLink,modifyCloudProficiency,modifySocialPresence,modifyProfileDetails,modifyCandidateAvailability,modifyEducation,modifyAward,modifyPublication,modifyCandidateWorkHistory,modifyCandidateProject, editVettingStatus,modifyLanguageProficiency, listCandidatesDetails, listFreeCandidatesDetails, candidateClearance, interviewRequestFunction, addCandidateReview, removeCandidateFromPosition, linkCandidateWithPosition, removeCandidate,getResume,addWorkExperience } from './candidates.manager';
 import sendResponse from '../common/response/response';
 
 export const candidateDetails = (req, res) => {
@@ -7,12 +7,12 @@ export const candidateDetails = (req, res) => {
         .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 export const listCandidates = (req, res) => {
-    const body = req.query;
+    const body = req;
     listCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 export const listFreeCandidates = (req, res) => {
-    const body = req.query;
+    const body = req;
     listFreeCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
@@ -165,6 +165,24 @@ export const resumeDetails = (req, res) => {
 export const WorkExperience = (req, res) => {
     const body = req.body;
     addWorkExperience(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
+export const resumeShareLink = (req, res) => {
+    const body = req.query;
+    addResumeShareLink(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
+export const sharedResumeData = (req, res) => {
+    const body = req.query;
+    fetchResumeData(body).then((response: any) => {
         sendResponse(res, response.code, 1, 201, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)

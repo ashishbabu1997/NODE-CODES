@@ -65,19 +65,6 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    allowRemote: Joi.boolean().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "number.base":
-                    err.message = "Allow remote must be a boolean"
-                    break;
-                default:
-                    err.message = "Invalid allow remote"
-                    break;
-            }
-        });
-        return errors;
-    }),
     experienceLevel: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {

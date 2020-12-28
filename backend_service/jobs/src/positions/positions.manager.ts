@@ -51,8 +51,7 @@ export const getCompanyPositions = (_body) => {
         }
         if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
         {
-            sort = ' ORDER BY $sort';
-            queryValues = Object.assign({sort: orderBy[body.sortBy] + ' '+ body.sortType},queryValues)
+            sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
         }
         if(![undefined,null].includes(body.searchKey))
         {
@@ -67,7 +66,7 @@ export const getCompanyPositions = (_body) => {
             queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
             queryValues =  Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
         }
-     
+        
         const query = {
             name: 'id-fetch-company-positions',
             text: queryText,
@@ -368,17 +367,14 @@ export const createCompanyPositions = async (_body) => {
                                     const message = `A new position named ${positionName} has been created by ${companyName}.`
                                     var cName=companyName
                                     var cpName=positionName
-                                    var msg= 'A new position named'+' '+cpName+' '+'has been created by'+' '+cName
+                                    // var msg= 'A new position named'+' '+cpName+' '+'has been created by'+' '+cName
                                     await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position' })
                                     var subject='New position notification'
                                     readHTMLFile('src/emailTemplates/positionCreationText.html', function(err, html) {
                                         var template = handlebars.compile(html);
                                         var replacements = {
                                             company:cName,
-                                            position:cpName,
-                                            cId:companyId,
-                                            pId:positionId
-                                            
+                                            position:cpName  
                                         };
                                         var htmlToSend = template(replacements);
                                         sendMail(config.adminEmail, subject,htmlToSend, function (err, data) {
@@ -407,16 +403,15 @@ export const createCompanyPositions = async (_body) => {
                     export const changeJobStatus = (_body) => {
                         return new Promise((resolve, reject) => {
                             const currentTime = Math.floor(Date.now() / 1000);
-                            var jobReceivedId;
-                            var message;
-                            var positionName
-                            var positionId
+                           
                             (async () => {
                                 const client = await database().connect()
                                 
                                 try {
                                     await client.query('BEGIN');
-                                    
+                                    var jobReceivedId;
+                                    var message;
+                                    let positionName;
                                     var readHTMLFile = function(path, callback) {
                                         fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
                                             if (err) {
@@ -468,6 +463,7 @@ export const createCompanyPositions = async (_body) => {
                                                         positionName=results.rows[0].position_name
                                                         var emailAddress=results.rows[0].email
                                                         message=`A position named ${positionName} has been reopened.`
+                                                        createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position' })
                                                         readHTMLFile('src/emailTemplates/positionReopenText.html', function(err, html) {
                                                             var template = handlebars.compile(html);
                                                             var replacements = {
@@ -483,17 +479,73 @@ export const createCompanyPositions = async (_body) => {
                                                                 }
                                                             });
                                                         })
-                                                    })
+
+                                                        })
+                                                    
                                                 }
                                                 else if(_body.jobStatus==8)
                                                 {
-                                                    message=`A position named ${positionName} has been closed.`
-                                                    
+                                                    const mailAddress = {
+                                                        name: 'fetch-emailaddress',
+                                                        text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
+                                                        values:[_body.positionId]
+                                                    }
+                                                    database().query(mailAddress, (error, results) => {
+                                                        if (error) {
+                                                            console.log(error)
+                                                            reject({ code: 400, message: "Error in database connection.", data: {} });
+                                                            return;
+                                                        }   
+                                                        jobReceivedId=results.rows[0].job_received_id    
+                                                        positionName=results.rows[0].position_name
+                                                        var emailId=results.rows[0].email
+                                                        message=`A position named ${positionName} has been closed.`
+                                                        createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position' })
+                                                        if(_body.userRoleId==1)
+                                                        {
+                                                            readHTMLFile('src/emailTemplates/positionCloseText.html', function(err, html) {
+                                                                var template = handlebars.compile(html);
+                                                                var replacements = {
+                                                                    position:positionName
+                                                                };
+                                                                var htmlToSend = template(replacements);
+                                                                var subj="Close Position Notification"
+                                                                sendMail(emailId, subj, htmlToSend, function (err, data) {
+                                                                    if (err) {
+                                                                        console.log(err)
+                                                                        reject({ code: 400, message: "Mailer Error.", data: {} });
+                                                                        return;
+                                                                    }
+                                                                });
+                                                            })
+                                                        }
+                                                        else
+                                                        {
+                                                            readHTMLFile('src/emailTemplates/positionCloseText.html', function(err, html) {
+                                                                var template = handlebars.compile(html);
+                                                                var replacements = {
+                                                                    position:positionName
+                                                                };
+                                                                var htmlToSend = template(replacements);
+                                                                var subj="Close Position Notification"
+                                                                sendMail(config.adminEmail, subj, htmlToSend, function (err, data) {
+                                                                    if (err) {
+                                                                        console.log(err)
+                                                                        reject({ code: 400, message: "Mailer Error.", data: {} });
+                                                                        return;
+                                                                    }
+                                                                });
+                                                            })
+                                                        }
+                                                    })
                                                 }   
+                                            
                                             }
+
                                         })
+                                        
                                     })
-                                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList' })
+                                    console.log(message)
                                     resolve({ code: 200, message: "Job status changed", data: {} });
                                     
                                 } catch (e) {
@@ -599,7 +651,7 @@ export const createCompanyPositions = async (_body) => {
                                             console.log(positionName,emailAddress)
                                         });
                                     })
-                                    const message=`The position named ${positionName} with id ${positionId} has been removed .`
+                                    const message=`The position named ${positionName}  has been removed .`
                                     await createNotification({ positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList' })
                                     resolve({ code: 200, message: "Position deletion successfull", data: {} });
                                 } catch (e) {

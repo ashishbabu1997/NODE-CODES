@@ -5,7 +5,7 @@ import config from '../config/config';
 import { createNotification } from '../common/notifications/notifications';
 import * as handlebars from 'handlebars'
 import * as fs from 'fs'
-
+import {nanoid} from 'nanoid';
 
 export const getCandidateDetails = (_body) => {
     return new Promise((resolve, reject) => {
@@ -104,9 +104,10 @@ export const getCandidateDetails = (_body) => {
     export const listCandidatesDetails = (_body) => {
         return new Promise((resolve, reject) => {
             var selectQuery = candidateQuery.listCandidates;
-            if (_body.userRoleId != 1) {
-                selectQuery = selectQuery + " AND cp.admin_approve_status = 1"
-            }
+            
+            var adminApproveQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
+            body=_body.query, sort = '', searchKey = '%%';
+            
             const orderBy = {
                 "updatedOn": 'ca.updated_on',
                 "candidateFirstName": 'ca.candidate_first_name',
@@ -116,46 +117,68 @@ export const getCandidateDetails = (_body) => {
                 "companyName": 'c.company_name'
             }
             
-            if (_body.filter) {
-                selectQuery = selectQuery + " AND ((LOWER(ca.candidate_first_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(ca.candidate_last_name) LIKE '%" + _body.filter.toLowerCase() + "%') " + "OR (LOWER(c.company_name) LIKE '%" + _body.filter.toLowerCase() + "%')) "
+            if(filter)
+            {            
+                if(filter.name)
+                {   
+                    filterQuery=filterQuery+' AND (ca.candidate_first_name ILIKE $name OR ca.candidate_last_name ILIKE $name) '
+                    queryValues = Object.assign({name:filter.candidateName})
+                }
+                if(filter.email)
+                {
+                    filterQuery=filterQuery+' AND email ILIKE $email'
+                    queryValues =  Object.assign({email:filter.email},queryValues)
+                }
+                if(filter.minCost && filter.maxCost)
+                {  
+                    filterQuery=filterQuery+' AND (ca.rate BETWEEN $mincost AND $maxcost)'
+                    queryValues=Object.assign({mincost:filter.minCost,maxcost:filter.maxCost},queryValues)
+                }
+                if(filter.minRate && filter.maxRate)
+                {  
+                    filterQuery=filterQuery+' AND (cp.ellow_rate BETWEEN $minrate AND $maxrate)'
+                    queryValues=Object.assign({minrate:filter.minRate,maxrate:filter.maxRate},queryValues)
+                }
+
             }
-            if (_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy)) {
-                selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
-                console.log("if");
-                
-            }
-            // let orderBy = 'ORDER BY ca.updated_on desc';
             
+            if(![undefined,null,''].includes(body.filter))
+            {
+                searchKey='%' + body.filter + '%';
+                searchQuery = " AND (ca.candidate_first_name ILIKE $searchkey OR ca.candidate_last_name ILIKE $searchkey OR c.company_name ILIKE $searchkey) "
+                queryValues=Object.assign({searchkey:searchKey},queryValues)
+            }
+            
+            if (body.userRoleId != 1) {
+                adminApproveQuery = " AND cp.admin_approve_status = 1"
+            }
+            
+            if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+                sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;                
+            }
             
             (async () => {
-                const client = await database().connect()
+                const client = await database()
                 try {
                     await client.query('BEGIN');
-                    const listCandidates = {
-                        name: 'get-position-candidates',
-                        text: selectQuery,
-                        values: [_body.positionId, _body.employeeId]
-                    }
-                    const candidatesResult = await client.query(listCandidates);
-                    let candidates = candidatesResult.rows;
-                    let allCandidates = [];
-                    candidates.forEach(candidate => {
-                        let candidateIndex = allCandidates.findIndex(c => c.candidateId == candidate.candidateId)
-                        if (candidate.candidateStatus != 0 && candidateIndex == -1) {
-                            allCandidates.push(candidate);
-                        }
-                    });
+                    queryText = selectQuery+adminApproveQuery+filterQuery+searchQuery+sort;
+                    queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
                     
+                    const listCandidates = {
+                        name: 'get-candidate-under-position',
+                        text: queryText,
+                        values: queryValues
+                    }
+                    const candidatesResult = await client.query(listCandidates);                    
                     const getJobReceivedId = {
                         name: 'get-jobreceived-id',
                         text: candidateQuery.getJobReceivedId,
-                        values: [_body.positionId]
+                        values: [body.positionId]
                     }
-                    const jobReceivedIdResult = await client.query(getJobReceivedId);
-                    var jobReceivedId = jobReceivedIdResult.rows[0]['job_received_id'];
-                    
+                    const jobReceivedIdResult = await client.query(getJobReceivedId);                    
                     await client.query('COMMIT')
-                    resolve({ code: 200, message: "Candidate Listed successfully", data: { jobReceivedId, allCandidates } });
+                    resolve({ code: 200, message: "Candidate Listed successfully", data: { jobReceivedId:jobReceivedIdResult.rows[0].job_received_id, allCandidates:candidatesResult.rows } });
+
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
@@ -166,49 +189,75 @@ export const getCandidateDetails = (_body) => {
             })().catch(e => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} })
             })
+            
         })
     }
     
     export const listFreeCandidatesDetails = (_body) => {
         return new Promise((resolve, reject) => {
             var selectQuery = candidateQuery.listFreeCandidates;
-            if (_body.userRoleId != 1) {
-                selectQuery = selectQuery + " AND c.company_id = " + _body.companyId
-            }
-            else {
-                selectQuery = selectQuery + " AND (ca.candidate_status = 3 or (ca.candidate_status = 4 and ca.created_by=" + _body.employeeId + ")) ";
-            }
-            if (_body.filter) {
-                selectQuery = selectQuery + " " + "AND (ca.candidate_first_name ilike '%" + _body.filter + "%' or ca.candidate_last_name ilike '%" + _body.filter + "%' or c.company_name ilike '%" + _body.filter + "%')"
-            }
-            
+            var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
+            body=_body.query, sort = '', searchKey = '%%';
+
             const orderBy = {
                 "candidateId": 'ca.candidate_id',
                 "candidateFirstName": 'ca.candidate_first_name',
                 "candidatelastName": 'ca.candidate_last_name',
                 "email": 'ca.email_address',
                 "phoneNumber": 'ca.phone_number',
-                "companyName": 'c.company_name'
+                "companyName": 'c.company_name',
+                "updatedOn" : 'ca.updated_on'
+            }
+
+            if(filter)
+            {            
+                if(filter.name)
+                {   
+                    filterQuery=filterQuery+' AND (ca.candidate_first_name ILIKE $name OR ca.candidate_last_name ILIKE $name) '
+                    queryValues = Object.assign({name:filter.candidateName})
+                }
+                if(filter.experience)
+                {
+                    filterQuery=filterQuery+' AND ca.work_experience = $experience'
+                    queryValues =  Object.assign({experience:filter.experience},queryValues)
+                }
             }
             
-            if (_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy)) {
-                selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+            if(![undefined,null,''].includes(body.filter))
+            {
+                searchKey='%' + body.filter + '%';
+                searchQuery = " AND (ca.candidate_first_name ILIKE $searchkey OR ca.candidate_last_name ILIKE $searchkey OR c.company_name ILIKE $searchkey) "
+                queryValues=Object.assign({searchkey:searchKey},queryValues)
             }
+
+            if (body.userRoleId != 1) {
+                roleBasedQuery = " AND c.company_id = $companyid"
+                queryValues=Object.assign({companyid:body.companyId},queryValues)
+            }
+            else {
+                roleBasedQuery =  " AND (ca.candidate_status = 3 or (ca.candidate_status = 4 and ca.created_by= $employeeid))" 
+                queryValues=Object.assign({employeeid:body.employeeId},queryValues)
+            }
+            
+            if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+                sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;                
+            }
+
             (async () => {
-                const client = await database().connect()
+                const client = await database()
                 try {
                     await client.query('BEGIN');
+                    queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+sort;
+                    queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
+                
                     const listCandidates = {
                         name: 'get-free-candidates',
-                        text: selectQuery
+                        text: queryText,
+                        values: queryValues
                     }
-                    console.log("selectQuery : ",selectQuery);
-                    
                     const candidatesResult = await client.query(listCandidates);
-                    let candidates = candidatesResult.rows;
-                    
                     await client.query('COMMIT')
-                    resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates } });
+                    resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows } });
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
@@ -441,6 +490,9 @@ export const getCandidateDetails = (_body) => {
     export const addCandidateReview = (_body) => {
         return new Promise((resolve, reject) => {
             const data = _body.assessmentTraits;
+            var algorithmLink;
+            var programmingLink;
+            var interviewLink;
             const currentTime = Math.floor(Date.now() / 1000);
             let promise = [];
             (async () => {
@@ -462,6 +514,29 @@ export const getCandidateDetails = (_body) => {
                         }
                         promise.push(client.query(candidateDetails));
                     });
+                    if (Array.isArray(_body.assesmentLink))
+                    {
+                        _body.assesmentLink.forEach(element => { 
+                            if (element.type == 'algorithmTestLink')
+                            {
+                                algorithmLink=element.link
+                            }
+                            else if (element.type == 'programmingTestLink')
+                            {
+                                programmingLink=element.link
+                            }
+                            else if (element.type == 'interviewLink')
+                            {
+                                interviewLink=element.link
+                            }
+                        })
+                    }
+                    const insertLinks = {
+                        name: 'insert-assessment-links',
+                        text: candidateQuery.updateAssesmentLinks,
+                        values: [_body.candidateId,algorithmLink,programmingLink,interviewLink],
+                    }
+                    promise.push(client.query(insertLinks));
                     const results = await Promise.all(promise);
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });
@@ -682,7 +757,7 @@ export const getCandidateDetails = (_body) => {
                     const modifyCandidateProfileDetailsQuery = {
                         name: 'modify-candidate-ProfileDetails',
                         text: candidateQuery.modifyProfileDetails,
-                        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime,_body.employeeId,_body.positionName],
+                        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime,_body.employeeId,_body.candidatePositionName],
                     }
                     await client.query(modifyCandidateProfileDetailsQuery);
                     resolve({ code: 200, message: "Candidate ProfileDetails updated successfully", data: {} });
@@ -865,7 +940,7 @@ export const getCandidateDetails = (_body) => {
                         const insertCandidateWorkHistoryQuery = {
                             name: 'insert-candidate-work-history',
                             text: candidateQuery.insertCandidateWorkHistory,
-                            values: [_body.candidateId,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,_body.employeeid,currentTime],
+                            values: [_body.candidateId,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,_body.employeeid,currentTime,_body.positionName],
                         }
                         await client.query(insertCandidateWorkHistoryQuery);
                     }
@@ -874,7 +949,7 @@ export const getCandidateDetails = (_body) => {
                         const modifyCandidateWorkHistoryQuery = {
                             name: 'modify-candidate-work-history',
                             text: candidateQuery.modifyCandidateWorkHistory,
-                            values: [_body.candidateWorkExperienceId,_body.candidateId,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,currentTime,_body.employeeid],
+                            values: [_body.candidateWorkExperienceId,_body.candidateId,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,currentTime,_body.employeeid,_body.positionName],
                         }
                         await client.query(modifyCandidateWorkHistoryQuery);
                     }
@@ -959,9 +1034,9 @@ export const getCandidateDetails = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-                  
+                    
                     let idSet = Array.isArray(_body.cloudProficiency)?_body.cloudProficiency.map(a => a.cloudProficiencyId).filter(Number):false;
-
+                    
                     if(idSet)
                     {
                         const deleteCandidateCloudQuery = {
@@ -1124,6 +1199,8 @@ export const getCandidateDetails = (_body) => {
     export const getResume = (_body) => {
         return new Promise((resolve, reject) => {
             const candidateId = _body.candidateId;
+            console.log("candidateId : ",candidateId);
+            
             var promise=[]
             const currentTime = Math.floor(Date.now() / 1000);
             (async () => {
@@ -1154,6 +1231,12 @@ export const getCandidateDetails = (_body) => {
                         values: [candidateId],
                     }
                     var assesements=await client.query(fetchAssesements);
+                    const fetchAssesementsLinks = {
+                        name: 'fetch-assesement-links',
+                        text: candidateQuery.fetchAssesmentLinks,
+                        values: [candidateId],
+                    }
+                    var assesementsLinks=await client.query(fetchAssesementsLinks);
                     const fetchWorkExperience = {
                         name: 'fetch-work-experience-details',
                         text: candidateQuery.fetchWorkExperienceDetails,
@@ -1163,6 +1246,7 @@ export const getCandidateDetails = (_body) => {
                     let workedCompanyList =  workExperiences.rows.map(element => ({"id":element.candidateWorkExperienceId,"companyName":element.companyName}))
                     workedCompanyList  = [...workedCompanyList,{"id":0,"companyName":"On personal capacity"}];                                         
                     let companyJson = {};
+                    companyJson = Object.assign({0:'On personal capacity'},companyJson);
                     workExperiences.rows.forEach(element => {
                         companyJson[element.candidateWorkExperienceId]=element.companyName;
                     });
@@ -1205,6 +1289,23 @@ export const getCandidateDetails = (_body) => {
                         values: [candidateId],
                     }
                     var languages=await client.query(fetchLanguages);
+                    var assesmentLinksList=[
+                        {
+                            type:"algorithmTestLink",
+                            name:"Algorithm Test Link",
+                            link: assesementsLinks.rows[0].algorithm_test_link
+                        },
+                        {
+                            type:"programmingTestLink",
+                            name:"Programming Test Link",
+                            link: assesementsLinks.rows[0].programming_test_link
+                        },
+                        {
+                            type:"interviewLink",
+                            name:"Interview Link",
+                            link: assesementsLinks.rows[0].interview_link
+                        }
+                    ]
                     if (Array.isArray(projects.rows))
                     {
                         projects.rows.forEach(element => {
@@ -1233,10 +1334,11 @@ export const getCandidateDetails = (_body) => {
                         let citizenshipName = ![null,undefined,""].includes(citizenship)?config.countries.filter(element=>element.id == citizenship)[0].name:'';
                         let residence = allProfileDetails.rows[0].residence;
                         // let residenceName = ![null,undefined,""].includes(residence)?config.countries.filter(element=>element.id == residence)[0].name:'';
-
+                        
                         let profileDetails = {
                             firstName : allProfileDetails.rows[0].firstName,
                             lastName : allProfileDetails.rows[0].lastName,
+                            candidatePositionName:allProfileDetails.rows[0].candidatePositionName,
                             description : allProfileDetails.rows[0].description,
                             candidateStatus : allProfileDetails.rows[0].candidateStatus,
                             sellerCompanyId : allProfileDetails.rows[0].sellerCompanyId,
@@ -1250,6 +1352,7 @@ export const getCandidateDetails = (_body) => {
                         }
                         let overallWorkExperience = {
                             cost:allProfileDetails.rows[0].rate,
+                            ellowRate:allProfileDetails.rows[0].ellowRate,
                             workExperience:allProfileDetails.rows[0].workExperience,
                             remoteWorkExperience:allProfileDetails.rows[0].remoteWorkExperience,
                             billingTypeId:allProfileDetails.rows[0].billingTypeId,
@@ -1261,7 +1364,7 @@ export const getCandidateDetails = (_body) => {
                             typeOfAvailability : allProfileDetails.rows[0].typeOfAvailability,
                             readyToStart : allProfileDetails.rows[0].readyToStart
                         }
-
+                        
                         let assesementComment = allProfileDetails.rows[0].assessmentComment;
                         
                         await client.query('COMMIT')
@@ -1277,6 +1380,7 @@ export const getCandidateDetails = (_body) => {
                             skills:skills.rows,
                             projects:promise,
                             assesments:assesements.rows,
+                            assesmentLink:assesmentLinksList,
                             assesementComment,
                             workExperience:workExperiences.rows,
                             education:educations.rows,
@@ -1308,7 +1412,7 @@ export const getCandidateDetails = (_body) => {
                         const addWorkExperiences = {
                             name: 'add-work-experiences',
                             text: candidateQuery.addExperience,
-                            values: [_body.candidateId,_body.workExperience,_body.remoteWorkExperience,_body.candidatePositionName,_body.cost,_body.billingTypeId,_body.currencyTypeId,currentTime,_body.employeeId],
+                            values: [_body.candidateId,_body.workExperience,_body.remoteWorkExperience,_body.cost,_body.billingTypeId,_body.currencyTypeId,currentTime,_body.employeeId],
                         }
                         await client.query(addWorkExperiences);
                         
@@ -1325,6 +1429,81 @@ export const getCandidateDetails = (_body) => {
                 })
             })
         }
+        export const addResumeShareLink = (_body) => {
+            return new Promise((resolve, reject) => {
+                const currentTime = Math.floor(Date.now());
+                (async () => {
+                    const client = await database().connect()
+                    try {
+                        if(!isNaN(_body.candidateId))
+                        {
+                            
+                            let uniqueId = nanoid();
+                            console.log("uniqueId : ",uniqueId);
+                            const addResumeShare = {
+                                name: 'add-resume-share',
+                                text: candidateQuery.addResumeShare,
+                                values: [_body.candidateId,uniqueId,_body.employeeId,currentTime],
+                            }
+                            await client.query(addResumeShare);
+                            resolve({ code: 200, message: "Candidate resume share link updated", data: uniqueId });
+                            
+                        }
+                        else
+                        {
+                            reject({ code: 400, message: "Invalid candidateId", data: {} });
+                        }
+                    } catch (e) {
+                        console.log(e)
+                        await client.query('ROLLBACK')
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    } finally {
+                        client.release();
+                    }
+                })().catch(e => {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                })
+            })
+        }
+        
+        export const fetchResumeData = (_body) => {
+            return new Promise((resolve, reject) => {
+                const currentTime = Math.floor(Date.now() / 1000);
+                (async () => {
+                    const client = await database().connect()
+                    try {
+                        const getCandidateId = {
+                            name: 'fetch-candidateid',
+                            text: candidateQuery.fetchResumeDatafromUniqueId,
+                            values: [_body.uniqueId],
+                        }
+                        let result = await client.query(getCandidateId);
+                        if(result.rows[0])
+                        {
+                            let candidateId = result.rows[0].candidate_id;
+                            
+                            _body.candidateId = candidateId;
+                            let data = await getResume(_body);                                                        
+                            resolve({ code: 200, message: "Candidate resume listed successfully", data:data["data"] });
+                        }
+                        else{
+                            reject({ code: 400, message: "Id does not match with data available", data: {} });
+                        }
+                    } catch (e) {
+                        console.log(e)
+                        await client.query('ROLLBACK')
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    } finally {
+                        client.release();
+                    }
+                })().catch(e => {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                })
+            })
+            
+            
+        }
+        
         export const modifyResumeFile = (_body) => {
             return new Promise((resolve, reject) => {
                 const currentTime = Math.floor(Date.now() / 1000);

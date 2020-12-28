@@ -2,49 +2,95 @@ import jobReceivedQuery from './query/jobreceived.query';
 import database from '../common/database/database';
 import * as format from 'pg-format';
 import { createNotification } from '../common/notifications/notifications';
-import { ENETUNREACH } from 'constants';
+import { sendMail } from '../middlewares/mailer'
+import * as handlebars from 'handlebars'
+import * as fs from 'fs'
+import config from '../config/config'
+
 
 export const getAllJobReceived = (_body) => {
     
     return new Promise((resolve, reject) => {
         
         var selectQuery = jobReceivedQuery.getAllJobReceived;
+        var queryText='', queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',searchQuery='',body=_body.query, sort = '', searchKey = '';
         
-        if (_body.filter) {
-            selectQuery = selectQuery + " AND (LOWER(position_name ) LIKE '%" + _body.filter.toLowerCase() + "%' OR LOWER(company_name ) LIKE '%" + _body.filter.toLowerCase() + "%') "
-        }
         const orderBy = {
             "position": 'p.position_id',
             "positionName": 'p.position_name',
             "companyName": 'c.company_name',
-            "createdOn":'jr.created_on',
+            "createdOn":'p.created_on',
+            "updatedOn":'p.updated_on',
             "candidateCount":'"candidateCount"',
-            "resourceCount":'p.developer_count',
+            "resourceCount":'p.developer_count', 
             "duration":'p.contract_duration',
             "startDate":'p.contract_start_date'
         }
         
-        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
-        {
-            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+        if(filter)
+        {            
+            if(filter.submittedProfile)
+            {
+                filterQuery=filterQuery+' AND p.submittedProfile'
+                queryValues = Object.assign({submittedprofile:filter.submittedProfile})
+            }
+            if(filter.numberOfOpenings)
+            {
+                filterQuery=filterQuery+' AND p.developer_count = $openings'
+                queryValues =  Object.assign({openings:filter.numberOfOpenings},queryValues)
+            }
+            if(filter.positionStatus)
+            {  
+                filterQuery=filterQuery+' AND p.job_status=$positionstatus'
+                queryValues=Object.assign({positionstatus:filter.positionStatus},queryValues)
+            }
+            if(filter.duration)
+            {
+                filterQuery=filterQuery+' AND p.contract_duration= $duration'
+                queryValues=Object.assign({duration:filter.duration},queryValues)
+            }
+            if(filter.durationStart && filter.durationEnd)
+            {
+                filterQuery=filterQuery+' AND p.contract_duration BETWEEN $durationstart AND $durationend'
+                queryValues=Object.assign({durationstart:filter.durationStart,durationend:filter.durationEnd},queryValues)
+            }
         }
         
-        if (_body.limit && _body.skip) {
-            selectQuery = selectQuery + ' LIMIT ' + _body.limit + ' OFFSET ' + _body.skip;
+        if(![undefined,null,''].includes(body.filter))
+        {
+            searchKey='%' + body.filter + '%';
+            searchQuery = " AND (position_name ILIKE $searchkey OR company_name ILIKE $searchkey) "
+            queryValues=Object.assign({searchkey:searchKey},queryValues)
         }
+        
+        if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
+        {
+            sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
+        }
+        queryText = selectQuery + filterQuery + searchQuery + sort;
+        queryValues =  Object.assign({companyid:body.companyId,employeeid:body.employeeId},queryValues)
+        
         const query = {
-            name: 'get-AllActivePositions',
-            text: selectQuery,
-            values: [_body.companyId,_body.employeeId]
+            name: 'get-all-positions-provider',
+            text: queryText,
+            values: queryValues
         }
         database().query(query, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            if (error) {              
+                console.log("error : ",error);
+                reject({ code: 400, message: "Database error", data : error });
                 return;
             }
-            console.log(results.rows)
-            resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs: results.rows } });
+            let Jobs = results.rows;
+
+            if(Array.isArray(Jobs))
+            Jobs = results.rows.filter(element => element.jobStatus != 8 || element.totalCount != 0)
+            resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs} });
+            
         })
+    }).catch((err)=>{
+        console.log("error raised : ",err);
+        return ({ code: 400, message: "Database error", data: err });
     })
 }
 
@@ -95,20 +141,20 @@ export const getProfileByCompanyId = (_body) => {
         {
             selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
         }
-            const query = {
-                name: 'get-ProfileByCompanyId',
-                text: selectQuery,
-                values: [parseInt(_body.companyId), parseInt(_body.positionId)]
+        const query = {
+            name: 'get-ProfileByCompanyId',
+            text: selectQuery,
+            values: [parseInt(_body.companyId), parseInt(_body.positionId)]
+        }
+        
+        database().query(query, (error, results) => {
+            if (error) {
+                console.log(error)
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                return;
             }
-            
-            database().query(query, (error, results) => {
-                if (error) {
-                    console.log(error)
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                    return;
-                }
-                resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
-            })
+            resolve({ code: 200, message: "Profile listed successfully", data: { profile: results.rows } });
+        })
         
     })
 }
@@ -120,7 +166,11 @@ export const saveCandidateProfile = (_body) => {
             try {
                 await client.query('BEGIN');
                 let sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
+<<<<<<< HEAD
                 let candidates = [_body.firstName, _body.lastName, sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.positionName]    
+=======
+                let candidates = [_body.firstName, _body.lastName, sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
+>>>>>>> 12a26a2aa9821814a1aa9b5763f1a8c4f2b71ce0
                 const saveCandidateQuery = {
                     name: 'add-Profile',
                     text: format(jobReceivedQuery.addProfile, [candidates]),
@@ -150,7 +200,7 @@ export const saveCandidateProfile = (_body) => {
                     }
                     await client.query(updateCompanyJobStatusQuery);
                 }
-
+                
                 await client.query('COMMIT');
                 resolve({ code: 200, message: "Candidate profile added", data: {candidateId} });
             } catch (e) {
@@ -173,7 +223,17 @@ export const submitCandidateProfile = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-
+                var readHTMLFile = function(path, callback) {
+                    fs.readFile(path, {encoding: 'utf-8'}, function (err, html) {
+                        if (err) {
+                            throw err;
+                            callback(err);
+                        }
+                        else {
+                            callback(null, html);
+                        }
+                    });
+                };
                 await client.query('BEGIN');
                 let candidateId = _body.candidateId;
                 const updateCandidateStatus = {
@@ -182,7 +242,7 @@ export const submitCandidateProfile = (_body) => {
                     values: [candidateId, _body.employeeId, currentTime],
                 }
                 let result = await client.query(updateCandidateStatus);
-                
+        
                 const addDefaultTraits = {
                     name: 'add-default-traits',
                     text: jobReceivedQuery.addDefaultAssessmentTraits,
@@ -202,11 +262,29 @@ export const submitCandidateProfile = (_body) => {
                 let companyId = result.rows[0].company_id;
                 let jobReceivedId = result.rows[0].job_received_id;
                 let positionName = _body.positionName;
-                
+                var subject='New candidate notification'
                 if(![null,undefined,""].includes(_body.positionId))
                 {
                     const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been added for the position ${positionName} `
                     await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position' })    
+                    readHTMLFile('src/emailTemplates/candidateAdditionText.html', function(err, html) {
+                        var template = handlebars.compile(html);
+                        var replacements = {
+                            first:candidateFirstName,
+                            last:candidateLastName,
+                            position:positionName,     
+                        };
+                        var htmlToSend = template(replacements);
+                        sendMail(config.adminEmail,subject,htmlToSend, function (err, data) {
+                            if (err) {
+                                console.log(err)
+                                reject({ code: 400, message: "Mailer Error", data: {} });
+                                return;
+                            }
+                            console.log('Notification mail to admin has been sent !!!');
+                            // resolve({ code: 200, message: "User Approval Successfull", data: {} });
+                        });
+                    }) 
                 }
                 
                 resolve({ code: 200, message: "Candidate profile submitted", data: {} });
