@@ -480,10 +480,17 @@ const myCache = new nodeCache();
                     else{
                         await client.query('BEGIN');
                         // Update assesment ratings about the candidate.
-                        await client.query(queryService.updateEllowRecuiterReview(_body));    
+                        let result = await client.query(queryService.updateEllowRecuiterReview(_body)); 
+                        
+                        if(_body.stageName == 'ellow Onboarding')
+                        {
+                            _body.candidateId = result.rows[0].candidate_id;
+                            await client.query(queryService.setVettedStatus(_body)); 
+                        }   
                         await client.query('COMMIT')
-                        resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });   
-                    }                 
+                        resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });    
+                        await client.query('COMMIT') 
+                    }                                   
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
