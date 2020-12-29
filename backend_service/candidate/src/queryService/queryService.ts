@@ -525,7 +525,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'reject-candidate-ellow-hiring',
             text: candidateQuery.rejectFromCandidateEllowRecruitment,
-            values:{assessmentid:_body.candidateAssessmentId,assignedto:_body.assignedTo,comment:_body.assessmentComment,rating:_body.assessmentRating,link:_body.assessmentLink,linkText:_body.assessmentLinkText,currenttime:currentTime}
+            values:{assessmentid:_body.candidateAssessmentId,assignedto:_body.assignedTo,comment:_body.assessmentComment,rating:_body.assessmentRating,link:_body.assessmentLink,linktext:_body.assessmentLinkText,employeeid:_body.employeeId,currenttime:currentTime}
         }
     }
     export const getAuditLogs = (_body) => {
