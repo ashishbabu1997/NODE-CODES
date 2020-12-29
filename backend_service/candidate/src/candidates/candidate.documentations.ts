@@ -1491,7 +1491,7 @@
 *               type: integer
 *             stageName:
 *               type: string
-*             candidateAssesmentId:
+*             candidateAssessmentId:
 *               type: integer
 *             assigneeName:
 *               type: string

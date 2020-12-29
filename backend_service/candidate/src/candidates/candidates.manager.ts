@@ -1795,8 +1795,10 @@ const myCache = new nodeCache();
             (async () => {
                 const client = await database()
                 try {
+                    console.log("_body : ",_body);
+                    
                     await client.query(queryService.changeEllowRecruitmentStage(_body));
-                    await client.query(queryService.changeEllowRecruitmentStage(_body));
+                    await client.query(queryService.updateEllowStageStatus(_body));
                     _body.auditType=1
                     _body.auditLogComment=`Candidate ${_body.candidateName} have been moved to ${_body.stageName} by ${_body.assigneeName}`
                     await client.query(queryService.insertAuditLog(_body));
