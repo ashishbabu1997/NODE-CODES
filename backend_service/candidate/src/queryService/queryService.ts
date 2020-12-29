@@ -461,7 +461,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
         name: 'update-ellow-recuiter-review',
         text: candidateQuery.updateEllowRecuiterReview,
-        values: {assignedto:_body.assignedTo,assessmentid:_body.candidateAssessmentId,assessmentcomment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime,stagestatus:2},        
+        values: {assignedto:_body.assignedTo,assessmentid:_body.candidateAssessmentId,assessmentcomment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime},        
         }
     }
     
