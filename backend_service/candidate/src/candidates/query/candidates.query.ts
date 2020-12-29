@@ -98,6 +98,7 @@ export default {
     insertLogs:'INSERT INTO audit_log (audit_name,audit_type,audit_log_comment,created_on,created_by) VALUES ($1,$2,$3,$4,$5)',
     updateAssigneeComments:'update candidate_assesement set assignee_comment=$2 where candidate_assesment_id=$1',
     getCandidateVettedAllocatedTo:'select candidate_vetted,allocated_to from candidate where candidate_id=$1',
-    getellowAdmins:"select concat(firstname,' ',lastname) as name ,employee_id as employeeId from employee where status=true and user_role_id=1"
+    getellowAdmins:"select concat(firstname,' ',lastname) as name ,employee_id as employeeId from employee where status=true and user_role_id=1",
+    getAuditLogs:'select audit_log_id as "auditLogId",audit_name as "auditName",audit_type as "auditType",audit_log_comment as "auditLogComment",created_on as "createdOn",created_by as "createdBy" from audit_log' 
 
 }

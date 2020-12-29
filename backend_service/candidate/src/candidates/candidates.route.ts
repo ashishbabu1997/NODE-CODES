@@ -49,4 +49,7 @@ router
     .put('/changeCandidateAssignee',jwtAuth, setData(),candidateController.changeAssignee)
     .put('/updateCandidateEllowStage',jwtAuth, setData(),candidateController.changeEllowRecruitmentStage)
     .put('/rejectCandidateEllowStage',jwtAuth, setData(),candidateController.rejectFromCandidateEllowRecruitment)
+    .get('/getAllAuditLogs',candidateController.getAuditLogs)
+
+    
     export default router;

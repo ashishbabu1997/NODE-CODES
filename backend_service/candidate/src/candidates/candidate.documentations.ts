@@ -1643,3 +1643,29 @@
 *         description: Server down
 */
 
+
+/**
+* @swagger
+* /candidates/getAllAuditLogs:
+*   get:
+*     tags:
+*       - Candidates
+*     name: List all audit logs
+*     summary: list all logs from audit_log table from database
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

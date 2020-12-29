@@ -522,7 +522,13 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:{assessmentid:_body.candidateAssessmentId,assignedto:_body.assignedTo,comment:_body.assessmentComment,rating:_body.assessmentRating,link:_body.assessmentLink,linkText:_body.assessmentLinkText,currenttime:currentTime}
         }
     }
-    
+    export const getAuditLogs = (_body) => {
+        return {
+            name: 'get-all-audit-logs',
+            text: candidateQuery.getAuditLogs,
+            values:[]
+        }
+    }
 
 
     // *******************************************************************************************************************************//

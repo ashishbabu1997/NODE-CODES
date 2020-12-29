@@ -1835,3 +1835,25 @@ const myCache = new nodeCache();
             })
         })
     }
+
+  
+    // >>>>>>> FUNC. >>>>>>>
+    //>>>>>>>> Get logs of hiring steps from the database
+    export const getAllAuditLogs = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database()
+                try {
+                    let results=await client.query(queryService.getAuditLogs(_body));
+                    resolve({ code: 200, message: "Rejected candiate successfully", data:{logs:results.rows}});
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            })
+        })
+    }
+
