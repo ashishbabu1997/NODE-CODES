@@ -464,6 +464,14 @@ export const insertCandidatePublicationQuery = (_body) => {
         values: {assignedto:_body.assignedTo,assessmentid:_body.candidateAssessmentId,assessmentcomment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime},        
         }
     }
+    export const setVettedStatus =(_body)=> {
+        return {
+        name: 'set-vetted-status',
+        text: candidateQuery.setVettedStatus,
+        values: {candidateid:_body.candidateId,employeeid:_body.employeeId,currenttime:_body.currentTime},        
+        }
+    }
+    
     
     export const getDetailsPosition = (_body) => {
         return {

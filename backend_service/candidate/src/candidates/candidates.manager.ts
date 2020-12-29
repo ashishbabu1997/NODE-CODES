@@ -475,7 +475,13 @@ const myCache = new nodeCache();
                 try {
                     await client.query('BEGIN');
                     // Update assesment ratings about the candidate.
-                    await client.query(queryService.updateEllowRecuiterReview(_body));    
+                    let result = await client.query(queryService.updateEllowRecuiterReview(_body)); 
+                    
+                    if(_body.stageName == 'ellow Onboarding')
+                    {
+                        _body.candidateId = result.rows[0].candidate_id;
+                        await client.query(queryService.setVettedStatus(_body)); 
+                    }   
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });                    
                 } catch (e) {
