@@ -1745,7 +1745,9 @@ const myCache = new nodeCache();
                     }
                    let adminResult=await client.query(adminSignup);
                     resolve({ code: 200, message: "Assessment details listed successfully", data:{reviews:result.rows,
-                        candidateVetted:results.rows[0].candidate_vetted,allocatedTo:results.rows[0].allocated_to,
+                        candidateVetted:results.rows[0].candidate_vetted,
+                        currentEllowStage:results.rows[0].current_ellow_stage,
+                        allocatedTo:results.rows[0].allocated_to,
                         admins:adminResult.rows
                     }});
                 } catch (e) {
@@ -1793,6 +1795,7 @@ const myCache = new nodeCache();
             (async () => {
                 const client = await database()
                 try {
+                    await client.query(queryService.changeEllowRecruitmentStage(_body));
                     await client.query(queryService.changeEllowRecruitmentStage(_body));
                     _body.auditType=1
                     _body.auditLogComment=`Candidate ${_body.candidateName} have been moved to ${_body.stageName} by ${_body.assigneeName}`

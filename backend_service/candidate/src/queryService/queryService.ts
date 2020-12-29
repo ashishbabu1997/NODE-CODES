@@ -458,13 +458,10 @@ export const insertCandidatePublicationQuery = (_body) => {
     // *******************************************************************************************************************************//
     // -------------------------------------------Assesment traits realted queries-------------------------------------------------//
     export const updateEllowRecuiterReview =(_body)=> {
-        console.log('values : ',{assignedto:_body.assignedTo,assessmentid:_body.candidateAssessmentId,assessmentcomment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime,stagestatus:1});
-
-
         return {
         name: 'update-ellow-recuiter-review',
         text: candidateQuery.updateEllowRecuiterReview,
-        values: {assignedto:_body.assignedTo,assessmentid:_body.candidateAssessmentId,assessmentcomment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime,stagestatus:1},        
+        values: {assignedto:_body.assignedTo,assessmentid:_body.candidateAssessmentId,assessmentcomment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime,stagestatus:2},        
         }
     }
     
@@ -507,6 +504,15 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:{candidateid:_body.candidateId,stagename:_body.stageName,employeeid:_body.employeeId,currenttime:currentTime}
         }
     }
+
+    export const updateEllowStageStatus = (_body) => {
+        return {
+            name: 'update-candidate-ellow-stage-status',
+            text: candidateQuery.ellowStageStatusUpdate,
+            values:{candidateid:_body.candidateId,assessmentid:_body.candidateAssessmentId,employeeid:_body.employeeId,currenttime:currentTime}
+        }
+    }
+
     export const updateAssigneeComment = (_body) => {
         return {
             name: 'change-candidate-assignee-comment',

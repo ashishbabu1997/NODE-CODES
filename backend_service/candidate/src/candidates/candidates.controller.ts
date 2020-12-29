@@ -236,8 +236,6 @@ export const getSharedEmailsForPdf = (req, res) => {
     })
 }
 
-
-
 export const sharedResumePdfData = (req, res) => {
     const body = req.query;
     candidateManager.fetchResumeDataForPdf(body).then((response: any) => {
