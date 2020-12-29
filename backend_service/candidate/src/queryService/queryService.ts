@@ -585,3 +585,11 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:['ellow hiring stage',_body.auditType,_body.auditLogComment,currentTime,_body.employeeId]
         }
     }
+
+    export const getAssigneeName = (_body) => {
+        return {
+            name: 'get-assignee-name',
+            text: candidateQuery.getEmployeeName,
+            values:[_body.assignedTo]
+        }
+    }

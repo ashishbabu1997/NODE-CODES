@@ -473,11 +473,17 @@ const myCache = new nodeCache();
             (async () => {
                 const client = await database()
                 try {
-                    await client.query('BEGIN');
-                    // Update assesment ratings about the candidate.
-                    await client.query(queryService.updateEllowRecuiterReview(_body));    
-                    await client.query('COMMIT')
-                    resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });                    
+                    if([undefined,null,''].includes(_body.assignedTo))
+                    {
+                        reject({ code: 400, message: "Candidate must be assigned to an assignee", data: {} });
+                    }
+                    else{
+                        await client.query('BEGIN');
+                        // Update assesment ratings about the candidate.
+                        await client.query(queryService.updateEllowRecuiterReview(_body));    
+                        await client.query('COMMIT')
+                        resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });   
+                    }                 
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
@@ -1773,7 +1779,9 @@ const myCache = new nodeCache();
                 try {
                     let result = await client.query(queryService.changeCandidateAssignee(_body));
                     _body.auditType=1
-                    _body.auditLogComment=`Assignee for the candidate ${_body.candidateName} has been changed to ${_body.assigneeName}`
+                    let names = await client.query(queryService.getAssigneeName(_body));
+                    let assigneeName=names.rows[0].firstname
+                    _body.auditLogComment=`Assignee for the candidate ${_body.candidateName} has been changed to ${assigneeName}`
                     await client.query(queryService.insertAuditLog(_body));
                     resolve({ code: 200, message: "Assignee changed successfully", data:result.rows});
                 } catch (e) {
@@ -1795,17 +1803,24 @@ const myCache = new nodeCache();
             (async () => {
                 const client = await database()
                 try {
-                    console.log("_body : ",_body);
-                    
-                    await client.query(queryService.changeEllowRecruitmentStage(_body));
-                    await client.query(queryService.updateEllowStageStatus(_body));
-                    _body.auditType=1
-                    _body.auditLogComment=`Candidate ${_body.candidateName} have been moved to ${_body.stageName} by ${_body.assigneeName}`
-                    await client.query(queryService.insertAuditLog(_body));
-                    _body.assigneeComment=`${_body.assigneeName} moved to ${_body.stageName}`
-                    await client.query(queryService.updateAssigneeComment(_body));
-
-                    resolve({ code: 200, message: "Moved to stage successfully", data:{}});
+                    if([undefined,null,''].includes(_body.assignedTo))
+                    {
+                        reject({ code: 400, message: "Candidate must be assigned to an assignee", data: {} });
+                    }
+                    else
+                    {
+                        await client.query(queryService.changeEllowRecruitmentStage(_body));
+                        await client.query(queryService.updateEllowStageStatus(_body));
+                        _body.auditType=1
+                        let names = await client.query(queryService.getAssigneeName(_body));
+                        let assigneeName=names.rows[0].firstname
+                        _body.auditLogComment=`Candidate ${_body.candidateName} have been moved to ${_body.stageName} by ${assigneeName}`
+                        await client.query(queryService.insertAuditLog(_body));
+                        _body.assigneeComment=`${_body.assigneeName} moved to ${_body.stageName}`
+                        await client.query(queryService.updateAssigneeComment(_body));
+                        await client.query('COMMIT')
+                        resolve({ code: 200, message: "Moved to stage successfully", data:{}});
+                    }
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
@@ -1825,11 +1840,21 @@ const myCache = new nodeCache();
             (async () => {
                 const client = await database()
                 try {
-                    await client.query(queryService.rejectFromCandidateEllowRecruitment(_body));
-                    _body.auditType=1
-                    _body.auditLogComment=`Candidate ${_body.candidateName} has been rejected at ${_body.stageName} by ${_body.assigneeName}`
-                    await client.query(queryService.insertAuditLog(_body));
-                    resolve({ code: 200, message: "Rejected candiate successfully", data:{}});
+                    if([undefined,null,''].includes(_body.assignedTo))
+                    {
+                        reject({ code: 400, message: "Candidate must be assigned to an assignee", data: {} });
+                    }
+                    else
+                    {
+                        await client.query(queryService.rejectFromCandidateEllowRecruitment(_body));
+                        _body.auditType=1
+                        let names = await client.query(queryService.getAssigneeName(_body));
+                        let assigneeName=names.rows[0].firstname
+                        _body.auditLogComment=`Candidate ${_body.candidateName} has been rejected at ${_body.stageName} by ${assigneeName}`
+                        await client.query(queryService.insertAuditLog(_body));
+                        await client.query('COMMIT')
+                        resolve({ code: 200, message: "Rejected candiate successfully", data:{}});
+                    }
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
