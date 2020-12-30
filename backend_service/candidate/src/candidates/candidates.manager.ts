@@ -1823,7 +1823,7 @@ const myCache = new nodeCache();
                         let assigneeName=names.rows[0].firstname
                         _body.auditLogComment=`Candidate ${_body.candidateName} have been moved to ${_body.stageName} by ${assigneeName}`
                         await client.query(queryService.insertAuditLog(_body));
-                        _body.assigneeComment=`${_body.assigneeName} moved to ${_body.stageName}`
+                        _body.assigneeComment=`${assigneeName} moved to ${_body.stageName}`
                         await client.query(queryService.updateAssigneeComment(_body));
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Moved to stage successfully", data:{}});
