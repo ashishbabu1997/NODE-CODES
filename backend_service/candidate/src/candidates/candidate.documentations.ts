@@ -1656,7 +1656,6 @@
 *       - application/json
 *     produces:
 *       - application/json
-*     parameters:
 *     responses:
 *       200:
 *         description: Api success

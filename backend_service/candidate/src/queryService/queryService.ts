@@ -501,7 +501,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'change-candidate-assignee',
             text: candidateQuery.changeAssignee,
-            values:{candidateid:_body.candidateId,assigneeid:_body.assigneeId,employeeid:_body.employeeId,currenttime:currentTime()}
+            values:{candidateid:_body.candidateId,assigneeid:_body.assignedTo,employeeid:_body.employeeId,currenttime:currentTime()}
         }
     }
 
@@ -525,7 +525,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'change-candidate-assignee-comment',
             text: candidateQuery.updateAssigneeComments,
-            values:[_body.candidateAssessmentId,_body.assigneeComment]
+            values:[_body.candidateAssessmentId,_body.assigneeComment,currentTime()]
         }
     }
 
@@ -591,5 +591,13 @@ export const insertCandidatePublicationQuery = (_body) => {
             name: 'insert-audit-log',
             text: candidateQuery.insertLogs,
             values:['ellow hiring stage',_body.auditType,_body.auditLogComment,currentTime(),_body.employeeId]
+        }
+    }
+
+    export const getAssigneeName = (_body) => {
+        return {
+            name: 'get-assignee-name',
+            text: candidateQuery.getEmployeeName,
+            values:[_body.assignedTo]
         }
     }
