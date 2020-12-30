@@ -1,5 +1,4 @@
 import * as candidateController from './candidates.controller';
-
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import approveRejectSchema from './schemas/approveRejectSchema';
