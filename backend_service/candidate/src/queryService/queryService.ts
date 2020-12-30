@@ -501,7 +501,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'change-candidate-assignee',
             text: candidateQuery.changeAssignee,
-            values:{candidateid:_body.candidateId,assigneeid:_body.assigneeId,employeeid:_body.employeeId,currenttime:currentTime}
+            values:{candidateid:_body.candidateId,assigneeid:_body.assignedTo,employeeid:_body.employeeId,currenttime:currentTime}
         }
     }
 
