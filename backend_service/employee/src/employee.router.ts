@@ -1,4 +1,4 @@
-import { addEmployee,addEmployeeByAdmin,resetToken,addFreelancer,getCompanyByEmail,checkVerificationLink,ellowRecruiterSignup,getellowAdminsDetails } from './employee.controller';
+import { addEmployee,addEmployeeByAdmin,resetToken,addFreelancer,getCompanyByEmail,checkVerificationLink,ellowRecruiterSignup,getellowAdminsDetails,getEmployeesFromCompany } from './employee.controller';
  import * as express from 'express';
  import validate from './middleware/validation';
  import {companyRegistrationSchema,freelancerSchema,tokenSchema} from './schema/create.schema';
@@ -16,6 +16,9 @@ router
     .get('/verifyToken', checkVerificationLink)
     .post('/ellowRecruiterSignup',ellowRecruiterSignup)
     .get('/getAllAdmins', getellowAdminsDetails)
+    .get('/getEmployees',jwtAuth, setData(), getEmployeesFromCompany)
+
+    
 
     
     

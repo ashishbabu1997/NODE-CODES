@@ -1,6 +1,8 @@
 import candidateQuery from '../candidates/query/candidates.query';
 import freelancerQuery from '../freelancer/query/freelancer.query';
 import filterQuery from '../filter/query/filter.query';
+import hiringQuery from '../hiring/query/hiring.query';
+
 
 
 const currentTime = () => {return new Date().getTime()} 
@@ -599,5 +601,20 @@ export const insertCandidatePublicationQuery = (_body) => {
             name: 'get-assignee-name',
             text: candidateQuery.getEmployeeName,
             values:[_body.assignedTo]
+        }
+    }
+
+    export const PositionHiringStepsQuery = (_body) => {
+        return {
+            name: 'get-position-hiring-steps',
+            text: hiringQuery.getPositionHiringStepsQuery,
+            values:[_body.positionId],
+        }
+    }
+    export const candidateClientHiringStepsQuery = (_body) => {
+        return {
+            name: 'get-candidate-client-hiring-steps',
+            text: hiringQuery.getCandidateClientHiringStepsQuery,
+            values:[_body.candidateId],
         }
     }

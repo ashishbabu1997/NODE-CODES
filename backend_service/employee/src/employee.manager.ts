@@ -495,3 +495,34 @@ export const getAdminDetails = (_body) => {
         
     })
 }
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>>>>>Get employees
+export const getAllEmployees = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now());        
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                const getCompanyEmployees = {
+                    name: 'get-employees',
+                    text: employeeQuery.getEmployeesQuery,
+                    values: [_body.companyId]
+                }
+                
+               var result =await client.query(getCompanyEmployees);
+               resolve({ code: 200, message: "Employees listed successfully", data: {employees:result.rows} });
+              await client.query('COMMIT')
+            } catch (e) {
+                console.log("Error e1: ",e );
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error e2: ",e );
+            reject({ code: 400, message: "Failed. Please try again.", data: {e} })
+        })
+        
+    })
+}

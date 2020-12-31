@@ -1,4 +1,4 @@
-import {createEmployee,resetFreelancerToken,checkCompanyByWorkMail,createEmployeeByAdmin,createFreelancer,tokenCheck,ellowAdminSignup,getAdminDetails } from './employee.manager';
+import {createEmployee,resetFreelancerToken,checkCompanyByWorkMail,createEmployeeByAdmin,createFreelancer,tokenCheck,ellowAdminSignup,getAdminDetails,getAllEmployees } from './employee.manager';
 import sendResponse from './common/response/response';
 import response from './common/response/response';
 
@@ -67,6 +67,14 @@ export const  ellowRecruiterSignup= (req, res) => {
 export const  getellowAdminsDetails= (req, res) => {
     const body = req.query;
     getAdminDetails(body).then((response: any) => {
+        sendResponse(res, response.code, 1,202, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0,error.statusCode, error.message, error.data)
+    })
+}
+export const  getEmployeesFromCompany= (req, res) => {
+    const body = req;
+    getAllEmployees(body).then((response: any) => {
         sendResponse(res, response.code, 1,202, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0,error.statusCode, error.message, error.data)

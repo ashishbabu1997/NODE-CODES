@@ -10,5 +10,6 @@ export default {
     "getRegisteredEmail":"SELECT firstname,lastname,email FROM employee WHERE employee_id=$1",
     "checkTokenExistance":"SELECT employee_id,email FROM employee WHERE token like $token",
     "ellowAdminSignupQuery":"INSERT INTO employee(firstname,lastname,company_id,email,telephone_number,password,account_type,user_role_id,status,admin_approve_status) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)",
-    "getellowAdmins":"select concat(firstname,' ',lastname) as name ,employee_id as employeeId from employee where status=true and user_role_id=1"
+    "getellowAdmins":"select concat(firstname,' ',lastname) as name ,employee_id as employeeId from employee where status=true and user_role_id=1",
+    "getEmployeesQuery":"select concat(firstname,' ',lastname) as name ,employee_id as employeeId from employee where status=true and company_id=$1"
 }
