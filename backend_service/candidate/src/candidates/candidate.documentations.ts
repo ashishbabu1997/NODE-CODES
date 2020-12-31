@@ -1445,10 +1445,10 @@
 *           properties:
 *             candidateId:
 *               type: integer
+*             assignedTo:
+*               type: integer
 *             assigneeId:
 *               type: integer
-*             assigneeName:
-*               type: string
 *             candidateName:
 *               type: string
 *           required:
