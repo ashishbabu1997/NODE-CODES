@@ -69,8 +69,15 @@ export const updateHiringStepDetails = (_body) => {
         (async () => {
             const client = await database()
             try {
-                var result=await client.query(queryService.updateHiringStepDetailsQuery(_body));
-                resolve({ code: 200, message: "Hiring step details updated successfully", data: {} });
+                if([undefined,null,''].includes(_body.assignedTo))
+                {
+                    reject({ code: 400, message: "Candidate must be assigned to an assignee", data: {} });
+                }
+                else
+                {
+                    var result=await client.query(queryService.updateHiringStepDetailsQuery(_body));
+                    resolve({ code: 200, message: "Hiring step details updated successfully", data: {} });
+                }
             } catch (e) {
                 console.log("Error raised from try : ",e)
                 await client.query('ROLLBACK')
