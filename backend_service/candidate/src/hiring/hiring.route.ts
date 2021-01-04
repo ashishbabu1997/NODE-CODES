@@ -10,4 +10,8 @@ router
 .get('/getPositionHiringSteps', jwtAuth, setData(),validate(hiringSchema.positionIdSchema),hiringController.getPositionHiringSteps)
 .get('/getCandidateHiringSteps',jwtAuth, setData(),validate(hiringSchema.candidateIdSchema), hiringController.getCandidateHiringSteps)
 .put('/updateCandidateHiringDetails',jwtAuth, setData(),hiringController.updateHiringStepDetails)
+.put('/moveCandidateHiringStep',jwtAuth, setData(),hiringController.moveCandidateHiringStep)
+.put('/rejectCandidateHiring',jwtAuth, setData(),hiringController.rejectFromHiringProcess)
+.put('/addNewStageForCandidate',jwtAuth, setData(),hiringController.addNewStageForCandidate)
+
 export default router;

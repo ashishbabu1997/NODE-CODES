@@ -644,3 +644,40 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,assignedTo:_body.assignedTo,candidateHiringStepComment:_body.candidateHiringStepComment,attachments:_body.attachments,stepLink:_body.stepLink,stepLinkText:_body.stepLinkText,currenttime:currentTime(),employeeid:_body.employeeId},
         }
     }
+
+    export const moveCandidateHiringStepQuery = (_body) => {
+        return {
+            name: 'move-tostep-client-hiring',
+            text: hiringQuery.moveCandidateHiringStep,
+            values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,candidateHiringStepOrder:_body.candidateHiringStepOrder,$candidateid:_body.candidateId,$positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
+        }
+    }
+
+    export const updateCurrentStage = (_body) => {
+        return {
+            name: 'update-current-stage-candidate-position-table',
+            text: hiringQuery.updateCurrentStage,
+            values: {$hiringstepname:_body.hiringStepName,$candidateid:_body.candidateId,$positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
+        }
+    }
+
+    export const rejectFromHiringProcess = (_body) => {
+        return {
+            name: 'reject-candidate-client-hiring',
+            text: hiringQuery.rejectFromHiringProcess,
+            values: {$assignedto:_body.assignedTo,$candidateid:_body.candidateId,$positionid:_body.positionId,id:_body.candidateClientHiringStepId,link:_body.stepLink,linktext:_body.stepLinkText,attachments:_body.attachments,comment:_body.candidateHiringStepComment,currenttime:currentTime(),employeeid:_body.employeeId},
+        }
+    }
+
+    export const addNewStageForCandidate = (_body) => {
+        return {
+            name: 'add-new-candidate-client-hiring',
+            text: hiringQuery.addNewStageForCandidate,
+            values: {$stepname:_body.candidateHiringStepName,$steptype:_body.candidateHiringStepType,$candidateid:_body.candidateId,$positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
+        }
+    }
+
+    
+    
+
+    

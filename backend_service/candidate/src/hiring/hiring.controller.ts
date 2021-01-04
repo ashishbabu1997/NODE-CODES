@@ -39,3 +39,30 @@ export const updateHiringStepDetails = (req, res) => {
     })
 }
 
+export const moveCandidateHiringStep = (req, res) => {
+    const body = req.body;
+    hiringManager.moveCandidateHiringStep(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
+export const rejectFromHiringProcess = (req, res) => {
+    const body = req.body;
+    hiringManager.rejectFromHiringProcess(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
+export const addNewStageForCandidate = (req, res) => {
+    const body = req.body;
+    hiringManager.addNewStageForCandidate(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+

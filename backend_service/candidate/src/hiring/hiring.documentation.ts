@@ -3,7 +3,7 @@
 * /hiring/getPositionHiringSteps:
 *   get:
 *     tags:
-*       - hiring
+*       - Hiring
 *     name: List position hiring steps
 *     summary: list all position hiring steps
 *     consumes:
@@ -36,7 +36,7 @@
 * /hiring/getCandidateHiringSteps:
 *   get:
 *     tags:
-*       - hiring
+*       - Hiring
 *     name: List candidate hiring steps
 *     summary: list all candidate hiring steps
 *     consumes:
@@ -74,8 +74,8 @@
 * /hiring/defaultHiringSteps:
 *   get:
 *     tags:
-*       - hiring
-*     name: List candidate hiring steps
+*       - Hiring
+*     name: List default candidate hiring steps
 *     summary: list all default candidate hiring steps common to all
 *     consumes:
 *       - application/json
@@ -96,5 +96,201 @@
 *         description: Server down
 */
 
+/**
+* @swagger
+* /hiring/updateCandidateHiringDetails:
+*   put:
+*     tags:
+*       - Hiring
+*     name: Update candidate hiring details
+*     summary:  Update candidate hiring details of a particular position
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateClientHiringStepId:
+*               type: integer
+*             assignedTo:
+*               type: integer
+*             candidateHiringStepComment:
+*               type: string
+*             attachments:
+*               type: array
+*               items:
+*                 type: string
+*             stepLink:
+*               type: string
+*             stepLinkText:
+*               type: string
+*           required:
+*             - candidateClientHiringStepId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
 
+
+/**
+* @swagger
+* /hiring/moveCandidateHiringStep:
+*   put:
+*     tags:
+*       - Hiring
+*     name: Update candidate hiring details
+*     summary:  Update candidate hiring details of a particular position
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateClientHiringStepId:
+*               type: integer
+*             candidateHiringStepOrder:
+*               type: integer
+*             candidateId:
+*               type: integer
+*             positionId:
+*               type: integer
+*             hiringStepName:
+*               type: string
+*           required:
+*             - candidateClientHiringStepId
+*             - candidateId
+*             - positionId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /hiring/rejectCandidateHiring:
+*   put:
+*     tags:
+*       - Hiring
+*     name: Reject candidate hiring 
+*     summary:  Reject candidate from hiring process
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateClientHiringStepId:
+*               type: integer
+*             assignedTo:
+*               type: integer
+*             candidateHiringStepComment:
+*               type: string
+*             attachments:
+*               type: array
+*               items:
+*                 type: string
+*             stepLink:
+*               type: string
+*             stepLinkText:
+*               type: string
+*             candidateId:
+*               type: integer
+*             positionId:
+*               type: integer
+*           required:
+*             - candidateClientHiringStepId
+*             - candidateId
+*             - positionId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /hiring/addNewStageForCandidate:
+*   put:
+*     tags:
+*       - Hiring
+*     name: Add a new stage
+*     summary: Add a new hiring step for candidate under particular position
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateHiringStepName:
+*               type: string
+*             candidateHiringStepType:
+*               type: integer
+*             candidateId:
+*               type: integer
+*             positionId:
+*               type: integer
+*           required:
+*             - candidateHiringStepName
+*             - candidateHiringStepType
+*             - candidateId
+*             - positionId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
 
