@@ -294,3 +294,46 @@
 *         description: Server down
 */
 
+/**
+* @swagger
+* /hiring/updateDefaultAssignee:
+*   put:
+*     tags:
+*       - Hiring
+*     name: Update default assignee
+*     summary: Update default assignee for a candidate under a position
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             assignedto:
+*               type: integer
+*             candidateId:
+*               type: integer
+*             positionId:
+*               type: integer
+*           required:
+*             - assignedto
+*             - candidateId
+*             - positionId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
