@@ -357,7 +357,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.token],
         }
     }
-
+    
     export const getEmailFromEmployeeId =(_body)=> {
         return {
             name: 'fetch-email-from-employeeid',
@@ -365,8 +365,8 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.employeeId],
         }
     }
-
- //pdf share
+    
+    //pdf share
     export const saveSharedEmailsForpdf =(_body)=> {
         return {
             name: 'save-resume-share-emails-pdf',
@@ -417,7 +417,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateId, _body.employeeId, currentTime(), _body.candidateStatus],
         }
     }
-
+    
     export const getCandidateStatuses = (_body) => {
         return {
             name: 'get-candidate-status',
@@ -425,7 +425,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId]
         }
     }
-
+    
     export const getNames =(_body)=> {
         return {
             name: 'get-employee-name',
@@ -448,7 +448,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.email],
         }
     }
-
+    
     export const getCompanyId =(_body)=> {
         return {
             name: 'fetch-shared-emails',
@@ -456,21 +456,21 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.token],
         }
     }
-
+    
     // *******************************************************************************************************************************//
     // -------------------------------------------Assesment traits realted queries-------------------------------------------------//
     export const updateEllowRecuiterReview =(_body)=> {        
         return {
-        name: 'update-ellow-recuiter-review',
-        text: candidateQuery.updateEllowRecuiterReview,
-        values: {assignedto:_body.assignedTo,assessmentid:_body.candidateAssessmentId,assessmentcomment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime()},        
+            name: 'update-ellow-recuiter-review',
+            text: candidateQuery.updateEllowRecuiterReview,
+            values: {assignedto:_body.assignedTo,assessmentid:_body.candidateAssessmentId,assessmentcomment:_body.assessmentComment,link:_body.assessmentLink,linktext:_body.assessmentLinkText,attachments:_body.attachments,rating:_body.rating,employeeid:_body.employeeId,currenttime:currentTime()},        
         }
     }
     export const setVettedStatus =(_body)=> {
         return {
-        name: 'set-vetted-status',
-        text: candidateQuery.setVettedStatus,
-        values: {candidateid:_body.candidateId,employeeid:_body.employeeId,currenttime:currentTime()},        
+            name: 'set-vetted-status',
+            text: candidateQuery.setVettedStatus,
+            values: {candidateid:_body.candidateId,employeeid:_body.employeeId,currenttime:currentTime()},        
         }
     }
     
@@ -482,7 +482,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId]
         }
     }
-
+    
     export const getImageDetails = (_body) => {
         return {
             name: 'get-image-names',
@@ -498,7 +498,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.positionId]
         }
     }
-
+    
     export const changeCandidateAssignee = (_body) => {
         return {
             name: 'change-candidate-assignee',
@@ -506,7 +506,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:{candidateid:_body.candidateId,assigneeid:_body.assignedTo,employeeid:_body.employeeId,currenttime:currentTime()}
         }
     }
-
+    
     export const changeEllowRecruitmentStage = (_body) => {
         return {
             name: 'change-candidate-ellow-hiring-stage',
@@ -514,7 +514,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:{candidateid:_body.candidateId,stagename:_body.stageName,employeeid:_body.employeeId,currenttime:currentTime()}
         }
     }
-
+    
     export const updateEllowStageStatus = (_body) => {
         return {
             name: 'update-candidate-ellow-stage-status',
@@ -522,7 +522,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:{candidateid:_body.candidateId,assessmentid:_body.candidateAssessmentId,employeeid:_body.employeeId,currenttime:currentTime()}
         }
     }
-
+    
     export const updateAssigneeComment = (_body) => {
         return {
             name: 'change-candidate-assignee-comment',
@@ -530,7 +530,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateAssessmentId,_body.assigneeComment,currentTime()]
         }
     }
-
+    
     export const rejectFromCandidateEllowRecruitment = (_body) => {
         return {
             name: 'reject-candidate-ellow-hiring',
@@ -545,32 +545,32 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[]
         }
     }
-
-
+    
+    
     // *******************************************************************************************************************************//
     // -------------------------------------------Candidate filter related queries------------------------------------------------//
-
+    
     export const getCompanyNames = (_body) => {
         return {
             name: 'get-distinct-company-names',
             text: filterQuery.getDistinctCompanyNames,
         }
     }
-
+    
     export const getfullNameAdmin = (_body) => {
         return {
             name: 'get-distinct-company-names',
             text: filterQuery.getfullNameAdmin,
         }
     }
-
+    
     export const getPositionsAdmin = (_body) => {
         return {
             name: 'get-distinct-company-names',
             // text: filterQuery.getfullNameAdmin,
         }
     }
-
+    
     export const getAssesmentDetails =(_body)=> {
         return {
             name: 'get-assesment-details-of-candidate-new',
@@ -587,7 +587,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
-
+    
     export const insertAuditLog = (_body) => {
         return {
             name: 'insert-audit-log',
@@ -595,7 +595,7 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:['ellow hiring stage',_body.auditType,_body.auditLogComment,currentTime(),_body.employeeId]
         }
     }
-
+    
     export const getAssigneeName = (_body) => {
         return {
             name: 'get-assignee-name',
@@ -603,18 +603,44 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.assignedTo]
         }
     }
-
-    export const PositionHiringStepsQuery = (_body) => {
+    
+    //---------------------------------------Hiring steps------------------------------------//
+    
+    export const positionHiringStepsQuery = (_body) => {
         return {
             name: 'get-position-hiring-steps',
             text: hiringQuery.getPositionHiringStepsQuery,
             values:[_body.positionId],
         }
     }
-    export const candidateClientHiringStepsQuery = (_body) => {
+    export const candidateHiringStepsQuery = (_body) => {
         return {
             name: 'get-candidate-client-hiring-steps',
-            text: hiringQuery.getCandidateClientHiringStepsQuery,
-            values:[_body.candidateId],
+            text: hiringQuery.candidateHiringStepsQuery,
+            values:[_body.candidateId,_body.positionId],
+        }
+    }
+    
+    export const getDefaultHiringStepsQuery = () => {
+        return {
+            name: 'get-default-client-hiring-steps',
+            text: hiringQuery.getDefaultHiringStepsQuery,
+            values:[],
+        }
+    }
+    
+    export const addCandidateHiringSteps = (_body) => {
+        return {
+            name: 'add-candidate-client-hiring-steps',
+            text: hiringQuery.addCandidatePositionHiringSteps,
+            values: [_body.positionId, _body.candidateId, _body.employeeId, currentTime()],
+        }
+    }
+
+    export const updateHiringStepDetailsQuery = (_body) => {
+        return {
+            name: 'update-candidate-client-hiring-step-details',
+            text: hiringQuery.updateHiringStepDetails,
+            values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,assignedTo:_body.assignedTo,candidateHiringStepComment:_body.candidateHiringStepComment,attachments:_body.attachments,stepLink:_body.stepLink,stepLinkText:_body.stepLinkText,currenttime:currentTime(),employeeid:_body.employeeId},
         }
     }

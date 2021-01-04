@@ -147,7 +147,6 @@
 *               type: integer 
 *             contractDuration:
 *               type: integer
-
 *             currencyTypeId:
 *               type: integer            
 *             billingType:
@@ -181,6 +180,17 @@
 *                         type: integer
 *                       skillName:
 *                         type: string
+*               hiringSteps:
+*                 type: array
+*                 items:
+*                   type: object
+*                   properties:
+*                     hiringStepName:
+*                       type: string
+*                     hiringStepType:
+*                       type: integer
+*                     hiringStepOrder:
+*                       type: integer
 *     responses:
 *       200:
 *         description: Api success
@@ -381,6 +391,17 @@
 *                         type: integer
 *                       skillName:
 *                         type: string
+*               hiringSteps:
+*                 type: array
+*                 items:
+*                   type: object
+*                   properties:
+*                     hiringStepName:
+*                       type: string
+*                     hiringStepType:
+*                       type: integer
+*                     hiringStepOrder:
+*                       type: integer
 *     responses:
 *       200:
 *         description: Api success

@@ -1,6 +1,6 @@
 /**
 * @swagger
-* /hiring/fetchPositionHiringSteps:
+* /hiring/getPositionHiringSteps:
 *   get:
 *     tags:
 *       - hiring
@@ -33,7 +33,7 @@
 
 /**
 * @swagger
-* /hiring/fetchCandidateClientHiringSteps:
+* /hiring/getCandidateHiringSteps:
 *   get:
 *     tags:
 *       - hiring
@@ -51,6 +51,11 @@
 *         schema:
 *         required:
 *           type: integer
+*       - in: query
+*         name: positionId
+*         schema:
+*         required:
+*           type: integer
 *     responses:
 *       200:
 *         description: Api success
@@ -63,3 +68,33 @@
 *       500:
 *         description: Server down
 */
+
+/**
+* @swagger
+* /hiring/defaultHiringSteps:
+*   get:
+*     tags:
+*       - hiring
+*     name: List candidate hiring steps
+*     summary: list all default candidate hiring steps common to all
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+

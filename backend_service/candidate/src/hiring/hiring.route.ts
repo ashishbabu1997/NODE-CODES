@@ -6,6 +6,8 @@ import * as hiringController from './hiring.controller';
 import * as hiringSchema from './schema/hiringSchema';
 const router = express.Router();
 router
-.get('/fetchPositionHiringSteps', jwtAuth, setData(),validate(hiringSchema.positionIdSchema),hiringController.getPositionHiringSteps)
-.get('/fetchCandidateClientHiringSteps',jwtAuth, setData(),validate(hiringSchema.candidateIdSchema), hiringController.getCandidateClientHiringStepsupdateGeneralInfo)
+.get('/defaultHiringSteps',jwtAuth, setData(),hiringController.defaultHiringSteps)
+.get('/getPositionHiringSteps', jwtAuth, setData(),validate(hiringSchema.positionIdSchema),hiringController.getPositionHiringSteps)
+.get('/getCandidateHiringSteps',jwtAuth, setData(),validate(hiringSchema.candidateIdSchema), hiringController.getCandidateHiringSteps)
+.put('/updateCandidateHiringDetails',jwtAuth, setData(),hiringController.updateHiringStepDetails)
 export default router;

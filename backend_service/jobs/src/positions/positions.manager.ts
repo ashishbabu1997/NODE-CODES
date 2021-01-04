@@ -101,6 +101,7 @@ export const createCompanyPositions = async (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
+                let hiringStepQueries = [];
                 const companyId = _body.userRoleId==1?_body.positionCreatedCompanyId:_body.companyId;
                 
                 const addCompanyPositionsQuery = {
@@ -144,6 +145,19 @@ export const createCompanyPositions = async (_body) => {
                     }
                     await client.query(addOtherSkillsQuery);
                 }
+                
+                if(![null,undefined,''].includes(_body.hiringSteps) && Array.isArray(_body.hiringSteps))
+                {
+                    _body.hiringSteps.forEach(element => {
+                        const insertHiringStepsQuery = {
+                            name: 'add-hiring-steps',
+                            text: positionsQuery.insertHiringSteps,
+                            values: [positionId, element.hiringStepName,element.hiringStepType,element.hiringStepOrder,_body.employeeId,Date.now()],
+                        }
+                        hiringStepQueries.push(client.query(insertHiringStepsQuery));
+                    });   
+                }
+                await Promise.all(hiringStepQueries);
                 
                 if (_body.flag == 0) {
                     await client.query('COMMIT'); 
@@ -254,6 +268,7 @@ export const fetchPositionDetails = (_body) => {
                     const client = await database().connect()
                     try {
                         await client.query('BEGIN');
+                        let hiringStepQueries=[];
                         const updateCompanyPositionsFirstQuery = {
                             name: 'update-company-positions-first',
                             text: positionsQuery.updatePositionFirst,
@@ -314,6 +329,19 @@ export const fetchPositionDetails = (_body) => {
                                     
                                     await client.query(addOtherSkillsQuery);
                                 }
+                                
+                                if(![null,undefined,''].includes(_body.hiringSteps) && Array.isArray(_body.hiringSteps))
+                                {
+                                    _body.hiringSteps.forEach(element => {
+                                        const insertHiringStepsQuery = {
+                                            name: 'add-hiring-steps',
+                                            text: positionsQuery.insertHiringSteps,
+                                            values: [positionId, element.hiringStepName,element.hiringStepType,element.hiringStepOrder,_body.employeeId,Date.now()],
+                                        }
+                                        hiringStepQueries.push(client.query(insertHiringStepsQuery));
+                                    });   
+                                }
+                                await Promise.all(hiringStepQueries);
                                 if (_body.flag == 0) {
                                     await client.query('COMMIT');
                                     resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
@@ -334,12 +362,6 @@ export const fetchPositionDetails = (_body) => {
                         })
                     })
                 }
-                
-                
-                
-                
-                
-                
                 
                 // >>>>>>> FUNC. >>>>>>> 
                 //>>>>>>>>>>>>>>>>>>Publish the position details so that it will be visible to all other users (providers)

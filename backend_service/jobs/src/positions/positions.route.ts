@@ -1,4 +1,4 @@
-import { getPositionDetails,positionDeletion,updateReadStatus, createPositions, getPositions, updatePositions, publishPositions,changePositionStatus,getCompanyNames } from './positions.controller';
+import * as positionController from './positions.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import addPositionSchema from './schemas/addPositionSchema';
@@ -13,13 +13,13 @@ const router = express.Router();
 
 
 router
-    .get('/',jwtAuth, setData(), validate(getPositionSchema),getPositions)
-    .get('/companyNames',jwtAuth, setData(),validate(getCompanyNameSchema),getCompanyNames)
-    .post('/',jwtAuth, setData(), validate(addPositionSchema),createPositions)
-    .put('/', jwtAuth, setData(), validate(updatePositionSchema),updatePositions)
-    .get('/:positionId', jwtAuth, setData(),getPositionDetails)
-    .post('/publish',jwtAuth, setData(), validate(positionIdSchema), publishPositions)
-    .post('/changePositionStatus',jwtAuth, setData(),validate(jobStatusSchema),changePositionStatus)
-    .post('/deletePosition',jwtAuth, setData(),validate(positionIdSchema),positionDeletion)
-    .put('/updateReadStatus',jwtAuth, setData(),validate(positionIdSchema),updateReadStatus)
+    .get('/',jwtAuth, setData(), validate(getPositionSchema),positionController.getPositions)
+    .get('/companyNames',jwtAuth, setData(),validate(getCompanyNameSchema),positionController.getCompanyNames)
+    .post('/',jwtAuth, setData(), validate(addPositionSchema),positionController.createPositions)
+    .put('/', jwtAuth, setData(), validate(updatePositionSchema),positionController.updatePositions)
+    .get('/:positionId', jwtAuth, setData(),positionController.getPositionDetails)
+    .post('/publish',jwtAuth, setData(), validate(positionIdSchema), positionController.publishPositions)
+    .post('/changePositionStatus',jwtAuth, setData(),validate(jobStatusSchema),positionController.changePositionStatus)
+    .post('/deletePosition',jwtAuth, setData(),validate(positionIdSchema),positionController.positionDeletion)
+    .put('/updateReadStatus',jwtAuth, setData(),validate(positionIdSchema),positionController.updateReadStatus)
 export default router;

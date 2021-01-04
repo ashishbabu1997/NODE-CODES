@@ -19,5 +19,6 @@ export default {
     updatePositionStatus:'UPDATE positions SET status=$3,updated_on=$2 WHERE position_id=$1',
     updateJobReceivedStatus:'UPDATE job_received SET status=$3,updated_on=$2 WHERE position_id=$1 RETURNING job_received_id',
     updateCompanyJobStatus:'UPDATE company_job SET status=$3,updated_on=$2 WHERE job_received_id=$1',
-    insertReadStatus:'INSERT INTO position_read_status( position_id, employee_id, created_on, updated_on) values ($1,$2,$3,$3) on conflict on constraint position_read_status_position_id_employee_id_unique_key do nothing'
+    insertReadStatus:'INSERT INTO position_read_status( position_id, employee_id, created_on, updated_on) values ($1,$2,$3,$3) on conflict on constraint position_read_status_position_id_employee_id_unique_key do nothing',
+    insertHiringSteps:'insert into position_hiring_step (position_id, hiring_step_name, hiring_step_type, hiring_step_order, created_by, updated_by, created_on, updated_on) values ($1, $2, $3, $4, $5, $5, $6, $6) on conflict on constraint position_hiring_step_position_id_hiring_step_name_unique_key do update set hiring_step_type=$3,hiring_step_order=$4,updated_by=$5,updated_on=$6'
 }

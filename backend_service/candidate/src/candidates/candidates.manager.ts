@@ -667,14 +667,17 @@ const myCache = new nodeCache();
                                 name: 'link-candidate-with-position',
                                 text: candidateQuery.linkCandidateWithPosition,
                                 values: [positionId, element.candidateId, _body.employeeId, currentTime],
-                                // ellowrate,currencytypeid,billing type,admincomment,admin approve status -1
-                                // check user role id 
                             }
                             count=count+1
                             promise.push(client.query(linkCandidateQuery));
                         });
                         await Promise.all(promise);
                     }
+
+
+                    // Adding client based hiring steps with respect to poition being linked
+                    await client.query(queryService.addCandidateHiringSteps(_body));
+
                     // Sending notification to ellow recuiter for each candidate linked to a position
                     candidateList.forEach(async element => {
                         let imageResults =  await client.query(queryService.getImageDetails(element))                        
@@ -694,7 +697,7 @@ const myCache = new nodeCache();
                     await client.query('COMMIT')
                     let message=`${count} candidates has been added for the position ${positionName}`
                     createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId: _body.companyId, message:message, candidateId:null, notificationType: 'candidateList',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:null,firstName:null,lastName:null})
-                    console.log(names)
+                    
                     let replacements = {
                         positionName:positionName,
                         names:names
@@ -715,6 +718,8 @@ const myCache = new nodeCache();
             })
         })
     }
+
+    
     // >>>>>>> FUNC. >>>>>>>
     // >>>>>>>>>> Remove a freely added candidate.
     export const removeCandidate = (_body) => {
