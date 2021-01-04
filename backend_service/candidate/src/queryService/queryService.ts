@@ -620,6 +620,14 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId,_body.positionId],
         }
     }
+
+    export const candidateCurrentStageQuery = (_body) => {
+        return {
+            name: 'get-candidate-current-step',
+            text: hiringQuery.candidateCurrentStage,
+            values:[_body.candidateId,_body.positionId],
+        }
+    }
     
     export const getDefaultHiringStepsQuery = () => {
         return {
@@ -674,6 +682,14 @@ export const insertCandidatePublicationQuery = (_body) => {
             name: 'add-new-candidate-client-hiring',
             text: hiringQuery.addNewStageForCandidate,
             values: {$stepname:_body.candidateHiringStepName,$steptype:_body.candidateHiringStepType,$candidateid:_body.candidateId,$positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
+        }
+    }
+
+    export const updateDefaultAssigneeQuery = (_body) => {
+        return {
+            name: 'update-assignee-candidate-client-hiring',
+            text: hiringQuery.updateDefaultAssignee,
+            values: {$assignedto:_body.assignedTo,$candidateid:_body.candidateId,$positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
         }
     }
 

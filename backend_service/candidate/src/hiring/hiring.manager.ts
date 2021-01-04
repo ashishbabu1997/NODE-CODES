@@ -29,7 +29,11 @@ export const getCandidateHiringSteps = (_body) => {
             const client = await database().connect()
             try {
                 var result=await client.query(queryService.candidateHiringStepsQuery(_body));
-                resolve({ code: 200, message: "Candidate client hiring steps listed successfully", data: result.rows  });
+                var candidatePositionResult=await client.query(queryService.candidateCurrentStageQuery(_body));
+
+                console.log("candidatePositionResult : ",candidatePositionResult.rows);
+                
+                resolve({ code: 200, message: "Candidate client hiring steps listed successfully", data: {hiringSteps:result.rows,commonData : candidatePositionResult.rows[0] } });
             } catch (e) {
                 console.log("Error raised from try : ",e)
                 await client.query('ROLLBACK')
@@ -147,3 +151,22 @@ export const addNewStageForCandidate = (_body) => {
     })
 }
 
+export const updateDefaultAssignee = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                await client.query(queryService.updateDefaultAssigneeQuery(_body));
+
+                resolve({ code: 200, message: "Updated assignee succesfully", data: {} });
+            } catch (e) {
+                console.log("Error raised from try : ",e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error raised from async : ",e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
