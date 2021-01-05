@@ -9,5 +9,8 @@ export default {
     rejectFromHiringProcess:'WITH src AS (UPDATE candidate_client_hiring_step SET step_status = 0, assigned_to=$assignedto, candidate_hiring_step_comment=$comment,attachments=$attachments, step_link=$link, step_link_text=$linktext WHERE candidate_client_hiring_step_id = $id) UPDATE candidate_position cp SET make_offer = 0, current_stage = \'Rejected\', updated_on = $currenttime, updated_by=$employeeid FROM src WHERE cp.candidate_id = $candidateid and cp.position_id=$positionid',
     addNewStageForCandidate:'insert into candidate_client_hiring_step (candidate_hiring_step_name, candidate_hiring_step_type, candidate_hiring_step_order, candidate_id, position_id, created_by, updated_by, created_on, updated_on) values ($stepname, $steptype, (select max(candidate_hiring_step_order) from candidate_client_hiring_step where candidate_id = $candidateid and position_id = $positionid and status = true)+1, $candidateid,$positionid,$employeeid,$employeeid,$currenttime,$currenttime )',
     updateDefaultAssignee:'update candidate_position set assigned_to=$assignedto, updated_by=$employeeid, updated_on=$currenttime where candidate_id = $candidateid and position_id = $positionid',
-    candidateCurrentStage:'select current_stage as "currentStage", assigned_to as "assignedTo" from candidate_position where candidate_id = $1 and position_id = $2'
+    candidateCurrentStage:'select current_stage as "currentStage", assigned_to as "assignedTo" from candidate_position where candidate_id = $1 and position_id = $2',
+    getPositionNameFromId:'select position_name as "positionName" from positions where position_id=$1',
+    getCompanyNameFromId:'select company_name as "companyName" from company where company_id=$1',
+    insertClientHiringStep:'insert into candidate_client_hiring_step(candidate_hiring_step_name,candidate_id,position_id,assigned_to,status,step_start_date) values ($1,$2,$3,$4,$5,$6)'
 }

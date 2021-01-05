@@ -75,7 +75,7 @@ export const updateHiringStepDetails = (_body) => {
             try {
                 if([undefined,null,''].includes(_body.assignedTo))
                 {
-                    reject({ code: 400, message: "Candidate must be assigned to an assignee", data: {} });
+                    reject({ code: 400, message: "There should be assignee for adding hiring steps", data: {} });
                 }
                 else
                 {
@@ -99,10 +99,26 @@ export const moveCandidateHiringStep = (_body) => {
         (async () => {
             const client = await database()
             try {
-                await client.query(queryService.moveCandidateHiringStepQuery(_body)); 
-                await client.query(queryService.updateCurrentStage(_body)); 
-
-                resolve({ code: 200, message: "Hiring step moved successfully", data: {} });
+                if([undefined,null,''].includes(_body.assignedTo))
+                {
+                    reject({ code: 400, message: "There should be assignee for adding hiring steps", data: {} });
+                }
+                else
+                {
+                    var positions=await client.query(queryService. getPositionName(_body));
+                    var positionName=positions.rows[0].positionName
+                    var companies=await client.query(queryService.getCompanyName(_body));
+                    var companyName=companies.rows[0].companyName
+                    let names = await client.query(queryService.getAssigneeName(_body));
+                    let assigneeName=names.rows[0].firstname
+                    _body.auditLogComment=`${assigneeName} (${companyName}) has moved the candidate ${_body.candidateName} to ${_body.hiringStepName} for the position ${positionName}`
+                    await client.query(queryService.insertAuditLogForHiring(_body));
+                    await client.query(queryService.insertCandidateClientHiringSteps(_body));
+                    await client.query(queryService.moveCandidateHiringStepQuery(_body)); 
+                    await client.query(queryService.updateCurrentStage(_body)); 
+                    resolve({ code: 200, message: "Hiring step moved successfully", data: {} });
+                }
+               
             } catch (e) {
                 console.log("Error raised from try : ",e)
                 await client.query('ROLLBACK')
@@ -120,12 +136,25 @@ export const rejectFromHiringProcess = (_body) => {
         (async () => {
             const client = await database()
             try {
-
-                _body.hiringStepName = 'Rejected';
-                await client.query(queryService.rejectFromHiringProcess(_body));
-                await client.query(queryService.updateCurrentStage(_body)); 
-
-                resolve({ code: 200, message: "Rejected candidate succesfully", data: {} });
+                if([undefined,null,''].includes(_body.assignedTo))
+                {
+                    reject({ code: 400, message: "There should be assignee for adding hiring steps", data: {} });
+                }
+                else
+                {
+                    _body.hiringStepName = 'Rejected';
+                    var positions=await client.query(queryService. getPositionName(_body));
+                    var positionName=positions.rows[0].positionName
+                    var companies=await client.query(queryService.getCompanyName(_body));
+                    var companyName=companies.rows[0].companyName
+                    let names = await client.query(queryService.getAssigneeName(_body));
+                    let assigneeName=names.rows[0].firstname
+                    _body.auditLogComment=`${assigneeName} (${companyName}) has rejected the candidate ${_body.candidateName} at  ${_body.hiringStepName} for the position ${positionName}`
+                    await client.query(queryService.insertAuditLogForHiring(_body));
+                    await client.query(queryService.rejectFromHiringProcess(_body));
+                    await client.query(queryService.updateCurrentStage(_body)); 
+                    resolve({ code: 200, message: "Rejected candidate succesfully", data: {} });
+            }
             } catch (e) {
                 console.log("Error raised from try : ",e)
                 await client.query('ROLLBACK')
@@ -143,9 +172,22 @@ export const addNewStageForCandidate = (_body) => {
         (async () => {
             const client = await database()
             try {
-                await client.query(queryService.addNewStageForCandidate(_body));
-
-                resolve({ code: 200, message: "Added new stage succesfully", data: {} });
+                if([undefined,null,''].includes(_body.assignedTo))
+                {
+                    reject({ code: 400, message: "There should be assignee for adding hiring steps", data: {} });
+                }
+                else{
+                    var positions=await client.query(queryService. getPositionName(_body));
+                    var positionName=positions.rows[0].positionName
+                    var companies=await client.query(queryService.getCompanyName(_body));
+                    var companyName=companies.rows[0].companyName
+                    let names = await client.query(queryService.getAssigneeName(_body));
+                    let assigneeName=names.rows[0].firstname
+                    _body.auditLogComment=`${assigneeName} (${companyName}) has added a new step named  ${_body.candidateHiringStepName}  for  the candidate ${_body.candidateName} who applied for the  position ${positionName}`
+                    await client.query(queryService.insertAuditLogForHiring(_body));
+                    await client.query(queryService.addNewStageForCandidate(_body));
+                    resolve({ code: 200, message: "Added new stage succesfully", data: {} });
+                }
             } catch (e) {
                 console.log("Error raised from try : ",e)
                 await client.query('ROLLBACK')
@@ -163,9 +205,22 @@ export const updateDefaultAssignee = (_body) => {
         (async () => {
             const client = await database()
             try {
-                await client.query(queryService.updateDefaultAssigneeQuery(_body));
-
-                resolve({ code: 200, message: "Updated assignee succesfully", data: {} });
+                if([undefined,null,''].includes(_body.assignedTo))
+                {
+                    reject({ code: 400, message: "There should be assignee for adding hiring steps", data: {} });
+                }
+                else{
+                    var positions=await client.query(queryService. getPositionName(_body));
+                    var positionName=positions.rows[0].positionName
+                    var companies=await client.query(queryService.getCompanyName(_body));
+                    var companyName=companies.rows[0].companyName
+                    let names = await client.query(queryService.getAssigneeName(_body));
+                    let assigneeName=names.rows[0].firstname
+                    _body.auditLogComment=`${assigneeName} (${companyName}) is the assignee for  the candidate ${_body.candidateName} who applied for the  position ${positionName}`
+                    await client.query(queryService.insertAuditLogForHiring(_body));
+                    await client.query(queryService.updateDefaultAssigneeQuery(_body));
+                    resolve({ code: 200, message: "Updated assignee succesfully", data: {} });
+                }
             } catch (e) {
                 console.log("Error raised from try : ",e)
                 await client.query('ROLLBACK')

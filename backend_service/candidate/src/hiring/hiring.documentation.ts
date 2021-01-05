@@ -172,6 +172,8 @@
 *               type: integer
 *             candidateId:
 *               type: integer
+*             candidateName:
+*               type: string
 *             positionId:
 *               type: integer
 *             hiringStepName:
@@ -225,6 +227,10 @@
 *                 type: string
 *             stepLink:
 *               type: string
+*             candidateName:
+*               type: string
+*             hiringStepName:
+*               type: string
 *             stepLinkText:
 *               type: string
 *             candidateId:
@@ -235,6 +241,8 @@
 *             - candidateClientHiringStepId
 *             - candidateId
 *             - positionId
+*             - hiringStepName
+*             - candidateName
 *     responses:
 *       200:
 *         description: Api success
@@ -274,6 +282,8 @@
 *               type: integer
 *             candidateId:
 *               type: integer
+*             candidateName:
+*               type: string
 *             positionId:
 *               type: integer
 *           required:
@@ -281,6 +291,7 @@
 *             - candidateHiringStepType
 *             - candidateId
 *             - positionId
+*             - candidateName
 *     responses:
 *       200:
 *         description: Api success
@@ -320,10 +331,13 @@
 *               type: integer
 *             positionId:
 *               type: integer
+*             candidateName:
+*               type: string
 *           required:
 *             - assignedto
 *             - candidateId
 *             - positionId
+*             - candidateName
 *     responses:
 *       200:
 *         description: Api success

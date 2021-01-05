@@ -596,6 +596,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
+    
     export const getAssigneeName = (_body) => {
         return {
             name: 'get-assignee-name',
@@ -605,7 +606,14 @@ export const insertCandidatePublicationQuery = (_body) => {
     }
     
     //---------------------------------------Hiring steps------------------------------------//
-    
+    export const insertAuditLogForHiring = (_body) => {
+        return {
+            name: 'insert-audit-log',
+            text: candidateQuery.insertLogs,
+            values:['client hiring steps',2,_body.auditLogComment,currentTime(),_body.employeeId]
+        }
+    }
+
     export const positionHiringStepsQuery = (_body) => {
         return {
             name: 'get-position-hiring-steps',
@@ -660,6 +668,14 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,candidateHiringStepOrder:_body.candidateHiringStepOrder,$candidateid:_body.candidateId,$positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
         }
     }
+    
+    export const insertCandidateClientHiringSteps = (_body) => {
+        return {
+            name: 'insert-candidatde-client-hiring',
+            text: hiringQuery.insertClientHiringStep,
+            values:[_body.hiringStepName,_body.candidateId,_body.positionId,_body.assignedTo,true,currentTime()]
+        }
+    }
 
     export const updateCurrentStage = (_body) => {
         return {
@@ -668,6 +684,21 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: {$hiringstepname:_body.hiringStepName,$candidateid:_body.candidateId,$positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
         }
     }
+    export const getPositionName = (_body) => {
+        return {
+            name: 'get-position-name',
+            text: hiringQuery.getPositionNameFromId,
+            values: [_body.positionId]
+        }
+    }
+    export const getCompanyName = (_body) => {
+        return {
+            name: 'get-company-name',
+            text: hiringQuery.getCompanyNameFromId,
+            values: [_body.companyId]
+        }
+    }
+
 
     export const rejectFromHiringProcess = (_body) => {
         return {
