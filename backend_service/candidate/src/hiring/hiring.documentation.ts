@@ -38,7 +38,7 @@
 *     tags:
 *       - Hiring
 *     name: List candidate hiring steps
-*     summary: list all candidate hiring steps
+*     summary: list all candidate hiring steps for a given position
 *     consumes:
 *       - application/json
 *     security:
@@ -53,6 +53,39 @@
 *           type: integer
 *       - in: query
 *         name: positionId
+*         schema:
+*         required:
+*           type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /hiring/getAllCandidateHiringSteps:
+*   get:
+*     tags:
+*       - Hiring
+*     name: List All candidate hiring steps
+*     summary: list all candidate hiring steps for all the positions the candidate is applied to
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
 *         schema:
 *         required:
 *           type: integer

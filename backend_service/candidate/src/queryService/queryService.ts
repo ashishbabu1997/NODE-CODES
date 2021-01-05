@@ -629,6 +629,14 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
 
+    export const candidateAllPositionHiringStepsQuery = (_body) => {
+        return {
+            name: 'get-all-positions-candidate-client-hiring-steps',
+            text: hiringQuery.candidateAllPositionsHiringStepsQuery,
+            values:[_body.candidateId],
+        }
+    }
+
     export const candidateCurrentStageQuery = (_body) => {
         return {
             name: 'get-candidate-current-step',
