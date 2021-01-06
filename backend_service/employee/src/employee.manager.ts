@@ -500,15 +500,26 @@ export const getAdminDetails = (_body) => {
 //>>>>>>>>>>>>>>>>>>Get employees
 export const getAllEmployees = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());        
+        const currentTime = Math.floor(Date.now());  
+           
         (async () => {
             const client = await database()
+            var value;
             try {
                 await client.query('BEGIN');
+                
+                if (_body.userRoleId==1)
+                {
+                    value=1
+                }
+                else
+                {
+                    value=_body.companyId
+                }
                 const getCompanyEmployees = {
                     name: 'get-employees',
                     text: employeeQuery.getEmployeesQuery,
-                    values: [_body.companyId]
+                    values: [value]
                 }
                 
                var result =await client.query(getCompanyEmployees);

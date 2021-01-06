@@ -73,7 +73,7 @@ export const  getellowAdminsDetails= (req, res) => {
     })
 }
 export const  getEmployeesFromCompany= (req, res) => {
-    const body = req;
+    const body = req.query;
     getAllEmployees(body).then((response: any) => {
         sendResponse(res, response.code, 1,202, response.message, response.data)
     }).catch(error => {
