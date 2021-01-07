@@ -680,8 +680,8 @@ export const insertCandidatePublicationQuery = (_body) => {
     export const updateAssigneeComments = (_body) => {
         return {
             name: 'update-candidatde-client-hiring',
-            text: hiringQuery.insertClientHiringStep,
-            values:[_body.hiringStepName,_body.candidateId,_body.positionId,_body.assignedTo,true,currentTime(),_body.assigneeComment,_body.candidateClientHiringStepId]
+            text: hiringQuery.updateAssigneeComments,
+            values:[_body.candidateClientHiringStepId,_body.assigneeComment,currentTime()]
         }
     }
 
