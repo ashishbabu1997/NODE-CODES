@@ -10,6 +10,9 @@ import * as queryService from '../queryService/queryService';
 //>>>>>>>>>>>>>>>>>>Get the position detils of a company
 export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
         var queryText='', queryValues={}, filterQuery='', filter=_body.body.filter,
         body=_body.query, sort = '', searchKey = '%%';
         
@@ -61,31 +64,25 @@ export const getCompanyPositions = (_body) => {
         }
         
         if (body.userRoleId == 1) {
-            queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+sort;
-            queryValues = Object.assign({searchkey:searchKey,employeeid:body.employeeId},queryValues)
+            _body.queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+sort;
+            _body.queryValues = Object.assign({searchkey:searchKey,employeeid:body.employeeId},queryValues)
         }
         else {
-            queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
-            queryValues =  Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
+            _body.queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
+            _body.queryValues =  Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
         }
-        
-        const query = {
-            name: 'id-fetch-company-positions',
-            text: queryText,
-            values: queryValues
-        }
-        database().query(query, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                return;
-            }
-            var steps = results.rows
-            resolve({ code: 200, message: "Positions listed successfully", data: { positions: steps } })
-        })  
-    }).catch(err=>{
-        console.error("err : ",err); 
-        throw ({ code: 400, message: "Database error Please try again.", data: err.Error });
+        var steps=client.query(queryService.getCompanyPositionsQuery(_body));                
+        resolve({ code: 200, message: "Positions listed successfully", data: { positions:steps  } }) 
+        } catch (e) {
+            await client.query('ROLLBACK')
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} });
+        } 
+    })().catch(e => {
+        console.log(e)
+        reject({ code: 400, message: "Failed. Please try again.", data: {} })
     })
+})
 }
 
 
