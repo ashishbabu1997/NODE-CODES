@@ -427,3 +427,47 @@
 *       500:
 *         description: Server down
 */
+
+/**
+* @swagger
+* /hiring/reorderHiringSteps:
+*   put:
+*     tags:
+*       - Hiring
+*     name: reorderHiringSteps
+*     summary:  reorder candidate hiring steps
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             hiringSteps:
+*               type: array
+*               items:
+*                 type: object
+*                 properties:
+*                   candidateHiringStepId:
+*                     type: interger
+*                   candidateHiringStepName:
+*                     type: string
+*           required:
+*             - candidateHiringStepId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

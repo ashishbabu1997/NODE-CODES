@@ -1,5 +1,6 @@
 import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
+import hiringQuery from './query/hiring.query';
 
 
 export const getPositionHiringSteps = (_body) => {
@@ -275,4 +276,38 @@ export const deletePositionHiringStep = (_body) => {
         })
     })
 }
+
+export const reorderHiringSteps = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                let candidateHiringStepQueries = [];
+                if(![null,undefined,''].includes(_body.hiringSteps) && Array.isArray(_body.hiringSteps))
+                {
+                    let order = 1;
+                    _body.hiringSteps.forEach(element => {
+                        const insertHiringStepsQuery = {
+                            name: 'add-hiring-steps',
+                            text: hiringQuery.updateCandidateHiringStepOrder,
+                            values: [element.candidateHiringStepId,order,Date.now()],
+                        }
+                        candidateHiringStepQueries.push(client.query(insertHiringStepsQuery));
+                        order++;
+                    });   
+                }
+                await Promise.all(candidateHiringStepQueries);
+                await client.query('COMMIT')
+            } catch (e) {
+                console.log("Error raised from try : ",e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error raised from async : ",e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
 

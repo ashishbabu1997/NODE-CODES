@@ -14,5 +14,6 @@ export default {
     getPositionNameFromId:'select position_name as "positionName" from positions where position_id=$1',
     getCompanyNameFromId:'select company_name as "companyName" from company where company_id=$1',
     updateAssigneeComments:'update candidate_client_hiring_step set step_start_date=$3, assignee_comment=$2 where candidate_client_hiring_step_id = $1',
-    deletePositionHiringStep : 'delete from position_hiring_step where position_hiring_step_id=$1;'
+    deletePositionHiringStep : 'delete from position_hiring_step where position_hiring_step_id=$1;',
+    updateCandidateHiringStepOrder:'update candidate_client_hiring_step set candidate_hiring_step_order=$2,updated_on=$3 where candidate_client_hiring_step_id=$1 '
 }
