@@ -71,7 +71,7 @@ export const getCompanyPositions = (_body) => {
             _body.queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
             _body.queryValues =  Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
         }
-        var steps=client.query(queryService.getCompanyPositionsQuery(_body));                
+        var steps=await client.query(queryService.getCompanyPositionsQuery(_body));                
         resolve({ code: 200, message: "Positions listed successfully", data: { positions:steps  } }) 
         } catch (e) {
             await client.query('ROLLBACK')
@@ -96,26 +96,26 @@ export const createCompanyPositions = async (_body) => {
             try {
                 await client.query('BEGIN');
                 let hiringStepQueries = [];
-                const companyId = _body.userRoleId==1?_body.positionCreatedCompanyId:_body.companyId;
-                
-                const addCompanyPositionsQuery = {
-                    name: 'add-company-positions',
-                    text: positionsQuery.addCompanyPositions,
-                    values: {
-                        name:_body.positionName, devcount:_body.developerCount, companyid:companyId,
-                        explevel:_body.experienceLevel, jobdesc:_body.jobDescription, doc:_body.document, 
-                        currencyid:_body.currencyTypeId, billingtype:_body.billingType, 
-                        empid:_body.employeeId,  time:currentTime, jobcatid:_body.jobCategoryId
-                    }
-                }
+                _body.compId = _body.userRoleId==1?_body.positionCreatedCompanyId:_body.companyId;
+                let companyId=_body.compId
+                // const addCompanyPositionsQuery = {
+                //     name: 'add-company-positions',
+                //     text: positionsQuery.addCompanyPositions,
+                //     values: {
+                //         name:_body.positionName, devcount:_body.developerCount, companyid:companyId,
+                //         explevel:_body.experienceLevel, jobdesc:_body.jobDescription, doc:_body.document, 
+                //         currencyid:_body.currencyTypeId, billingtype:_body.billingType, 
+                //         empid:_body.employeeId,  time:currentTime, jobcatid:_body.jobCategoryId
+                //     }
+                // }
                 const getCompanyNameQuery = {
                     name: 'get-company-name',
                     text: positionsQuery.getCompanyName,
-                    values: [companyId]
+                    values: [_body.compId]
                 }
                 const getCompanyNameResponse = await client.query(getCompanyNameQuery);
                 const companyName = getCompanyNameResponse.rows[0].companyName
-                const companyPositionResponse = await client.query(addCompanyPositionsQuery);
+                const companyPositionResponse =await client.query(queryService.addCompanyPositionsQuery(_body));   
                 const positionId = companyPositionResponse.rows[0].position_id
                 
                 let tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
@@ -160,7 +160,7 @@ export const createCompanyPositions = async (_body) => {
                     return;
                 }
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyId  } });
+                resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyId } });
             } catch (e) {
                 await client.query('ROLLBACK')
                 console.log(e)
