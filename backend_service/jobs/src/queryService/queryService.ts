@@ -25,3 +25,10 @@ export const addCompanyPositionsQuery = (_body) =>  {
         }
     }
 }
+export const getCompanyNameQuery = (_body) => {
+    return{
+        name: 'get-company-name',
+        text: positionsQuery.getCompanyName,
+        values: [_body.compId]
+    }
+}
