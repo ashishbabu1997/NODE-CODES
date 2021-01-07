@@ -409,6 +409,10 @@
 *           properties:
 *             positionHiringStepId:
 *               type: integer
+*             positionHiringStepName:
+*               type: string
+*             positionName:
+*               type: string
 *           required:
 *             - positionHiringStepId
 *     responses:
