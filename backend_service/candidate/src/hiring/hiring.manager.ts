@@ -250,3 +250,24 @@ export const updateDefaultAssignee = (_body) => {
         })
     })
 }
+
+export const deletePositionHiringStep = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                    await client.query(queryService.deletePositionHiringStep(_body));
+                    resolve({ code: 200, message: "Deleted Hiring Step succesfully", data: {} });
+                
+            } catch (e) {
+                console.log("Error raised from try : ",e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error raised from async : ",e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
