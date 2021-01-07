@@ -3,6 +3,8 @@ import database from '../common/database/database';
 import hiringQuery from './query/hiring.query';
 
 
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for listing all position hiring steps
 export const getPositionHiringSteps = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -24,6 +26,10 @@ export const getPositionHiringSteps = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for listing hiring steps of a single candidate
 export const getCandidateHiringSteps = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -46,6 +52,10 @@ export const getCandidateHiringSteps = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for listing all position hiring steps of a single candidate
 export const getAllCandidateHiringSteps = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -67,6 +77,10 @@ export const getAllCandidateHiringSteps = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for listing default hiring steps from database
 export const getDefaultHiringSteps = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -87,6 +101,9 @@ export const getDefaultHiringSteps = (_body) => {
 }
 
 
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for updating hiring step details for an applied candidate
 export const updateHiringStepDetails = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -113,6 +130,10 @@ export const updateHiringStepDetails = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction to move hiring stage of a candidate
 export const moveCandidateHiringStep = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -151,6 +172,10 @@ export const moveCandidateHiringStep = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for rejectiong any candidate from hiring process
 export const rejectFromHiringProcess = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -187,6 +212,10 @@ export const rejectFromHiringProcess = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction to add a new hiring stage 
 export const addNewStageForCandidate = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -220,6 +249,10 @@ export const addNewStageForCandidate = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for adding assignee to a candidate
 export const updateDefaultAssignee = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -253,6 +286,9 @@ export const updateDefaultAssignee = (_body) => {
     })
 }
 
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for deleting a hiring step from processing
 export const deletePositionHiringStep = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -277,6 +313,9 @@ export const deletePositionHiringStep = (_body) => {
     })
 }
 
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for reordering steps from  the listed hiring steps
 export const reorderHiringSteps = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
