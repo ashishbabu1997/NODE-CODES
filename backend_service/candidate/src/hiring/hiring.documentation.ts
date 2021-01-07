@@ -358,7 +358,7 @@
 *         schema:
 *           type: object
 *           properties:
-*             assignedto:
+*             assignedTo:
 *               type: integer
 *             candidateId:
 *               type: integer
@@ -367,7 +367,7 @@
 *             candidateName:
 *               type: string
 *           required:
-*             - assignedto
+*             - assignedTo
 *             - candidateId
 *             - positionId
 *             - candidateName

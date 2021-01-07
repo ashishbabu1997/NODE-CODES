@@ -1,12 +1,9 @@
 import positionsQuery from './query/positions.query';
 import database from '../common/database/database';
 import { createNotification } from '../common/notifications/notifications';
-import { sendMail } from '../middlewares/mailer'
 import config from '../config/config'
-import * as handlebars from 'handlebars'
-import {readHTMLFile} from '../middlewares/htmlReader'
 import * as emailClient from '../emailService/emailService';
-
+import * as queryService from '../queryService/queryService';
 
 
 // >>>>>>> FUNC. >>>>>>> 
