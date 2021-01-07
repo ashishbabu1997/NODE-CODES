@@ -130,9 +130,10 @@ export const moveCandidateHiringStep = (_body) => {
                     let names = await client.query(queryService.getAssigneeName(_body));
                     let assigneeName=names.rows[0].firstname
                     _body.auditLogComment=`${assigneeName} (${companyName}) has moved the candidate ${_body.candidateName} to ${_body.hiringStepName} for the position ${positionName}`
-                    await client.query(queryService.insertAuditLogForHiring(_body));
-                    await client.query(queryService.insertCandidateClientHiringSteps(_body));
+                    await client.query(queryService.insertAuditLogForHiring(_body))
                     await client.query(queryService.moveCandidateHiringStepQuery(_body)); 
+                    _body.assigneeComment=`${assigneeName} has moved the candidate to ${_body.hiringStepName}`
+                    await client.query(queryService.updateAssigneeComments(_body));
                     await client.query(queryService.updateCurrentStage(_body)); 
                     resolve({ code: 200, message: "Hiring step moved successfully", data: {} });
                 }
