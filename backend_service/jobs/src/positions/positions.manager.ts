@@ -142,7 +142,8 @@ export const createCompanyPositions = async (_body) => {
                     }
                     await client.query(addOtherSkillsQuery);
                 }
-                
+                await client.query('COMMIT')
+
                 if(![null,undefined,''].includes(_body.hiringSteps) && Array.isArray(_body.hiringSteps))
                 {
                     let order = 1;
@@ -163,7 +164,9 @@ export const createCompanyPositions = async (_body) => {
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
                     return;
                 }
+
                 await client.query('COMMIT')
+
                 resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyId  } });
             } catch (e) {
                 await client.query('ROLLBACK')
