@@ -85,7 +85,7 @@ export const updateDefaultAssignee = (req, res) => {
 }
 
 export const deletePositionHiringStep = (req, res) => {
-    const body = req.body;
+    const body = req.query;
     hiringManager.deletePositionHiringStep(body).then((response: any) => {
         sendResponse(res, response.code, 1, 201, response.message, response.data)
     }).catch(error => {

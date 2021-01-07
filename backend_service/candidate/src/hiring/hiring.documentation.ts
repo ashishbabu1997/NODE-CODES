@@ -402,8 +402,7 @@
 *     produces:
 *       - application/json
 *     parameters:
-*       - name: body
-*         in: body
+*       - in: query
 *         schema:
 *           type: object
 *           properties:

@@ -689,7 +689,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'update-current-stage-candidate-position-table',
             text: hiringQuery.updateCurrentStage,
-            values: {hiringstepname:_body.hiringStepName,candidateid:_body.candidateId,positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
+            values: {hiringstepname:_body.candidateHiringStepName,candidateid:_body.candidateId,positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
         }
     }
     export const getPositionName = (_body) => {
