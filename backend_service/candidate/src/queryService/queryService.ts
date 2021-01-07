@@ -673,7 +673,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'move-tostep-client-hiring',
             text: hiringQuery.moveCandidateHiringStep,
-            values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,candidateHiringStepOrder:_body.candidateHiringStepOrder,$candidateid:_body.candidateId,$positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
+            values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,candidateHiringStepOrder:_body.candidateHiringStepOrder,candidateid:_body.candidateId,positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
         }
     }
     
@@ -689,7 +689,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'update-current-stage-candidate-position-table',
             text: hiringQuery.updateCurrentStage,
-            values: {$hiringstepname:_body.hiringStepName,$candidateid:_body.candidateId,$positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
+            values: {hiringstepname:_body.hiringStepName,candidateid:_body.candidateId,positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
         }
     }
     export const getPositionName = (_body) => {
@@ -712,7 +712,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'reject-candidate-client-hiring',
             text: hiringQuery.rejectFromHiringProcess,
-            values: {$assignedto:_body.assignedTo,$candidateid:_body.candidateId,$positionid:_body.positionId,id:_body.candidateClientHiringStepId,link:_body.stepLink,linktext:_body.stepLinkText,attachments:_body.attachments,comment:_body.candidateHiringStepComment,currenttime:currentTime(),employeeid:_body.employeeId},
+            values: {assignedto:_body.assignedTo,candidateid:_body.candidateId,positionid:_body.positionId,id:_body.candidateClientHiringStepId,link:_body.stepLink,linktext:_body.stepLinkText,attachments:_body.attachments,comment:_body.candidateHiringStepComment,currenttime:currentTime(),employeeid:_body.employeeId},
         }
     }
 
@@ -720,7 +720,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'add-new-candidate-client-hiring',
             text: hiringQuery.addNewStageForCandidate,
-            values: {$stepname:_body.candidateHiringStepName,$steptype:_body.candidateHiringStepType,$candidateid:_body.candidateId,$positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
+            values: {stepname:_body.candidateHiringStepName,steptype:_body.candidateHiringStepType,candidateid:_body.candidateId,positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
         }
     }
 
@@ -728,7 +728,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'update-assignee-candidate-client-hiring',
             text: hiringQuery.updateDefaultAssignee,
-            values: {$assignedto:_body.assignedTo,$candidateid:_body.candidateId,$positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
+            values:{assignedto:_body.assignedTo,candidateid:_body.candidateId,positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
         }
     }
 
