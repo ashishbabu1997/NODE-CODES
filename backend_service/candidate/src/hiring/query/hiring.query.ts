@@ -13,6 +13,6 @@ export default {
     candidateCurrentStage:'select current_stage as "currentStage", assigned_to as "assignedTo" from candidate_position where candidate_id = $1 and position_id = $2',
     getPositionNameFromId:'select position_name as "positionName" from positions where position_id=$1',
     getCompanyNameFromId:'select company_name as "companyName" from company where company_id=$1',
-    insertClientHiringStep:'insert into candidate_client_hiring_step(candidate_hiring_step_name,candidate_id,position_id,assigned_to,status,step_start_date) values ($1,$2,$3,$4,$5,$6)',
+    insertClientHiringStep:'update candidate_client_hiring_step set candidate_hiring_step_name=$1,candidate_id=$2,position_id=$3,assigned_to=$4,status=$5,step_start_date=$6,assignee_comment=$7 where candidate_client_hiring_step_id=$8',
     deletePositionHiringStep : 'delete from position_hiring_step where position_hiring_step_id=$1;'
 }

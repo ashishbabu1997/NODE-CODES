@@ -681,7 +681,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'insert-candidatde-client-hiring',
             text: hiringQuery.insertClientHiringStep,
-            values:[_body.hiringStepName,_body.candidateId,_body.positionId,_body.assignedTo,true,currentTime()]
+            values:[_body.hiringStepName,_body.candidateId,_body.positionId,_body.assignedTo,true,currentTime(),_body.assigneeComment,_body.candidateClientHiringStepId]
         }
     }
 
