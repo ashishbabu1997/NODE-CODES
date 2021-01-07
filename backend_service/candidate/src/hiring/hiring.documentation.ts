@@ -207,6 +207,8 @@
 *               type: integer
 *             candidateName:
 *               type: string
+*             assignedTo:
+*               type: integer
 *             positionId:
 *               type: integer
 *             hiringStepName:
@@ -215,6 +217,7 @@
 *             - candidateClientHiringStepId
 *             - candidateId
 *             - positionId
+*             - assignedTo
 *     responses:
 *       200:
 *         description: Api success
