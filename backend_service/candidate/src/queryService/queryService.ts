@@ -732,7 +732,13 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
 
-    
+    export const deletePositionHiringStep = (_body) => {
+        return {
+            name: 'delete-client-hiring-step-position',
+            text: hiringQuery.deletePositionHiringStep,
+            values: [_body.positionHiringStepId],
+        }
+    }
     
 
     

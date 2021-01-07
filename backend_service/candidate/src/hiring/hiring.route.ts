@@ -15,4 +15,5 @@ router
 .put('/rejectCandidateHiring',jwtAuth, setData(),hiringController.rejectFromHiringProcess)
 .put('/addNewStageForCandidate',jwtAuth, setData(),hiringController.addNewStageForCandidate)
 .put('/updateDefaultAssignee',jwtAuth, setData(),hiringController.updateDefaultAssignee)
+.delete('/deletePositionHiringStep',jwtAuth, setData(),validate(hiringSchema.positionHiringStepIdSchema),hiringController.deletePositionHiringStep)
 export default router;
