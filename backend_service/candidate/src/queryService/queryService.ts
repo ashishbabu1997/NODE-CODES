@@ -665,7 +665,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'update-candidate-client-hiring-step-details',
             text: hiringQuery.updateHiringStepDetails,
-            values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,assignedTo:_body.assignedTo,candidateHiringStepComment:_body.candidateHiringStepComment,attachments:_body.attachments,stepLink:_body.stepLink,stepLinkText:_body.stepLinkText,currenttime:currentTime(),employeeid:_body.employeeId},
+            values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,assignedTo:_body.assignedTo,candidateHiringStepComment:_body.candidateHiringStepComment,attachments:_body.attachments,stepLink:_body.stepLink,stepLinkText:_body.stepLinkText,currenttime:currentTime(),employeeid:_body.employeeId,hiringAssesmentValue:_body.hiringAssesmentValue},
         }
     }
 

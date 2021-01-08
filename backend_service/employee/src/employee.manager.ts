@@ -500,8 +500,7 @@ export const getAdminDetails = (_body) => {
 //>>>>>>>>>>>>>>>>>>Get employees
 export const getAllEmployees = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());  
-           
+        const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database()
             var value;

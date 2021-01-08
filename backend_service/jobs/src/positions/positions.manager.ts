@@ -151,7 +151,7 @@ export const createCompanyPositions = async (_body) => {
                         const insertHiringStepsQuery = {
                             name: 'add-hiring-steps',
                             text: positionsQuery.insertHiringSteps,
-                            values: [positionId, element.hiringStepName,element.hiringStepType,order,_body.employeeId,Date.now()],
+                            values: [positionId, element.hiringStepName,element.hiringStepType,order,_body.employeeId,Date.now(),element.hiringAssesmentName,element.hiringAssesmentType],
                         }
                         hiringStepQueries.push(client.query(insertHiringStepsQuery));
                         order++;
@@ -339,7 +339,7 @@ export const fetchPositionDetails = (_body) => {
                                         const insertHiringStepsQuery = {
                                             name: 'add-hiring-steps',
                                             text: positionsQuery.insertHiringSteps,
-                                            values: [positionId, element.hiringStepName,element.hiringStepType,order,_body.employeeId,Date.now()],
+                                            values: [positionId, element.hiringStepName,element.hiringStepType,order,_body.employeeId,Date.now(),element.hiringAssesmentName,element.hiringAssesmentType],
                                         }
                                         hiringStepQueries.push(client.query(insertHiringStepsQuery));
                                         order++;
