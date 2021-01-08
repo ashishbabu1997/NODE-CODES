@@ -294,9 +294,11 @@ export const deletePositionHiringStep = (_body) => {
         (async () => {
             const client = await database()
             try {
+                    console.log("h",_body.positionHiringStepId)
                     await client.query(queryService.deletePositionHiringStep(_body));
                     let names = await client.query(queryService.getAssigneeName(_body));
                     let employeeName=names.rows[0].firstname
+                    
                     _body.auditLogComment=`${employeeName} has deleted the step ${_body.positionHiringStepName} for the  position ${_body.positionName}`
                     await client.query(queryService.insertAuditLogForHiring(_body));
                     resolve({ code: 200, message: "Deleted Hiring Step succesfully", data: {} });

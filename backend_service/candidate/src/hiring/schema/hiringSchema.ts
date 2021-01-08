@@ -74,7 +74,7 @@ export const candidateIdPositionIdSchema = Joi.object().keys({
 }).unknown(true);
 
 export const positionHiringStepIdSchema = Joi.object().keys({
-    candidateId: Joi.number().required().error(errors => {
+    positionHiringStepId: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
