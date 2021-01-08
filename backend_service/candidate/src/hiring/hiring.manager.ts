@@ -1,7 +1,10 @@
 import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
+import hiringQuery from './query/hiring.query';
 
 
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for listing all position hiring steps
 export const getPositionHiringSteps = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -23,6 +26,10 @@ export const getPositionHiringSteps = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for listing hiring steps of a single candidate
 export const getCandidateHiringSteps = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -45,6 +52,10 @@ export const getCandidateHiringSteps = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for listing all position hiring steps of a single candidate
 export const getAllCandidateHiringSteps = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -66,6 +77,10 @@ export const getAllCandidateHiringSteps = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for listing default hiring steps from database
 export const getDefaultHiringSteps = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -86,6 +101,9 @@ export const getDefaultHiringSteps = (_body) => {
 }
 
 
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for updating hiring step details for an applied candidate
 export const updateHiringStepDetails = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -112,6 +130,10 @@ export const updateHiringStepDetails = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction to move hiring stage of a candidate
 export const moveCandidateHiringStep = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -150,6 +172,10 @@ export const moveCandidateHiringStep = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for rejectiong any candidate from hiring process
 export const rejectFromHiringProcess = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -186,6 +212,10 @@ export const rejectFromHiringProcess = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction to add a new hiring stage 
 export const addNewStageForCandidate = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -219,6 +249,10 @@ export const addNewStageForCandidate = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for adding assignee to a candidate
 export const updateDefaultAssignee = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -235,7 +269,7 @@ export const updateDefaultAssignee = (_body) => {
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getAssigneeName(_body));
                     let assigneeName=names.rows[0].firstname
-                    _body.auditLogComment=`${assigneeName} (${companyName}) is the assignee for  the candidate ${_body.candidateName} who applied for the  position ${positionName}`
+                    _body.auditLogComment=`${assigneeName} (${companyName}) is the assignee for the  position ${positionName}`
                     await client.query(queryService.insertAuditLogForHiring(_body));
                     await client.query(queryService.updateDefaultAssigneeQuery(_body));
                     resolve({ code: 200, message: "Updated assignee succesfully", data: {} });
@@ -252,12 +286,21 @@ export const updateDefaultAssignee = (_body) => {
     })
 }
 
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for deleting a hiring step from processing
 export const deletePositionHiringStep = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
             const client = await database()
             try {
+                    console.log("h",_body.positionHiringStepId)
                     await client.query(queryService.deletePositionHiringStep(_body));
+                    let names = await client.query(queryService.getAssigneeName(_body));
+                    let employeeName=names.rows[0].firstname
+                    
+                    _body.auditLogComment=`${employeeName} has deleted the step ${_body.positionHiringStepName} for the  position ${_body.positionName}`
+                    await client.query(queryService.insertAuditLogForHiring(_body));
                     resolve({ code: 200, message: "Deleted Hiring Step succesfully", data: {} });
                 
             } catch (e) {
@@ -271,4 +314,41 @@ export const deletePositionHiringStep = (_body) => {
         })
     })
 }
+
+
+// >>>>>>> FUNC. >>>>>>>
+// />>>>>>>> FUnction for reordering steps from  the listed hiring steps
+export const reorderHiringSteps = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                let candidateHiringStepQueries = [];
+                if(![null,undefined,''].includes(_body.hiringSteps) && Array.isArray(_body.hiringSteps))
+                {
+                    let order = 1;
+                    _body.hiringSteps.forEach(element => {
+                        const insertHiringStepsQuery = {
+                            name: 'add-hiring-steps',
+                            text: hiringQuery.updateCandidateHiringStepOrder,
+                            values: [element.candidateHiringStepId,order,Date.now()],
+                        }
+                        candidateHiringStepQueries.push(client.query(insertHiringStepsQuery));
+                        order++;
+                    });   
+                }
+                await Promise.all(candidateHiringStepQueries);
+                await client.query('COMMIT')
+            } catch (e) {
+                console.log("Error raised from try : ",e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error raised from async : ",e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
 
