@@ -363,13 +363,10 @@
 *           properties:
 *             assignedTo:
 *               type: integer
-*             candidateId:
-*               type: integer
 *             positionId:
 *               type: integer
 *           required:
 *             - assignedTo
-*             - candidateId
 *             - positionId
 *     responses:
 *       200:
