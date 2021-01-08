@@ -668,3 +668,25 @@ export const fetchPositionDetails = (_body) => {
                         })
                     })
                 }
+
+                // >>>>>>> FUNC. >>>>>>> 
+                //>>>>>>>>>>>>>>>>>>Change read status of a position
+                export const updateAllocatedTo = (_body) => {
+                    const currentTime = Math.floor(Date.now() / 1000);
+                    
+                    return new Promise((resolve, reject) => {
+                        const CompanyQuery = {
+                            name: 'update-allocated-to',
+                            text: positionsQuery.updateAllocatedTo,
+                            values: [_body.allocatedTo,_body.positionId,currentTime,_body.employeeId],
+                        }
+                        database().query(CompanyQuery, (error, results) => {
+                            if (error) {
+                                console.log(error)
+                                reject({ code: 400, message: "Error in database connection.", data: {} });
+                                return;
+                            }
+                            resolve({ code: 200, message: "Updated allocated to of position", data: {} });
+                        })
+                    })
+                }
