@@ -189,6 +189,10 @@
 *                     type: string
 *                   hiringStepType:
 *                     type: integer
+*                   hiringAssesmentName:
+*                     type: string
+*                   hiringAssesmentType:
+*                     type: integer
 *                   hiringStepOrder:
 *                     type: integer
 *     responses:
@@ -399,6 +403,10 @@
 *                   hiringStepName:
 *                     type: string
 *                   hiringStepType:
+*                     type: integer
+*                   hiringAssesmentName:
+*                     type: string
+*                   hiringAssesmentType:
 *                     type: integer
 *                   hiringStepOrder:
 *                     type: integer

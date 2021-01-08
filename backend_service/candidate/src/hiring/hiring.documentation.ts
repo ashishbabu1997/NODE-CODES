@@ -153,6 +153,8 @@
 *               type: integer
 *             assignedTo:
 *               type: integer
+*             hiringAssesmentValue:
+*               type: integer
 *             candidateHiringStepComment:
 *               type: string
 *             attachments:
