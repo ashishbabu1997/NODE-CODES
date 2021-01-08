@@ -406,6 +406,11 @@
 *         schema:
 *         required:
 *           type: string
+*       - in: query
+*         name: positionName
+*         schema:
+*         required:
+*           type: string
 *     responses:
 *       200:
 *         description: Api success
