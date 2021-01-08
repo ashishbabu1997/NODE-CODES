@@ -601,7 +601,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'get-assignee-name',
             text: candidateQuery.getEmployeeName,
-            values:[_body.assignedTo]
+            values:[_body.employeeId]
         }
     }
     

@@ -269,7 +269,7 @@ export const updateDefaultAssignee = (_body) => {
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getAssigneeName(_body));
                     let assigneeName=names.rows[0].firstname
-                    _body.auditLogComment=`${assigneeName} (${companyName}) is the assignee for  the candidate ${_body.candidateName} who applied for the  position ${positionName}`
+                    _body.auditLogComment=`${assigneeName} (${companyName}) is the assignee for the  position ${positionName}`
                     await client.query(queryService.insertAuditLogForHiring(_body));
                     await client.query(queryService.updateDefaultAssigneeQuery(_body));
                     resolve({ code: 200, message: "Updated assignee succesfully", data: {} });
@@ -296,8 +296,8 @@ export const deletePositionHiringStep = (_body) => {
             try {
                     await client.query(queryService.deletePositionHiringStep(_body));
                     let names = await client.query(queryService.getAssigneeName(_body));
-                    let assigneeName=names.rows[0].firstname
-                    _body.auditLogComment=`${assigneeName} has deleted the step ${_body.positionHiringStepName} for the  position ${_body.positionName}`
+                    let employeeName=names.rows[0].firstname
+                    _body.auditLogComment=`${employeeName} has deleted the step ${_body.positionHiringStepName} for the  position ${_body.positionName}`
                     await client.query(queryService.insertAuditLogForHiring(_body));
                     resolve({ code: 200, message: "Deleted Hiring Step succesfully", data: {} });
                 

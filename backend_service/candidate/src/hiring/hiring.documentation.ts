@@ -367,13 +367,10 @@
 *               type: integer
 *             positionId:
 *               type: integer
-*             candidateName:
-*               type: string
 *           required:
 *             - assignedTo
 *             - candidateId
 *             - positionId
-*             - candidateName
 *     responses:
 *       200:
 *         description: Api success
