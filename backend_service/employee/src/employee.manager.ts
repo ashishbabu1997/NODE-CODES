@@ -510,7 +510,7 @@ export const getAllEmployees = (_body) => {
                 
                 if (_body.userRoleId==1)
                 {
-                    value=1
+                    value=_body.hirerCompanyId
                 }
                 else
                 {
