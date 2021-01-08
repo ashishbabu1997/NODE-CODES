@@ -397,17 +397,15 @@
 *       - application/json
 *     parameters:
 *       - in: query
+*         name: positionHiringStepId
 *         schema:
-*           type: object
-*           properties:
-*             positionHiringStepId:
-*               type: integer
-*             positionHiringStepName:
-*               type: string
-*             positionName:
-*               type: string
-*           required:
-*             - positionHiringStepId
+*         required:
+*           type: integer
+*       - in: query
+*         name: positionHiringStepName
+*         schema:
+*         required:
+*           type: string
 *     responses:
 *       200:
 *         description: Api success
