@@ -741,4 +741,10 @@ export const insertCandidatePublicationQuery = (_body) => {
     }
     
 
-    
+    export const updateMakeOfferValue = (_body) => {
+        return {
+            name: 'update-make-offer',
+            text: hiringQuery.updateMakeOffer,
+            values: {makeOffer:_body.hiringAssesmentValue,updatedOn:currentTime(),updatedBy:_body.employeeId,candidateId:_body.candidateId,positionId:_body.positionId},
+        }
+    }
