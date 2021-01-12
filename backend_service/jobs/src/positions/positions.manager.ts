@@ -76,7 +76,8 @@ export const getCompanyPositions = (_body) => {
         }
         database().query(query, (error, results) => {
             if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                console.error("err : ",error); 
+                reject({ code: 400, message: "Failed. Please try again.", data: error.message });
                 return;
             }
             var steps = results.rows
@@ -84,7 +85,7 @@ export const getCompanyPositions = (_body) => {
         })  
     }).catch(err=>{
         console.error("err : ",err); 
-        throw ({ code: 400, message: "Database error Please try again.", data: err.Error });
+        throw ({ code: 400, message: "Database error Please try again.", data: err.message });
     })
 }
 

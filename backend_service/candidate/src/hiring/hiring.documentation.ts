@@ -213,7 +213,7 @@
 *               type: integer
 *             positionId:
 *               type: integer
-*             hiringStepName:
+*             candidateHiringStepName:
 *               type: string
 *           required:
 *             - candidateClientHiringStepId
