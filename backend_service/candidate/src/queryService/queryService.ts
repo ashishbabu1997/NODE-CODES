@@ -604,6 +604,13 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.employeeId]
         }
     }
+    export const getHirerAssigneeName = (_body) => {
+        return {
+            name: 'get-hirer-assignee-name',
+            text: candidateQuery.getEmployeeName,
+            values:[_body.assignedTo]
+        }
+    }
     
     //---------------------------------------Hiring steps------------------------------------//
     export const insertAuditLogForHiring = (_body) => {
@@ -745,6 +752,6 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'update-make-offer',
             text: hiringQuery.updateMakeOffer,
-            values: {makeOffer:_body.hiringAssesmentValue,updatedOn:currentTime(),updatedBy:_body.employeeId,candidateId:_body.candidateId,positionId:_body.positionId},
+            values: {makeOffer:_body.hiringAssesmentValue,updatedOn:currentTime(),updatedBy:_body.employe,candidateId:_body.candidateId,positionId:_body.positionId},
         }
     }

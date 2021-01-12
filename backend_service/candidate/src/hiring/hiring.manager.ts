@@ -160,7 +160,7 @@ export const moveCandidateHiringStep = (_body) => {
                     var positionName=positions.rows[0].positionName
                     var companies=await client.query(queryService.getCompanyName(_body));
                     var companyName=companies.rows[0].companyName
-                    let names = await client.query(queryService.getAssigneeName(_body));
+                    let names = await client.query(queryService.getHirerAssigneeName(_body));
                     let assigneeName=names.rows[0].firstname
                     _body.auditLogComment=`${assigneeName} (${companyName}) has moved the candidate ${_body.candidateName} to ${_body.candidateHiringStepName} for the position ${positionName}`
                     await client.query(queryService.insertAuditLogForHiring(_body))
