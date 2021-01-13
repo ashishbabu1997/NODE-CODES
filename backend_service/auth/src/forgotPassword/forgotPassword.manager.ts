@@ -15,6 +15,7 @@ export const sendLink = (_body) => {
     (async () => {
       const client = await database().connect()
       try {
+          var link
           var lowerEmail=_body.email.toLowerCase()
           console.log(lowerEmail)
           const checkEMail = {
@@ -39,7 +40,14 @@ export const sendLink = (_body) => {
               }
             await client.query(insertTokenQuery); 
             // Sends the link with token attached at the end of the link.
-            var link=_body.host+"/passwordset/"+token
+            if (_body.type=='generic')
+            {
+              link=_body.host+"/passwordset/"+token
+
+            }
+            else{
+              link=_body.host+"/create-password/"+token
+            }
             const subject="ellow.io RESET PASSWORD LINK"
             let path = 'src/emailTemplates/forgotPasswordText.html';
             let replacements =  {
