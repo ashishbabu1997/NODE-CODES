@@ -53,7 +53,7 @@
 *       - Candidates
 *     name: List available candidates
 *     summary: list available candidates for applying against a position
-*     description: Filters <br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ]
+*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ] 
 *     consumes:
 *       - application/json
 *     security:
@@ -65,7 +65,7 @@
 *         name: sortBy
 *         schema:
 *           type: string
-*         enum: [candidateId,candidateFirstName,candidatelastName,email,phoneNumber,companyName,updatedOn]
+*         enum: [candidateId,candidateFirstName,candidatelastName,companyName,updatedOn]
 *       - in: query
 *         name: sortType
 *         schema:
@@ -92,6 +92,31 @@
 *                   type: array
 *                   items:
 *                     type: string
+*                 experience:
+*                   type: object
+*                   properties:
+*                     min:
+*                       type: integer
+*                     max:
+*                       type: integer
+*                 locations:
+*                   type: array
+*                   items:
+*                     type: string        
+*                 createdDate:
+*                   type: integer
+*                 availability:
+*                   type: integer
+*                 allocatedTo:
+*                   type: integer
+*                 positionStatus:
+*                   type: array
+*                   items:
+*                     type: string  
+*                 candidateStatus:
+*                   type: array
+*                   items:
+*                     type: string            
 *     responses:
 *       200:
 *         description: Api success

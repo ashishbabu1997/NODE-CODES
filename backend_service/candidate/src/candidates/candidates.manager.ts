@@ -116,9 +116,7 @@ export const listFreeCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.listFreeCandidatesFromView;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
-        body=_body.query, sort = '', searchKey = '%%';
-        
-        
+        body=_body.query, sort = '', searchKey = '%%';  
         
         // Sorting keys with values
         const orderBy = {
@@ -129,36 +127,71 @@ export const listFreeCandidatesDetails = (_body) => {
             "updatedOn" : 'chsv."updatedOn"'
         }
         
-        
-        // Search for filters in the body
-        console.log("filter : ",filter);
-        
+        // Search for filters in the body        
         if(filter)
-        {   
-            console.log("ifFilter");
+        {               
+            let resourcesType = filter.resourcesType,
+            skills = filter.skills,
+            experience = filter.experience,
+            locations = filter.locations,
+            createdDate = filter.createdDate,
+            availability = filter.availability,
+            allocatedTo = filter.allocatedTo,
+            positionStatus = filter.positionStatus,
+            candStatus = filter.candidateStatus
+            ;
             
-            let resourcesType = filter.resourcesType,skills = filter.skills;
-
             if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
             {  
-                console.log("resourcesType");
-
                 if(resourcesType.includes('Vetted Resources'))    
                 filterQuery=filterQuery+' AND chsv."candidateVetted" = 6'
-
+                
                 if(resourcesType.includes('Non-Vetted Resources'))    
                 filterQuery=filterQuery+' AND chsv."candidateVetted" != 6'
             }
             if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
             {
-                console.log("ifSkills");
-                
                 filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
                 queryValues =  Object.assign({skill:skills},queryValues)
-                console.log("filterQuery : ",filterQuery);
-                console.log("queryValues : ",queryValues);
-
-
+            }
+            if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)
+            {
+                if(experience.min >= 0 && experience.max >= 0)
+                {
+                    filterQuery=filterQuery+' AND chsv."workExperience" BETWEEN $experience_min and $experience_max '
+                    queryValues =  Object.assign({experience_min:experience.min,experience_max:experience.max},queryValues) 
+                }
+            }
+            if(![undefined,null,''].includes(locations) && Array.isArray(locations) && locations.length)
+            {
+                filterQuery=filterQuery+' AND chsv."residence" = any($locations) '
+                queryValues =  Object.assign({locations:locations},queryValues) 
+            }
+            if(![undefined,null,''].includes(createdDate) && createdDate > 0)
+            {
+                filterQuery=filterQuery+' AND chsv."createdOn" = $createddate '
+                queryValues =  Object.assign({createddate:createdDate},queryValues) 
+            }
+            
+            if(![undefined,null,''].includes(availability) && availability > 0)
+            {
+                filterQuery=filterQuery+' AND chsv."availabilityType" = $availability '
+                queryValues =  Object.assign({availability:availability},queryValues)
+            }
+            if(![undefined,null,''].includes(allocatedTo) && allocatedTo > 0)
+            {
+                filterQuery=filterQuery+' AND chsv."allocatedTo" = $allocatedto '
+                queryValues =  Object.assign({allocatedto:allocatedTo},queryValues)
+            }
+            if(![undefined,null,''].includes(positionStatus) && Array.isArray(positionStatus) && positionStatus.length)
+            {
+                filterQuery=filterQuery+' AND chsv."positionStatusName" = any($positionstatus) '
+                queryValues =  Object.assign({positionstatus:positionStatus},queryValues) 
+            }
+            if(![undefined,null,''].includes(candStatus) && Array.isArray(candStatus) && candStatus.length)
+            {
+                filterQuery=filterQuery+' AND chsv."stageStatusName" = any($candstatus) '
+                queryValues =  Object.assign({candstatus:candStatus},queryValues) 
             }
         }
         
@@ -176,8 +209,8 @@ export const listFreeCandidatesDetails = (_body) => {
             queryValues=Object.assign({companyid:body.companyId},queryValues)
         }
         else {
-             roleBasedQuery =  " where (chsv.\"candidateStatus\" = 3 or (chsv.\"candidateStatus\" = 4 and chsv.\"createdBy\" = $employeeid))" 
-             queryValues=Object.assign({employeeid:body.employeeId},queryValues)
+            roleBasedQuery =  " where (chsv.\"candidateStatus\" = 3 or (chsv.\"candidateStatus\" = 4 and chsv.\"createdBy\" = $employeeid))" 
+            queryValues=Object.assign({employeeid:body.employeeId},queryValues)
         }
         
         if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
