@@ -118,8 +118,6 @@ export const listFreeCandidatesDetails = (_body) => {
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
         body=_body.query, sort = '', searchKey = '%%';
         
-        
-        
         // Sorting keys with values
         const orderBy = {
             "candidateId": 'ca.candidate_id',
