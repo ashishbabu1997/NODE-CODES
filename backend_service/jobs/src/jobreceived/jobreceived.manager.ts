@@ -120,7 +120,7 @@ export const getJobReceivedByJobReceivedId = (_body) => {
 //>>>>>>>>>>>>>>>>>>Update job received status of a user company
 export const updateIsRejectForJobReceived = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
+        const currentTime = Math.floor(Date.now());
         const query = {
             name: 'update-JobReceived-reject',
             text: jobReceivedQuery.updateReject,
@@ -173,7 +173,7 @@ export const getProfileByCompanyId = (_body) => {
 //>>>>>>>>>>>>>>>>>>Save the candidate profile details
 export const saveCandidateProfile = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
+        const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database().connect()
             try {
@@ -302,7 +302,7 @@ export const submitCandidateProfile = (_body) => {
 //>>>>>>>>>>>>>>>>>>Update the skills of a candidate
 export const editSkills = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
+        const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database().connect()
             try {
