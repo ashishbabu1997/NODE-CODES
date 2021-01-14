@@ -64,7 +64,7 @@ export const listCandidatesDetails = (_body) => {
         }
         
         if (body.userRoleId != 1) {
-            adminApproveQuery = " AND cp.admin_approve_status = 1 AND ca.candidate_vetted = 6"
+            adminApproveQuery = " AND cp.admin_approve_status = 1"
         }
         
         if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
