@@ -48,11 +48,12 @@
 /**
 * @swagger
 * /candidates/listFreeCandidates:
-*   get:
+*   put:
 *     tags:
 *       - Candidates
 *     name: List available candidates
 *     summary: list available candidates for applying against a position
+*     description: Filters <br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ]
 *     consumes:
 *       - application/json
 *     security:
@@ -75,6 +76,22 @@
 *         name: filter
 *         schema:
 *           type: string
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             filter:
+*               type: object
+*               properties:
+*                 resourcesType:
+*                   type: array
+*                   items:
+*                     type: string
+*                 skills:
+*                   type: array
+*                   items:
+*                     type: string
 *     responses:
 *       200:
 *         description: Api success

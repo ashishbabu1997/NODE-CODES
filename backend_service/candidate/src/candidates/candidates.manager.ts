@@ -114,7 +114,7 @@ export const listCandidatesDetails = (_body) => {
 //>>>>>>>>>>>Listing all the free candidates from the candidates list.
 export const listFreeCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.listFreeCandidates;
+        var selectQuery = candidateQuery.listFreeCandidatesFromView;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
         body=_body.query, sort = '', searchKey = '%%';
         
@@ -122,45 +122,62 @@ export const listFreeCandidatesDetails = (_body) => {
         
         // Sorting keys with values
         const orderBy = {
-            "candidateId": 'ca.candidate_id',
-            "candidateFirstName": 'ca.candidate_first_name',
-            "candidatelastName": 'ca.candidate_last_name',
-            "email": 'ca.email_address',
-            "phoneNumber": 'ca.phone_number',
-            "companyName": 'c.company_name',
-            "updatedOn" : 'ca.updated_on'
+            "candidateId": 'chsv."candidateId"',
+            "candidateFirstName": 'chsv."candidateFirstName"',
+            "candidatelastName": 'chsv."candidateLastName"',
+            "companyName": 'chsv."companyName"',
+            "updatedOn" : 'chsv."updatedOn"'
         }
         
         
         // Search for filters in the body
+        console.log("filter : ",filter);
+        
         if(filter)
-        {            
-            if(filter.name)
-            {   
-                filterQuery=filterQuery+' AND (ca.candidate_first_name ILIKE $name OR ca.candidate_last_name ILIKE $name) '
-                queryValues = Object.assign({name:filter.candidateName})
+        {   
+            console.log("ifFilter");
+            
+            let resourcesType = filter.resourcesType,skills = filter.skills;
+
+            if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
+            {  
+                console.log("resourcesType");
+
+                if(resourcesType.includes('Vetted Resources'))    
+                filterQuery=filterQuery+' AND chsv."candidateVetted" = 6'
+
+                if(resourcesType.includes('Non-Vetted Resources'))    
+                filterQuery=filterQuery+' AND chsv."candidateVetted" != 6'
             }
-            if(filter.experience)
+            if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
             {
-                filterQuery=filterQuery+' AND ca.work_experience = $experience'
-                queryValues =  Object.assign({experience:filter.experience},queryValues)
+                console.log("ifSkills");
+                
+                filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
+                queryValues =  Object.assign({skill:skills},queryValues)
+                console.log("filterQuery : ",filterQuery);
+                console.log("queryValues : ",queryValues);
+
+
             }
         }
         
         if(![undefined,null,''].includes(body.filter))
         {
             searchKey='%' + body.filter + '%';
-            searchQuery = " AND (ca.candidate_first_name ILIKE $searchkey OR ca.candidate_last_name ILIKE $searchkey OR c.company_name ILIKE $searchkey) "
+            searchQuery = " AND (chsv.\"candidateFirstName\" ILIKE $searchkey OR chsv.\"candidateLastName\" ILIKE $searchkey OR chsv.\"companyName\" ILIKE $searchkey) "
             queryValues=Object.assign({searchkey:searchKey},queryValues)
         }
         
-        if (body.userRoleId != 1) {
-            roleBasedQuery = " AND c.company_id = $companyid"
+        console.log("userRoleId : ",_body.body.userRoleId);
+        
+        if (_body.body.userRoleId != 1) {
+            roleBasedQuery = " where chsv.\"companyId\" = $companyid"
             queryValues=Object.assign({companyid:body.companyId},queryValues)
         }
         else {
-            roleBasedQuery =  " AND (ca.candidate_status = 3 or (ca.candidate_status = 4 and ca.created_by= $employeeid))" 
-            queryValues=Object.assign({employeeid:body.employeeId},queryValues)
+             roleBasedQuery =  " where (chsv.\"candidateStatus\" = 3 or (chsv.\"candidateStatus\" = 4 and chsv.\"createdBy\" = $employeeid))" 
+             queryValues=Object.assign({employeeid:body.employeeId},queryValues)
         }
         
         if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
