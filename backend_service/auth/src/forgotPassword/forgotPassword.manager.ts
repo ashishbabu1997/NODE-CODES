@@ -43,7 +43,6 @@ export const sendLink = (_body) => {
             if (_body.type=='generic')
             {
               link=_body.host+"/passwordset/"+token
-
             }
             else{
               link=_body.host+"/create-password/"+token

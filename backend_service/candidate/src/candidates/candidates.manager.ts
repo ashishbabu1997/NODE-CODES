@@ -130,8 +130,7 @@ export const listFreeCandidatesDetails = (_body) => {
             "companyName": 'c.company_name',
             "updatedOn" : 'ca.updated_on'
         }
-        
-        
+          
         // Search for filters in the body
         if(filter)
         {            
