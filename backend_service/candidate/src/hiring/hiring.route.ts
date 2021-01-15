@@ -5,6 +5,7 @@ import setData from '../middlewares/setData';
 import * as hiringController from './hiring.controller';
 import * as hiringSchema from './schema/hiringSchema';
 const router = express.Router();
+
 router
 .get('/defaultHiringSteps',jwtAuth, setData(),hiringController.defaultHiringSteps)
 .get('/getPositionHiringSteps', jwtAuth, setData(),validate(hiringSchema.positionIdSchema),hiringController.getPositionHiringSteps)
