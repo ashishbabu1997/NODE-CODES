@@ -755,3 +755,10 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: {makeOffer:_body.hiringAssesmentValue,updatedOn:currentTime(),updatedBy:_body.employe,candidateId:_body.candidateId,positionId:_body.positionId},
         }
     }
+    export const updateAvailabilityOfCandidate = (_body) => {
+        return {
+            name: 'update-make-offer',
+            text: hiringQuery.updateCandidateAvailability,
+            values:[_body.candidateId,false]
+        }
+    }

@@ -117,15 +117,20 @@ export const updateHiringStepDetails = (_body) => {
                 {
                     var result=await client.query(queryService.updateHiringStepDetailsQuery(_body));
                     var candidateClientHiringStepName=result.rows[0].candidate_hiring_step_name
+                    _body.candidateId=result.rows[0].candidate_id
+                    _body.positionId=result.rows[0].position_id
+
                     if(candidateClientHiringStepName=='Negotiation/Close position')
                     {
-                        _body.candidateId=result.rows[0].candidate_id
-                        _body.positionId=result.rows[0].position_id
                         await client.query(queryService.updateMakeOfferValue(_body));
+                    }
+                    else if (candidateClientHiringStepName=="Make offer")
+                    {
+                        await client.query(queryService.updateAvailabilityOfCandidate(_body));
                     }
                     else
                     {
-                        console.log("Hiring step not in Negotiation/Close position")
+                        console.log("Hiring step is neither  Negotiation/Close position or Make Offer")
                     }
                     resolve({ code: 200, message: "Hiring step details updated successfully", data: {} });
                 }
