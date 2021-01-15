@@ -13,5 +13,10 @@ export default {
     deleteCandidateSkills : 'delete from candidate_skill WHERE candidate_id = $1 AND status = true AND skill_id <> ALL ($2)',
     addDefaultAssessmentTraits: 'insert into candidate_assesement (candidate_id, assesement_name, assesment_type, stage_name, created_on, updated_on, created_by, updated_by, stage_start_date) values ($candidateid, unnest(array(select r.assessment_name from review_steps r where status = true)), unnest(array(select r.review_type from review_steps r where status = true)), unnest(array(select r.stage_name from review_steps r where status = true)), $currenttime,$currenttime,$employeeid,$employeeid,$currenttime)',
     getPositionName:'SELECT position_name as "position" FROM positions WHERE position_id=$1',
-    updateCandidateStatus:'update candidate set candidate_status=3,updated_by=$2,updated_on=$3 where candidate_id=$1 returning candidate_first_name,candidate_last_name,company_id,job_received_id;'
+    checkEMail:'SELECT * from employee WHERE email like $1',
+    fetchCompanyName:'select company_name from company where company_id=$1',
+    updatePassword:'update employee set password=$1,status=$2,admin_approve_status=$3 where email like $4',
+    addCandidateEmployeeDetails:'insert into candidate_employee (employee_id,candidate_id,status,created_on,updated_on) values ($1,$2,$3,$4,$5)',
+    addEmployee:'insert into employee (firstname,lastname,company_id,email,telephone_number,created_on,updated_on,account_type,user_role_id) values ($1,$2,$3,$4,$5,$6,$6,4,4) returning employee_id',
+    updateCandidateStatus:'update candidate set candidate_status=3,updated_by=$2,updated_on=$3 where candidate_id=$1 returning candidate_first_name,candidate_last_name,company_id,job_received_id,email_address;'
 }

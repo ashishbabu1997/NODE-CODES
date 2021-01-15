@@ -6,6 +6,9 @@ import * as handlebars from 'handlebars'
 import config from '../config/config'
 import {readHTMLFile} from '../middlewares/htmlReader'
 import * as emailClient from '../emailService/emailService';
+import * as passwordGenerator from 'generate-password'
+import * as crypto from 'crypto';
+import { ImportsNotUsedAsValues } from 'typescript';
 
  // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Get all job received details of a company
@@ -178,40 +181,81 @@ export const saveCandidateProfile = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                let sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
-                let candidates = [_body.firstName, _body.lastName, sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
-                const saveCandidateQuery = {
-                    name: 'add-Profile',
-                    text: format(jobReceivedQuery.addProfile, [candidates]),
+                const checkEMailExistence = {
+                    name: 'check-mail',
+                    text: jobReceivedQuery.checkEMail,
+                    values: [_body.email],
                 }
-                var addCandidateResult = await client.query(saveCandidateQuery);
-                let candidateId = addCandidateResult.rows[0].candidate_id;
-                if (![null, undefined, ''].includes(_body.positionId)) {
-                    const addPositionQuery = {
-                        name: 'add-position',
-                        text: jobReceivedQuery.addCandidatePosition,
-                        values: [_body.positionId, candidateId, _body.jobReceivedId, _body.billingTypeId, _body.currencyTypeId, _body.employeeId, currentTime],
-                    }
-                    await client.query(addPositionQuery);
-                    
-                    const getJobStatusQuery = {
-                        name: 'get-Job-status',
-                        text: jobReceivedQuery.getJobStatus,
-                        values: [_body.positionId],
-                    }
-                    const response = await client.query(getJobStatusQuery);
-                    let jobStatus = response.rows[0].jobStatus;
-                    
-                    const updateCompanyJobStatusQuery = {
-                        name: 'update-company-job-status',
-                        text: jobReceivedQuery.updateCompanyJobStatus,
-                        values: [_body.jobReceivedId, jobStatus, sellerCompanyId, _body.employeeId, currentTime],
-                    }
-                    await client.query(updateCompanyJobStatusQuery);
-                }
-                
+                var results= await client.query(checkEMailExistence);
                 await client.query('COMMIT');
-                resolve({ code: 200, message: "Candidate profile added", data: {candidateId} });
+                if (results.rowCount==1)
+                {
+                    reject({ code: 400, message: "Candidate already registered", data: {} });
+
+                }
+                else
+                {
+                            let sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
+                            let candidates = [_body.firstName, _body.lastName, sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
+                            const saveCandidateQuery = {
+                                name: 'add-Profile',
+                                text: format(jobReceivedQuery.addProfile, [candidates]),
+                            }
+                            var addCandidateResult = await client.query(saveCandidateQuery);
+                            const getCompanyName = {
+                                name: 'add-company-name',
+                                text: jobReceivedQuery.fetchCompanyName,
+                                values: [sellerCompanyId],
+                            }
+                            var companyResults = await client.query(getCompanyName);
+                            var companyName=companyResults.rows[0].company_name
+                            if (_body.userRoleId==1 &&companyName=='Freelancer')
+                            {
+                                    const addEmployee = {
+                                        name: 'add-employee',
+                                        text: jobReceivedQuery.addEmployee,
+                                        values: [_body.firstName, _body.lastName,sellerCompanyId, _body.email, _body.phoneNumber, currentTime]   
+                                    }
+                                    var employeeResult= await client.query(addEmployee);
+                                    const addCandidateEmployee = {
+                                        name: 'add-candidate-employee',
+                                        text: jobReceivedQuery.addCandidateEmployeeDetails,
+                                        values:[employeeResult.rows[0].employee_id,addCandidateResult.rows[0].candidate_id,true,currentTime, currentTime]   
+                                    }
+                                    await client.query(addCandidateEmployee);
+                            }
+                            else
+                            {
+                                console.log("NOt a freelancer")
+                            }
+                            await client.query('COMMIT');
+                            let candidateId = addCandidateResult.rows[0].candidate_id;
+                            if (![null, undefined, ''].includes(_body.positionId)) {
+                                const addPositionQuery = {
+                                    name: 'add-position',
+                                    text: jobReceivedQuery.addCandidatePosition,
+                                    values: [_body.positionId, candidateId, _body.jobReceivedId, _body.billingTypeId, _body.currencyTypeId, _body.employeeId, currentTime],
+                                }
+                                await client.query(addPositionQuery);
+                                
+                                const getJobStatusQuery = {
+                                    name: 'get-Job-status',
+                                    text: jobReceivedQuery.getJobStatus,
+                                    values: [_body.positionId],
+                                }
+                                const response = await client.query(getJobStatusQuery);
+                                let jobStatus = response.rows[0].jobStatus;
+                                
+                                const updateCompanyJobStatusQuery = {
+                                    name: 'update-company-job-status',
+                                    text: jobReceivedQuery.updateCompanyJobStatus,
+                                    values: [_body.jobReceivedId, jobStatus, sellerCompanyId, _body.employeeId, currentTime],
+                                }
+                                await client.query(updateCompanyJobStatusQuery);
+                            }
+                            await client.query('COMMIT');
+                            resolve({ code: 200, message: "Candidate profile added", data: {candidateId} });
+                }
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
@@ -250,12 +294,47 @@ export const submitCandidateProfile = (_body) => {
                 }
                 await client.query(addDefaultTraits);
                 
-                await client.query('COMMIT');
                 let candidateFirstName=result.rows[0].candidate_first_name;
                 let candidateLastName=result.rows[0].candidate_last_name;
+                let emailAddress=result.rows[0].email_address;
                 let companyId = result.rows[0].company_id;
                 let jobReceivedId = result.rows[0].job_received_id;
                 let positionName = _body.positionName;
+                const getCompanyName = {
+                    name: 'add-company-name',
+                    text: jobReceivedQuery.fetchCompanyName,
+                    values: [companyId],
+                }
+                var companyResults = await client.query(getCompanyName);
+                var companyName=companyResults.rows[0].company_name
+                if (_body.userRoleId==1 && companyName=='Freelancer')
+                {
+                        const password = passwordGenerator.generate({
+                            length: 10,
+                            numbers: true
+                        });
+                        var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                        const updatePasswordToEmployee = {
+                            name: 'update-password',
+                            text: jobReceivedQuery.updatePassword,
+                            values: [hashedPassword,true,1,emailAddress],
+                        }
+                        await client.query(updatePasswordToEmployee);
+                        var userSubject="ellow.io Freelancer Login Credentials"
+                        let userPath = 'src/emailTemplates/candidateAdditionText.html';
+                        var userCredentialReplacements =  {
+                            name:candidateFirstName,
+                            user:emailAddress,
+                            password:password    
+                        };
+                        emailClient.emailManager(emailAddress,userSubject,userPath,userCredentialReplacements);
+                    
+                }
+                else
+                {
+                    console.log("Submitted profile is not a freelancer")
+                }
+                await client.query('COMMIT');
                 var subject='New Candidate Notification'
                 if(![null,undefined,""].includes(_body.positionId))
                 {
