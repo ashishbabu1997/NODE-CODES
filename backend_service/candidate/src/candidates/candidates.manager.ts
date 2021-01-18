@@ -2178,3 +2178,27 @@ export const listHirerResources = (_body) => {
         })
     })
 }
+
+    // >>>>>>> FUNC. >>>>>>>
+
+    // Change availability of a candidate    
+    export const changeAvailability = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database().connect()
+                try {
+                    await client.query(queryService.changeAvailabilityOfCandidate(_body));
+                    await client.query('COMMIT')
+                    resolve({ code: 200, message: "Availability changed successfully", data:{}});
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            })
+        })
+    }

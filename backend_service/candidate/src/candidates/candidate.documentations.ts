@@ -215,6 +215,48 @@
 *         description: Server down
 */
 
+
+/**
+* @swagger
+* /candidates/updateCandidateAvailability:
+*   post:
+*     tags:
+*       - Candidates
+*     name: update Candidate Availability
+*     summary: update availability value of a candidate
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer            
+*             availability:
+*               type: boolean
+*           required:
+*             - candidateId
+*             - availability
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
 /**
 * @swagger
 * /candidates/listForAddFromListCandidates:

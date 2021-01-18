@@ -49,6 +49,9 @@ router
     .put('/updateCandidateEllowStage',jwtAuth, setData(),candidateController.changeEllowRecruitmentStage)
     .put('/rejectCandidateEllowStage',jwtAuth, setData(),candidateController.rejectFromCandidateEllowRecruitment)
     .get('/getAllAuditLogs',candidateController.getAuditLogs)
-    .put('/listFreeCandidatesOfHirer', jwtAuth, setData(), candidateController.listResourcesOfHirer)
+    .post('/listFreeCandidatesOfHirer', jwtAuth, setData(), candidateController.listResourcesOfHirer)
+    .put('/updateCandidateAvailability', jwtAuth, setData(), candidateController.changeCandidateAvailability)
+
+    
 
     export default router;

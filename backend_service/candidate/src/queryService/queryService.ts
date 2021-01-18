@@ -381,6 +381,14 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateId],
         }
     }
+
+    export const changeAvailabilityOfCandidate =(_body)=> {
+        return {
+            name: 'update-availability',
+            text: candidateQuery.updateCandidateAvailability,
+            values: [_body.candidateId,_body.availability],
+        }
+    }
     
     
     // *******************************************************************************************************************************//
