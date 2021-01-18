@@ -279,3 +279,8 @@ export const getAuditLogs = (req, res) => {
     candidateManager.getAllAuditLogs(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
+export const listResourcesOfHirer = (req, res) => {
+    const body = req;
+    candidateManager.listHirerResources(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}

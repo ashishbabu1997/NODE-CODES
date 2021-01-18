@@ -14,7 +14,7 @@ const router = express.Router();
 router
     .get('/listCandidates', jwtAuth, setData(), candidateController.listCandidates)
     .put('/listFreeCandidates', jwtAuth, setData(), candidateController.listFreeCandidates)
-    .get('/listForAddFromListCandidates', jwtAuth, setData(), candidateController.listForAddFromListCandidates)
+    .put('/listForAddFromListCandidates', jwtAuth, setData(), candidateController.listForAddFromListCandidates)
     .post('/candidateApproveReject', jwtAuth, setData(), validate(approveRejectSchema), candidateController.approveRejectCandidates)
     .post('/requestForInterview', jwtAuth, setData(), validate(interviewRequestSchema), candidateController.interviewRequest)
     .post('/review', jwtAuth, setData(), candidateController.candidateReview)
@@ -49,4 +49,6 @@ router
     .put('/updateCandidateEllowStage',jwtAuth, setData(),candidateController.changeEllowRecruitmentStage)
     .put('/rejectCandidateEllowStage',jwtAuth, setData(),candidateController.rejectFromCandidateEllowRecruitment)
     .get('/getAllAuditLogs',candidateController.getAuditLogs)
+    .put('/listFreeCandidatesOfHirer', jwtAuth, setData(), candidateController.listResourcesOfHirer)
+
     export default router;
