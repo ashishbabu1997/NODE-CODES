@@ -2083,7 +2083,7 @@ export const createPdfFromHtml = (_body) => {
 //>>>>>>>>>>>Listing all the free candidates from the candidates list of hirer.
 export const listHirerResources = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.listFreeCandidatesFromView;
+        var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView;
         var queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
         body=_body.query, sort = '', searchKey = '%%';  
         
@@ -2193,8 +2193,7 @@ export const listHirerResources = (_body) => {
             try {
                 await client.query('BEGIN');
                 queryText = selectQuery+filterQuery+searchQuery+sort;
-                queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId,hirerCompanyId:_body.companyId},queryValues)
-                
+                queryValues =  Object.assign({hirercompanyid:_body.body.companyId},queryValues)
                 const listCandidatesOfHirer = {
                     name: 'get-free-candidates-of-hirer',
                     text: queryText,
@@ -2215,3 +2214,27 @@ export const listHirerResources = (_body) => {
         })
     })
 }
+
+    // >>>>>>> FUNC. >>>>>>>
+
+    // Change availability of a candidate    
+    export const changeAvailability = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database().connect()
+                try {
+                    await client.query(queryService.changeAvailabilityOfCandidate(_body));
+                    await client.query('COMMIT')
+                    resolve({ code: 200, message: "Availability changed successfully", data:{}});
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            })
+        })
+    }
