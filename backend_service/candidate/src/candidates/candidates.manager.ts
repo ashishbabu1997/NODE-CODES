@@ -9,6 +9,7 @@ import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
 import * as htmlToPdf from "html-pdf-node";
 import * as nodeCache from 'node-cache';
+import * as utils from '../utils/utils';
 const myCache = new nodeCache();
 
 // >>>>>>> FUNC. >>>>>>>
@@ -143,7 +144,7 @@ export const listFreeCandidatesDetails = (_body) => {
             
             if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
             {  
-                if(resourcesType.includes('Vetted Resources'))    
+                if(resourcesType.includes('Vetted Resources'))
                 filterQuery=filterQuery+' AND chsv."candidateVetted" = 6'
                 
                 if(resourcesType.includes('Non-Vetted Resources'))    
@@ -152,7 +153,7 @@ export const listFreeCandidatesDetails = (_body) => {
             if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
             {
                 filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
-                queryValues =  Object.assign({skill:skills},queryValues)
+                queryValues =  Object.assign({skill:utils.objectToArray(skills,'skillName')},queryValues)
             }
             if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)
             {
