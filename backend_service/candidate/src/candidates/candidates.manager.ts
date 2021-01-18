@@ -118,7 +118,7 @@ export const listFreeCandidatesDetails = (_body) => {
         var selectQuery = candidateQuery.listFreeCandidatesFromView;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
         body=_body.query, reqBody = _body.body,sort = '', searchKey = '%%';  
-        
+
         // Sorting keys with values
         const orderBy = {
             "candidateId": 'chsv."candidateId"',
@@ -209,21 +209,19 @@ export const listFreeCandidatesDetails = (_body) => {
             }
         }
         
-        if(![undefined,null,''].includes(body.filter))
-        {
-            searchKey='%' + body.filter + '%';
-            searchQuery = " AND (chsv.\"candidateFirstName\" ILIKE $searchkey OR chsv.\"candidateLastName\" ILIKE $searchkey OR chsv.\"companyName\" ILIKE $searchkey) "
+        if(![undefined,null,''].includes(body.searchKey))
+        {            
+            searchKey='%' + body.searchKey + '%';
+            searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
             queryValues=Object.assign({searchkey:searchKey},queryValues)
         }
-        
-        console.log("userRoleId : ",_body.body.userRoleId);
-        
+                
         if (_body.body.userRoleId != 1) {
-            roleBasedQuery = " where chsv.\"companyId\" = $companyid"
+            roleBasedQuery = ' where chsv."companyId" = $companyid'
             queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
         }
         else {
-            roleBasedQuery =  " where (chsv.\"candidateStatus\" = 3 or (chsv.\"candidateStatus\" = 4 and chsv.\"createdBy\" = $employeeid))" 
+            roleBasedQuery =  ' where (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid))' 
             queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
         }
         
@@ -354,20 +352,20 @@ export const listAddFromListCandidates = (_body) => {
             }
         }
         
-        if(![undefined,null,''].includes(body.filter))
+        if(![undefined,null,''].includes(body.searchKey))
         {
-            searchKey='%' + body.filter + '%';
-            searchQuery = " AND (chsv.\"candidateFirstName\" ILIKE $searchkey OR chsv.\"candidateLastName\" ILIKE $searchkey OR chsv.\"companyName\" ILIKE $searchkey) "
+            searchKey='%' + body.searchKey + '%';
+            searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
             queryValues=Object.assign({searchkey:searchKey},queryValues)
         }
                 
         if (reqBody.userRoleId != 1) {
-            roleBasedQuery = " where chsv.\"companyId\" = $companyid"
+            roleBasedQuery = ' AND chsv."companyId" = $companyid'
             console.log(body.companyId)
             queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
         }
         else {
-            roleBasedQuery =  " where (chsv.\"candidateStatus\" = 3 or (chsv.\"candidateStatus\" = 4 and chsv.\"createdBy\" = $employeeid))" 
+            roleBasedQuery =  ' AND (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid))'
             queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
         }
         
@@ -380,7 +378,7 @@ export const listAddFromListCandidates = (_body) => {
             try {
                 await client.query('BEGIN');
                 queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+sort;
-                queryValues = [body.positionId]
+                queryValues =Object.assign({positionid:body.positionId},queryValues)
                 const listCandidates = {
                     name: 'get-addfromlist-candidates',
                     text: queryText,
@@ -2120,10 +2118,10 @@ export const listHirerResources = (_body) => {
             }
         }
         
-        if(![undefined,null,''].includes(body.filter))
+        if(![undefined,null,''].includes(body.searchKey))
         {
-            searchKey='%' + body.filter + '%';
-            searchQuery = " AND (chsv.\"candidateFirstName\" ILIKE $searchkey OR chsv.\"candidateLastName\" ILIKE $searchkey OR chsv.\"companyName\" ILIKE $searchkey) "
+            searchKey='%' + body.searchKey + '%';
+            searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
             queryValues=Object.assign({searchkey:searchKey},queryValues)
         }
         
