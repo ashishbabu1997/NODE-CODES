@@ -765,7 +765,7 @@ export const insertCandidatePublicationQuery = (_body) => {
     }
     export const updateAvailabilityOfCandidate = (_body) => {
         return {
-            name: 'update-make-offer',
+            name: 'update-candidate-availability',
             text: hiringQuery.updateCandidateAvailability,
             values:[_body.candidateId,false]
         }
