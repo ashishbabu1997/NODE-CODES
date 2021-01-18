@@ -99,11 +99,22 @@
 *                       type: integer
 *                     max:
 *                       type: integer
+*                 cost:
+*                   type: object
+*                   properties:
+*                     min:
+*                       type: integer
+*                     max:
+*                       type: integer
 *                 locations:
 *                   type: array
 *                   items:
 *                     type: string        
 *                 createdDate:
+*                   type: integer
+*                 billingType:
+*                   type: integer
+*                 currencyType:
 *                   type: integer
 *                 availability:
 *                   type: integer

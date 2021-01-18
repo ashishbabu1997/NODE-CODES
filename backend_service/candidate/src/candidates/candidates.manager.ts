@@ -139,7 +139,10 @@ export const listFreeCandidatesDetails = (_body) => {
             availability = filter.availability,
             allocatedTo = filter.allocatedTo,
             positionStatus = filter.positionStatus,
-            candStatus = filter.candidateStatus
+            candStatus = filter.candidateStatus,
+            cost = filter.cost,
+            billingType = filter.billingType,
+            currencyType = filter.currencyType
             ;
             
             if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
@@ -155,6 +158,16 @@ export const listFreeCandidatesDetails = (_body) => {
                 filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
                 queryValues =  Object.assign({skill:utils.objectToArray(skills,'skillName')},queryValues)
             }
+
+            if(![undefined,null,''].includes(cost) && Object.keys(cost).length != 0)
+            {
+                if(cost.min >= 0 && cost.max >= 0 && ![undefined,null,''].includes(currencyType) && ![undefined,null,''].includes(billingType))
+                {
+                    filterQuery=filterQuery+' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtype AND chsv."rate" BETWEEN $cost_min and $cost_max '
+                    queryValues =  Object.assign({billingtype:billingType,currencytype:currencyType,cost_min:cost.min,cost_max:cost.max},queryValues) 
+                }
+            }
+
             if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)
             {
                 if(experience.min >= 0 && experience.max >= 0)
@@ -302,7 +315,10 @@ export const listAddFromListCandidates = (_body) => {
             availability = filter.availability,
             allocatedTo = filter.allocatedTo,
             positionStatus = filter.positionStatus,
-            candStatus = filter.candidateStatus
+            candStatus = filter.candidateStatus,
+            cost = filter.cost,
+            billingType = filter.billingType,
+            currencyType = filter.currencyType
             ;
             
             if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
@@ -316,7 +332,15 @@ export const listAddFromListCandidates = (_body) => {
             if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
             {
                 filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
-                queryValues =  Object.assign({skill:skills},queryValues)
+                queryValues =  Object.assign({skill:utils.objectToArray(skills,'skillName')},queryValues)
+            }
+            if(![undefined,null,''].includes(cost) && Object.keys(cost).length != 0)
+            {
+                if(cost.min >= 0 && cost.max >= 0 && ![undefined,null,''].includes(currencyType) && ![undefined,null,''].includes(billingType))
+                {
+                    filterQuery=filterQuery+' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtype AND chsv."rate" BETWEEN $cost_min and $cost_max '
+                    queryValues =  Object.assign({billingtype:billingType,currencytype:currencyType,cost_min:cost.min,cost_max:cost.max},queryValues) 
+                }
             }
             if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)
             {
@@ -2083,7 +2107,10 @@ export const listHirerResources = (_body) => {
             availability = filter.availability,
             allocatedTo = filter.allocatedTo,
             positionStatus = filter.positionStatus,
-            candStatus = filter.candidateStatus
+            candStatus = filter.candidateStatus,
+            cost = filter.cost,
+            currencyType = filter.currencyType,
+            billingType = filter.billingType
             ;
             
             if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
@@ -2097,7 +2124,16 @@ export const listHirerResources = (_body) => {
             if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
             {
                 filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
-                queryValues =  Object.assign({skill:skills},queryValues)
+                queryValues =  Object.assign({skill:utils.objectToArray(skills,'skillName')},queryValues)
+            }
+
+            if(![undefined,null,''].includes(cost) && Object.keys(cost).length != 0)
+            {
+                if(cost.min >= 0 && cost.max >= 0 && ![undefined,null,''].includes(currencyType) && ![undefined,null,''].includes(billingType))
+                {
+                    filterQuery=filterQuery+' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtype AND chsv."rate" BETWEEN $cost_min and $cost_max '
+                    queryValues =  Object.assign({billingtype:billingType,currencytype:currencyType,cost_min:cost.min,cost_max:cost.max},queryValues) 
+                }
             }
             if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)
             {
