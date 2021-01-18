@@ -2157,8 +2157,7 @@ export const listHirerResources = (_body) => {
             try {
                 await client.query('BEGIN');
                 queryText = selectQuery+filterQuery+searchQuery+sort;
-                queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId,hirerCompanyId:body.companyId},queryValues)
-                
+                queryValues =  Object.assign({hirercompanyid:_body.body.companyId},queryValues)
                 const listCandidatesOfHirer = {
                     name: 'get-free-candidates-of-hirer',
                     text: queryText,
