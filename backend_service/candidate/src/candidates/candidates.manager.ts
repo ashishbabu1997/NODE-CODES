@@ -2059,7 +2059,7 @@ export const createPdfFromHtml = (_body) => {
 //>>>>>>>>>>>Listing all the free candidates from the candidates list of hirer.
 export const listHirerResources = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.listFreeCandidatesFromView;
+        var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView;
         var queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
         body=_body.query, sort = '', searchKey = '%%';  
         
@@ -2157,7 +2157,7 @@ export const listHirerResources = (_body) => {
             try {
                 await client.query('BEGIN');
                 queryText = selectQuery+filterQuery+searchQuery+sort;
-                queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId,hirerCompanyId:_body.companyId},queryValues)
+                queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId,hirerCompanyId:body.companyId},queryValues)
                 
                 const listCandidatesOfHirer = {
                     name: 'get-free-candidates-of-hirer',
