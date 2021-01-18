@@ -14,7 +14,7 @@ const router = express.Router();
 router
     .get('/listCandidates', jwtAuth, setData(), candidateController.listCandidates)
     .post('/listFreeCandidates', jwtAuth, setData(), candidateController.listFreeCandidates)
-    .put('/listForAddFromListCandidates', jwtAuth, setData(), candidateController.listForAddFromListCandidates)
+    .post('/listForAddFromListCandidates', jwtAuth, setData(), candidateController.listForAddFromListCandidates)
     .post('/candidateApproveReject', jwtAuth, setData(), validate(approveRejectSchema), candidateController.approveRejectCandidates)
     .post('/requestForInterview', jwtAuth, setData(), validate(interviewRequestSchema), candidateController.interviewRequest)
     .post('/review', jwtAuth, setData(), candidateController.candidateReview)
