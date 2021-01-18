@@ -50,7 +50,7 @@ router
     .put('/rejectCandidateEllowStage',jwtAuth, setData(),candidateController.rejectFromCandidateEllowRecruitment)
     .get('/getAllAuditLogs',candidateController.getAuditLogs)
     .post('/listFreeCandidatesOfHirer', jwtAuth, setData(), candidateController.listResourcesOfHirer)
-    .put('/updateCandidateAvailability', jwtAuth, setData(), candidateController.changeCandidateAvailability)
+    .post('/updateCandidateAvailability', jwtAuth, setData(), candidateController.changeCandidateAvailability)
 
     
 
