@@ -117,7 +117,7 @@ export const listFreeCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.listFreeCandidatesFromView;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
-        body=_body.query, sort = '', searchKey = '%%';  
+        body=_body.query, reqBody = _body.body,sort = '', searchKey = '%%';  
         
         // Sorting keys with values
         const orderBy = {
@@ -220,11 +220,11 @@ export const listFreeCandidatesDetails = (_body) => {
         
         if (_body.body.userRoleId != 1) {
             roleBasedQuery = " where chsv.\"companyId\" = $companyid"
-            queryValues=Object.assign({companyid:body.companyId},queryValues)
+            queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
         }
         else {
             roleBasedQuery =  " where (chsv.\"candidateStatus\" = 3 or (chsv.\"candidateStatus\" = 4 and chsv.\"createdBy\" = $employeeid))" 
-            queryValues=Object.assign({employeeid:body.employeeId},queryValues)
+            queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
         }
         
         if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
@@ -265,37 +265,8 @@ export const listAddFromListCandidates = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.getCandidateForAddFromListViews;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
-        body=_body.query, sort = '', searchKey = '%%';
-        
-        
-        
-        // // Sorting keys with values
-        // const orderBy = {
-        //     "candidateId": 'ca.candidate_id',
-        //     "candidateFirstName": 'ca.candidate_first_name',
-        //     "candidatelastName": 'ca.candidate_last_name',
-        //     "email": 'ca.email_address',
-        //     "phoneNumber": 'ca.phone_number',
-        //     "companyName": 'c.company_name',
-        //     "updatedOn" : 'ca.updated_on'
-        // }
-        
-        
-        // // Search for filters in the body
-        // if(filter)
-        // {            
-        //     if(filter.name)
-        //     {   
-        //         filterQuery=filterQuery+' AND (ca.candidate_first_name ILIKE $name OR ca.candidate_last_name ILIKE $name) '
-        //         queryValues = Object.assign({name:filter.candidateName})
-        //     }
-        //     if(filter.experience)
-        //     {
-        //         filterQuery=filterQuery+' AND ca.work_experience = $experience'
-        //         queryValues =  Object.assign({experience:filter.experience},queryValues)
-        //     }
-        // }
-        // Sorting keys with values
+        body=_body.query,reqBody=_body.body, sort = '', searchKey = '%%';
+
         const orderBy = {
             "candidateId": 'chsv."candidateId"',
             "candidateFirstName": 'chsv."candidateFirstName"',
@@ -389,47 +360,20 @@ export const listAddFromListCandidates = (_body) => {
             searchQuery = " AND (chsv.\"candidateFirstName\" ILIKE $searchkey OR chsv.\"candidateLastName\" ILIKE $searchkey OR chsv.\"companyName\" ILIKE $searchkey) "
             queryValues=Object.assign({searchkey:searchKey},queryValues)
         }
-        
-        console.log("userRoleId : ",_body.body.userRoleId);
-        
-        // if (_body.body.userRoleId != 1) {
-        //     roleBasedQuery = " where chsv.\"companyId\" = $companyid"
-        //     console.log(body.companyId)
-        //     queryValues=Object.assign({companyid:body.companyId},queryValues)
-        // }
-        // else {
-        //     roleBasedQuery =  " where (chsv.\"candidateStatus\" = 3 or (chsv.\"candidateStatus\" = 4 and chsv.\"createdBy\" = $employeeid))" 
-        //     queryValues=Object.assign({employeeid:body.employeeId},queryValues)
-        // }
+                
+        if (reqBody.userRoleId != 1) {
+            roleBasedQuery = " where chsv.\"companyId\" = $companyid"
+            console.log(body.companyId)
+            queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
+        }
+        else {
+            roleBasedQuery =  " where (chsv.\"candidateStatus\" = 3 or (chsv.\"candidateStatus\" = 4 and chsv.\"createdBy\" = $employeeid))" 
+            queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
+        }
         
         if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
             sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;                
         }
-
-
-
-// hhhh
-
-        // if(![undefined,null,''].includes(body.filter))
-        // {
-        //     searchKey='%' + body.filter + '%';
-        //     searchQuery = " AND (ca.candidate_first_name ILIKE $searchkey OR ca.candidate_last_name ILIKE $searchkey OR c.company_name ILIKE $searchkey) "
-        //     queryValues=Object.assign({searchkey:searchKey},queryValues)
-            
-        // }
-        
-        // if (body.userRoleId != 1) {
-        //     roleBasedQuery = " AND c.company_id = $companyid"
-        //     queryValues=Object.assign({companyid:body.companyId},queryValues)
-        // }
-        // else {
-        //     roleBasedQuery =  " AND (ca.candidate_status = 3 or (ca.candidate_status = 4 and ca.created_by= $employeeid))" 
-        //     queryValues=Object.assign({employeeid:body.employeeId},queryValues)
-        // }
-        
-        // if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-        //     sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;                
-        // }
         
         (async () => {
             const client = await database()

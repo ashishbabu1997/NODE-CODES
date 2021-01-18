@@ -195,11 +195,22 @@
 *                       type: integer
 *                     max:
 *                       type: integer
+*                 cost:
+*                   type: object
+*                   properties:
+*                     min:
+*                       type: integer
+*                     max:
+*                       type: integer
 *                 locations:
 *                   type: array
 *                   items:
 *                     type: string        
 *                 createdDate:
+*                   type: integer
+*                 billingType:
+*                   type: integer
+*                 currencyType:
 *                   type: integer
 *                 availability:
 *                   type: integer
@@ -212,7 +223,7 @@
 *                 candidateStatus:
 *                   type: array
 *                   items:
-*                     type: string            
+*                     type: string                
 *     responses:
 *       200:
 *         description: Api success
@@ -303,6 +314,58 @@
 *         name: filter
 *         schema:
 *           type: string
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             filter:
+*               type: object
+*               properties:
+*                 resourcesType:
+*                   type: array
+*                   items:
+*                     type: string
+*                 skills:
+*                   type: array
+*                   items:
+*                     type: string
+*                 experience:
+*                   type: object
+*                   properties:
+*                     min:
+*                       type: integer
+*                     max:
+*                       type: integer
+*                 cost:
+*                   type: object
+*                   properties:
+*                     min:
+*                       type: integer
+*                     max:
+*                       type: integer
+*                 locations:
+*                   type: array
+*                   items:
+*                     type: string        
+*                 createdDate:
+*                   type: integer
+*                 billingType:
+*                   type: integer
+*                 currencyType:
+*                   type: integer
+*                 availability:
+*                   type: integer
+*                 allocatedTo:
+*                   type: integer
+*                 positionStatus:
+*                   type: array
+*                   items:
+*                     type: string  
+*                 candidateStatus:
+*                   type: array
+*                   items:
+*                     type: string        
 *     responses:
 *       200:
 *         description: Api success
