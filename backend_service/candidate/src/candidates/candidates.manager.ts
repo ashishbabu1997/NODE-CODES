@@ -117,104 +117,17 @@ export const listFreeCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.listFreeCandidatesFromView;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
-        body=_body.query, reqBody = _body.body,sort = '', searchKey = '%%';  
-
-        // Sorting keys with values
-        const orderBy = {
-            "candidateId": 'chsv."candidateId"',
-            "candidateFirstName": 'chsv."candidateFirstName"',
-            "candidatelastName": 'chsv."candidateLastName"',
-            "companyName": 'chsv."companyName"',
-            "updatedOn" : 'chsv."updatedOn"'
-        }
-        
+        body=_body.query, reqBody = _body.body;  
+     
         // Search for filters in the body        
-        if(filter)
-        {               
-            let resourcesType = filter.resourcesType,
-            skills = filter.skills,
-            experience = filter.experience,
-            locations = filter.locations,
-            createdDate = filter.createdDate,
-            availability = filter.availability,
-            allocatedTo = filter.allocatedTo,
-            positionStatus = filter.positionStatus,
-            candStatus = filter.candidateStatus,
-            cost = filter.cost,
-            billingType = filter.billingType,
-            currencyType = filter.currencyType
-            ;
-            
-            if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
-            {  
-                if(resourcesType.includes('Vetted Resources'))
-                filterQuery=filterQuery+' AND chsv."candidateVetted" = 6'
-                
-                if(resourcesType.includes('Non-Vetted Resources'))    
-                filterQuery=filterQuery+' AND chsv."candidateVetted" != 6'
-            }
-            if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
-            {
-                filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
-                queryValues =  Object.assign({skill:utils.objectToArray(skills,'skillName')},queryValues)
-            }
-
-            if(![undefined,null,''].includes(cost) && Object.keys(cost).length != 0)
-            {
-                if(cost.min >= 0 && cost.max >= 0 && ![undefined,null,''].includes(currencyType) && ![undefined,null,''].includes(billingType))
-                {
-                    filterQuery=filterQuery+' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtype AND chsv."rate" BETWEEN $cost_min and $cost_max '
-                    queryValues =  Object.assign({billingtype:billingType,currencytype:currencyType,cost_min:cost.min,cost_max:cost.max},queryValues) 
-                }
-            }
-
-            if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)
-            {
-                if(experience.min >= 0 && experience.max >= 0)
-                {
-                    filterQuery=filterQuery+' AND chsv."workExperience" BETWEEN $experience_min and $experience_max '
-                    queryValues =  Object.assign({experience_min:experience.min,experience_max:experience.max},queryValues) 
-                }
-            }
-            if(![undefined,null,''].includes(locations) && Array.isArray(locations) && locations.length)
-            {
-                filterQuery=filterQuery+' AND chsv."residence" = any($locations) '
-                queryValues =  Object.assign({locations:locations},queryValues) 
-            }
-            if(![undefined,null,''].includes(createdDate) && createdDate > 0)
-            {
-                filterQuery=filterQuery+' AND chsv."createdOn" = $createddate '
-                queryValues =  Object.assign({createddate:createdDate},queryValues) 
-            }
-            
-            if(![undefined,null,''].includes(availability) && availability > 0)
-            {
-                filterQuery=filterQuery+' AND chsv."availabilityType" = $availability '
-                queryValues =  Object.assign({availability:availability},queryValues)
-            }
-            if(![undefined,null,''].includes(allocatedTo) && allocatedTo > 0)
-            {
-                filterQuery=filterQuery+' AND chsv."allocatedTo" = $allocatedto '
-                queryValues =  Object.assign({allocatedto:allocatedTo},queryValues)
-            }
-            if(![undefined,null,''].includes(positionStatus) && Array.isArray(positionStatus) && positionStatus.length)
-            {
-                filterQuery=filterQuery+' AND chsv."positionStatusName" = any($positionstatus) '
-                queryValues =  Object.assign({positionstatus:positionStatus},queryValues) 
-            }
-            if(![undefined,null,''].includes(candStatus) && Array.isArray(candStatus) && candStatus.length)
-            {
-                filterQuery=filterQuery+' AND chsv."stageStatusName" = any($candstatus) '
-                queryValues =  Object.assign({candstatus:candStatus},queryValues) 
-            }
-        }
+        let filterResult = utils.resourceFilter(filter,filterQuery,queryValues);
+        filterQuery = filterResult.filterQuery;
+        queryValues = filterResult.queryValues;
         
-        if(![undefined,null,''].includes(body.searchKey))
-        {            
-            searchKey='%' + body.searchKey + '%';
-            searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
-            queryValues=Object.assign({searchkey:searchKey},queryValues)
-        }
+        // Search for company name / candidate name
+        let searchResult = utils.resourceSearch(body,queryValues);
+        searchQuery = searchResult.searchQuery;
+        queryValues = searchResult.queryValues;
                 
         if (_body.body.userRoleId != 1) {
             roleBasedQuery = ' where chsv."companyId" = $companyid'
@@ -223,18 +136,19 @@ export const listFreeCandidatesDetails = (_body) => {
         else {
             roleBasedQuery =  ' where (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid))' 
             queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
-        }
+        }      
         
-        if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-            sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;                
-        }
         
         (async () => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+sort;
+                queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body);
                 queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
+
+                console.log("queryText : ",queryText);
+                console.log("queryValues : ",queryValues);
+
                 
                 const listCandidates = {
                     name: 'get-free-candidates',
@@ -263,102 +177,18 @@ export const listAddFromListCandidates = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.getCandidateForAddFromListViews;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
-        body=_body.query,reqBody=_body.body, sort = '', searchKey = '%%';
+        body=_body.query,reqBody=_body.body;
 
-        const orderBy = {
-            "candidateId": 'chsv."candidateId"',
-            "candidateFirstName": 'chsv."candidateFirstName"',
-            "candidatelastName": 'chsv."candidateLastName"',
-            "companyName": 'chsv."companyName"',
-            "updatedOn" : 'chsv."updatedOn"'
-        }
-        
         // Search for filters in the body        
-        if(filter)
-        {               
-            let resourcesType = filter.resourcesType,
-            skills = filter.skills,
-            experience = filter.experience,
-            locations = filter.locations,
-            createdDate = filter.createdDate,
-            availability = filter.availability,
-            allocatedTo = filter.allocatedTo,
-            positionStatus = filter.positionStatus,
-            candStatus = filter.candidateStatus,
-            cost = filter.cost,
-            billingType = filter.billingType,
-            currencyType = filter.currencyType
-            ;
-            
-            if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
-            {  
-                if(resourcesType.includes('Vetted Resources'))    
-                filterQuery=filterQuery+' AND chsv."candidateVetted" = 6'
-                
-                if(resourcesType.includes('Non-Vetted Resources'))    
-                filterQuery=filterQuery+' AND chsv."candidateVetted" != 6'
-            }
-            if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
-            {
-                filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
-                queryValues =  Object.assign({skill:utils.objectToArray(skills,'skillName')},queryValues)
-            }
-            if(![undefined,null,''].includes(cost) && Object.keys(cost).length != 0)
-            {
-                if(cost.min >= 0 && cost.max >= 0 && ![undefined,null,''].includes(currencyType) && ![undefined,null,''].includes(billingType))
-                {
-                    filterQuery=filterQuery+' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtype AND chsv."rate" BETWEEN $cost_min and $cost_max '
-                    queryValues =  Object.assign({billingtype:billingType,currencytype:currencyType,cost_min:cost.min,cost_max:cost.max},queryValues) 
-                }
-            }
-            if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)
-            {
-                if(experience.min >= 0 && experience.max >= 0)
-                {
-                    filterQuery=filterQuery+' AND chsv."workExperience" BETWEEN $experience_min and $experience_max '
-                    queryValues =  Object.assign({experience_min:experience.min,experience_max:experience.max},queryValues) 
-                }
-            }
-            if(![undefined,null,''].includes(locations) && Array.isArray(locations) && locations.length)
-            {
-                filterQuery=filterQuery+' AND chsv."residence" = any($locations) '
-                queryValues =  Object.assign({locations:locations},queryValues) 
-            }
-            if(![undefined,null,''].includes(createdDate) && createdDate > 0)
-            {
-                filterQuery=filterQuery+' AND chsv."createdOn" = $createddate '
-                queryValues =  Object.assign({createddate:createdDate},queryValues) 
-            }
-            
-            if(![undefined,null,''].includes(availability) && availability > 0)
-            {
-                filterQuery=filterQuery+' AND chsv."availabilityType" = $availability '
-                queryValues =  Object.assign({availability:availability},queryValues)
-            }
-            if(![undefined,null,''].includes(allocatedTo) && allocatedTo > 0)
-            {
-                filterQuery=filterQuery+' AND chsv."allocatedTo" = $allocatedto '
-                queryValues =  Object.assign({allocatedto:allocatedTo},queryValues)
-            }
-            if(![undefined,null,''].includes(positionStatus) && Array.isArray(positionStatus) && positionStatus.length)
-            {
-                filterQuery=filterQuery+' AND chsv."positionStatusName" = any($positionstatus) '
-                queryValues =  Object.assign({positionstatus:positionStatus},queryValues) 
-            }
-            if(![undefined,null,''].includes(candStatus) && Array.isArray(candStatus) && candStatus.length)
-            {
-                filterQuery=filterQuery+' AND chsv."stageStatusName" = any($candstatus) '
-                queryValues =  Object.assign({candstatus:candStatus},queryValues) 
-            }
-        }
+        let filterResult = utils.resourceFilter(filter,filterQuery,queryValues);
+        filterQuery = filterResult.filterQuery;
+        queryValues = filterResult.queryValues;
         
-        if(![undefined,null,''].includes(body.searchKey))
-        {
-            searchKey='%' + body.searchKey + '%';
-            searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
-            queryValues=Object.assign({searchkey:searchKey},queryValues)
-        }
-                
+        // Search for company name / candidate name
+        let searchResult = utils.resourceSearch(body,queryValues);
+        searchQuery = searchResult.searchQuery;
+        queryValues = searchResult.queryValues;
+        
         if (reqBody.userRoleId != 1) {
             roleBasedQuery = ' AND chsv."companyId" = $companyid'
             console.log(body.companyId)
@@ -369,15 +199,11 @@ export const listAddFromListCandidates = (_body) => {
             queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
         }
         
-        if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-            sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;                
-        }
-        
         (async () => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+sort;
+                queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body);
                 queryValues =Object.assign({positionid:body.positionId},queryValues)
                 const listCandidates = {
                     name: 'get-addfromlist-candidates',
@@ -2027,114 +1853,23 @@ export const listHirerResources = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView;
         var queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
-        body=_body.query, sort = '', searchKey = '%%';  
-        
-        // Sorting keys with values
-        const orderBy = {
-            "candidateId": 'chsv."candidateId"',
-            "candidateFirstName": 'chsv."candidateFirstName"',
-            "candidatelastName": 'chsv."candidateLastName"',
-            "companyName": 'chsv."companyName"',
-            "updatedOn" : 'chsv."updatedOn"'
-        }
+        body=_body.query;  
         
         // Search for filters in the body        
-        if(filter)
-        {               
-            let resourcesType = filter.resourcesType,
-            skills = filter.skills,
-            experience = filter.experience,
-            locations = filter.locations,
-            createdDate = filter.createdDate,
-            availability = filter.availability,
-            allocatedTo = filter.allocatedTo,
-            positionStatus = filter.positionStatus,
-            candStatus = filter.candidateStatus,
-            cost = filter.cost,
-            currencyType = filter.currencyType,
-            billingType = filter.billingType
-            ;
-            
-            if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
-            {  
-                if(resourcesType.includes('Vetted Resources'))    
-                filterQuery=filterQuery+' AND chsv."candidateVetted" = 6'
-                
-                if(resourcesType.includes('Non-Vetted Resources'))    
-                filterQuery=filterQuery+' AND chsv."candidateVetted" != 6'
-            }
-            if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
-            {
-                filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
-                queryValues =  Object.assign({skill:utils.objectToArray(skills,'skillName')},queryValues)
-            }
-
-            if(![undefined,null,''].includes(cost) && Object.keys(cost).length != 0)
-            {
-                if(cost.min >= 0 && cost.max >= 0 && ![undefined,null,''].includes(currencyType) && ![undefined,null,''].includes(billingType))
-                {
-                    filterQuery=filterQuery+' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtype AND chsv."rate" BETWEEN $cost_min and $cost_max '
-                    queryValues =  Object.assign({billingtype:billingType,currencytype:currencyType,cost_min:cost.min,cost_max:cost.max},queryValues) 
-                }
-            }
-            if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)
-            {
-                if(experience.min >= 0 && experience.max >= 0)
-                {
-                    filterQuery=filterQuery+' AND chsv."workExperience" BETWEEN $experience_min and $experience_max '
-                    queryValues =  Object.assign({experience_min:experience.min,experience_max:experience.max},queryValues) 
-                }
-            }
-            if(![undefined,null,''].includes(locations) && Array.isArray(locations) && locations.length)
-            {
-                filterQuery=filterQuery+' AND chsv."residence" = any($locations) '
-                queryValues =  Object.assign({locations:locations},queryValues) 
-            }
-            if(![undefined,null,''].includes(createdDate) && createdDate > 0)
-            {
-                filterQuery=filterQuery+' AND chsv."createdOn" = $createddate '
-                queryValues =  Object.assign({createddate:createdDate},queryValues) 
-            }
-            
-            if(![undefined,null,''].includes(availability) && availability > 0)
-            {
-                filterQuery=filterQuery+' AND chsv."availabilityType" = $availability '
-                queryValues =  Object.assign({availability:availability},queryValues)
-            }
-            if(![undefined,null,''].includes(allocatedTo) && allocatedTo > 0)
-            {
-                filterQuery=filterQuery+' AND chsv."allocatedTo" = $allocatedto '
-                queryValues =  Object.assign({allocatedto:allocatedTo},queryValues)
-            }
-            if(![undefined,null,''].includes(positionStatus) && Array.isArray(positionStatus) && positionStatus.length)
-            {
-                filterQuery=filterQuery+' AND chsv."positionStatusName" = any($positionstatus) '
-                queryValues =  Object.assign({positionstatus:positionStatus},queryValues) 
-            }
-            if(![undefined,null,''].includes(candStatus) && Array.isArray(candStatus) && candStatus.length)
-            {
-                filterQuery=filterQuery+' AND chsv."stageStatusName" = any($candstatus) '
-                queryValues =  Object.assign({candstatus:candStatus},queryValues) 
-            }
-        }
+        let filterResult = utils.resourceFilter(filter,filterQuery,queryValues);
+        filterQuery = filterResult.filterQuery;
+        queryValues = filterResult.queryValues;
         
-        if(![undefined,null,''].includes(body.searchKey))
-        {
-            searchKey='%' + body.searchKey + '%';
-            searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
-            queryValues=Object.assign({searchkey:searchKey},queryValues)
-        }
-        
-        
-        if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-            sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;                
-        }
+        // Search for company name / candidate name
+        let searchResult = utils.resourceSearch(body,queryValues);
+        searchQuery = searchResult.searchQuery;
+        queryValues = searchResult.queryValues;
         
         (async () => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                queryText = selectQuery+filterQuery+searchQuery+sort;
+                queryText = selectQuery+filterQuery+searchQuery+utils.resourceSort(body);
                 queryValues =  Object.assign({hirercompanyid:_body.body.companyId},queryValues)
                 const listCandidatesOfHirer = {
                     name: 'get-free-candidates-of-hirer',

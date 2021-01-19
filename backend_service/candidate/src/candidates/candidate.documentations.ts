@@ -99,18 +99,17 @@
 *                       type: integer
 *                     max:
 *                       type: integer
-*                 cost:
-*                   type: object
-*                   properties:
-*                     min:
-*                       type: integer
-*                     max:
-*                       type: integer
 *                 locations:
 *                   type: array
 *                   items:
 *                     type: string        
-*                 createdDate:
+*                 fromDate:
+*                   type: integer
+*                 toDate:
+*                   type: integer
+*                 minCost:
+*                   type: integer
+*                 maxCost:
 *                   type: integer
 *                 billingType:
 *                   type: integer
@@ -127,7 +126,7 @@
 *                 candidateStatus:
 *                   type: array
 *                   items:
-*                     type: string            
+*                     type: string           
 *     responses:
 *       200:
 *         description: Api success
@@ -195,18 +194,17 @@
 *                       type: integer
 *                     max:
 *                       type: integer
-*                 cost:
-*                   type: object
-*                   properties:
-*                     min:
-*                       type: integer
-*                     max:
-*                       type: integer
 *                 locations:
 *                   type: array
 *                   items:
 *                     type: string        
-*                 createdDate:
+*                 fromDate:
+*                   type: integer
+*                 toDate:
+*                   type: integer
+*                 minCost:
+*                   type: integer
+*                 maxCost:
 *                   type: integer
 *                 billingType:
 *                   type: integer
@@ -337,18 +335,17 @@
 *                       type: integer
 *                     max:
 *                       type: integer
-*                 cost:
-*                   type: object
-*                   properties:
-*                     min:
-*                       type: integer
-*                     max:
-*                       type: integer
 *                 locations:
 *                   type: array
 *                   items:
 *                     type: string        
-*                 createdDate:
+*                 fromDate:
+*                   type: integer
+*                 toDate:
+*                   type: integer
+*                 minCost:
+*                   type: integer
+*                 maxCost:
 *                   type: integer
 *                 billingType:
 *                   type: integer
@@ -365,7 +362,7 @@
 *                 candidateStatus:
 *                   type: array
 *                   items:
-*                     type: string        
+*                     type: string       
 *     responses:
 *       200:
 *         description: Api success
