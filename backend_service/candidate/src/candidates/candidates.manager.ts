@@ -146,8 +146,7 @@ export const listFreeCandidatesDetails = (_body) => {
                 queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body);
                 queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
 
-                console.log("queryText : ",queryText);
-                console.log("queryValues : ",queryValues);
+             
 
                 
                 const listCandidates = {
@@ -155,6 +154,7 @@ export const listFreeCandidatesDetails = (_body) => {
                     text: queryText,
                     values: queryValues
                 }
+      
                 const candidatesResult = await client.query(listCandidates);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows } });

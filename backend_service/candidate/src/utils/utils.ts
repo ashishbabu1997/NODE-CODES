@@ -51,39 +51,39 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         {
             if(experience.min >= 0 && experience.max >= 0)
             {
-                filterQuery=filterQuery+' AND chsv."workExperience" BETWEEN $experience_min and $experience_max '
+                filterQuery=filterQuery+' and chsv."workExperience" between $experience_min and $experience_max '
                 queryValues =  Object.assign({experience_min:experience.min,experience_max:experience.max},queryValues) 
             }
         }
         if(![undefined,null,''].includes(locations) && Array.isArray(locations) && locations.length)
         {
-            filterQuery=filterQuery+' AND chsv."residence" = any($locations) '
+            filterQuery=filterQuery+' and chsv."residence" = any($locations) '
             queryValues =  Object.assign({locations:locations},queryValues) 
         }
         if(![undefined,null,''].includes(fromDate) && fromDate > 0 && ![undefined,null,''].includes(toDate) && toDate > 0)
         {
-            filterQuery=filterQuery+' AND chsv."createdOn" BETWEEN $fromdate and $todate '
+            filterQuery=filterQuery+' and chsv."createdOn" between $fromdate and $todate '
             queryValues =  Object.assign({fromdate:fromDate,todate:toDate,},queryValues)
         }
         
         if(![undefined,null,''].includes(availability) && availability > 0)
         {
-            filterQuery=filterQuery+' AND chsv."availabilityType" = $availability '
+            filterQuery=filterQuery+' and chsv."availabilityType" = $availability '
             queryValues =  Object.assign({availability:availability},queryValues)
         }
         if(![undefined,null,''].includes(allocatedTo) && allocatedTo > 0)
         {
-            filterQuery=filterQuery+' AND chsv."allocatedTo" = $allocatedto '
+            filterQuery=filterQuery+' and chsv."allocatedTo" = $allocatedto '
             queryValues =  Object.assign({allocatedto:allocatedTo},queryValues)
         }
         if(![undefined,null,''].includes(positionStatus) && Array.isArray(positionStatus) && positionStatus.length)
         {
-            filterQuery=filterQuery+' AND chsv."positionStatusName" ilike any (select concat(array_element,\'%\') from unnest($positionstatus::text[]) array_element(array_element)) '
+            filterQuery=filterQuery+' and chsv."positionStatusName" ilike any (select concat(array_element,\'%\') from unnest($positionstatus::text[]) array_element(array_element)) '
             queryValues =  Object.assign({positionstatus: positionStatus},queryValues) 
         }
         if(![undefined,null,''].includes(candStatus) && Array.isArray(candStatus) && candStatus.length)
         {            
-            filterQuery=filterQuery+' AND chsv."stageStatusName" ilike any(select concat(array_element,\'%\') from unnest($candstatus::text[]) array_element(array_element)) '
+            filterQuery=filterQuery+' and chsv."stageStatusName" ilike any(select concat(array_element,\'%\') from unnest($candstatus::text[]) array_element(array_element)) '
             queryValues =  Object.assign({candstatus: candStatus},queryValues) 
         }
     }
