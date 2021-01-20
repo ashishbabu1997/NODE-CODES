@@ -325,7 +325,7 @@ export const submitCandidateProfile = (_body) => {
                         }
                         await client.query(updatePasswordToEmployee);
                         var userSubject="ellow.io Freelancer Login Credentials"
-                        let userPath = 'src/emailTemplates/candidateAdditionText.html';
+                        let userPath = 'src/emailTemplates/freelancerLoginText.html';
                         var userCredentialReplacements =  {
                             name:candidateFirstName,
                             user:emailAddress,
