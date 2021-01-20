@@ -228,7 +228,6 @@ export const saveCandidateProfile = (_body) => {
                             {
                                 console.log("NOt a freelancer")
                             }
-                            await client.query('COMMIT');
                             let candidateId = addCandidateResult.rows[0].candidate_id;
                             if (![null, undefined, ''].includes(_body.positionId)) {
                                 const addPositionQuery = {
@@ -237,7 +236,7 @@ export const saveCandidateProfile = (_body) => {
                                     values: [_body.positionId, candidateId, _body.jobReceivedId, _body.billingTypeId, _body.currencyTypeId, _body.employeeId, currentTime],
                                 }
                                 await client.query(addPositionQuery);
-                                
+
                                 const getJobStatusQuery = {
                                     name: 'get-Job-status',
                                     text: jobReceivedQuery.getJobStatus,
@@ -252,9 +251,14 @@ export const saveCandidateProfile = (_body) => {
                                     values: [_body.jobReceivedId, jobStatus, sellerCompanyId, _body.employeeId, currentTime],
                                 }
                                 await client.query(updateCompanyJobStatusQuery);
+                                await client.query('COMMIT');
+
                             }
-                            await client.query('COMMIT');
-                            resolve({ code: 200, message: "Candidate profile added", data: {candidateId} });
+                            else
+                            {
+                                console.log("Added")
+                            }
+                    resolve({ code: 200, message: "Candidate profile added", data: {candidateId} });
                 }
             } catch (e) {
                 console.log(e)
