@@ -47,337 +47,6 @@
 
 /**
 * @swagger
-* /candidates/listFreeCandidates:
-*   put:
-*     tags:
-*       - Candidates
-*     name: List available candidates
-*     summary: list available candidates for applying against a position
-*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ] 
-*     consumes:
-*       - application/json
-*     security:
-*       - bearerAuth: []
-*     produces:
-*       - application/json
-*     parameters:
-*       - in: query
-*         name: sortBy
-*         schema:
-*           type: string
-*         enum: [candidateId,candidateFirstName,candidatelastName,companyName,updatedOn]
-*       - in: query
-*         name: sortType
-*         schema:
-*           type: string
-*         enum: [asc,desc]
-*         example: asc
-*       - in: query
-*         name: filter
-*         schema:
-*           type: string
-*       - name: body
-*         in: body
-*         schema:
-*           type: object
-*           properties:
-*             filter:
-*               type: object
-*               properties:
-*                 resourcesType:
-*                   type: array
-*                   items:
-*                     type: string
-*                 skills:
-*                   type: array
-*                   items:
-*                     type: string
-*                 experience:
-*                   type: object
-*                   properties:
-*                     min:
-*                       type: integer
-*                     max:
-*                       type: integer
-*                 locations:
-*                   type: array
-*                   items:
-*                     type: string        
-*                 fromDate:
-*                   type: integer
-*                 toDate:
-*                   type: integer
-*                 minCost:
-*                   type: integer
-*                 maxCost:
-*                   type: integer
-*                 billingType:
-*                   type: integer
-*                 currencyType:
-*                   type: integer
-*                 availability:
-*                   type: integer
-*                 allocatedTo:
-*                   type: integer
-*                 positionStatus:
-*                   type: array
-*                   items:
-*                     type: string  
-*                 candidateStatus:
-*                   type: array
-*                   items:
-*                     type: string           
-*     responses:
-*       200:
-*         description: Api success
-*       400:
-*         description: Api Failed
-*       401:
-*         description: Unauthorised access
-*       403:
-*         description: Permission denied
-*       500:
-*         description: Server down
-*/
-
-/**
-* @swagger
-* /candidates/listFreeCandidatesOfHirer:
-*   put:
-*     tags:
-*       - Candidates
-*     name: List available candidates of Hirer
-*     summary: list available candidates for applying against a position
-*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ] 
-*     consumes:
-*       - application/json
-*     security:
-*       - bearerAuth: []
-*     produces:
-*       - application/json
-*     parameters:
-*       - in: query
-*         name: sortBy
-*         schema:
-*           type: string
-*         enum: [candidateId,candidateFirstName,candidatelastName,companyName,updatedOn]
-*       - in: query
-*         name: sortType
-*         schema:
-*           type: string
-*         enum: [asc,desc]
-*         example: asc
-*       - in: query
-*         name: filter
-*         schema:
-*           type: string
-*       - name: body
-*         in: body
-*         schema:
-*           type: object
-*           properties:
-*             filter:
-*               type: object
-*               properties:
-*                 resourcesType:
-*                   type: array
-*                   items:
-*                     type: string
-*                 skills:
-*                   type: array
-*                   items:
-*                     type: string
-*                 experience:
-*                   type: object
-*                   properties:
-*                     min:
-*                       type: integer
-*                     max:
-*                       type: integer
-*                 locations:
-*                   type: array
-*                   items:
-*                     type: string        
-*                 fromDate:
-*                   type: integer
-*                 toDate:
-*                   type: integer
-*                 minCost:
-*                   type: integer
-*                 maxCost:
-*                   type: integer
-*                 billingType:
-*                   type: integer
-*                 currencyType:
-*                   type: integer
-*                 availability:
-*                   type: integer
-*                 allocatedTo:
-*                   type: integer
-*                 positionStatus:
-*                   type: array
-*                   items:
-*                     type: string  
-*                 candidateStatus:
-*                   type: array
-*                   items:
-*                     type: string                
-*     responses:
-*       200:
-*         description: Api success
-*       400:
-*         description: Api Failed
-*       401:
-*         description: Unauthorised access
-*       403:
-*         description: Permission denied
-*       500:
-*         description: Server down
-*/
-
-
-/**
-* @swagger
-* /candidates/updateCandidateAvailability:
-*   post:
-*     tags:
-*       - Candidates
-*     name: update Candidate Availability
-*     summary: update availability value of a candidate
-*     security:
-*       - bearerAuth: []
-*     consumes:
-*       - application/json
-*     produces:
-*       - application/json
-*     parameters:
-*       - name: body
-*         in: body
-*         schema:
-*           type: object
-*           properties:
-*             candidateId:
-*               type: integer            
-*             availability:
-*               type: boolean
-*           required:
-*             - candidateId
-*             - availability
-*     responses:
-*       200:
-*         description: Api success
-*       400:
-*         description: Api Failed
-*       401:
-*         description: Unauthorised access
-*       403:
-*         description: Permission denied
-*       500:
-*         description: Server down
-*/
-
-
-/**
-* @swagger
-* /candidates/listForAddFromListCandidates:
-*   get:
-*     tags:
-*       - Candidates
-*     name: List available candidates
-*     summary: list available candidates for applying against a position
-*     consumes:
-*       - application/json
-*     security:
-*       - bearerAuth: []
-*     produces:
-*       - application/json
-*     parameters:
-*       - in: query
-*         name: positionId
-*         schema:
-*         required:
-*           type: integer
-*       - in: query
-*         name: sortBy
-*         schema:
-*           type: string
-*         enum: [candidateId,candidateFirstName,candidatelastName,email,phoneNumber,companyName,updatedOn]
-*       - in: query
-*         name: sortType
-*         schema:
-*           type: string
-*         enum: [asc,desc]
-*         example: asc
-*       - in: query
-*         name: filter
-*         schema:
-*           type: string
-*       - name: body
-*         in: body
-*         schema:
-*           type: object
-*           properties:
-*             filter:
-*               type: object
-*               properties:
-*                 resourcesType:
-*                   type: array
-*                   items:
-*                     type: string
-*                 skills:
-*                   type: array
-*                   items:
-*                     type: string
-*                 experience:
-*                   type: object
-*                   properties:
-*                     min:
-*                       type: integer
-*                     max:
-*                       type: integer
-*                 locations:
-*                   type: array
-*                   items:
-*                     type: string        
-*                 fromDate:
-*                   type: integer
-*                 toDate:
-*                   type: integer
-*                 minCost:
-*                   type: integer
-*                 maxCost:
-*                   type: integer
-*                 billingType:
-*                   type: integer
-*                 currencyType:
-*                   type: integer
-*                 availability:
-*                   type: integer
-*                 allocatedTo:
-*                   type: integer
-*                 positionStatus:
-*                   type: array
-*                   items:
-*                     type: string  
-*                 candidateStatus:
-*                   type: array
-*                   items:
-*                     type: string       
-*     responses:
-*       200:
-*         description: Api success
-*       400:
-*         description: Api Failed
-*       401:
-*         description: Unauthorised access
-*       403:
-*         description: Permission denied
-*       500:
-*         description: Server down
-*/
-
-/**
-* @swagger
 * /candidates/getAssementOfCandidate:
 *   get:
 *     tags:
@@ -607,6 +276,377 @@
 
 /**
 * @swagger
+* /candidates/listForAddFromListCandidates:
+*   post:
+*     tags:
+*       - Candidates
+*     name: List available candidates
+*     summary: list available candidates for applying against a position
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: positionId
+*         schema:
+*         required:
+*           type: integer
+*       - in: query
+*         name: sortBy
+*         schema:
+*           type: string
+*         enum: [candidateId,candidateFirstName,candidatelastName,email,phoneNumber,companyName,updatedOn]
+*       - in: query
+*         name: sortType
+*         schema:
+*           type: string
+*         enum: [asc,desc]
+*         example: asc
+*       - in: query
+*         name: filter
+*         schema:
+*           type: string
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             filter:
+*               type: object
+*               properties:
+*                 resourcesType:
+*                   type: array
+*                   items:
+*                     type: string
+*                 skills:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       skillId:
+*                         type: integer
+*                       skillName:
+*                         type: string
+*                 otherSkills:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       skillId:
+*                         type: integer
+*                       skillName:
+*                         type: string
+*                 experience:
+*                   type: object
+*                   properties:
+*                     min:
+*                       type: integer
+*                     max:
+*                       type: integer
+*                 locations:
+*                   type: array
+*                   items:
+*                     type: string        
+*                 fromDate:
+*                   type: integer
+*                 toDate:
+*                   type: integer
+*                 minCost:
+*                   type: integer
+*                 maxCost:
+*                   type: integer
+*                 billingType:
+*                   type: integer
+*                 currencyType:
+*                   type: integer
+*                 availability:
+*                   type: integer
+*                 allocatedTo:
+*                   type: integer
+*                 positionStatus:
+*                   type: array
+*                   items:
+*                     type: string  
+*                 candidateStatus:
+*                   type: array
+*                   items:
+*                     type: string       
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/listFreeCandidates:
+*   post:
+*     tags:
+*       - Candidates
+*     name: List available candidates
+*     summary: list available candidates for applying against a position
+*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ] 
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: sortBy
+*         schema:
+*           type: string
+*         enum: [candidateId,candidateFirstName,candidatelastName,companyName,updatedOn]
+*       - in: query
+*         name: sortType
+*         schema:
+*           type: string
+*         enum: [asc,desc]
+*         example: asc
+*       - in: query
+*         name: filter
+*         schema:
+*           type: string
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             filter:
+*               type: object
+*               properties:
+*                 resourcesType:
+*                   type: array
+*                   items:
+*                     type: string
+*                 skills:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       skillId:
+*                         type: integer
+*                       skillName:
+*                         type: string
+*                 otherSkills:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       skillId:
+*                         type: integer
+*                       skillName:
+*                         type: string
+*                 experience:
+*                   type: object
+*                   properties:
+*                     min:
+*                       type: integer
+*                     max:
+*                       type: integer
+*                 locations:
+*                   type: array
+*                   items:
+*                     type: string        
+*                 fromDate:
+*                   type: integer
+*                 toDate:
+*                   type: integer
+*                 minCost:
+*                   type: integer
+*                 maxCost:
+*                   type: integer
+*                 billingType:
+*                   type: integer
+*                 currencyType:
+*                   type: integer
+*                 availability:
+*                   type: integer
+*                 allocatedTo:
+*                   type: integer
+*                 positionStatus:
+*                   type: array
+*                   items:
+*                     type: string  
+*                 candidateStatus:
+*                   type: array
+*                   items:
+*                     type: string              
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/listFreeCandidatesOfHirer:
+*   post:
+*     tags:
+*       - Candidates
+*     name: List available candidates of Hirer
+*     summary: list available candidates for applying against a position
+*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ] 
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: sortBy
+*         schema:
+*           type: string
+*         enum: [candidateId,candidateFirstName,candidatelastName,companyName,updatedOn]
+*       - in: query
+*         name: sortType
+*         schema:
+*           type: string
+*         enum: [asc,desc]
+*         example: asc
+*       - in: query
+*         name: filter
+*         schema:
+*           type: string
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             filter:
+*               type: object
+*               properties:
+*                 resourcesType:
+*                   type: array
+*                   items:
+*                     type: string
+*                 skills:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       skillId:
+*                         type: integer
+*                       skillName:
+*                         type: string
+*                 otherSkills:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       skillId:
+*                         type: integer
+*                       skillName:
+*                         type: string
+*                 experience:
+*                   type: object
+*                   properties:
+*                     min:
+*                       type: integer
+*                     max:
+*                       type: integer
+*                 locations:
+*                   type: array
+*                   items:
+*                     type: string        
+*                 fromDate:
+*                   type: integer
+*                 toDate:
+*                   type: integer
+*                 minCost:
+*                   type: integer
+*                 maxCost:
+*                   type: integer
+*                 billingType:
+*                   type: integer
+*                 currencyType:
+*                   type: integer
+*                 availability:
+*                   type: integer
+*                 allocatedTo:
+*                   type: integer
+*                 positionStatus:
+*                   type: array
+*                   items:
+*                     type: string  
+*                 candidateStatus:
+*                   type: array
+*                   items:
+*                     type: string                
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/updateCandidateAvailability:
+*   post:
+*     tags:
+*       - Candidates
+*     name: update Candidate Availability
+*     summary: update availability value of a candidate
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer            
+*             availability:
+*               type: boolean
+*           required:
+*             - candidateId
+*             - availability
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /candidates/resumeShareLink:
 *   post:
 *     tags:
@@ -631,50 +671,6 @@
 *               type: array
 *               items:
 *                 type: string
-*           required:
-*             - candidateId
-*             - sharedEmails
-*     responses:
-*       200:
-*         description: Api success
-*       400:
-*         description: Api Failed
-*       401:
-*         description: Unauthorised access
-*       403:
-*         description: Permission denied
-*       500:
-*         description: Server down
-*/
-
-/**
-* @swagger
-* /candidates/sharePdf:
-*   put:
-*     tags:
-*       - Candidates
-*     name: Share pdf data
-*     summary: Generate a pdf from candidate details for given candidate and send mail to recipients with pdf attachments
-*     security:
-*       - bearerAuth: []
-*     consumes:
-*       - application/json
-*     produces:
-*       - application/json
-*     parameters:
-*       - name: body
-*         in: body
-*         schema:
-*           type: object
-*           properties:
-*             candidateId:
-*               type: integer            
-*             emailList:
-*               type: array
-*               items:
-*                 type: string
-*             host:
-*               type: string
 *           required:
 *             - candidateId
 *             - sharedEmails
@@ -815,6 +811,50 @@
 *               type: integer
 *           required:
 *             - candidateAssessmentId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/sharePdf:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Share pdf data
+*     summary: Generate a pdf from candidate details for given candidate and send mail to recipients with pdf attachments
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer            
+*             emailList:
+*               type: array
+*               items:
+*                 type: string
+*             host:
+*               type: string
+*           required:
+*             - candidateId
+*             - sharedEmails
 *     responses:
 *       200:
 *         description: Api success

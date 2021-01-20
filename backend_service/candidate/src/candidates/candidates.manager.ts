@@ -146,9 +146,6 @@ export const listFreeCandidatesDetails = (_body) => {
                 queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body);
                 queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
 
-             
-
-                
                 const listCandidates = {
                     name: 'get-free-candidates',
                     text: queryText,
@@ -497,7 +494,6 @@ export const removeCandidateFromPosition = (_body) => {
         var message;
         var positionName;
         var hirerName;
-        const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database().connect()
             try {
@@ -509,7 +505,7 @@ export const removeCandidateFromPosition = (_body) => {
                 const removeCandidateQuery = {
                     name: 'delete-candidate-from-position',
                     text: candidateQuery.deleteCandidateFromPosition,
-                    values: [candidateId, positionId, _body.employeeId, currentTime],
+                    values: [candidateId, positionId],
                 }
                 await client.query(removeCandidateQuery);
                 

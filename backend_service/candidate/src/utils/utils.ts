@@ -24,7 +24,8 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         minCost = filter.mincost,
         maxCost = filter.maxcost,
         billingType = filter.billingType,
-        currencyType = filter.currencyType
+        currencyType = filter.currencyType,
+        otherSkills = filter.otherSkills
         ;
         
         if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
@@ -40,7 +41,12 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
             filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
             queryValues =  Object.assign({skill:objectToArray(skills,'skillName')},queryValues)
         }
-        
+        if(![undefined,null,''].includes(otherSkills) && Array.isArray(otherSkills) && otherSkills.length)
+        {
+            filterQuery=filterQuery+' AND otherskills && $otherskill::varchar[]'                
+            queryValues =  Object.assign({otherskill:objectToArray(otherSkills,'skillName')},queryValues)
+        }
+
         if(minCost >= 0 && maxCost >= 0 && ![undefined,null,''].includes(currencyType) && ![undefined,null,''].includes(billingType))
         {
             filterQuery=filterQuery+' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtype AND chsv."rate" BETWEEN $cost_min and $cost_max '
@@ -71,10 +77,16 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
             filterQuery=filterQuery+' and chsv."availabilityType" = $availability '
             queryValues =  Object.assign({availability:availability},queryValues)
         }
-        if(![undefined,null,''].includes(allocatedTo) && allocatedTo > 0)
-        {
-            filterQuery=filterQuery+' and chsv."allocatedTo" = $allocatedto '
-            queryValues =  Object.assign({allocatedto:allocatedTo},queryValues)
+        if(![undefined,null,''].includes(allocatedTo))
+        {            
+            if(allocatedTo > 0)
+            {
+                filterQuery=filterQuery+' and chsv."allocatedTo" = $allocatedto '
+                queryValues =  Object.assign({allocatedto:allocatedTo},queryValues)
+            }
+            else if(allocatedTo == 0){
+                filterQuery=filterQuery+' and chsv."allocatedTo" is null '
+            } 
         }
         if(![undefined,null,''].includes(positionStatus) && Array.isArray(positionStatus) && positionStatus.length)
         {
