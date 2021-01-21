@@ -16,22 +16,22 @@
 *       - in: query
 *         name: positionId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [positionId]
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum: [candidateFirstName,candidateLastName,rate,ellowRate,companyName]
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *       - in: query
 *         name: filter
 *         schema:
-*           type: string
+*         type: string
 *     responses:
 *       200:
 *         description: Api success
@@ -63,8 +63,8 @@
 *       - in: query
 *         name: candidateId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [candidateId]
 *     responses:
 *       200:
 *         description: Api success
@@ -96,8 +96,8 @@
 *       - in: query
 *         name: candidateId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [candidateId]
 *     responses:
 *       200:
 *         description: Api success
@@ -129,8 +129,8 @@
 *       - in: query
 *         name: candidateId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [candidateId]
 *     responses:
 *       200:
 *         description: Api success
@@ -162,8 +162,8 @@
 *       - in: query
 *         name: uniqueId
 *         schema:
-*         required:
-*           type: string
+*         type: string
+*         required: [uniqueId]
 *     responses:
 *       200:
 *         description: Api success
@@ -195,8 +195,8 @@
 *       - in: query
 *         name: token
 *         schema:
-*         required:
-*           type: string
+*         type: string
+*         required: [token]
 *     responses:
 *       200:
 *         description: Api success
@@ -226,8 +226,8 @@
 *       - in: query
 *         name: token
 *         schema:
-*         required:
-*           type: string
+*         type: string
+*         required: [token]
 *     responses:
 *       200:
 *         description: Api success
@@ -259,8 +259,8 @@
 *       - in: query
 *         name: candidateId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [candidateId]
 *     responses:
 *       200:
 *         description: Api success
@@ -292,23 +292,23 @@
 *       - in: query
 *         name: positionId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [positionId]
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum: [candidateId,candidateFirstName,candidatelastName,email,phoneNumber,companyName,updatedOn]
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *         example: asc
 *       - in: query
 *         name: filter
 *         schema:
-*           type: string
+*         type: string
 *       - name: body
 *         in: body
 *         schema:
@@ -411,13 +411,13 @@
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *         example: asc
 *       - in: query
 *         name: filter
 *         schema:
-*           type: string
+*         type: string
 *       - name: body
 *         in: body
 *         schema:
@@ -515,18 +515,18 @@
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum: [candidateId,candidateFirstName,candidatelastName,companyName,updatedOn]
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *         example: asc
 *       - in: query
 *         name: filter
 *         schema:
-*           type: string
+*         type: string
 *       - name: body
 *         in: body
 *         schema:

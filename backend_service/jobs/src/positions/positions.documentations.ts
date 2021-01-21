@@ -16,17 +16,17 @@
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum:  [position,positionName,createdOn,candidateCount,resourceCount,companyName,updatedOn]
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *       - in: query
 *         name: searchKey
 *         schema:
-*           type: string
+*         type: string
 *       - name: body
 *         in: body
 *         schema:
@@ -83,9 +83,10 @@
 *       - in: query
 *         name: accountType
 *         schema:
-*           type: integer
+*         type: integer
 *         enum: [1,2]
 *         description: 1 for hirerList, 2 for sellerList
+*         required: [accountType]
 *     responses:
 *       200:
 *         description: Api success
@@ -117,8 +118,8 @@
 *       - in: path
 *         name: positionId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [positionId]
 *     responses:
 *       200:
 *         description: Api success
