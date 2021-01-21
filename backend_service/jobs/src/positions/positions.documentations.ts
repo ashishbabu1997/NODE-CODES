@@ -1,7 +1,7 @@
 /**
 * @swagger
-* /positions:
-*   get:
+* /positions/positionList:
+*   post:
 *     tags:
 *       - Positions
 *     name: List position based candidates
@@ -27,6 +27,31 @@
 *         name: searchKey
 *         schema:
 *           type: string
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             company:
+*               type: array
+*               items:
+*                 type: string
+*             allocatedTo:
+*               type: integer
+*             jobCategory:
+*               type: integer 
+*             position:
+*               type: array
+*               items:
+*                 type: string
+*             postedFrom:
+*               type: integer            
+*             postedTo:
+*               type: string
+*             status:
+*               type: array
+*               items:
+*                 type: string
 *     responses:
 *       200:
 *         description: Api success

@@ -4,7 +4,7 @@ import { createNotification } from '../common/notifications/notifications';
 import config from '../config/config'
 import * as emailClient from '../emailService/emailService';
 import * as queryService from '../queryService/queryService';
-
+import * as utils from '../utils/utils';
 
 // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Get the position detils of a company
@@ -12,60 +12,23 @@ export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
         var queryText='', queryValues={}, filterQuery='', filter=_body.body.filter,
         body=_body.query, sort = '', searchKey = '%%';
-        
-        const orderBy = {
-            "position": 'p.position_id',
-            "positionName": 'p.position_name',
-            "createdOn": 'p.created_on',
-            "candidateCount": '"candidateCount"',
-            "resourceCount": 'p.developer_count',
-            "companyName": 'c.company_name',
-            "updatedOn":'p.updated_on'
-        }
-        
-        if(filter)
-        {            
-            if(filter.postedStartDate && filter.postedEndDate)
-            {   
-                filterQuery=filterQuery+' AND p.created_on BETWEEN $startdate  AND $enddate'
-                queryValues = Object.assign({startdate:filter.postedStartDate,enddate:filter.postedEndDate})
-            }
-            if(filter.numberOfOpenings)
-            {
-                filterQuery=filterQuery+' AND p.developer_count = $openings'
-                queryValues =  Object.assign({openings:filter.numberOfOpenings},queryValues)
-            }
-            if(filter.positionStatus)
-            {  
-                filterQuery=filterQuery+' AND p.job_status=$positionstatus'
-                queryValues=Object.assign({positionstatus:filter.positionStatus},queryValues)
-            }
-            if(filter.duration)
-            {
-                filterQuery=filterQuery+' AND p.contract_duration= $duration'
-                queryValues=Object.assign({duration:filter.duration},queryValues)
-            }
-            if(filter.durationStart && filter.durationEnd)
-            {
-                filterQuery=filterQuery+' AND p.contract_duration BETWEEN $durationstart AND $durationend'
-                queryValues=Object.assign({durationstart:filter.durationStart,durationend:filter.durationEnd},queryValues)
-            }
-        }
-        if(body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy))  
-        {
-            sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
-        }
+                
+        // Search for filters in the body        
+        let filterResult = utils.positionFilter(filter,filterQuery,queryValues);
+        filterQuery = filterResult.filterQuery;
+        queryValues = filterResult.queryValues;
+
         if(![undefined,null].includes(body.searchKey))
         {
             searchKey='%' + body.searchKey + '%';
         }
         
         if (body.userRoleId == 1) {
-            queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+sort;
+            queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+utils.positionSort(body);
             queryValues = Object.assign({searchkey:searchKey,employeeid:body.employeeId},queryValues)
         }
         else {            
-            queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ sort;
+            queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ utils.positionSort(body);
             queryValues =  Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
         }
         
@@ -144,7 +107,7 @@ export const createCompanyPositions = async (_body) => {
                     await client.query(addOtherSkillsQuery);
                 }
                 await client.query('COMMIT')
-
+                
                 if(![null,undefined,''].includes(_body.hiringSteps) && Array.isArray(_body.hiringSteps))
                 {
                     let order = 1;
@@ -165,9 +128,9 @@ export const createCompanyPositions = async (_body) => {
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
                     return;
                 }
-
+                
                 await client.query('COMMIT')
-
+                
                 resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyId  } });
             } catch (e) {
                 await client.query('ROLLBACK')
@@ -669,7 +632,7 @@ export const fetchPositionDetails = (_body) => {
                         })
                     })
                 }
-
+                
                 // >>>>>>> FUNC. >>>>>>> 
                 //>>>>>>>>>>>>>>>>>>Change read status of a position
                 export const updateAllocatedTo = (_body) => {
