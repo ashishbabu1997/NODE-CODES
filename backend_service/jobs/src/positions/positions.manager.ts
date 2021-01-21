@@ -11,7 +11,7 @@ import * as utils from '../utils/utils';
 export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
         var queryText='', queryValues={}, filterQuery='', filter=_body.body.filter,
-        body=_body.query, sort = '', searchKey = '%%';
+        body=_body.query,reqBody=_body.body, sort = '', searchKey = '%%';
                 
         // Search for filters in the body        
         let filterResult = utils.positionFilter(filter,filterQuery,queryValues);
@@ -21,16 +21,19 @@ export const getCompanyPositions = (_body) => {
         if(![undefined,null].includes(body.searchKey))
         {
             searchKey='%' + body.searchKey + '%';
-        }
+        }        
         
-        if (body.userRoleId == 1) {
+        if (reqBody.userRoleId == 1) {
             queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+utils.positionSort(body);
-            queryValues = Object.assign({searchkey:searchKey,employeeid:body.employeeId},queryValues)
+            queryValues = Object.assign({searchkey:searchKey,employeeid:reqBody.employeeId},queryValues)
         }
         else {            
             queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ utils.positionSort(body);
-            queryValues =  Object.assign({companyid:body.companyId,searchkey:searchKey,employeeid:body.employeeId},queryValues)
+            queryValues =  Object.assign({companyid:reqBody.companyId,searchkey:searchKey,employeeid:reqBody.employeeId},queryValues)
         }
+
+        console.log("queryText : ",queryText);
+        console.log("queryValues : ",queryValues);
         
         const query = {
             name: 'id-fetch-company-positions',
