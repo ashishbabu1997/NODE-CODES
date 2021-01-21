@@ -9,7 +9,7 @@ const swaggerDefinition = {
   info: {
     title: 'Ellow.io Api documentation',
     version: '1.0.0',
-    description: 'Endpoints to test jobs (jobreceived & positions) routes',
+    description: 'Endpoints to test jobs (jobreceived & positions & filter) routes',
   },
   basePath: `/api/${AppConfig.version}/jobs`,
   securityDefinitions: {
