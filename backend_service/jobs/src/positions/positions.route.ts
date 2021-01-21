@@ -13,7 +13,7 @@ const router = express.Router();
 
 
 router
-    .get('/',jwtAuth, setData(), validate(getPositionSchema),positionController.getPositions)
+    .post('/positionList',jwtAuth, setData(), validate(getPositionSchema),positionController.getPositions)
     .get('/companyNames',jwtAuth, setData(),validate(getCompanyNameSchema),positionController.getCompanyNames)
     .post('/',jwtAuth, setData(), validate(addPositionSchema),positionController.createPositions)
     .put('/', jwtAuth, setData(), validate(updatePositionSchema),positionController.updatePositions)
