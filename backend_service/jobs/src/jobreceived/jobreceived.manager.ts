@@ -343,7 +343,7 @@ export const submitCandidateProfile = (_body) => {
                 if(![null,undefined,""].includes(_body.positionId))
                 {
 
-                    const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been submitted for the position ${positionName} `
+                    const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for the position ${positionName} `
                     await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     let path = 'src/emailTemplates/candidateAdditionText.html';
                     var userReplacements =  {
@@ -355,7 +355,7 @@ export const submitCandidateProfile = (_body) => {
                 }
                 else
                 {
-                    const message = `A new candidate named ${candidateFirstName + ' ' + candidateLastName} has been submitted for veting `
+                    const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for veting `
                     await createNotification({ positionId:_body.positionId, jobReceivedId, companyId, message, candidateId, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     var status='vetting';
                     let path = 'src/emailTemplates/candidateAdditionText.html';

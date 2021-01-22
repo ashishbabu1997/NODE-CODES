@@ -564,7 +564,9 @@ export const removeCandidateFromPosition = (_body) => {
 // >>>>>>>>>> Link the candidates to a particular position .
 export const linkCandidateWithPosition = (_body) => {
     return new Promise((resolve, reject) => {
+        let nameList=[];
         (async () => {
+         
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
@@ -573,8 +575,10 @@ export const linkCandidateWithPosition = (_body) => {
                 const positionId = _body.positionId;
                 let positionName='';
                 let hirerName='';
-                var names=''
                 let count=0
+                var names='';
+                var firstName;
+                var lastName
                 const currentTime = Math.floor(Date.now());
                 
                 // Get position realted details
@@ -611,6 +615,7 @@ export const linkCandidateWithPosition = (_body) => {
                         }
                         count=count+1
                         promise.push(client.query(linkCandidateQuery));
+                       
                     });
                     await Promise.all(promise);
                 }
@@ -619,16 +624,18 @@ export const linkCandidateWithPosition = (_body) => {
                 
                 
                 // Sending notification to ellow recuiter for each candidate linked to a position
-                candidateList.forEach(async element => {
-                    let imageResults =  await client.query(queryService.getImageDetails(element))
+              
+                // candidateList.forEach(async element => {
+                for (const element of candidateList)
+                {
                     
+                    let imageResults = await client.query(queryService.getImageDetails(element))  
                     // Adding client based hiring steps with respect to poition being linked
                     _body.candidateId = element.candidateId;
                     await client.query(queryService.addCandidateHiringSteps(_body));       
-                    
-                    var firstName=imageResults.rows[0].candidate_first_name
-                    var lastName=imageResults.rows[0].candidate_last_name
-                    names=names+"\n"+firstName+" "+lastName+","
+                    firstName=imageResults.rows[0].candidate_first_name
+                    lastName=imageResults.rows[0].candidate_last_name
+                    names=names+firstName+" "+lastName+"|"
                     var email=imageResults.rows[0].email_address
                     let replacements = {
                         name:firstName,
@@ -637,14 +644,14 @@ export const linkCandidateWithPosition = (_body) => {
                     };
                     let path = 'src/emailTemplates/addCandidatesUsersText.html';
                     emailClient.emailManager(email,config.text.addCandidatesUsersTextSubject,path,replacements);
-                });  
+                }
+                // });                     
                 await client.query('COMMIT')
                 let message=`${count} candidates has been added for the position ${positionName}`
                 createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId: _body.companyId, message:message, candidateId:null, notificationType: 'candidateList',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:null,firstName:null,lastName:null})
-                
                 let replacements = {
                     positionName:positionName,
-                    names:names
+                    candidateNames:names
                 };
                 let path = 'src/emailTemplates/addCandidatesText.html';
                 emailClient.emailManager(config.adminEmail,config.text.addCandidatesTextSubject,path,replacements);

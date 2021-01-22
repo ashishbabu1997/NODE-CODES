@@ -74,7 +74,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         
         if(![undefined,null,''].includes(availability) && availability > 0)
         {
-            filterQuery=filterQuery+' and chsv."availabilityType" = $availability '
+            filterQuery=filterQuery+' and chsv."availabilityType" = $availability and chsv."availability"=true'
             queryValues =  Object.assign({availability:availability},queryValues)
         }
         if(![undefined,null,''].includes(allocatedTo))

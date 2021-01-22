@@ -365,7 +365,7 @@ export const fetchPositionDetails = (_body) => {
                                 const details = await client.query(getNotificationDetailsQuery);
                                 await client.query('COMMIT');
                                 const { companyId, companyName,positionName } = details.rows[0];
-                                const message = `A new position named ${positionName} has been created by ${companyName}`
+                                const message = `A new position,${positionName} has been created by ${companyName}`
                                 var cName=companyName
                                 var cpName=positionName
                                 console.log({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position',userRoleId:1 })
@@ -448,7 +448,7 @@ export const fetchPositionDetails = (_body) => {
                                                     jobReceivedId=results.rows[0].job_received_id    
                                                     positionName=results.rows[0].position_name
                                                     var emailAddress=results.rows[0].email
-                                                    message=`A position named ${positionName} has been reopened.`
+                                                    message=`A position,${positionName} has been reopened.`
                                                     createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
                                                     // A notification is sent to the hirer about his/her reopened position
                                                     let subj="Position Reopen Notification"
@@ -479,7 +479,7 @@ export const fetchPositionDetails = (_body) => {
                                                     jobReceivedId=results.rows[0].job_received_id    
                                                     positionName=results.rows[0].position_name
                                                     var emailId=results.rows[0].email
-                                                    message=`A position named ${positionName} has been closed.`
+                                                    message=`A position,${positionName} has been closed.`
                                                     createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
                                                     if(_body.userRoleId==1)
                                                     {
@@ -598,7 +598,7 @@ export const fetchPositionDetails = (_body) => {
                                     position:positionName
                                 };
                                 emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);
-                                const message=`The position named ${positionName}  has been removed .`
+                                const message=`The position, ${positionName}  has been removed .`
                                 await createNotification({ positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
                                 resolve({ code: 200, message: "Position deletion successfull", data: {} });
                             } catch (e) {
