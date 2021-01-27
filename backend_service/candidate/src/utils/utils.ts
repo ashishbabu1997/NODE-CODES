@@ -9,7 +9,7 @@ export const objectToArray = (objectArray,keyName) => {
 }
 
 export  const resourceFilter = (filter,filterQuery,queryValues) =>{
-    if(filter)
+    if(filter && ![undefined,null,''].includes(filter) && Object.keys(filter).length)
     {               
         let resourcesType = filter.resourcesType,
         skills = filter.skills,
@@ -46,13 +46,13 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
             filterQuery=filterQuery+' AND otherskills && $otherskill::varchar[]'                
             queryValues =  Object.assign({otherskill:objectToArray(otherSkills,'skillName')},queryValues)
         }
-
+        
         if(minCost >= 0 && maxCost >= 0 && ![undefined,null,''].includes(currencyType) && ![undefined,null,''].includes(billingType))
         {
             filterQuery=filterQuery+' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtype AND chsv."rate" BETWEEN $cost_min and $cost_max '
             queryValues =  Object.assign({billingtype:billingType,currencytype:currencyType,cost_min:minCost,cost_max:maxCost},queryValues) 
         }
-
+        
         if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)
         {
             if(experience.min >= 0 && experience.max >= 0)
@@ -72,16 +72,19 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
             queryValues =  Object.assign({fromdate:fromDate,todate:toDate,},queryValues)
         }
         
-        if(![undefined,null,''].includes(availability) && availability ==-1)
+        if(![undefined,null,''].includes(availability))
         {
-            filterQuery=filterQuery+' and chsv."availabilityType" = $availability and chsv."availability"=false'
-            queryValues =  Object.assign({availability:availability},queryValues)
+            if(availability == -1)
+            {
+                filterQuery=filterQuery+' and chsv."availability"=false'
+            }
+            else
+            {
+                filterQuery=filterQuery+' and chsv."readyToStart" = $availability and chsv."availability"=true'
+                queryValues =  Object.assign({availability:availability},queryValues)
+            }
         }
-        else
-        {
-            filterQuery=filterQuery+' and chsv."availabilityType" = $availability and chsv."availability"=true'
-            queryValues =  Object.assign({availability:availability},queryValues)
-        }
+        
         if(![undefined,null,''].includes(allocatedTo))
         {            
             if(allocatedTo > 0)
@@ -132,6 +135,8 @@ export const resourceSearch = (body,queryValues) =>{
     if(![undefined,null,''].includes(body.searchKey))
     {            
         searchKey='%' + body.searchKey + '%';
+        console.log("searchKey : ",searchKey);
+        
         searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
         queryValues=Object.assign({searchkey:searchKey},queryValues)
     }

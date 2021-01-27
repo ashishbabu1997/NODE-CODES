@@ -129,7 +129,7 @@ export const listFreeCandidatesDetails = (_body) => {
         searchQuery = searchResult.searchQuery;
         queryValues = searchResult.queryValues;
                 
-        if (_body.body.userRoleId != 1) {
+        if (reqBody.userRoleId != 1) {
             roleBasedQuery = ' where chsv."companyId" = $companyid'
             queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
         }
