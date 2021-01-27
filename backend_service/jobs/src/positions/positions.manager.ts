@@ -11,17 +11,17 @@ import * as utils from '../utils/utils';
 export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
-            const client = await database().connect()
+            const client = await database()
             try {
                    _body.queryText='';
-                    var queryValues={},
-                    filterQuery='', filter=_body.body.filter,
+                    _body.queryValues={};
+                    var filterQuery='', filter=_body.body.filter,
                     body=_body.query,reqBody=_body.body, sort = '', searchKey = '%%';
                             
                     // Search for filters in the body        
-                    let filterResult = utils.positionFilter(filter,filterQuery,queryValues);
+                    let filterResult = utils.positionFilter(filter,filterQuery,_body.queryValues);
                     filterQuery = filterResult.filterQuery;
-                    queryValues = filterResult.queryValues;
+                    _body.queryValues = filterResult.queryValues;
 
                     if(![undefined,null].includes(body.searchKey))
                     {
@@ -30,11 +30,12 @@ export const getCompanyPositions = (_body) => {
                     
                     if (reqBody.userRoleId == 1) {
                         _body.queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+utils.positionSort(body);
-                        _body.queryValues = Object.assign({searchkey:searchKey,employeeid:reqBody.employeeId},queryValues)
+                        _body.queryValues =  Object.assign({searchkey:searchKey,employeeid:reqBody.employeeId},_body.queryValues)
+                        // Object.assign({searchkey:searchKey,employeeid:reqBody.employeeId},queryValues)
                     }
                     else {            
                         _body.queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ utils.positionSort(body);
-                        _body.queryValues =  Object.assign({companyid:reqBody.companyId,searchkey:searchKey,employeeid:reqBody.employeeId},queryValues)
+                        _body.queryValues =  Object.assign({companyid:reqBody.companyId,searchkey:searchKey,employeeid:reqBody.employeeId},_body.queryValues)
                     }
                     let results=await client.query(queryService.fetchCompanyPositionsById(_body))
                     var steps = results.rows
@@ -43,8 +44,6 @@ export const getCompanyPositions = (_body) => {
         console.log(e)
         await client.query('ROLLBACK')
         reject({ code: 400, message: "Failed. Please try again.", data: {} });
-    } finally {
-        client.release();
     }
 })().catch(e => {
     reject({ code: 400, message: "Failed. Please try again.", data: {} })
