@@ -112,15 +112,10 @@ export const createCompanyPositions = async (_body) => {
                     });   
                 }
                 await Promise.all(hiringStepQueries);
-                
                 if (_body.flag == 0) {
-                    await client.query('COMMIT'); 
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
                     return;
-                }
-                
-                await client.query('COMMIT')
-                
+                }                
                 resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyId  } });
             } catch (e) {
                 await client.query('ROLLBACK')
@@ -220,26 +215,22 @@ export const fetchPositionDetails = (_body) => {
                 const currentTime = Math.floor(Date.now() / 1000);
                 const positionId = _body.positionId;
                 const companyId = _body.userRoleId==1?_body.positionCreatedCompanyId:_body.companyId;
-                _body.clientCompanyId=companyId 
                 (async () => {
                     const client = await database().connect()
                     try {
+                        _body.cmpId=companyId
                         await client.query('BEGIN');
                         let hiringStepQueries=[];
-    
-                            const getCompanyNameQuery = {
-                                name: 'get-company-name',
-                                text: positionsQuery.getCompanyName,
-                                values: [companyId]
-                            }
                             const getCompanyNameResponse =  await client.query(queryService.getCompanyNameQuery(_body))
                             const companyName = getCompanyNameResponse.rows[0].companyName
                             await client.query(queryService.updateCompanyPositionsFirstQuery(_body))
                             await client.query(queryService.updateCompanyPositionsSecondQuery(_body))
+                            await client.query('COMMIT')
                             _body.tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
                             _body.oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];  
                             _body.skillSet = _body.tSkill.concat( _body.oSkill);
                             await client.query(queryService.deleteJobSkillsQuery(_body))
+                            await client.query('COMMIT')
                             if(_body.tSkill.length>0)
                                 {
                                  
@@ -252,7 +243,6 @@ export const fetchPositionDetails = (_body) => {
                                     
                                
                                 }
-                                
                                 if(![null,undefined,''].includes(_body.hiringSteps) && Array.isArray(_body.hiringSteps))
                                 {
                                     let order=1;
@@ -267,14 +257,8 @@ export const fetchPositionDetails = (_body) => {
                                     });   
                                 }
                                 await Promise.all(hiringStepQueries);
-                                if (_body.flag == 0) {
-                                    await client.query('COMMIT');
-                                    resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
-                                    return;
-                                }
-                                
-                                await client.query('COMMIT')
                                 resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
+
                             } catch (e) {
                                 await client.query('ROLLBACK')
                                 console.log(e)

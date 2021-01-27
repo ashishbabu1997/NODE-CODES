@@ -164,7 +164,7 @@ export const  addOtherSkillsQuery = (_body) =>{
     return {
         name: 'add-other-job-skills',
         text: positionsQuery.addJobSkills,
-        values: [ _body.positionId,  _body.oSkill,false, currentTime],
+        values: [ _body.positionId,  _body.oSkill,false, currentTime()],
 
     }
 }
@@ -191,7 +191,7 @@ export const  updateCompanyPositionsSecondQuery = (_body) =>{
         text: positionsQuery.updatePositionSecond,
         values: [_body.contractStartDate,
             _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget,
-            _body.employeeId, currentTime(), _body.positionId, _body.clientCompanyId,_body.contractDuration,_body.immediate]
+            _body.employeeId, currentTime(), _body.positionId, _body.cmpId,_body.contractDuration,_body.immediate]
     }
 }
 export const  deleteJobSkillsQuery = (_body) =>{
