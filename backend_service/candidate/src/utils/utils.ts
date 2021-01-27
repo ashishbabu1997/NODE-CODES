@@ -72,7 +72,12 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
             queryValues =  Object.assign({fromdate:fromDate,todate:toDate,},queryValues)
         }
         
-        if(![undefined,null,''].includes(availability) && availability > 0)
+        if(![undefined,null,''].includes(availability) && availability ==-1)
+        {
+            filterQuery=filterQuery+' and chsv."availabilityType" = $availability and chsv."availability"=false'
+            queryValues =  Object.assign({availability:availability},queryValues)
+        }
+        else
         {
             filterQuery=filterQuery+' and chsv."availabilityType" = $availability and chsv."availability"=true'
             queryValues =  Object.assign({availability:availability},queryValues)
@@ -84,7 +89,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
                 filterQuery=filterQuery+' and chsv."allocatedTo" = $allocatedto '
                 queryValues =  Object.assign({allocatedto:allocatedTo},queryValues)
             }
-            else if(allocatedTo == 0){
+            else if(allocatedTo == -1){
                 filterQuery=filterQuery+' and chsv."allocatedTo" is null '
             } 
         }
