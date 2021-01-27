@@ -182,7 +182,7 @@ export const  updateCompanyPositionsFirstQuery = (_body) =>{
         text: positionsQuery.updatePositionFirst,
         values: [_body.positionName, _body.locationName, _body.developerCount,
             _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document,
-            _body.employeeId, currentTime(), _body.positionId, _body.clientCompanyId, _body.jobCategoryId]
+            _body.employeeId, currentTime(), _body.positionId, _body.cmpId, _body.jobCategoryId]
     }
 }
 export const  updateCompanyPositionsSecondQuery = (_body) =>{
