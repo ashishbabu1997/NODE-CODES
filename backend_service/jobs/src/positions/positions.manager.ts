@@ -75,11 +75,6 @@ export const createCompanyPositions = async (_body) => {
                         empid:_body.employeeId,  time:currentTime, jobcatid:_body.jobCategoryId
                     }
                 }
-                const getCompanyNameQuery = {
-                    name: 'get-company-name',
-                    text: positionsQuery.getCompanyName,
-                    values: [ _body.cmpId]
-                }
                 const getCompanyNameResponse =  await client.query(queryService.getCompanyNameQuery(_body))
                 const companyName = getCompanyNameResponse.rows[0].companyName
                 const companyPositionResponse = await client.query(queryService.addCompanyPositionsQuery(_body))
