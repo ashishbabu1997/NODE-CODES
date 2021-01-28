@@ -16,22 +16,22 @@
 *       - in: query
 *         name: positionId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [positionId]
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum: [position,positionName,companyName,createdOn,candidateCount,resourceCount,duration,startDate]
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *       - in: query
 *         name: filter
 *         schema:
-*           type: string
+*         type: string
 *     responses:
 *       200:
 *         description: Api success
@@ -63,8 +63,8 @@
 *       - in: query
 *         name: jobReceivedId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [jobReceivedId]
 *     responses:
 *       200:
 *         description: Api success
@@ -96,17 +96,17 @@
 *       - in: query
 *         name: positionId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [positionId]
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum: [candidateFirstName]
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *     responses:
 *       200:

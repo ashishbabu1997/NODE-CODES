@@ -16,11 +16,11 @@
 *       - in: query
 *         name: searchKey
 *         schema:
-*           type: string
+*         type: string
 *       - in: query
 *         name: filterSkillId
 *         schema:
-*           type: integer
+*         type: integer
 *     responses:
 *       200:
 *         description: Api success
@@ -52,7 +52,8 @@
 *       - in: query
 *         name: candidateId
 *         schema:
-*           type: integer
+*         type: integer
+*         required: [candidateId]
 *     responses:
 *       200:
 *         description: Api success
@@ -84,7 +85,8 @@
 *       - in: query
 *         name: candidateId
 *         schema:
-*           type: integer
+*         type: integer
+*         required: [candidateId]
 *     responses:
 *       200:
 *         description: Api success

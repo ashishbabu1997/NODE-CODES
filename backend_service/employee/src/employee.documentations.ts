@@ -236,3 +236,58 @@
 *       500:
 *         description: Server down
 */
+
+/**
+* @swagger
+* /getEmployees:
+*   get:
+*     tags:
+*       - Employees
+*     name: get employees
+*     summary: get employee names from database.If logged in as ellow recruiter,hirerCompanyId is used to get all employee details;else , companyId is used to fetch the employee details.
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query 
+*         name: hirerCompanyId
+*         schema:
+*           type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /getAllAdmins:
+*   get:
+*     tags:
+*       - Employees
+*     name: get admins
+*     summary: get admin names from database
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

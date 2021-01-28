@@ -430,3 +430,109 @@ export const tokenCheck = (_body) => {
         
     })
 }
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>>>>>Ellow recruiter signup API  
+export const ellowAdminSignup = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now());        
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                var password='admin@ellow'
+                var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                const adminSignup = {
+                    name: 'admin-signup',
+                    text: employeeQuery.ellowAdminSignupQuery,
+                    values: [_body.firstName,_body.lastName,1,_body.email,_body.phoneNumber,hashedPassword,3,1,true,1]
+                }
+                
+               await client.query(adminSignup);
+               resolve({ code: 200, message: "Success", data: {} });
+              await client.query('COMMIT')
+            } catch (e) {
+                console.log("Error e1: ",e );
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error e2: ",e );
+            reject({ code: 400, message: "Failed. Please try again.", data: {e} })
+        })
+        
+    })
+}
+
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>>>>>Ellow recruiter signup API  
+export const getAdminDetails = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now());        
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+             
+                const adminSignup = {
+                    name: 'admin-signup',
+                    text: employeeQuery.getellowAdmins,
+                    values: []
+                }
+               let result=await client.query(adminSignup);
+               resolve({ code: 200, message: "Success", data: {adminDetails:result.rows} });
+              await client.query('COMMIT')
+            } catch (e) {
+                console.log("Error e1: ",e );
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error e2: ",e );
+            reject({ code: 400, message: "Failed. Please try again.", data: {e} })
+        })
+        
+    })
+}
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>>>>>Get employees
+export const getAllEmployees = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now());
+        (async () => {
+            const client = await database()
+            var value;
+            try {
+                await client.query('BEGIN');
+                
+                if (_body.userRoleId==1)
+                {
+                    value=_body.hirerCompanyId
+                }
+                else
+                {
+                    value=_body.companyId
+                }
+                const getCompanyEmployees = {
+                    name: 'get-employees',
+                    text: employeeQuery.getEmployeesQuery,
+                    values: [value]
+                }
+                
+               var result =await client.query(getCompanyEmployees);
+               resolve({ code: 200, message: "Employees listed successfully", data: {employees:result.rows} });
+              await client.query('COMMIT')
+            } catch (e) {
+                console.log("Error e1: ",e );
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error e2: ",e );
+            reject({ code: 400, message: "Failed. Please try again.", data: {e} })
+        })
+        
+    })
+}

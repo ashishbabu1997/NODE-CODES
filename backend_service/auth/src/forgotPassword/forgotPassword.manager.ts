@@ -1,6 +1,5 @@
 import * as jwt from 'jwt-simple';
 import jwtConfig from '../config/config'
-import {Promise} from 'es6-promise'
 import Query from './query/query';
 import database from '../common/database/database';
 import * as emailClient from '../emailService/emailService';
@@ -13,53 +12,63 @@ import * as emailClient from '../emailService/emailService';
 export const sendLink = (_body) => {
   return new Promise((resolve, reject) => {
     // Checks whether the entered email is his/her own email.
-    var lowerEmail=_body.email.toLowerCase()
-    const checkEMail = {
-      name: 'check-email',
-      text: Query.checkEmail,
-      values: [lowerEmail]
-    }
-    database().query(checkEMail, (error, results) => {
-      if (error) {
-          reject({ code: 400, message: "Database connection Error !!!!", data:  {} });
-          return;
-        }
-      else if(results.rowCount==1)
-      {
-        var payload = { email:lowerEmail,
+    (async () => {
+      const client = await database().connect()
+      try {
+          var link
+          var lowerEmail=_body.email.toLowerCase()
+          console.log(lowerEmail)
+          const checkEMail = {
+              name: 'check-email',
+              text: Query.checkEmail,
+              values: [lowerEmail]
+          }
+          var results=await client.query(checkEMail);
+          if(results.rowCount==1)
+          {
+              var payload = { email:lowerEmail,
                         userRoleId:results.rows[0].userRoleId
                       }
 
-        // Generates a token and stores the token on DB.
-        var secret = jwtConfig.jwtSecretKey
-        var token = jwt.encode(payload, secret);
-        const insertTokenQuery = {
-          name: 'insertToken',
-          text: Query.insertToken,
-          values: [_body.email,token]
+            // Generates a token and stores the token on DB.
+            var secret = jwtConfig.jwtSecretKey
+            var token = jwt.encode(payload, secret);
+            const insertTokenQuery = {
+                name: 'insertToken',
+                text: Query.insertToken,
+                values: [_body.email,token]
+              }
+            await client.query(insertTokenQuery); 
+            // Sends the link with token attached at the end of the link.
+            if (_body.type=='generic')
+            {
+              link=_body.host+"/passwordset/"+token
+            }
+            else{
+              link=_body.host+"/create-password/"+token
+            }
+            const subject="ellow.io RESET PASSWORD LINK"
+            let path = 'src/emailTemplates/forgotPasswordText.html';
+            let replacements =  {
+                resetLink: link
+              };
+              await emailClient.emailManager(lowerEmail,subject,path,replacements);
+              resolve({ code: 200, message: "Link has sent to the email successfully", data:{}});
+
         }
-        database().query(insertTokenQuery, (error, results) => {
-        if (error) {
-          reject({ code: 400, message: "Database connection Error !!!!", data:  {} });
+        else
+        {
+          reject({ code: 400, message: "Provided email is not registered with ellow.io ! Please signup to continue", data:{}});
           return;
+
         }
-        // Sends the link with token attached at the end of the link.
-        var link=_body.host+"/passwordset/"+token
-        const subject="ellow.ai RESET PASSWORD LINK"
-        let path = 'src/emailTemplates/forgotPasswordText.html';
-        let replacements =  {
-            resetLink: link
-          };
-        emailClient.emailManager(lowerEmail,subject,path,replacements);
-          })
-      }
-      else
-      {
-        reject({ code: 400, message: "Provided email is not registered with ellow.io ! Please signup to continue", data:{}});
-        return;
-
-      }
-    })
-
-  })
+      } catch (e) {
+        console.log(e)
+        await client.query('ROLLBACK')
+        reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+    }
+})().catch(e => {
+    reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+})
+})
 }

@@ -21,6 +21,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
+    "generate-password": "^1.6.0",
     "handlebars": "^4.7.6",
     "node-postgres-named": "^2.4.1",
     "nodemailer": "^6.4.16",

@@ -11,7 +11,6 @@ export default () => {
                 req.query['companyId'] = req.user.companyId;
                 req.query['employeeId'] = req.user.employeeId;
                 req.query['userRoleId'] = req.user.userRoleId;
-
             }
         }
         next();

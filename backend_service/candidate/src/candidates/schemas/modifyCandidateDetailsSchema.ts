@@ -466,39 +466,3 @@ export const publicationSchema = Joi.object().keys({
         otherwise:Joi.optional()
     }),
 }).unknown(true);
-
-export const assementLinkAndStatusSchema = Joi.object().keys({
-    type: Joi.string().required().valid('codeTest','interviewTest').error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                err.message = "type should not be empty!";
-                break;
-                case "number.base":
-                err.message = "type must be a string"
-                break;
-                default:
-                err.message = "Invalid type (codeTest/interviewTest)"
-                break;
-            }
-        });
-        return errors;
-    }),
-    candidateId: Joi.number().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                    err.message = "Candidate Id should not be empty!";
-                    break;
-                case "number.base":
-                    err.message = "Candidate Id must be a number"
-                    break;
-                default:
-                    err.message = "Invalid Candidate Id"
-                    break;
-            }
-        });
-        return errors;
-    })
-}).unknown(true);
-
