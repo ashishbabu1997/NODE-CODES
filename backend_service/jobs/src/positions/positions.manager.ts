@@ -14,14 +14,14 @@ export const getCompanyPositions = (_body) => {
             const client = await database()
             try {
                    _body.queryText='';
-                    var queryValues={},
-                    filterQuery='', filter=_body.body.filter,
+                    _body.queryValues={};
+                    var filterQuery='', filter=_body.body.filter,
                     body=_body.query,reqBody=_body.body, sort = '', searchKey = '%%';
                             
                     // Search for filters in the body        
-                    let filterResult = utils.positionFilter(filter,filterQuery,queryValues);
+                    let filterResult = utils.positionFilter(filter,filterQuery,_body.queryValues);
                     filterQuery = filterResult.filterQuery;
-                    queryValues = filterResult.queryValues;
+                    _body.queryValues = filterResult.queryValues;
 
                     if(![undefined,null].includes(body.searchKey))
                     {
@@ -30,11 +30,12 @@ export const getCompanyPositions = (_body) => {
                     
                     if (reqBody.userRoleId == 1) {
                         _body.queryText = positionsQuery.getCompanyPositionsForAdmin+filterQuery+utils.positionSort(body);
-                        _body.queryValues = Object.assign({searchkey:searchKey,employeeid:reqBody.employeeId},queryValues)
+                        _body.queryValues =  Object.assign({searchkey:searchKey,employeeid:reqBody.employeeId},_body.queryValues)
+                        // Object.assign({searchkey:searchKey,employeeid:reqBody.employeeId},queryValues)
                     }
                     else {            
                         _body.queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ utils.positionSort(body);
-                        _body.queryValues =  Object.assign({companyid:reqBody.companyId,searchkey:searchKey,employeeid:reqBody.employeeId},queryValues)
+                        _body.queryValues =  Object.assign({companyid:reqBody.companyId,searchkey:searchKey,employeeid:reqBody.employeeId},_body.queryValues)
                     }
                     let results=await client.query(queryService.fetchCompanyPositionsById(_body))
                     var steps = results.rows
@@ -66,7 +67,6 @@ export const createCompanyPositions = async (_body) => {
                 let hiringStepQueries = [];
                 _body.cmpId = _body.userRoleId==1?_body.positionCreatedCompanyId:_body.companyId;
                 let companyId= _body.cmpId
-
                 const getCompanyNameResponse =  await client.query(queryService.getCompanyNameQuery(_body))
                 const companyName = getCompanyNameResponse.rows[0].companyName
                 const companyPositionResponse = await client.query(queryService.addCompanyPositionsQuery(_body))
@@ -99,15 +99,10 @@ export const createCompanyPositions = async (_body) => {
                     });   
                 }
                 await Promise.all(hiringStepQueries);
-                
                 if (_body.flag == 0) {
-                    await client.query('COMMIT'); 
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
                     return;
-                }
-                
-                await client.query('COMMIT')
-                
+                }                
                 resolve({ code: 200, message: "Positions created successfully", data: { positionId,companyId  } });
             } catch (e) {
                 await client.query('ROLLBACK')
@@ -207,21 +202,22 @@ export const fetchPositionDetails = (_body) => {
                 const currentTime = Math.floor(Date.now() / 1000);
                 const positionId = _body.positionId;
                 const companyId = _body.userRoleId==1?_body.positionCreatedCompanyId:_body.companyId;
-                _body.clientCompanyId=companyId 
                 (async () => {
                     const client = await database().connect()
                     try {
+                        _body.cmpId=companyId
                         await client.query('BEGIN');
                         let hiringStepQueries=[];
-                        
                             const getCompanyNameResponse =  await client.query(queryService.getCompanyNameQuery(_body))
                             const companyName = getCompanyNameResponse.rows[0].companyName
                             await client.query(queryService.updateCompanyPositionsFirstQuery(_body))
                             await client.query(queryService.updateCompanyPositionsSecondQuery(_body))
+                            await client.query('COMMIT')
                             _body.tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
                             _body.oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];  
                             _body.skillSet = _body.tSkill.concat( _body.oSkill);
                             await client.query(queryService.deleteJobSkillsQuery(_body))
+                            await client.query('COMMIT')
                             if(_body.tSkill.length>0)
                                 {
                                     await client.query(queryService.addTopSkillsQuery(_body))
@@ -230,7 +226,6 @@ export const fetchPositionDetails = (_body) => {
                                 {
                                     await client.query(queryService.addOtherSkillsQuery(_body))
                                 }
-                                
                                 if(![null,undefined,''].includes(_body.hiringSteps) && Array.isArray(_body.hiringSteps))
                                 {
                                     let order=1;
@@ -245,14 +240,8 @@ export const fetchPositionDetails = (_body) => {
                                     });   
                                 }
                                 await Promise.all(hiringStepQueries);
-                                if (_body.flag == 0) {
-                                    await client.query('COMMIT');
-                                    resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
-                                    return;
-                                }
-                                
-                                await client.query('COMMIT')
                                 resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
+
                             } catch (e) {
                                 await client.query('ROLLBACK')
                                 console.log(e)
