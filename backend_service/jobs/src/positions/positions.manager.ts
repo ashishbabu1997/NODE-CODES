@@ -11,7 +11,7 @@ import * as utils from '../utils/utils';
 export const getCompanyPositions = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
-            const client = await database().connect()
+            const client = await database()
             try {
                    _body.queryText='';
                     var queryValues={},
@@ -42,9 +42,9 @@ export const getCompanyPositions = (_body) => {
     } catch (e) {
         console.log(e)
         await client.query('ROLLBACK')
+        console.log("e : ",e);
+        
         reject({ code: 400, message: "Failed. Please try again.", data: {} });
-    } finally {
-        client.release();
     }
 })().catch(e => {
     reject({ code: 400, message: "Failed. Please try again.", data: {} })
@@ -66,21 +66,7 @@ export const createCompanyPositions = async (_body) => {
                 let hiringStepQueries = [];
                 _body.cmpId = _body.userRoleId==1?_body.positionCreatedCompanyId:_body.companyId;
                 let companyId= _body.cmpId
-                const addCompanyPositionsQuery = {
-                    name: 'add-company-positions',
-                    text: positionsQuery.addCompanyPositions,
-                    values: {
-                        name:_body.positionName, devcount:_body.developerCount, companyid: _body.cmpId,
-                        explevel:_body.experienceLevel, jobdesc:_body.jobDescription, doc:_body.document, 
-                        currencyid:_body.currencyTypeId, billingtype:_body.billingType, 
-                        empid:_body.employeeId,  time:currentTime, jobcatid:_body.jobCategoryId
-                    }
-                }
-                const getCompanyNameQuery = {
-                    name: 'get-company-name',
-                    text: positionsQuery.getCompanyName,
-                    values: [ _body.cmpId]
-                }
+
                 const getCompanyNameResponse =  await client.query(queryService.getCompanyNameQuery(_body))
                 const companyName = getCompanyNameResponse.rows[0].companyName
                 const companyPositionResponse = await client.query(queryService.addCompanyPositionsQuery(_body))
@@ -106,7 +92,7 @@ export const createCompanyPositions = async (_body) => {
                         const insertHiringStepsQuery = {
                             name: 'add-hiring-steps',
                             text: positionsQuery.insertHiringSteps,
-                            values: [positionId, element.hiringStepName,element.hiringStepType,order,_body.employeeId,Date.now(),element.hiringAssesmentName,element.hiringAssesmentType],
+                            values: [positionId, element.hiringStepName,element.hiringStepType,order,_body.employeeId,Date.now(),element.hiringAssesmentName,element.hiringAssesmentType,element.default],
                         }
                         hiringStepQueries.push(client.query(insertHiringStepsQuery));
                         order++;
@@ -227,12 +213,7 @@ export const fetchPositionDetails = (_body) => {
                     try {
                         await client.query('BEGIN');
                         let hiringStepQueries=[];
-    
-                            const getCompanyNameQuery = {
-                                name: 'get-company-name',
-                                text: positionsQuery.getCompanyName,
-                                values: [companyId]
-                            }
+                        
                             const getCompanyNameResponse =  await client.query(queryService.getCompanyNameQuery(_body))
                             const companyName = getCompanyNameResponse.rows[0].companyName
                             await client.query(queryService.updateCompanyPositionsFirstQuery(_body))
@@ -243,15 +224,11 @@ export const fetchPositionDetails = (_body) => {
                             await client.query(queryService.deleteJobSkillsQuery(_body))
                             if(_body.tSkill.length>0)
                                 {
-                                 
                                     await client.query(queryService.addTopSkillsQuery(_body))
-           
                                 }
                                 if(_body.oSkill.length>0)
                                 {
                                     await client.query(queryService.addOtherSkillsQuery(_body))
-                                    
-                               
                                 }
                                 
                                 if(![null,undefined,''].includes(_body.hiringSteps) && Array.isArray(_body.hiringSteps))
@@ -261,7 +238,7 @@ export const fetchPositionDetails = (_body) => {
                                         const insertHiringStepsQuery = {
                                             name: 'add-hiring-steps',
                                             text: positionsQuery.insertHiringSteps,
-                                            values: [positionId, element.hiringStepName,element.hiringStepType,order,_body.employeeId,Date.now(),element.hiringAssesmentName,element.hiringAssesmentType],
+                                            values: [positionId, element.hiringStepName,element.hiringStepType,order,_body.employeeId,Date.now(),element.hiringAssesmentName,element.hiringAssesmentType,element.default],
                                         }
                                         hiringStepQueries.push(client.query(insertHiringStepsQuery));
                                         order++;
@@ -279,12 +256,14 @@ export const fetchPositionDetails = (_body) => {
                             } catch (e) {
                                 await client.query('ROLLBACK')
                                 console.log(e)
-                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
                             } finally {
                                 client.release();
                             }
                         })().catch(e => {
-                            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                            console.log(e)
+
+                            reject({ code: 400, message: "Failed. Please try again.", data: e.message  })
                         })
                     })
                 }

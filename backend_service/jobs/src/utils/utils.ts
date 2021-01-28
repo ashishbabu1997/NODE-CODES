@@ -17,6 +17,10 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
         position = filter.position,
         allocatedTo = filter.allocatedTo,
         jobCategory = filter.jobCategory,
+        minDuration = filter.minDuration,
+        maxDuration = filter.maxDuration,
+        coreSkills = filter.coreSkills,
+        otherSkills = filter.otherSkills,
         status = filter.status
         ;
         
@@ -25,6 +29,13 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
             filterQuery=filterQuery+' AND p.created_on BETWEEN $startdate  AND $enddate'
             queryValues = Object.assign({startdate:startDate,enddate:endDate},queryValues)
         }
+        
+        if(![null,undefined,''].includes(minDuration) && ![null,undefined,''].includes(maxDuration))
+        {   
+            filterQuery=filterQuery+' AND p.contract_duration BETWEEN $minduration  AND $maxduration'
+            queryValues = Object.assign({minduration:minDuration,maxduration:maxDuration},queryValues)
+        }
+
         if(Array.isArray(company) && company.length)
         {   
             filterQuery=filterQuery+' AND p.company_name IN $company::varchar[]'
