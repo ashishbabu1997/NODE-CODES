@@ -204,7 +204,6 @@ export const saveCandidateProfile = (_body) => {
                              _body.sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
                             _body.candidates = [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
                             var addCandidateResult =await client.query(queryService.saveCandidateQuery(_body))
-
                             var companyResults = await client.query(queryService.getCompanyName(_body))
                             var companyName=companyResults.rows[0].company_name
                             if (_body.userRoleId==1 &&companyName=='Freelancer')
