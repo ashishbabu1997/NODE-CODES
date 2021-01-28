@@ -33,7 +33,7 @@ export const getCompanyPositions = (_body) => {
                         _body.queryValues =  Object.assign({searchkey:searchKey,employeeid:reqBody.employeeId},_body.queryValues)
                         // Object.assign({searchkey:searchKey,employeeid:reqBody.employeeId},queryValues)
                     }
-                    else {            
+                    else { 
                         _body.queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ utils.positionSort(body);
                         _body.queryValues =  Object.assign({companyid:reqBody.companyId,searchkey:searchKey,employeeid:reqBody.employeeId},_body.queryValues)
                     }
@@ -43,11 +43,11 @@ export const getCompanyPositions = (_body) => {
     } catch (e) {
         console.log(e)
         await client.query('ROLLBACK')
-        console.log("e : ",e);
-        
+        console.log("e : ",e)
         reject({ code: 400, message: "Failed. Please try again.", data: {} });
     }
 })().catch(e => {
+    console.log(e)
     reject({ code: 400, message: "Failed. Please try again.", data: {} })
 })
 })
