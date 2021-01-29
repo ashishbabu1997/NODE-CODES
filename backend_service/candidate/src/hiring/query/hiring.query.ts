@@ -13,9 +13,12 @@ export default {
     candidateCurrentStage:'select current_stage as "currentStage", assigned_to as "assignedTo",make_offer as "makeOffer" from candidate_position where candidate_id = $1 and position_id = $2',
     getPositionNameFromId:'select position_name as "positionName" from positions where position_id=$1',
     getCompanyNameFromId:'select company_name as "companyName" from company where company_id=$1',
+    getJoinedCompanyName:'select c.company_name as "companyName" from company c inner join employee e on e.company_id=c.company_id where e.employee_id=$1',
     updateAssigneeComments:'update candidate_client_hiring_step set step_start_date=$3, assignee_comment=$2 where candidate_client_hiring_step_id = $1',
     deletePositionHiringStep : 'delete from position_hiring_step where position_hiring_step_id=$1;',
     updateCandidateHiringStepOrder:'update candidate_client_hiring_step set candidate_hiring_step_order=$2,updated_on=$3 where candidate_client_hiring_step_id=$1 ',
     updateMakeOffer:'update candidate_position set make_offer=$makeOffer,updated_on=$updatedOn,updated_by=$updatedBy where candidate_id=$candidateId and position_id=$positionId',
-    updateCandidateAvailability:'update candidate set availability=$2 where candidate_id=$1'
+    updateCandidateAvailability:'update candidate set availability=$2 where candidate_id=$1',
+    getCandidateNames:'select candidate_first_name as "firstName",candidate_last_name s "lastName" from candidate where candidate_id=$1',
+
 }

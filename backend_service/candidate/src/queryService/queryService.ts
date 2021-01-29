@@ -498,6 +498,13 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId]
         }
     }
+    export const getCompanyDetails = (_body) => {
+        return {
+            name: 'company-name',
+            text: hiringQuery.getJoinedCompanyName,
+            values:[_body.employeeId]
+        }
+    }
     
     export const getPositionsDetails = (_body) => {
         return {
@@ -770,3 +777,11 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId,false]
         }
     }
+    export const getCandidateDetails = (_body) => {
+        return {
+            name: 'get-candidate-name',
+            text: hiringQuery.getCandidateNames,
+            values:[_body.candidateId]
+        }
+    }
+    
