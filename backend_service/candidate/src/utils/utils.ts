@@ -127,10 +127,7 @@ export const resourceSort = (body) => {
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
         if(body.sortBy=="availability")
         {
-            sort= `ORDER BY  case 
-                                when chsv."readyToStart"=1 and chsv."availability"=true then chsv."readyToStart"
-                               
-                                 end ${body.sortType}`;
+            sort= `order by availability,"readyToStart" ${body.sortType}`;
         }
         sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
 

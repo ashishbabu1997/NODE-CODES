@@ -10,18 +10,18 @@ export const objectToArray = (objectArray,keyName) => {
 export  const positionFilter = (filter,filterQuery,queryValues) =>{
     if(filter)
     {               
-        let startDate = filter.postedFrom,
-        endDate = filter.postedTo,
+        let startDate = filter.fromDate,
+        endDate = filter.toDate,
         company = filter.company,
         position = filter.position,
         allocatedTo = filter.allocatedTo,
         jobCategory = filter.jobCategory,
         minDuration = filter.minDuration,
         maxDuration = filter.maxDuration,
-        coreSkills = filter.coreSkills,
+        coreSkills = filter.skills,
         otherSkills = filter.otherSkills,
-        status = filter.status
-        ;
+        positionStatus = filter.positionStatus
+        ; 
         
         if(![null,undefined,''].includes(startDate) && ![null,undefined,''].includes(endDate))
         {   
@@ -43,7 +43,7 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
 
         if(Array.isArray(position) && position.length)
         {   
-            filterQuery=filterQuery+' AND p.position_name IN $position::varchar[]'
+            filterQuery=filterQuery+' AND p.position_name = any($position::varchar[])'
             queryValues = Object.assign({position:position},queryValues)
         }
 
@@ -65,10 +65,10 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
             queryValues = Object.assign({jobcategory:jobCategory},queryValues)
         }
 
-        if(Array.isArray(status) && status.length)
+        if(Array.isArray(positionStatus) && positionStatus.length)
         {
             filterQuery += 'and (ARRAY (select case when chsv."positionStatusName" is null then \'Submitted to hirer\' else chsv."positionStatusName" end from candidate_hiring_steps_view chsv where chsv."positionId" = p.position_id)) @> $status'
-            queryValues = Object.assign({status:status},queryValues)
+            queryValues = Object.assign({status:positionStatus},queryValues)
         }
 
         if(Array.isArray(coreSkills) && coreSkills.length)

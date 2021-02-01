@@ -44,15 +44,15 @@
 *               type: array
 *               items:
 *                 type: string 
-*             postedFrom:
+*             fromDate:
 *               type: integer            
-*             postedTo:
+*             toDate:
 *               type: integer
 *             minDuration:
 *               type: string            
 *             maxDuration:
 *               type: string
-*             coreSkills:
+*             skills:
 *               type: array
 *               items:
 *                 type: object
@@ -70,7 +70,7 @@
 *                     type: integer
 *                   skillName:
 *                     type: string
-*             status:
+*             positionStatus:
 *               type: array
 *               items:
 *                 type: string
