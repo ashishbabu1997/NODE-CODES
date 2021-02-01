@@ -145,7 +145,7 @@ export const listFreeCandidatesDetails = (_body) => {
                 await client.query('BEGIN');
                 queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body);
                 queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
-
+                console.log(queryText)
                 const listCandidates = {
                     name: 'get-free-candidates',
                     text: queryText,
@@ -375,7 +375,6 @@ export const interviewRequestFunction = (_body) => {
                 const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}`
                 let imageResults=await client.query(queryService.getImageDetails(_body))
                 await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
-                
                 var hirerCompanyName = interviewDetails[0].hirerCompanyName.toUpperCase()
                 candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName
                 candidateLastName = interviewDetails[0].candidateLastName === null ? '' : interviewDetails[0].candidateLastName

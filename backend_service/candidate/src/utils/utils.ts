@@ -120,19 +120,21 @@ export const resourceSort = (body) => {
         "candidatelastName": 'chsv."candidateLastName"',
         "companyName": 'chsv."companyName"',
         "updatedOn" : 'chsv."updatedOn"',
-        "availability":'chsv."availability"',
+        "availability":'chsv."readyToStart"',
         "createdOn":'chsv."createdOn"',        
         "experience":'chsv."workExperience"'
     }
+    // case     when chsv."readyToStart"=1 and chsv."availability"=true then chsv."readyToStart"
+
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
         if(body.sortBy=="availability")
         {
-            sort= `ORDER BY  case 
-                                when chsv."readyToStart"=1 and chsv."availability"=true then chsv."readyToStart"
-                               
-                                 end ${body.sortType}`;
+            sort=`ORDER BY CASE  WHEN chsv."readyToStart" IN (1,2,3,4,5) AND chsv.availability=true THEN chsv."readyToStart" END ${body.sortType}`
         }
-        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
+        else
+        {
+            sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
+        }
 
     }
     return sort;
