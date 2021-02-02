@@ -505,6 +505,28 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.employeeId]
         }
     }
+    export const getResourceCount = (_body) => {
+        return {
+            name: 'company-name',
+            text: hiringQuery.fetchResourceCounts,
+            values:[_body.positionId]
+        }
+    }
+    export const updateJobStatus = (_body) => {
+        return {
+            name: 'company-name',
+            text: hiringQuery.closeJobStatus,
+            values:[_body.positionId]
+        }
+    }
+    
+    export const updateClosedCount = (_body) => {
+        return {
+            name: 'company-name',
+            text: hiringQuery.updateResourceCount,
+            values:[_body.positionId]
+        }
+    }
     
     export const getPositionsDetails = (_body) => {
         return {

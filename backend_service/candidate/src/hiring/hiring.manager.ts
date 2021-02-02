@@ -127,6 +127,16 @@ export const updateHiringStepDetails = (_body) => {
                         await client.query(queryService.updateMakeOfferValue(_body));
                         if (_body.hiringAssesmentValue==0)
                         {   
+                            let updatedResourceCounts=await client.query(queryService.updateClosedCount(_body))
+                            if(updatedResourceCounts.rows[0].developer_count>=updatedResourceCounts.rows[0].close_count)
+                            {
+                                await client.query(queryService.updateJobStatus(_body))
+
+                            }
+                            else
+                            {
+                                console.log("Position is not closed")
+                            }
                             let companyNameResult=await client.query(queryService.getCompanyDetails(_body))
                             let imageResults=await client.query(queryService.getImageDetails(_body))
                             let message=`${imageResults.rows[0].candidate_first_name +' '+imageResults.rows[0].candidate_last_name} has accepted the offer by ${companyNameResult.rows[0].companyName}`
