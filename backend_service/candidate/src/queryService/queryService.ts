@@ -514,7 +514,7 @@ export const insertCandidatePublicationQuery = (_body) => {
     }
     export const updateJobStatus = (_body) => {
         return {
-            name: 'company-name',
+            name: 'update-status',
             text: hiringQuery.closeJobStatus,
             values:[_body.positionId]
         }
@@ -522,7 +522,7 @@ export const insertCandidatePublicationQuery = (_body) => {
     
     export const updateClosedCount = (_body) => {
         return {
-            name: 'company-name',
+            name: 'update-count',
             text: hiringQuery.updateResourceCount,
             values:[_body.positionId]
         }

@@ -304,6 +304,20 @@ export const  upcomingInterviewsForEllowRecruiter = (_body) =>{
         values : []
     }
 }
+export const  getActivePositions = (_body) =>{
+    return {
+        name: 'recruiter-active-positions',
+        text:dashboardQuery.fetchAllActivePositionsForEllowRecruiter,
+        values : []
+    }
+}
+export const  getHirerActivePositions = (_body) =>{
+    return {
+        name: 'hirer-active-positions',
+        text:dashboardQuery.fetchAllActivePositionsForHirer,
+        values : [_body.companyId]
+    }
+}
 export const  upcomingInterviewsForHirer = (_body) =>{
     return {
         name: 'hirer-interview-list',

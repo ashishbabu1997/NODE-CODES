@@ -90,3 +90,43 @@ export const getUpcomingInterviews = (_body) => {
         })
     })
 }
+
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get all active positions
+export const getAllActivePositions = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                let data = {};
+
+                if(_body.userRoleId == 1)
+                {
+                    const allPositionsList =  await client.query(queryService.getActivePositions(_body))
+                    data = {
+                        activePositions : allPositionsList.rows,
+                    }
+                }
+                else 
+                {
+                    const hirerActivePositions =  await client.query(queryService.getHirerActivePositions(_body))
+                    data = {
+                        activePositions : hirerActivePositions.rows,
+                    }
+                }
+             
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Dashboard listed succesfully",data });
+            } catch (e) {
+                await client.query('ROLLBACK')
+                console.log(e)
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } 
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
