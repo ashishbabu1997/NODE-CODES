@@ -1,5 +1,7 @@
 import positionsQuery from '../positions/query/positions.query';
 import jobReceivedQuery from '../jobreceived/query/jobreceived.query';
+import dashboardQuery from '../dashboard/query/query';
+
 import * as format from 'pg-format';
 
 const currentTime = () => {return new Date().getTime()} 
@@ -248,5 +250,50 @@ export const  getMailAddress = (_body) =>{
         text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
         values:[_body.positionId]
 
+    }
+}
+
+
+// ------------------------------------------ Dashboard Queries ---------------------------------------//
+export const  hirerPositionCounts = (_body) =>{
+    return {
+        name: 'hirer-position-counts',
+        text:dashboardQuery.hirerPositionCounts,
+        values : [_body.companyId]
+    }
+}
+
+export const  clientHiringCountsHirer = (_body) =>{
+    return {
+        name: 'client-hiring-counts-hirer',
+        text:dashboardQuery.clientHiringCountsHirer,
+        values : [_body.companyId]
+    }
+}
+
+export const  adminPositionCounts = (_body) =>{
+    return {
+        name: 'admin-position-counts',
+        text:dashboardQuery.adminPositionCounts
+    }
+}
+
+export const  clientHiringCountsAdmin = (_body) =>{
+    return {
+        name: 'client-hiring-counts-admin',
+        text:dashboardQuery.clientHiringCountsAdmin
+    }
+}
+
+export const  candidateVetted_NonVettedCount = (_body) =>{
+    return {
+        name: 'candidate-vetted-nonvetted-count',
+        text:dashboardQuery.candidateVetted_NonVettedCount
+    }
+}
+export const  ellowScreeningCount = (_body) =>{
+    return {
+        name: 'ellow-screening-count',
+        text:dashboardQuery.ellowScreeningCount
     }
 }
