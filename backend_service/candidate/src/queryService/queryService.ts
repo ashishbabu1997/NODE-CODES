@@ -717,7 +717,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'move-tostep-client-hiring',
             text: hiringQuery.moveCandidateHiringStep,
-            values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,candidateHiringStepOrder:_body.candidateHiringStepOrder,candidateid:_body.candidateId,positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
+            values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,candidateHiringStepOrder:_body.candidateHiringStepOrder,candidateid:_body.candidateId,positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId,assignedto:_body.assignedTo},
         }
     }
     

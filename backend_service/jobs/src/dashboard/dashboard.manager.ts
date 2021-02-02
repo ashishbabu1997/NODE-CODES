@@ -50,3 +50,43 @@ export const getCounts = (_body) => {
         })
     })
 }
+
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get all upcoming interviews
+export const getUpcomingInterviews = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                let data = {};
+
+                if(_body.userRoleId == 1)
+                {
+                    const recruiterInterviewLists =  await client.query(queryService.upcomingInterviewsForEllowRecruiter(_body))
+                    data = {
+                        upcomingInterviews : recruiterInterviewLists.rows,
+                    }
+                }
+                else 
+                {
+                    const hirerInterviewLists =  await client.query(queryService.upcomingInterviewsForHirer(_body))
+                    data = {
+                        upcomingInterviews : hirerInterviewLists.rows,
+                    }
+                }
+             
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Dashboard listed succesfully",data });
+            } catch (e) {
+                await client.query('ROLLBACK')
+                console.log(e)
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } 
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}

@@ -297,3 +297,17 @@ export const  ellowScreeningCount = (_body) =>{
         text:dashboardQuery.ellowScreeningCount
     }
 }
+export const  upcomingInterviewsForEllowRecruiter = (_body) =>{
+    return {
+        name: 'recruiter-interview-list',
+        text:dashboardQuery.fetchRecruiterInterviewList,
+        values : []
+    }
+}
+export const  upcomingInterviewsForHirer = (_body) =>{
+    return {
+        name: 'hirer-interview-list',
+        text:dashboardQuery.fetchRecruiterInterviewList,
+        values : [_body.companyId]
+    }
+}
