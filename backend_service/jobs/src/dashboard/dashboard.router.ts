@@ -7,6 +7,7 @@ const router = express.Router();
 router
     .get('/counts',jwtAuth, setData(), dashboardController.getCounts)
     .get('/upcomingInterviews',jwtAuth, setData(), dashboardController.fetchupcomingInterviews)
+    .get('/activePositions',jwtAuth, setData(), dashboardController.fetchAllActivePositions)
 
     
 export default router;
