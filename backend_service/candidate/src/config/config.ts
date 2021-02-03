@@ -11,7 +11,8 @@ export default {
         "newUserTextSubject":"ellow LOGIN PASSWORD",
         "newUserAdminTextSubject":"New Employee Notification",
         "addCandidatesTextSubject":"Added Candidates List",
-        "addCandidatesUsersTextSubject":"Profile Selection Notification"
+        "addCandidatesUsersTextSubject":"Profile Selection Notification",
+        "sharePdfTextSubject":"Resume PDF share Notification"
     },
     "db": {
         "user": "devdb_user",
@@ -25,6 +26,11 @@ export default {
         "service": "gmail",
         "user": "sales@ellow.io",
         "password": "yteinevvuuchtmvb"
+    },
+    "noreplymail": {
+        "service": "gmail",
+        "user": "no-reply@ellow.io",
+        "password": "fqlroidzaxmlhgml"
     },
     "jwtSecretKey": "elL0wA!",
     "countries":[

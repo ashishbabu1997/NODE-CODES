@@ -1,7 +1,7 @@
 /**
 * @swagger
-* /positions:
-*   get:
+* /positions/positionList:
+*   post:
 *     tags:
 *       - Positions
 *     name: List position based candidates
@@ -16,17 +16,64 @@
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum:  [position,positionName,createdOn,candidateCount,resourceCount,companyName,updatedOn]
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *       - in: query
 *         name: searchKey
 *         schema:
-*           type: string
+*         type: string
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             company:
+*               type: array
+*               items:
+*                 type: string
+*             allocatedTo:
+*               type: integer
+*             jobCategory:
+*               type: integer 
+*             position:
+*               type: array
+*               items:
+*                 type: string 
+*             fromDate:
+*               type: integer            
+*             toDate:
+*               type: integer
+*             minDuration:
+*               type: string            
+*             maxDuration:
+*               type: string
+*             skills:
+*               type: array
+*               items:
+*                 type: object
+*                 properties:
+*                   skillId:
+*                     type: integer
+*                   skillName:
+*                     type: string
+*             otherSkills:
+*               type: array
+*               items:
+*                 type: object
+*                 properties:
+*                   skillId:
+*                     type: integer
+*                   skillName:
+*                     type: string
+*             positionStatus:
+*               type: array
+*               items:
+*                 type: string
 *     responses:
 *       200:
 *         description: Api success
@@ -58,9 +105,10 @@
 *       - in: query
 *         name: accountType
 *         schema:
-*           type: integer
+*         type: integer
 *         enum: [1,2]
 *         description: 1 for hirerList, 2 for sellerList
+*         required: [accountType]
 *     responses:
 *       200:
 *         description: Api success
@@ -92,8 +140,8 @@
 *       - in: path
 *         name: positionId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [positionId]
 *     responses:
 *       200:
 *         description: Api success
@@ -147,7 +195,6 @@
 *               type: integer 
 *             contractDuration:
 *               type: integer
-
 *             currencyTypeId:
 *               type: integer            
 *             billingType:
@@ -181,6 +228,21 @@
 *                         type: integer
 *                       skillName:
 *                         type: string
+*             hiringSteps:
+*               type: array
+*               items:
+*                 type: object
+*                 properties:
+*                   hiringStepName:
+*                     type: string
+*                   hiringStepType:
+*                     type: integer
+*                   hiringAssesmentName:
+*                     type: string
+*                   hiringAssesmentType:
+*                     type: integer
+*                   hiringStepOrder:
+*                     type: integer
 *     responses:
 *       200:
 *         description: Api success
@@ -381,6 +443,21 @@
 *                         type: integer
 *                       skillName:
 *                         type: string
+*             hiringSteps:
+*               type: array
+*               items:
+*                 type: object
+*                 properties:
+*                   hiringStepName:
+*                     type: string
+*                   hiringStepType:
+*                     type: integer
+*                   hiringAssesmentName:
+*                     type: string
+*                   hiringAssesmentType:
+*                     type: integer
+*                   hiringStepOrder:
+*                     type: integer
 *     responses:
 *       200:
 *         description: Api success
@@ -430,3 +507,42 @@
 *       500:
 *         description: Server down
 */
+
+/**
+* @swagger
+* /positions/updateAllocatedTo:
+*   put:
+*     tags:
+*       - Positions
+*     name: updateAllocatedTo
+*     summary: update default allocation of a position
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             positionId:
+*               type: integer
+*             allocatedTo:
+*               type: integer
+*           required: [positionId,allocatedTo]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+

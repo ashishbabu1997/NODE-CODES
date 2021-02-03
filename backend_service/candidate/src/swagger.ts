@@ -25,6 +25,6 @@ const swaggerDefinition = {
 
 const options = {
     swaggerDefinition,
-    apis:[`./src/candidates/*.ts`,`./src/freelancer/*.ts`]
+    apis:[`./src/candidates/*.ts`,`./src/freelancer/*.ts`,`./src/filter/*.ts`,`./src/hiring/*.ts`]
   };
  export const swaggerSpec = swaggerJsDoc(options);

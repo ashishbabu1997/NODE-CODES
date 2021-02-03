@@ -21,7 +21,7 @@ export default {
     "text": {
     
         "subject":"Customer Registration Notification",
-        "userSubject":"Customer Verification Link",
+        "userSubject":"Freelancer Verification Link",
         "resetConfirmSubject":" ellow Confirmation Mail"
     },
     "defaultHiringStep": {
