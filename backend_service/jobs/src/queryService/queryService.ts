@@ -139,7 +139,7 @@ export const  addCompanyPositionsQuery = (_body) =>{
         name: 'add-company-positions',
         text: positionsQuery.addCompanyPositions,
         values: {
-            name:_body.positionName, devcount:_body.developerCount, companyid: _body.cmpId,
+            name:_body.positionName,location:_body.locationName, devcount:_body.developerCount, companyid: _body.cmpId,
             explevel:_body.experienceLevel, jobdesc:_body.jobDescription, doc:_body.document, 
             currencyid:_body.currencyTypeId, billingtype:_body.billingType, 
             empid:_body.employeeId,  time:currentTime(), jobcatid:_body.jobCategoryId
