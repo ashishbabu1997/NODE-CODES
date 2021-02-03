@@ -1297,21 +1297,26 @@ export const addResumeShareLink = (_body) => {
                 if(!isNaN(_body.candidateId))
                 {
                     _body.uniqueId = nanoid();
-                    let sharedEmails=[],domain='',flag=0;
+                    let sharedEmails=[],domain='',flag=0,filteredEmails=[];
                     
                     let domainResult = await client.query(queryService.getDomainFromEmployeeId(_body));
                     domain = domainResult.rows[0].domain;
-                    
-                    let filteredEmails = _body.sharedEmails.filter((element)=> element.endsWith('@'+domain));
-                    _body.sharedEmails.length!=filteredEmails.length?flag=1:'';
-                    
+                    if(_body.userRoleId==1)
+                    {
+                        filteredEmails=_body.sharedEmails
+                    }
+                    else
+                    {
+                        filteredEmails = _body.sharedEmails.filter((element)=> element.endsWith('@'+domain));
+                        _body.sharedEmails.length!=filteredEmails.length?flag=1:'';
+                    }
                     _body.sharedEmails = filteredEmails;                        
                     let result = await client.query(queryService.addResumeShare(_body));
                     let results = await client.query(queryService.getNames(_body));
                     if(![null,undefined].includes(result.rows) && result.rows.length > 0)
                     {
                         _body.uniqueId = result.rows[0].unique_key;
-                        sharedEmails =_body.emailList;
+                        sharedEmails =_body.sharedEmails;
                         var link=_body.host+'/shareResume/'+_body.uniqueId
                         if (Array.isArray(sharedEmails))
                         {
