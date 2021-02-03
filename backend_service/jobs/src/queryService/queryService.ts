@@ -1,5 +1,7 @@
 import positionsQuery from '../positions/query/positions.query';
 import jobReceivedQuery from '../jobreceived/query/jobreceived.query';
+import dashboardQuery from '../dashboard/query/query';
+
 import * as format from 'pg-format';
 
 const currentTime = () => {return new Date().getTime()} 
@@ -137,7 +139,7 @@ export const  addCompanyPositionsQuery = (_body) =>{
         name: 'add-company-positions',
         text: positionsQuery.addCompanyPositions,
         values: {
-            name:_body.positionName, devcount:_body.developerCount, companyid: _body.cmpId,
+            name:_body.positionName,location:_body.locationName, devcount:_body.developerCount, companyid: _body.cmpId,
             explevel:_body.experienceLevel, jobdesc:_body.jobDescription, doc:_body.document, 
             currencyid:_body.currencyTypeId, billingtype:_body.billingType, 
             empid:_body.employeeId,  time:currentTime(), jobcatid:_body.jobCategoryId
@@ -248,5 +250,78 @@ export const  getMailAddress = (_body) =>{
         text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
         values:[_body.positionId]
 
+    }
+}
+
+
+// ------------------------------------------ Dashboard Queries ---------------------------------------//
+export const  hirerPositionCounts = (_body) =>{
+    return {
+        name: 'hirer-position-counts',
+        text:dashboardQuery.hirerPositionCounts,
+        values : [_body.companyId]
+    }
+}
+
+export const  clientHiringCountsHirer = (_body) =>{
+    return {
+        name: 'client-hiring-counts-hirer',
+        text:dashboardQuery.clientHiringCountsHirer,
+        values : [_body.companyId]
+    }
+}
+
+export const  adminPositionCounts = (_body) =>{
+    return {
+        name: 'admin-position-counts',
+        text:dashboardQuery.adminPositionCounts
+    }
+}
+
+export const  clientHiringCountsAdmin = (_body) =>{
+    return {
+        name: 'client-hiring-counts-admin',
+        text:dashboardQuery.clientHiringCountsAdmin
+    }
+}
+
+export const  candidateVetted_NonVettedCount = (_body) =>{
+    return {
+        name: 'candidate-vetted-nonvetted-count',
+        text:dashboardQuery.candidateVetted_NonVettedCount
+    }
+}
+export const  ellowScreeningCount = (_body) =>{
+    return {
+        name: 'ellow-screening-count',
+        text:dashboardQuery.ellowScreeningCount
+    }
+}
+export const  upcomingInterviewsForEllowRecruiter = (_body) =>{
+    return {
+        name: 'recruiter-interview-list',
+        text:dashboardQuery.fetchRecruiterInterviewList,
+        values : []
+    }
+}
+export const  getActivePositions = (_body) =>{
+    return {
+        name: 'recruiter-active-positions',
+        text:dashboardQuery.fetchAllActivePositionsForEllowRecruiter,
+        values : []
+    }
+}
+export const  getHirerActivePositions = (_body) =>{
+    return {
+        name: 'hirer-active-positions',
+        text:dashboardQuery.fetchAllActivePositionsForHirer,
+        values : [_body.companyId]
+    }
+}
+export const  upcomingInterviewsForHirer = (_body) =>{
+    return {
+        name: 'hirer-interview-list',
+        text:dashboardQuery.fetchRecruiterInterviewList,
+        values : [_body.companyId]
     }
 }

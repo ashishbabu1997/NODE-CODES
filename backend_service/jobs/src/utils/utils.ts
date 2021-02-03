@@ -1,4 +1,3 @@
-import { stat } from "fs/promises";
 
 export const objectToArray = (objectArray,keyName) => {
     let reqArray = [];
@@ -11,18 +10,18 @@ export const objectToArray = (objectArray,keyName) => {
 export  const positionFilter = (filter,filterQuery,queryValues) =>{
     if(filter)
     {               
-        let startDate = filter.postedFrom,
-        endDate = filter.postedTo,
+        let startDate = filter.fromDate,
+        endDate = filter.toDate,
         company = filter.company,
         position = filter.position,
         allocatedTo = filter.allocatedTo,
         jobCategory = filter.jobCategory,
         minDuration = filter.minDuration,
         maxDuration = filter.maxDuration,
-        coreSkills = filter.coreSkills,
+        coreSkills = filter.skills,
         otherSkills = filter.otherSkills,
-        status = filter.status
-        ;
+        positionStatus = filter.positionStatus
+        ; 
         
         if(![null,undefined,''].includes(startDate) && ![null,undefined,''].includes(endDate))
         {   
@@ -32,19 +31,19 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
         
         if(![null,undefined,''].includes(minDuration) && ![null,undefined,''].includes(maxDuration))
         {   
-            filterQuery=filterQuery+' AND p.contract_duration BETWEEN $minduration  AND $maxduration'
+            filterQuery=filterQuery+' AND p.contract_duration BETWEEN $minduration AND $maxduration'
             queryValues = Object.assign({minduration:minDuration,maxduration:maxDuration},queryValues)
         }
 
         if(Array.isArray(company) && company.length)
         {   
-            filterQuery=filterQuery+' AND p.company_name IN $company::varchar[]'
+            filterQuery=filterQuery+' AND c.company_name = any($company::varchar[])'
             queryValues = Object.assign({company:company},queryValues)
         }
 
         if(Array.isArray(position) && position.length)
         {   
-            filterQuery=filterQuery+' AND p.position_name IN $position::varchar[]'
+            filterQuery=filterQuery+' AND p.position_name = any($position::varchar[])'
             queryValues = Object.assign({position:position},queryValues)
         }
 
@@ -66,12 +65,22 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
             queryValues = Object.assign({jobcategory:jobCategory},queryValues)
         }
 
-        if(Array.isArray(status) && status.length)
+        if(Array.isArray(positionStatus) && positionStatus.length)
         {
             filterQuery += 'and (ARRAY (select case when chsv."positionStatusName" is null then \'Submitted to hirer\' else chsv."positionStatusName" end from candidate_hiring_steps_view chsv where chsv."positionId" = p.position_id)) @> $status'
-            queryValues = Object.assign({status:status},queryValues)
+            queryValues = Object.assign({status:positionStatus},queryValues)
         }
-        
+
+        if(Array.isArray(coreSkills) && coreSkills.length)
+        {
+            filterQuery+='and $skill::integer[] <@ (select ARRAY (select js.skill_id from job_skills js where p.position_id=js.position_id and js.status=true and js.top_rated_skill=true))'
+            queryValues =  Object.assign({skill:objectToArray(coreSkills,'skillId')},queryValues)
+        }
+        if(Array.isArray(otherSkills) && otherSkills.length)
+        {
+            filterQuery+='and $otherskill::integer[] && (select ARRAY (select js.skill_id from job_skills js where p.position_id=js.position_id and js.status=true and js.top_rated_skill=false))'
+            queryValues =  Object.assign({otherskill:objectToArray(otherSkills,'skillId')},queryValues)
+        }  
     }
     return {filterQuery,queryValues};
 } 

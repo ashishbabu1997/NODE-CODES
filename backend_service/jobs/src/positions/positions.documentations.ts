@@ -43,12 +43,34 @@
 *             position:
 *               type: array
 *               items:
-*                 type: string
-*             postedFrom:
+*                 type: string 
+*             fromDate:
 *               type: integer            
-*             postedTo:
+*             toDate:
+*               type: integer
+*             minDuration:
+*               type: string            
+*             maxDuration:
 *               type: string
-*             status:
+*             skills:
+*               type: array
+*               items:
+*                 type: object
+*                 properties:
+*                   skillId:
+*                     type: integer
+*                   skillName:
+*                     type: string
+*             otherSkills:
+*               type: array
+*               items:
+*                 type: object
+*                 properties:
+*                   skillId:
+*                     type: integer
+*                   skillName:
+*                     type: string
+*             positionStatus:
 *               type: array
 *               items:
 *                 type: string

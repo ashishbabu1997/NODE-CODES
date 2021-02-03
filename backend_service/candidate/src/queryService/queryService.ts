@@ -498,6 +498,35 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId]
         }
     }
+    export const getCompanyDetails = (_body) => {
+        return {
+            name: 'company-name',
+            text: hiringQuery.getJoinedCompanyName,
+            values:[_body.employeeId]
+        }
+    }
+    export const getResourceCount = (_body) => {
+        return {
+            name: 'company-name',
+            text: hiringQuery.fetchResourceCounts,
+            values:[_body.positionId]
+        }
+    }
+    export const updateJobStatus = (_body) => {
+        return {
+            name: 'update-status',
+            text: hiringQuery.closeJobStatus,
+            values:[_body.positionId]
+        }
+    }
+    
+    export const updateClosedCount = (_body) => {
+        return {
+            name: 'update-count',
+            text: hiringQuery.updateResourceCount,
+            values:[_body.positionId]
+        }
+    }
     
     export const getPositionsDetails = (_body) => {
         return {
@@ -688,7 +717,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'move-tostep-client-hiring',
             text: hiringQuery.moveCandidateHiringStep,
-            values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,candidateHiringStepOrder:_body.candidateHiringStepOrder,candidateid:_body.candidateId,positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId},
+            values: {candidateClientHiringStepId:_body.candidateClientHiringStepId,candidateHiringStepOrder:_body.candidateHiringStepOrder,candidateid:_body.candidateId,positionid:_body.positionId,currenttime:currentTime(),employeeid:_body.employeeId,assignedto:_body.assignedTo},
         }
     }
     
@@ -770,3 +799,11 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId,false]
         }
     }
+    export const getCandidateDetails = (_body) => {
+        return {
+            name: 'get-candidate-name',
+            text: hiringQuery.getCandidateNames,
+            values:[_body.candidateId]
+        }
+    }
+    

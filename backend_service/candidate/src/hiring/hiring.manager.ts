@@ -1,6 +1,9 @@
 import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
 import hiringQuery from './query/hiring.query';
+import * as emailClient from '../emailService/emailService';
+import { createNotification } from '../common/notifications/notifications';
+import config from '../config/config'
 
 
 // >>>>>>> FUNC. >>>>>>>
@@ -123,8 +126,37 @@ export const updateHiringStepDetails = (_body) => {
                     {
                         await client.query(queryService.updateMakeOfferValue(_body));
                         if (_body.hiringAssesmentValue==0)
-                        {
-                            await client.query(queryService.updateAvailabilityOfCandidate(_body));
+                        {   
+                            let updatedResourceCounts=await client.query(queryService.updateClosedCount(_body))
+                            if(updatedResourceCounts.rows[0].developer_count>=updatedResourceCounts.rows[0].close_count)
+                            {
+                                await client.query(queryService.updateJobStatus(_body))
+
+                            }
+                            else
+                            {
+                                console.log("Position is not closed")
+                            }
+                            let companyNameResult=await client.query(queryService.getCompanyDetails(_body))
+                            let imageResults=await client.query(queryService.getImageDetails(_body))
+                            let message=`${imageResults.rows[0].candidate_first_name +' '+imageResults.rows[0].candidate_last_name} has accepted the offer by ${companyNameResult.rows[0].companyName}`
+                            await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
+                            if(_body.userRoleId!=1)
+                            {
+                                var subj = "Resource Acception Notification";
+                                let path = 'src/emailTemplates/resourceAcceptionMailText.html';
+                                let adminReplacements = {
+                                    fName: imageResults.rows[0].candidate_first_name,
+                                    lName: imageResults.rows[0].candidate_last_name,
+                                    cName: companyNameResult.rows[0].companyName,
+                                }; 
+                                emailClient.emailManager(config.adminEmail,subj,path,adminReplacements);
+                                await client.query(queryService.updateAvailabilityOfCandidate(_body));
+                            }
+                            else
+                            {
+                                await client.query(queryService.updateAvailabilityOfCandidate(_body));
+                            }
                         }
                     }
                     else
