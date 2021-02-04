@@ -18,7 +18,7 @@ export const getAllJobReceived = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
          
-            const client = await database().connect()
+            const client = await database()
             try {
                             var selectQuery = jobReceivedQuery.getAllJobReceived;
                             var queryText='', queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',searchQuery='',body=_body.query, sort = '', searchKey = '';
@@ -86,9 +86,7 @@ export const getAllJobReceived = (_body) => {
                             console.log(e)
                             await client.query('ROLLBACK')
                             reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-                        } finally {
-                            client.release();
-                        }
+                        } 
                     })().catch(e => {
                         reject({ code: 400, message: "Failed. Please try again.", data: e.message })
                     })
