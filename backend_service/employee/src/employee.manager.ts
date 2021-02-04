@@ -445,7 +445,7 @@ export const ellowAdminSignup = (_body) => {
                 const adminSignup = {
                     name: 'admin-signup',
                     text: employeeQuery.ellowAdminSignupQuery,
-                    values: [_body.firstName,_body.lastName,1,_body.email,_body.phoneNumber,hashedPassword,3,1,true,1]
+                    values: [_body.firstName,_body.lastName,_body.email,_body.phoneNumber,hashedPassword,3,1,true,1]
                 }
                 
                await client.query(adminSignup);
