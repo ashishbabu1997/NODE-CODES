@@ -306,6 +306,23 @@ export const submitCandidateProfile = (_body) => {
                         position:positionName,     
                     };
                     emailClient.emailManager(config.adminEmail,subject,path,userReplacements);
+                    var positions=await client.query(queryService. getPositionName(_body));
+                    var resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
+                    if (_body.userRoleId==1)
+                    {
+                        emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
+                        emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
+
+
+                    }
+                    else{
+                       
+                            emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
+                            emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
+                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,path,userReplacements);
+
+    
+                    }
                 }
                 else
                 {

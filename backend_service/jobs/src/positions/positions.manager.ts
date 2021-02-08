@@ -285,8 +285,16 @@ export const fetchPositionDetails = (_body) => {
                                     company:cName,
                                     position:cpName  
                                 };
-                                emailClient.emailManager(config.adminEmail,subject,path,userReplacements);
-                                resolve({ code: 200, message: "Position published successfully", data: {} });
+                                var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
+                                if(Array.isArray(ellowAdmins.rows))
+                                {
+                                    ellowAdmins.rows.forEach(element => {
+                                        emailClient.emailManager(element.email,subject,path,userReplacements);
+
+                                        })
+                                        resolve({ code: 200, message: "Position published successfully", data: {} });
+
+                                }
                             } catch (e) {
                                 console.log("Error1",e)
                                 await client.query('ROLLBACK')
@@ -342,17 +350,8 @@ export const fetchPositionDetails = (_body) => {
                                             // If job status is 8,then the position is closed.
                                 else if(_body.jobStatus==8)
                                             {
-                                                const mailAddress = {
-                                                    name: 'fetch-emailaddress',
-                                                    text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
-                                                    values:[_body.positionId]
-                                                }
-                                                database().query(mailAddress, (error, results) => {
-                                                    if (error) {
-                                                        console.log(error)
-                                                        reject({ code: 400, message: "Error in database connection.", data: {} });
-                                                        return;
-                                                    }   
+                                               
+                                                var results=await client.query(queryService.mailAddress(_body))  
                                                     jobReceivedId=results.rows[0].job_received_id    
                                                     positionName=results.rows[0].position_name
                                                     var emailId=results.rows[0].email
@@ -374,17 +373,19 @@ export const fetchPositionDetails = (_body) => {
                                                         var userReplacements = {
                                                             position:positionName
                                                         };
-                                                        emailClient.emailManager(config.adminEmail,subj,path,userReplacements);
+                                                        var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
+                                                        if(Array.isArray(ellowAdmins.rows))
+                                                        {
+                                                            ellowAdmins.rows.forEach(element => {
+                                                                emailClient.emailManager(element.email,subj,path,userReplacements);
+
+                                                                })
+                                                                
+                                                        }
                                                     }
-                                                })
                                             }   
                                             
-                                        
-                                        
-                                  
-                                    
                                
-                                console.log(message)
                                 resolve({ code: 200, message: "Job status changed", data: {} });
                                 
                             } catch (e) {
@@ -471,13 +472,23 @@ export const fetchPositionDetails = (_body) => {
                                 await client.query('COMMIT');
                                 
                                 let path = 'src/emailTemplates/positionDeletionText.html';
+                                let adminPath = 'src/emailTemplates/positionDeletionAdminText.html';
                                 var userReplacements = {
                                     position:positionName
                                 };
                                 emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);
-                                const message=`The position, ${positionName}  has been removed .`
-                                await createNotification({ positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
-                                resolve({ code: 200, message: "Position deletion successfull", data: {} });
+                                var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
+                                if(Array.isArray(ellowAdmins.rows))
+                                {
+                                    ellowAdmins.rows.forEach(element => {
+                                        emailClient.emailManager(element.email,config.PositionText.subject,adminPath,userReplacements);
+
+                                        })
+                                        const message=`The position, ${positionName}  has been removed .`
+                                        await createNotification({ positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
+                                        resolve({ code: 200, message: "Position deletion successfull", data: {} });
+                                }
+                         
                             } catch (e) {
                                 console.log(e)
                                 await client.query('ROLLBACK')
