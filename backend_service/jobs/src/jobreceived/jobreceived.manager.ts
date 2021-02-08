@@ -18,7 +18,7 @@ export const getAllJobReceived = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
          
-            const client = await database().connect()
+            const client = await database()
             try {
                             var selectQuery = jobReceivedQuery.getAllJobReceived;
                             var queryText='', queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',searchQuery='',body=_body.query, sort = '', searchKey = '';
@@ -86,9 +86,7 @@ export const getAllJobReceived = (_body) => {
                             console.log(e)
                             await client.query('ROLLBACK')
                             reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-                        } finally {
-                            client.release();
-                        }
+                        } 
                     })().catch(e => {
                         reject({ code: 400, message: "Failed. Please try again.", data: e.message })
                     })
@@ -308,6 +306,23 @@ export const submitCandidateProfile = (_body) => {
                         position:positionName,     
                     };
                     emailClient.emailManager(config.adminEmail,subject,path,userReplacements);
+                    var positions=await client.query(queryService. getPositionName(_body));
+                    var resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
+                    if (_body.userRoleId==1)
+                    {
+                        emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
+                        emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
+
+
+                    }
+                    else{
+                       
+                            emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
+                            emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
+                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,path,userReplacements);
+
+    
+                    }
                 }
                 else
                 {

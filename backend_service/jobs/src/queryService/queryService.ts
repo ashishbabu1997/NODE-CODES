@@ -99,6 +99,20 @@ export const  updateCandidateStatus = (_body) =>{
 
     }
 }
+export const getResourceAllocatedRecruiter = (_body) => {
+    return {
+        name: 'get-resource-allocated-recruiter',
+        text: jobReceivedQuery.fetchResourceAllocatedRecruiterDetails,
+        values:[_body.candidateId]
+    }
+}
+export const getPositionName = (_body) => {
+    return {
+        name: 'get-position-name',
+        text: jobReceivedQuery.getPositionNameFromId,
+        values: [_body.positionId]
+    }
+}
 export const  addDefaultTraits = (_body) =>{
     return {
         name: 'add-default-traits',
@@ -151,6 +165,21 @@ export const  getCompanyNameQuery = (_body) =>{
         name: 'get-company-name',
         text: positionsQuery.getCompanyName,
         values: [_body.cmpId]
+
+    }
+}
+export const mailAddress =(_body) => {
+    return{
+    name: 'fetch-emailaddress',
+    text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
+    values:[_body.positionId]
+}
+}
+export const  getEllowAdmins = (_body) =>{
+    return {
+        name: 'get-ellow-admin',
+        text: jobReceivedQuery.getellowAdmins,
+        values: []
 
     }
 }
