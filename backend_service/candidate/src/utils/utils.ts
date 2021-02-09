@@ -13,7 +13,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
     {               
         let resourcesType = filter.resourcesType,
         skills = filter.skills,
-        experience = filter.experience,
+        experience = filter.range,
         locations = filter.locations,
         fromDate = filter.fromDate,
         toDate = filter.toDate,
@@ -55,7 +55,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         
         if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)
         {
-            if(experience.min >= 0 && experience.max >= 0)
+            if(experience.min >= 0 && experience.max > 0)
             {
                 filterQuery=filterQuery+' and chsv."workExperience" between $experience_min and $experience_max '
                 queryValues =  Object.assign({experience_min:experience.min,experience_max:experience.max},queryValues) 

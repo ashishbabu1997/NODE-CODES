@@ -136,12 +136,8 @@ export const updateHiringStepDetails = (_body) => {
                             if(updatedResourceCounts.rows[0].developer_count>=updatedResourceCounts.rows[0].close_count)
                             {
                                 await client.query(queryService.updateJobStatus(_body))
-
                             }
-                            else
-                            {
-                                console.log("Position is not closed")
-                            }
+                            
                             let message=`${imageResults.rows[0].candidate_first_name +' '+imageResults.rows[0].candidate_last_name} has accepted the offer by ${positions.rows[0].companyName}`
                             await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                             var subj = "Resource Acception Notification";
@@ -391,6 +387,7 @@ export const updateDefaultAssignee = (_body) => {
                     let assigneeName=names.rows[0].firstname
                     let resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
                     _body.auditLogComment=`${assigneeName} (${companyName}) is the assignee for the  position ${positionName}`
+                    
                     let subject='Client Screening Assignee Notification'
                     let path = 'src/emailTemplates/clientScreeningAssigneeText.html';
                     let recruitersPath = 'src/emailTemplates/clientScreeningRecruitersText.html' 
