@@ -109,8 +109,6 @@ export const listCandidatesDetails = (_body) => {
 }
 
 
-
-
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>Listing all the free candidates from the candidates list.
 export const listFreeCandidatesDetails = (_body) => {

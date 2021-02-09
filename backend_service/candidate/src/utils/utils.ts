@@ -98,7 +98,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         }
         if(![undefined,null,''].includes(positionStatus) && Array.isArray(positionStatus) && positionStatus.length)
         {
-            filterQuery=filterQuery+' and chsv."positionStatusName" ilike any (select concat(array_element,\'%\') from unnest($positionstatus::text[]) array_element(array_element)) '
+            filterQuery=filterQuery+' and (select case when chsv."positionStatusName" is null then \'Submitted to hirer\' else chsv."positionStatusName" end) ilike any (select concat(array_element,\'%\') from unnest($positionstatus::text[]) array_element(array_element)) '
             queryValues =  Object.assign({positionstatus: positionStatus},queryValues) 
         }
         if(![undefined,null,''].includes(candStatus) && Array.isArray(candStatus) && candStatus.length)
