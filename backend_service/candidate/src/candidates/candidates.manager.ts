@@ -1637,7 +1637,7 @@ export const createPdfFromHtml = (_body) => {
                     });
                     await client.query('COMMIT')
                     
-                    resolve({ code: 200, message: "Created pdf succesfully", data:{} });
+                    resolve({ code: 200, message: "“Resume in PDF format has been shared", data:{} });
                     
                 } catch (e) {
                     console.log(e)
