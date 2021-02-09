@@ -149,8 +149,8 @@ export const updateHiringStepDetails = (_body) => {
                             let adminReplacements = {
                                     fName: imageResults.rows[0].candidate_first_name,
                                     lName: imageResults.rows[0].candidate_last_name,
-                                    cName: positions.rows[0].companyName,
-                                    pName:positions.rows[0].positionName
+                                    cName: positions.rows[0].company_name,
+                                    pName:positions.rows[0].position_name
                             }; 
                             emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subj,path,adminReplacements);
                             emailClient.emailManager(positions.rows[0].email,subj,path,adminReplacements);
@@ -158,7 +158,7 @@ export const updateHiringStepDetails = (_body) => {
                             let assigneeReplacements = {
                                     fName: imageResults.rows[0].candidate_first_name,
                                     lName: imageResults.rows[0].candidate_last_name,
-                                    pName:positions.rows[0].positionName
+                                    pName:positions.rows[0].position_name
                             }; 
                             emailClient.emailManager(assignee.rows[0].email,subj,assigneePath,assigneeReplacements);
                             await client.query(queryService.updateAvailabilityOfCandidate(_body));
@@ -172,8 +172,8 @@ export const updateHiringStepDetails = (_body) => {
                             let rejectionAdminReplacements = {
                                     fName: imageResults.rows[0].candidate_first_name,
                                     lName: imageResults.rows[0].candidate_last_name,
-                                    cName: positions.rows[0].companyName,
-                                    pName:positions.rows[0].positionName
+                                    cName: positions.rows[0].company_name,
+                                    pName:positions.rows[0].position_name
                             }; 
                             emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
                             emailClient.emailManager(positions.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
@@ -186,12 +186,12 @@ export const updateHiringStepDetails = (_body) => {
                             let ellowRejectionAssigneeReplacements = {
                                     fName: imageResults.rows[0].candidate_first_name,
                                     lName: imageResults.rows[0].candidate_last_name,
-                                    pName:positions.rows[0].positionName
+                                    pName:positions.rows[0].position_name
                             }; 
                             let ellowRejectionResourceReplacements = {
                                     fName: imageResults.rows[0].candidate_first_name,
                                     cName: positions.rows[0].companyName,
-                                    pName:positions.rows[0].positionName
+                                    pName:positions.rows[0].position_name
                             }; 
                             emailClient.emailManager(assignee.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
                             emailClient.emailManager(imageResults.rows[0].email_address,ellowSubject,ellowRejectionResourcePath,ellowRejectionResourceReplacements);
@@ -205,22 +205,22 @@ export const updateHiringStepDetails = (_body) => {
                         let ressourcesPath = 'src/emailTemplates/resourceDiscussionMailText.html';
                         let recruitersReplacements = {
                                 fName: imageResults.rows[0].candidate_first_name,
-                                cName: positions.rows[0].companyName,
-                                pName:positions.rows[0].positionName
+                                cName: positions.rows[0].company_name,
+                                pName:positions.rows[0].position_name
                         }; 
                         emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
                         emailClient.emailManager(positions.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
                         let assigneesReplacements = {
                             fName: imageResults.rows[0].candidate_first_name,
                             aName: assignee.rows[0].firstname,
-                            pName:positions.rows[0].positionName
+                            pName:positions.rows[0].position_name
                         }; 
                         emailClient.emailManager(assignee.rows[0].email,discussionWithResourceSubject,assigneesPath,assigneesReplacements);
                         let resourcesReplacements = {
                             fName: imageResults.rows[0].candidate_first_name,
                             cName: positions.rows[0].candidate_last_name,
                             aName: assignee.rows[0].firstname,
-                            pName:positions.rows[0].positionName
+                            pName:positions.rows[0].position_name
                     }; 
                     emailClient.emailManager(imageResults.rows[0].email_address,discussionWithResourceSubject,ressourcesPath,resourcesReplacements);
                     }
@@ -230,8 +230,8 @@ export const updateHiringStepDetails = (_body) => {
                         let recruiterOfferPath = 'src/emailTemplates/makeOfferMailText.html';
                         let recruiterOfferReplacements = {
                                 fName: imageResults.rows[0].candidate_first_name,
-                                aName:assignee.rows[0].firstName,
-                                pName:positions.rows[0].positionName
+                                aName:assignee.rows[0].firstname,
+                                pName:positions.rows[0].position_name
                         }; 
                         emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,makeOfferSubject,recruiterOfferPath,recruiterOfferReplacements);
                         emailClient.emailManager(positions.rows[0].email,makeOfferSubject,recruiterOfferPath,recruiterOfferReplacements);
@@ -266,7 +266,7 @@ export const moveCandidateHiringStep = (_body) => {
                 else
                 {
                     var positions=await client.query(queryService. getPositionName(_body));
-                    var positionName=positions.rows[0].positionName
+                    var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getHirerAssigneeName(_body));
@@ -309,7 +309,7 @@ export const rejectFromHiringProcess = (_body) => {
                 {
                     _body.hiringStepName = 'Rejected';
                     var positions=await client.query(queryService. getPositionName(_body));
-                    var positionName=positions.rows[0].positionName
+                    var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getAssigneeName(_body));
@@ -347,7 +347,7 @@ export const addNewStageForCandidate = (_body) => {
                 }
                 else{
                     var positions=await client.query(queryService. getPositionName(_body));
-                    var positionName=positions.rows[0].positionName
+                    var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getAssigneeName(_body));
@@ -384,7 +384,7 @@ export const updateDefaultAssignee = (_body) => {
                 }
                 else{
                     var positions=await client.query(queryService. getPositionName(_body));
-                    var positionName=positions.rows[0].positionName
+                    var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getAssigneeName(_body));
