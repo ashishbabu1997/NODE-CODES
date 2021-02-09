@@ -3,6 +3,7 @@ import jobReceivedQuery from '../jobreceived/query/jobreceived.query';
 import dashboardQuery from '../dashboard/query/query';
 
 import * as format from 'pg-format';
+import jobreceivedQuery from '../jobreceived/query/jobreceived.query';
 
 const currentTime = () => {return new Date().getTime()} 
 
@@ -257,6 +258,16 @@ export const  getNotificationDetailsQuery = (_body) =>{
 
     }
 }
+
+
+export const assigneeQuery = (_body) => {
+    return {
+        name: 'update-allocated-to',
+        text: positionsQuery.updateAllocatedTo,
+        values: [_body.allocatedTo,_body.positionId,currentTime(),_body.employeeId]
+    }
+}
+
 export const  positionQuery = (_body) =>{
     return {
         name: 'change-job-status',
@@ -282,6 +293,13 @@ export const  getMailAddress = (_body) =>{
     }
 }
 
+export const changeCandidateAssignee = (_body) => {
+    return {
+        name: 'change-candidate-assignee',
+        text: jobreceivedQuery.changeAssignee,
+        values:{candidateid:_body.candidateId,assigneeid:_body.employeeId,employeeid:_body.employeeId,currenttime:currentTime()}
+    }
+}
 
 // ------------------------------------------ Dashboard Queries ---------------------------------------//
 export const  hirerPositionCounts = (_body) =>{

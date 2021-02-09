@@ -31,19 +31,19 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
         {  
             if(resourcesType.includes('Vetted Resources'))    
-            filterQuery=filterQuery+' AND chsv."candidateVetted" = 6'
+            filterQuery=filterQuery+' AND chsv."candidateVetted" = 6 '
             
             if(resourcesType.includes('Non-Vetted Resources'))    
-            filterQuery=filterQuery+' AND chsv."candidateVetted" != 6'
+            filterQuery=filterQuery+' AND chsv."candidateVetted" != 6 '
         }
         if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
         {
-            filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
+            filterQuery=filterQuery+' AND skills @> $skill::varchar[] '                
             queryValues =  Object.assign({skill:objectToArray(skills,'skillName')},queryValues)
         }
         if(![undefined,null,''].includes(otherSkills) && Array.isArray(otherSkills) && otherSkills.length)
         {
-            filterQuery=filterQuery+' AND otherskills && $otherskill::varchar[]'                
+            filterQuery=filterQuery+' AND otherskills && $otherskill::varchar[] '                
             queryValues =  Object.assign({otherskill:objectToArray(otherSkills,'skillName')},queryValues)
         }
         
@@ -76,11 +76,11 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         {
             if(availability == -1)
             {
-                filterQuery=filterQuery+' and chsv."availability"=false'
+                filterQuery=filterQuery+' and chsv."availability"=false '
             }
             else
             {
-                filterQuery=filterQuery+' and chsv."readyToStart" = $availability and chsv."availability"=true'
+                filterQuery=filterQuery+' and chsv."readyToStart" = $availability and chsv."availability"=true '
                 queryValues =  Object.assign({availability:availability},queryValues)
             }
         }
@@ -127,7 +127,7 @@ export const resourceSort = (body) => {
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
         if(body.sortBy=="availability")
         {
-            sort= `order by availability desc,"readyToStart" ${body.sortType}`;
+            sort= ` order by availability desc,"readyToStart" ${body.sortType} `;
         }
         else
         {
@@ -144,9 +144,7 @@ export const resourceSearch = (body,queryValues) =>{
     
     if(![undefined,null,''].includes(body.searchKey))
     {            
-        searchKey='%' + body.searchKey + '%';
-        console.log("searchKey : ",searchKey);
-        
+        searchKey='%' + body.searchKey + '%';        
         searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
         queryValues=Object.assign({searchkey:searchKey},queryValues)
     }

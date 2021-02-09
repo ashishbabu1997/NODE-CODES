@@ -22,6 +22,5 @@ export default {
     updateCandidateStatus:'update candidate set candidate_status=3,updated_by=$2,updated_on=$3 where candidate_id=$1 returning candidate_first_name,candidate_last_name,company_id,job_received_id,email_address;',
     fetchResourceAllocatedRecruiterDetails:'select e.email from employee e inner join candidate c on c.allocated_to=e.employee_id where c.candidate_id=$1',
     getPositionNameFromId:'select p.position_name,e.email,c.company_name from positions p inner join employee e on e.employee_id=p.allocated_to inner join company c on c.company_id=p.company_id where p.position_id=$1',
-
-
+    changeAssignee:'update candidate set allocated_to=$assigneeid, updated_on = $currenttime, updated_by=$employeeid where candidate_id=$candidateid',
 }
