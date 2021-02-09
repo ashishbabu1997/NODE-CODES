@@ -132,15 +132,9 @@ export const updateHiringStepDetails = (_body) => {
                         
                         if (_body.hiringAssesmentValue==0)
                         {   
-                            let updatedResourceCounts=await client.query(queryService.updateClosedCount(_body))
-                            if(updatedResourceCounts.rows[0].developer_count>=updatedResourceCounts.rows[0].close_count)
-                            {
-                                await client.query(queryService.updateJobStatus(_body))
-                            }
-                            
                             let message=`${imageResults.rows[0].candidate_first_name +' '+imageResults.rows[0].candidate_last_name} has accepted the offer by ${positions.rows[0].companyName}`
                             await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
-                            var subj = "Resource Acception Notification";
+                            var subj = "Resource Acceptance Notification";
                             let path = 'src/emailTemplates/resourceAcceptionMailText.html';
                             let adminReplacements = {
                                     fName: imageResults.rows[0].candidate_first_name,
@@ -158,8 +152,11 @@ export const updateHiringStepDetails = (_body) => {
                             }; 
                             emailClient.emailManager(assignee.rows[0].email,subj,assigneePath,assigneeReplacements);
                             await client.query(queryService.updateAvailabilityOfCandidate(_body));
-                        
-                            
+                            let updatedResourceCounts=await client.query(queryService.updateClosedCount(_body))
+                            if(updatedResourceCounts.rows[0].developer_count>=updatedResourceCounts.rows[0].close_count)
+                            {
+                                await client.query(queryService.updateJobStatus(_body))
+                            }
                         }
                         else if (_body.hiringAssesmentValue==1)
                         {
@@ -208,8 +205,10 @@ export const updateHiringStepDetails = (_body) => {
                         emailClient.emailManager(positions.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
                         let assigneesReplacements = {
                             fName: imageResults.rows[0].candidate_first_name,
+                            lName:imageResults.rows[0].candidate_last_name,
                             aName: assignee.rows[0].firstname,
-                            pName:positions.rows[0].position_name
+                            pName:positions.rows[0].position_name,
+                            pcName:positions.rows[0].company_name
                         }; 
                         emailClient.emailManager(assignee.rows[0].email,discussionWithResourceSubject,assigneesPath,assigneesReplacements);
                         let resourcesReplacements = {
@@ -222,7 +221,7 @@ export const updateHiringStepDetails = (_body) => {
                     }
                     else
                     {
-                        var makeOfferSubject = "Offer Acception Notification";
+                        var makeOfferSubject = "Offer Acceptance Notification";
                         let recruiterOfferPath = 'src/emailTemplates/makeOfferMailText.html';
                         let recruiterOfferReplacements = {
                                 fName: imageResults.rows[0].candidate_first_name,
