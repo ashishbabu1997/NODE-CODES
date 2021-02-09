@@ -29,8 +29,6 @@ export const getPositionHiringSteps = (_body) => {
     })
 }
 
-
-
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for listing hiring steps of a single candidate
 export const getCandidateHiringSteps = (_body) => {
@@ -157,6 +155,7 @@ export const updateHiringStepDetails = (_body) => {
                             {
                                 await client.query(queryService.updateJobStatus(_body))
                             }
+
                         }
                         else if (_body.hiringAssesmentValue==1)
                         {
