@@ -212,7 +212,7 @@ export const updateHiringStepDetails = (_body) => {
                         emailClient.emailManager(assignee.rows[0].email,discussionWithResourceSubject,assigneesPath,assigneesReplacements);
                         let resourcesReplacements = {
                             fName: imageResults.rows[0].candidate_first_name,
-                            cName: positions.rows[0].candidate_last_name,
+                            cName: positions.rows[0].company_name,
                             aName: assignee.rows[0].firstname,
                             pName:positions.rows[0].position_name
                     }; 
@@ -225,7 +225,8 @@ export const updateHiringStepDetails = (_body) => {
                         let recruiterOfferReplacements = {
                                 fName: imageResults.rows[0].candidate_first_name,
                                 aName:assignee.rows[0].firstname,
-                                pName:positions.rows[0].position_name
+                                pName:positions.rows[0].position_name,
+                                cName:positions.rows[0].company_name
                         }; 
                         emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,makeOfferSubject,recruiterOfferPath,recruiterOfferReplacements);
                         emailClient.emailManager(positions.rows[0].email,makeOfferSubject,recruiterOfferPath,recruiterOfferReplacements);
