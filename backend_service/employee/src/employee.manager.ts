@@ -62,16 +62,39 @@ export const createEmployee = (_body) => {
                     adminApproveStatus=null;
                     approvalStatus=false;
                 }
+                else{
+                    console.log("Subuser registration")
+                }
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
                     values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus],
                 }
+                await client.query(createEmployeeQuery);
                 let message=`A new user ${_body.firstName + ' ' + _body.lastName} with company name ${_body.companyName} has registered with us`
                 createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:2,employeeId:null,firstName:_body.firstName,lastName:_body.lastName})
-
-                await client.query(createEmployeeQuery);
+                const  getEllowAdmins = {
+                        name: 'get-ellow-admin',
+                        text: employeeQuery.getellowAdmins,
+                        values: []
                 
+
+                }
+                var ellowAdmins=await client.query(getEllowAdmins)
+                if(Array.isArray(ellowAdmins.rows))
+                {
+                    let recruitersSubject='User Signup Notification'
+                    let recruitersPath = 'src/emailTemplates/userSignupText.html';
+                    let recruitersReplacements = { fName:_body.firstName,lName:_body.lastName,email:loweremailId,company:_body.companyName };
+                    ellowAdmins.rows.forEach(element => {
+                        emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);
+                                
+                        })
+                            
+                }
+                else{
+                    console.log("Error in fetch admin query")
+                }
                 // create an entry in settings table later used for company preferences like currency
                 const createSettingsQuery = {
                     name: 'createSettings',
@@ -97,15 +120,18 @@ export const createEmployee = (_body) => {
                     let path = 'src/emailTemplates/newUserText.html';
                     let userReplacements = { loginPassword:password };
                     emailClient.emailManager(loweremailId,subject,path,userReplacements);
+                    let Name = _body.firstName + " " + _body.lastName
+                    let companyName = _body.companyName
+                    let emailAddress = _body.email
+                    let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
+                    let adminPath = 'src/emailTemplates/applicationText.html';
+                    let adminReplacements = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number };
+                    emailClient.emailManager(config.adminEmail,config.text.subject,adminPath,adminReplacements);
+                }
+                else{
+                    console.log("Waiting for admin approval")
                 }
                 
-                let Name = _body.firstName + " " + _body.lastName
-                let companyName = _body.companyName
-                let emailAddress = _body.email
-                let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
-                let path = 'src/emailTemplates/applicationText.html';
-                let adminReplacements = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number };
-                emailClient.emailManager(config.adminEmail,config.text.subject,path,adminReplacements);
                 
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });

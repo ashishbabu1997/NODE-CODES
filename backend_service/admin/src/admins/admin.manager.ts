@@ -133,6 +133,22 @@ export const clearance = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
+                const  getEllowAdmins = {
+                    name: 'get-ellow-admin',
+                    text: admineQuery.getellowAdmins,
+                    values: []
+            
+
+                }
+                var ellowAdmins=await client.query(getEllowAdmins)
+                const  getCompanyName = {
+                    name: 'get-comapny-name-from-employeeId',
+                    text: admineQuery.getCompanyNameQuery,
+                    values: [_body.selectedEmployeeId]
+            
+
+                }
+                var companyName=await client.query(getCompanyName)
 
                 // Approving a user
                 if (_body.decisionValue == 1) {
@@ -157,8 +173,17 @@ export const clearance = (_body) => {
                         loginPassword: password
                     };
                     emailClient.emailManager(email,subject,path,replacements);
-                    await client.query('COMMIT'); 
-                    resolve({ code: 200, message: "User Approval Successfull", data: {} });
+                    await client.query('COMMIT');
+                    if(Array.isArray(ellowAdmins.rows))
+                    {
+                        let recruitersSubject='User Registration Notification'
+                        let recruitersPath = 'src/emailTemplates/userRejectionMailText.html';
+                        let recruitersReplacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
+                        ellowAdmins.rows.forEach(element => {
+                        emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);         
+                        })
+                        resolve({ code: 200, message: "User Approval Successfull", data: {} });                            
+                    }
                 }
                 else {
 
@@ -179,7 +204,16 @@ export const clearance = (_body) => {
                     };
                     emailClient.emailManager(email,subject,path,userReplacements);
                     await client.query('COMMIT'); 
-                    resolve({ code: 200, message: "User Rejection Successfull", data: {} });
+                    if(Array.isArray(ellowAdmins.rows))
+                    {
+                        let subject='User Rejection Notification'
+                        let path = 'src/emailTemplates/userRejecetionMailText.html';
+                        let replacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
+                        ellowAdmins.rows.forEach(element => {
+                        emailClient.emailManager(element.email,subject,path,replacements);         
+                        })
+                        resolve({ code: 200, message: "User Rejection Successfull", data: {} });
+                    }
                 }
             } catch (e) {
                 await client.query('ROLLBACK')
