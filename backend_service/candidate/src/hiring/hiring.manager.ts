@@ -29,8 +29,6 @@ export const getPositionHiringSteps = (_body) => {
     })
 }
 
-
-
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for listing hiring steps of a single candidate
 export const getCandidateHiringSteps = (_body) => {
@@ -122,46 +120,111 @@ export const updateHiringStepDetails = (_body) => {
                     var candidateClientHiringStepName=result.rows[0].candidate_hiring_step_name
                     _body.candidateId=result.rows[0].candidate_id
                     _body.positionId=result.rows[0].position_id
+                    let resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
+                    var positions=await client.query(queryService. getPositionName(_body));
+                    var assignee=await client.query(queryService. getAssigneeName(_body));
+                    let imageResults=await client.query(queryService.getImageDetails(_body))
                     if(candidateClientHiringStepName=='Negotiation/Close position')
                     {
                         await client.query(queryService.updateMakeOfferValue(_body));
+                        
                         if (_body.hiringAssesmentValue==0)
                         {   
+                            let message=`${imageResults.rows[0].candidate_first_name +' '+imageResults.rows[0].candidate_last_name} has accepted the offer by ${positions.rows[0].companyName}`
+                            await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
+                            var subj = "Resource Acceptance Notification";
+                            let path = 'src/emailTemplates/resourceAcceptionMailText.html';
+                            let adminReplacements = {
+                                    fName: imageResults.rows[0].candidate_first_name,
+                                    lName: imageResults.rows[0].candidate_last_name,
+                                    cName: positions.rows[0].company_name,
+                                    pName:positions.rows[0].position_name
+                            }; 
+                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subj,path,adminReplacements);
+                            emailClient.emailManager(positions.rows[0].email,subj,path,adminReplacements);
+                            let assigneePath = 'src/emailTemplates/resourceAcceptionAssigneeMailText.html';
+                            let assigneeReplacements = {
+                                    fName: imageResults.rows[0].candidate_first_name,
+                                    lName: imageResults.rows[0].candidate_last_name,
+                                    pName:positions.rows[0].position_name
+                            }; 
+                            emailClient.emailManager(assignee.rows[0].email,subj,assigneePath,assigneeReplacements);
+                            await client.query(queryService.updateAvailabilityOfCandidate(_body));
                             let updatedResourceCounts=await client.query(queryService.updateClosedCount(_body))
                             if(updatedResourceCounts.rows[0].developer_count>=updatedResourceCounts.rows[0].close_count)
                             {
                                 await client.query(queryService.updateJobStatus(_body))
+                            }
 
-                            }
-                            else
-                            {
-                                console.log("Position is not closed")
-                            }
-                            let companyNameResult=await client.query(queryService.getCompanyDetails(_body))
-                            let imageResults=await client.query(queryService.getImageDetails(_body))
-                            let message=`${imageResults.rows[0].candidate_first_name +' '+imageResults.rows[0].candidate_last_name} has accepted the offer by ${companyNameResult.rows[0].companyName}`
-                            await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
-                            if(_body.userRoleId!=1)
-                            {
-                                var subj = "Resource Acception Notification";
-                                let path = 'src/emailTemplates/resourceAcceptionMailText.html';
-                                let adminReplacements = {
+                        }
+                        else if (_body.hiringAssesmentValue==1)
+                        {
+                            var subject = "Resource Rejection Notification";
+                            let rejectionPath = 'src/emailTemplates/resourceRejectionMailText.html';
+                            let rejectionAdminReplacements = {
                                     fName: imageResults.rows[0].candidate_first_name,
                                     lName: imageResults.rows[0].candidate_last_name,
-                                    cName: companyNameResult.rows[0].companyName,
-                                }; 
-                                emailClient.emailManager(config.adminEmail,subj,path,adminReplacements);
-                                await client.query(queryService.updateAvailabilityOfCandidate(_body));
-                            }
-                            else
-                            {
-                                await client.query(queryService.updateAvailabilityOfCandidate(_body));
-                            }
+                                    cName: positions.rows[0].company_name,
+                                    pName:positions.rows[0].position_name
+                            }; 
+                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
+                            emailClient.emailManager(positions.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
                         }
+                        else
+                        {
+                            var ellowSubject = "Ellow Rejection Notification";
+                            let ellowRejectionAssigneePath = 'src/emailTemplates/ellowRejectionAssigneeMailText.html';
+                            let ellowRejectionAssigneeReplacements = {
+                                    fName: imageResults.rows[0].candidate_first_name,
+                                    lName: imageResults.rows[0].candidate_last_name,
+                                    pName:positions.rows[0].position_name
+                            }; 
+                            emailClient.emailManager(assignee.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
+                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
+                            emailClient.emailManager(positions.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
+                        }
+                    }
+                    else if (candidateClientHiringStepName=='Discussion with resource')
+                    {
+                        var discussionWithResourceSubject = "Discussion With Resource Notification";
+                        let recruitersPath = 'src/emailTemplates/recruitersDiscussionMailText.html';
+                        let assigneesPath = 'src/emailTemplates/assigneeDisscussionMailText.html'
+                        let ressourcesPath = 'src/emailTemplates/resourceDiscussionMailText.html';
+                        let recruitersReplacements = {
+                                fName: imageResults.rows[0].candidate_first_name,
+                                cName: positions.rows[0].company_name,
+                                pName:positions.rows[0].position_name
+                        }; 
+                        emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
+                        emailClient.emailManager(positions.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
+                        let assigneesReplacements = {
+                            fName: imageResults.rows[0].candidate_first_name,
+                            lName:imageResults.rows[0].candidate_last_name,
+                            aName: assignee.rows[0].firstname,
+                            pName:positions.rows[0].position_name,
+                            pcName:positions.rows[0].company_name
+                        }; 
+                        emailClient.emailManager(assignee.rows[0].email,discussionWithResourceSubject,assigneesPath,assigneesReplacements);
+                        let resourcesReplacements = {
+                            fName: imageResults.rows[0].candidate_first_name,
+                            cName: positions.rows[0].company_name,
+                            aName: assignee.rows[0].firstname,
+                            pName:positions.rows[0].position_name
+                    }; 
+                    emailClient.emailManager(imageResults.rows[0].email_address,discussionWithResourceSubject,ressourcesPath,resourcesReplacements);
                     }
                     else
                     {
-                        console.log("Hiring step is neither  Negotiation/Close position or Make Offer")
+                        var makeOfferSubject = "Offer Acceptance Notification";
+                        let recruiterOfferPath = 'src/emailTemplates/makeOfferMailText.html';
+                        let recruiterOfferReplacements = {
+                                fName: imageResults.rows[0].candidate_first_name,
+                                aName:assignee.rows[0].firstname,
+                                pName:positions.rows[0].position_name,
+                                cName:positions.rows[0].company_name
+                        }; 
+                        emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,makeOfferSubject,recruiterOfferPath,recruiterOfferReplacements);
+                        emailClient.emailManager(positions.rows[0].email,makeOfferSubject,recruiterOfferPath,recruiterOfferReplacements);
                     }
                     resolve({ code: 200, message: "Hiring step details updated successfully", data: {} });
                 }
@@ -193,7 +256,7 @@ export const moveCandidateHiringStep = (_body) => {
                 else
                 {
                     var positions=await client.query(queryService. getPositionName(_body));
-                    var positionName=positions.rows[0].positionName
+                    var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getHirerAssigneeName(_body));
@@ -236,7 +299,7 @@ export const rejectFromHiringProcess = (_body) => {
                 {
                     _body.hiringStepName = 'Rejected';
                     var positions=await client.query(queryService. getPositionName(_body));
-                    var positionName=positions.rows[0].positionName
+                    var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getAssigneeName(_body));
@@ -274,7 +337,7 @@ export const addNewStageForCandidate = (_body) => {
                 }
                 else{
                     var positions=await client.query(queryService. getPositionName(_body));
-                    var positionName=positions.rows[0].positionName
+                    var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getAssigneeName(_body));
@@ -311,12 +374,29 @@ export const updateDefaultAssignee = (_body) => {
                 }
                 else{
                     var positions=await client.query(queryService. getPositionName(_body));
-                    var positionName=positions.rows[0].positionName
+                    var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getAssigneeName(_body));
                     let assigneeName=names.rows[0].firstname
+                    let resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
                     _body.auditLogComment=`${assigneeName} (${companyName}) is the assignee for the  position ${positionName}`
+                    
+                    let subject='Client Screening Assignee Notification'
+                    let path = 'src/emailTemplates/clientScreeningAssigneeText.html';
+                    let recruitersPath = 'src/emailTemplates/clientScreeningRecruitersText.html' 
+                    let recruiterReplacements ={
+                        aName:names.rows[0].firstname,
+                        cName:_body.candidateName,
+                        pName:positionName
+                    };
+                    let replacements ={
+                        aName:names.rows[0].firstname,
+                        cName:_body.candidateName
+                    };
+                    emailClient.emailManager(names.rows[0].email,subject,path,replacements);
+                    emailClient.emailManager(positions.rows[0].email,subject,recruitersPath,recruiterReplacements);
+                    emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,recruitersPath,recruiterReplacements);
                     await client.query(queryService.insertAuditLogForHiring(_body));
                     await client.query(queryService.updateDefaultAssigneeQuery(_body));
                     resolve({ code: 200, message: "Updated assignee succesfully", data: {} });

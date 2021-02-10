@@ -11,7 +11,7 @@ import * as emailClient from './emailService/emailService';
 // >>>>>>>>>>>>> Registration of a new employee(company)
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
-        const mailId = _body.email
+        const mailId = _body.body.email
         const loweremailId = mailId.toLowerCase()
         const currentTime = Math.floor(Date.now() / 1000);
         
@@ -49,29 +49,52 @@ export const createEmployee = (_body) => {
                 
                 // If email does not exist allow registration
                 // create a new company if companyId is null or use the same companyId to create employee and other details
-                let companyId = _body.companyId;
+                let companyId = _body.body.companyId;
                 let adminApproveStatus=1,approvalStatus=true;
                 if (companyId == null) {
                     const createCompanyQuery = {
                         name: 'createCompany',
                         text: employeeQuery.createCompany,
-                        values: [_body.companyName, currentTime],
+                        values: [_body.body.companyName, currentTime],
                     }
                     const result = await client.query(createCompanyQuery);
                     companyId = result.rows[0].company_id;
                     adminApproveStatus=null;
                     approvalStatus=false;
                 }
+                else{
+                    console.log("Subuser registration")
+                }
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
-                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus],
+                    values: [_body.body.firstName, _body.body.lastName, loweremailId, _body.query.userType, companyId, _body.body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus],
                 }
-                let message=`A new user ${_body.firstName + ' ' + _body.lastName} with company name ${_body.companyName} has registered with us`
-                createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:2,employeeId:null,firstName:_body.firstName,lastName:_body.lastName})
-
                 await client.query(createEmployeeQuery);
+                let message=`A new user ${_body.body.firstName + ' ' + _body.body.lastName} with company name ${_body.body.companyName} has registered with us`
+                createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:2,employeeId:null,firstName:_body.body.firstName,lastName:_body.body.lastName})
+                const  getEllowAdmins = {
+                        name: 'get-ellow-admin',
+                        text: employeeQuery.getellowAdmins,
+                        values: []
                 
+
+                }
+                var ellowAdmins=await client.query(getEllowAdmins)
+                if(Array.isArray(ellowAdmins.rows))
+                {
+                    let recruitersSubject='User Signup Notification'
+                    let recruitersPath = 'src/emailTemplates/userSignupText.html';
+                    let recruitersReplacements = { fName:_body.body.firstName,lName:_body.body.lastName,email:loweremailId,company:_body.body.companyName };
+                    ellowAdmins.rows.forEach(element => {
+                        emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);
+                                
+                        })
+                            
+                }
+                else{
+                    console.log("Error in fetch admin query")
+                }
                 // create an entry in settings table later used for company preferences like currency
                 const createSettingsQuery = {
                     name: 'createSettings',
@@ -97,15 +120,18 @@ export const createEmployee = (_body) => {
                     let path = 'src/emailTemplates/newUserText.html';
                     let userReplacements = { loginPassword:password };
                     emailClient.emailManager(loweremailId,subject,path,userReplacements);
+                    let Name = _body.body.firstName + " " + _body.body.lastName
+                    let companyName = _body.body.companyName
+                    let emailAddress = _body.body.email
+                    let number = ![null,undefined].includes(_body.body.telephoneNumber)?_body.body.telephoneNumber:""
+                    let adminPath = 'src/emailTemplates/applicationText.html';
+                    let adminReplacements = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number };
+                    emailClient.emailManager(config.adminEmail,config.text.subject,adminPath,adminReplacements);
+                }
+                else{
+                    console.log("Waiting for admin approval")
                 }
                 
-                let Name = _body.firstName + " " + _body.lastName
-                let companyName = _body.companyName
-                let emailAddress = _body.email
-                let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
-                let path = 'src/emailTemplates/applicationText.html';
-                let adminReplacements = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number };
-                emailClient.emailManager(config.adminEmail,config.text.subject,path,adminReplacements);
                 
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
@@ -445,7 +471,7 @@ export const ellowAdminSignup = (_body) => {
                 const adminSignup = {
                     name: 'admin-signup',
                     text: employeeQuery.ellowAdminSignupQuery,
-                    values: [_body.firstName,_body.lastName,1,_body.email,_body.phoneNumber,hashedPassword,3,1,true,1]
+                    values: {firstname:_body.firstName,lastname:_body.lastName,email:_body.email,telephonenumber:_body.phoneNumber,password:hashedPassword,accounttype:3,userroleid:1,status:true,adminapprovestatus:1,createdon:currentTime}
                 }
                 
                await client.query(adminSignup);

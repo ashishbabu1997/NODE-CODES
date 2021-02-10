@@ -14,9 +14,13 @@ export default {
     addDefaultAssessmentTraits: 'insert into candidate_assesement (candidate_id, assesement_name, assesment_type, stage_name, created_on, updated_on, created_by, updated_by) values ($candidateid, unnest(array(select r.assessment_name from review_steps r where status = true)), unnest(array(select r.review_type from review_steps r where status = true)), unnest(array(select r.stage_name from review_steps r where status = true)), $currenttime, $currenttime, $employeeid, $employeeid)',
     getPositionName:'SELECT position_name as "position" FROM positions WHERE position_id=$1',
     checkEMail:'SELECT * from employee WHERE email like $1',
+    getellowAdmins:"select concat(firstname,' ',lastname) as name ,employee_id as employeeId,email as email from employee where status=true and user_role_id=1",
     fetchCompanyName:'select company_name from company where company_id=$1',
     updatePassword:'update employee set password=$1,status=$2,admin_approve_status=$3 where email like $4',
     addCandidateEmployeeDetails:'insert into candidate_employee (employee_id,candidate_id,status,created_on,updated_on) values ($1,$2,$3,$4,$5)',
     addEmployee:'insert into employee (firstname,lastname,company_id,email,telephone_number,created_on,updated_on,account_type,user_role_id,admin_approve_status) values ($1,$2,$3,$4,$5,$6,$6,4,4,1) returning employee_id',
-    updateCandidateStatus:'update candidate set candidate_status=3,updated_by=$2,updated_on=$3 where candidate_id=$1 returning candidate_first_name,candidate_last_name,company_id,job_received_id,email_address;'
+    updateCandidateStatus:'update candidate set candidate_status=3,updated_by=$2,updated_on=$3 where candidate_id=$1 returning candidate_first_name,candidate_last_name,company_id,job_received_id,email_address;',
+    fetchResourceAllocatedRecruiterDetails:'select e.email from employee e inner join candidate c on c.allocated_to=e.employee_id where c.candidate_id=$1',
+    getPositionNameFromId:'select p.position_name,e.email,c.company_name from positions p inner join employee e on e.employee_id=p.allocated_to inner join company c on c.company_id=p.company_id where p.position_id=$1',
+    changeAssignee:'update candidate set allocated_to=$assigneeid, updated_on = $currenttime, updated_by=$employeeid where candidate_id=$candidateid',
 }

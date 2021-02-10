@@ -13,7 +13,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
     {               
         let resourcesType = filter.resourcesType,
         skills = filter.skills,
-        experience = filter.experience,
+        experience = filter.range,
         locations = filter.locations,
         fromDate = filter.fromDate,
         toDate = filter.toDate,
@@ -31,19 +31,19 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         if(![undefined,null,''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length)
         {  
             if(resourcesType.includes('Vetted Resources'))    
-            filterQuery=filterQuery+' AND chsv."candidateVetted" = 6'
+            filterQuery=filterQuery+' AND chsv."candidateVetted" = 6 '
             
             if(resourcesType.includes('Non-Vetted Resources'))    
-            filterQuery=filterQuery+' AND chsv."candidateVetted" != 6'
+            filterQuery=filterQuery+' AND chsv."candidateVetted" != 6 '
         }
         if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
         {
-            filterQuery=filterQuery+' AND skills @> $skill::varchar[]'                
+            filterQuery=filterQuery+' AND skills @> $skill::varchar[] '                
             queryValues =  Object.assign({skill:objectToArray(skills,'skillName')},queryValues)
         }
         if(![undefined,null,''].includes(otherSkills) && Array.isArray(otherSkills) && otherSkills.length)
         {
-            filterQuery=filterQuery+' AND otherskills && $otherskill::varchar[]'                
+            filterQuery=filterQuery+' AND otherskills && $otherskill::varchar[] '                
             queryValues =  Object.assign({otherskill:objectToArray(otherSkills,'skillName')},queryValues)
         }
         
@@ -55,7 +55,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         
         if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)
         {
-            if(experience.min >= 0 && experience.max >= 0)
+            if(experience.min >= 0 && experience.max > 0)
             {
                 filterQuery=filterQuery+' and chsv."workExperience" between $experience_min and $experience_max '
                 queryValues =  Object.assign({experience_min:experience.min,experience_max:experience.max},queryValues) 
@@ -76,11 +76,11 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         {
             if(availability == -1)
             {
-                filterQuery=filterQuery+' and chsv."availability"=false'
+                filterQuery=filterQuery+' and chsv."availability"=false '
             }
             else
             {
-                filterQuery=filterQuery+' and chsv."readyToStart" = $availability and chsv."availability"=true'
+                filterQuery=filterQuery+' and chsv."readyToStart" = $availability and chsv."availability"=true '
                 queryValues =  Object.assign({availability:availability},queryValues)
             }
         }
@@ -98,7 +98,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         }
         if(![undefined,null,''].includes(positionStatus) && Array.isArray(positionStatus) && positionStatus.length)
         {
-            filterQuery=filterQuery+' and chsv."positionStatusName" ilike any (select concat(array_element,\'%\') from unnest($positionstatus::text[]) array_element(array_element)) '
+            filterQuery=filterQuery+' and (select case when chsv."positionStatusName" is null then \'Submitted to hirer\' else chsv."positionStatusName" end) ilike any (select concat(array_element,\'%\') from unnest($positionstatus::text[]) array_element(array_element)) '
             queryValues =  Object.assign({positionstatus: positionStatus},queryValues) 
         }
         if(![undefined,null,''].includes(candStatus) && Array.isArray(candStatus) && candStatus.length)
@@ -127,7 +127,7 @@ export const resourceSort = (body) => {
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
         if(body.sortBy=="availability")
         {
-            sort= `order by availability desc,"readyToStart" ${body.sortType}`;
+            sort= ` order by availability desc,"readyToStart" ${body.sortType} `;
         }
         else
         {
@@ -144,9 +144,7 @@ export const resourceSearch = (body,queryValues) =>{
     
     if(![undefined,null,''].includes(body.searchKey))
     {            
-        searchKey='%' + body.searchKey + '%';
-        console.log("searchKey : ",searchKey);
-        
+        searchKey='%' + body.searchKey + '%';        
         searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
         queryValues=Object.assign({searchkey:searchKey},queryValues)
     }

@@ -109,8 +109,6 @@ export const listCandidatesDetails = (_body) => {
 }
 
 
-
-
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>Listing all the free candidates from the candidates list.
 export const listFreeCandidatesDetails = (_body) => {
@@ -428,6 +426,14 @@ export const addCandidateReview = (_body) => {
                     {
                         _body.candidateId = result.rows[0].candidate_id;
                         await client.query(queryService.setVettedStatus(_body)); 
+                        let candidateDetailResults=await client.query(queryService.getCandidateProfileName(_body));
+                        let subject= "ellow Screening Selection Notification"
+                        let path = 'src/emailTemplates/ellowVettedText.html';
+                        let replacements ={
+                            name:candidateDetailResults.rows[0].name
+                        };
+                        emailClient.emailManager(candidateDetailResults.rows[0].email,subject,path,replacements);
+
                     }   
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });    
@@ -541,6 +547,11 @@ export const removeCandidateFromPosition = (_body) => {
                     name2: candidateLastName
                 };
                 emailClient.emailManager(sellerMail,subject,path,replacements);
+                let resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
+                var positions=await client.query(queryService. getPositionName(_body));
+                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,path,replacements);
+                emailClient.emailManager(positions.rows[0].email,subject,path,replacements);
+
                 await client.query('COMMIT')
                 await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                 resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });
@@ -1624,7 +1635,7 @@ export const createPdfFromHtml = (_body) => {
                     });
                     await client.query('COMMIT')
                     
-                    resolve({ code: 200, message: "Created pdf succesfully", data:{} });
+                    resolve({ code: 200, message: "“Resume in PDF format has been shared", data:{} });
                     
                 } catch (e) {
                     console.log(e)
@@ -1749,7 +1760,15 @@ export const createPdfFromHtml = (_body) => {
                     _body.auditType=1
                     let names = await client.query(queryService.getAssigneeName(_body));
                     let assigneeName=names.rows[0].firstname
+                    let assigneeMail=names.rows[0].email
                     _body.auditLogComment=`Assignee for the candidate ${_body.candidateName} has been changed to ${assigneeName}`
+                    let subject="ellow Screening Assignee Notification"
+                    let replacements = {
+                               aName:assigneeName,
+                               cName:_body.candidateName     
+                    };
+                    let path = 'src/emailTemplates/changeAssigneeText.html';
+                    emailClient.emailManager(assigneeMail,subject,path,replacements);
                     await client.query(queryService.insertAuditLog(_body));
                     resolve({ code: 200, message: "Assignee changed successfully", data:result.rows});
                 } catch (e) {
