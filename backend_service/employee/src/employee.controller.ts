@@ -3,7 +3,7 @@ import sendResponse from './common/response/response';
 import response from './common/response/response';
 
 export const addEmployee = (req, res) => {
-    const body = req.body;
+    const body = req;
     createEmployee(body).then((response: any) => {
         sendResponse(res, response.code, 1,201, response.message, response.data)
     }).catch(error => {

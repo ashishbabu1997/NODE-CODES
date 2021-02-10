@@ -177,7 +177,7 @@ export const clearance = (_body) => {
                     if(Array.isArray(ellowAdmins.rows))
                     {
                         let recruitersSubject='User Registration Notification'
-                        let recruitersPath = 'src/emailTemplates/userRejectionMailText.html';
+                        let recruitersPath = 'src/emailTemplates/userApprovalMailText.html';
                         let recruitersReplacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
                         ellowAdmins.rows.forEach(element => {
                         emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);         
