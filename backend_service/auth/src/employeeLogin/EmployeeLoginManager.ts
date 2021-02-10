@@ -4,7 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import config from '../config/config';
 import * as crypto from 'crypto';
 import * as emailClient from '../emailService/emailService';
-
+import * as fs from 'fs';
 
 // FUNC. Login for a registered user
 export const employeeLoginMethod = (_body) => {
