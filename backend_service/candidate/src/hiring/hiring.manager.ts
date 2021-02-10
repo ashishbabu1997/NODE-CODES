@@ -173,20 +173,16 @@ export const updateHiringStepDetails = (_body) => {
                         else
                         {
                             var ellowSubject = "Ellow Rejection Notification";
-                            let ellowRejectionResourcePath = 'src/emailTemplates/ellowRejectionResourceMailText.html';
                             let ellowRejectionAssigneePath = 'src/emailTemplates/ellowRejectionAssigneeMailText.html';
                             let ellowRejectionAssigneeReplacements = {
                                     fName: imageResults.rows[0].candidate_first_name,
                                     lName: imageResults.rows[0].candidate_last_name,
                                     pName:positions.rows[0].position_name
                             }; 
-                            let ellowRejectionResourceReplacements = {
-                                    fName: imageResults.rows[0].candidate_first_name,
-                                    cName: positions.rows[0].companyName,
-                                    pName:positions.rows[0].position_name
-                            }; 
+                           
                             emailClient.emailManager(assignee.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
-                            emailClient.emailManager(imageResults.rows[0].email_address,ellowSubject,ellowRejectionResourcePath,ellowRejectionResourceReplacements);
+                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
+                            emailClient.emailManager(positions.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
                         }
                     }
                     else if (candidateClientHiringStepName=='Discussion with resource')
