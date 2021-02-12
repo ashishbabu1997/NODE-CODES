@@ -368,7 +368,7 @@ export const  getHirerActivePositions = (_body) =>{
 export const  upcomingInterviewsForHirer = (_body) =>{
     return {
         name: 'hirer-interview-list',
-        text:dashboardQuery.fetchRecruiterInterviewList,
+        text:dashboardQuery.fetchHirerInterviewList,
         values : [_body.companyId]
     }
 }
