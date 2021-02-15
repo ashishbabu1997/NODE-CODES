@@ -1,5 +1,6 @@
 import database from '../common/database/database';
 import * as queryService from '../queryService/queryService';
+import * as utils from '../utils/utils';
 
 // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Get all values for counts in dashoboard
@@ -21,7 +22,7 @@ export const getCounts = (_body) => {
                     data = {
                         positionCounts : hirerPositionCounts.rows[0],
                         clientScreening : clientHiringCountsHirer.rows,
-                        clientScreeningSideCount : clientHiringSideCountsHirer.rows
+                        clientScreeningSideCount : clientHiringSideCountsHirer.rows[0]
                     }
                 }
                 else if(_body.userRoleId == 1)
@@ -35,7 +36,7 @@ export const getCounts = (_body) => {
                     data = {
                         positionCounts : adminPositionCounts.rows[0],
                         clientScreening : clientHiringCountsAdmin.rows,
-                        clientScreeningSideCount : clientHiringSideCountsAdmin.rows,
+                        clientScreeningSideCount : clientHiringSideCountsAdmin.rows[0],
                         candidateCounts : candidateVetted_NonVettedCount.rows[0],
                         ellowScreening : ellowScreeningCount.rows
                     }
@@ -68,14 +69,14 @@ export const getUpcomingInterviews = (_body) => {
 
                 if(_body.userRoleId == 1)
                 {
-                    const recruiterInterviewLists =  await client.query(queryService.upcomingInterviewsForEllowRecruiter(_body))
+                    const recruiterInterviewLists =  await client.query(queryService.upcomingInterviewsForEllowRecruiter(_body,utils.upcomingInterviewSort(_body)))
                     data = {
                         upcomingInterviews : recruiterInterviewLists.rows,
                     }
                 }
                 else 
                 {
-                    const hirerInterviewLists =  await client.query(queryService.upcomingInterviewsForHirer(_body))
+                    const hirerInterviewLists =  await client.query(queryService.upcomingInterviewsForHirer(_body,utils.upcomingInterviewSort(_body)))
                     data = {
                         upcomingInterviews : hirerInterviewLists.rows,
                     }
@@ -108,14 +109,14 @@ export const getAllActivePositions = (_body) => {
 
                 if(_body.userRoleId == 1)
                 {
-                    const allPositionsList =  await client.query(queryService.getActivePositions(_body))
+                    const allPositionsList =  await client.query(queryService.getActivePositions(_body,utils.activePositionSort(_body)))
                     data = {
                         activePositions : allPositionsList.rows,
                     }
                 }
-                else 
+                else  
                 {
-                    const hirerActivePositions =  await client.query(queryService.getHirerActivePositions(_body))
+                    const hirerActivePositions =  await client.query(queryService.getHirerActivePositions(_body,utils.activePositionSort(_body)))
                     data = {
                         activePositions : hirerActivePositions.rows,
                     }

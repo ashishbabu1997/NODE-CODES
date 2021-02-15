@@ -103,3 +103,34 @@ export const positionSort = (body) => {
     }
     return sort;
 }
+
+
+export const activePositionSort = (body) => {
+    let sort = '';
+    // Sorting keys with values
+    const orderBy = {
+        "positionName": 'position_name',
+        "developerCount": 'developer_count',
+        "companyName": 'company_name',
+    }
+    
+    if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
+    }
+    return sort;
+}
+
+export const upcomingInterviewSort = (body) => {
+    let sort = '';
+    // Sorting keys with values
+    const orderBy = {
+        "name": 'name',
+        "positionName": 'position_name',
+        "assignedTo": 'assignedTo',
+    }
+    
+    if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
+    }
+    return sort;
+}

@@ -359,31 +359,31 @@ export const  ellowScreeningCount = (_body) =>{
         text:dashboardQuery.ellowScreeningCount
     }
 }
-export const  upcomingInterviewsForEllowRecruiter = (_body) =>{
+export const  upcomingInterviewsForEllowRecruiter = (_body,sort) =>{
     return {
         name: 'recruiter-interview-list',
-        text:dashboardQuery.fetchRecruiterInterviewList,
+        text:dashboardQuery.fetchRecruiterInterviewList + sort,
         values : []
     }
 }
-export const  getActivePositions = (_body) =>{
+export const  getActivePositions = (_body,sort) =>{
     return {
         name: 'recruiter-active-positions',
-        text:dashboardQuery.fetchAllActivePositionsForEllowRecruiter,
+        text:dashboardQuery.fetchAllActivePositionsForEllowRecruiter + sort,
         values : []
     }
 }
-export const  getHirerActivePositions = (_body) =>{
+export const  getHirerActivePositions = (_body,sort) =>{
     return {
         name: 'hirer-active-positions',
-        text:dashboardQuery.fetchAllActivePositionsForHirer,
+        text:dashboardQuery.fetchAllActivePositionsForHirer + sort,
         values : [_body.companyId]
     }
 }
-export const  upcomingInterviewsForHirer = (_body) =>{
+export const  upcomingInterviewsForHirer = (_body,sort) =>{
     return {
         name: 'hirer-interview-list',
-        text:dashboardQuery.fetchHirerInterviewList,
+        text:dashboardQuery.fetchHirerInterviewList + sort,
         values : [_body.companyId]
     }
 }
