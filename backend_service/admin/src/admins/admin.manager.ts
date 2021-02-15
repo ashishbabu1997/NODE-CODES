@@ -20,7 +20,8 @@ export const listUsersDetails = (_body) => {
             "firstName":'e.firstname',
             "lastName":'e.lastname',
             "email":'e.email',
-            "phoneNumber":'e.telephone_number'
+            "phoneNumber":'e.telephone_number',
+            "companyName":'p.company_name'
         }
 
         if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
