@@ -318,6 +318,14 @@ export const  clientHiringCountsHirer = (_body) =>{
     }
 }
 
+export const  clientHiringSideCountsHirer = (_body) =>{
+    return {
+        name: 'client-hiring-side-counts-hirer',
+        text:dashboardQuery.clientHiringSideCountHirer,
+        values : [_body.companyId]
+    }
+}
+
 export const  adminPositionCounts = (_body) =>{
     return {
         name: 'admin-position-counts',
@@ -329,6 +337,13 @@ export const  clientHiringCountsAdmin = (_body) =>{
     return {
         name: 'client-hiring-counts-admin',
         text:dashboardQuery.clientHiringCountsAdmin
+    }
+}
+
+export const  clientHiringSideCountsAdmin = (_body) =>{
+    return {
+        name: 'client-hiring-side-counts-admin',
+        text:dashboardQuery.clientHiringSideCountAdmin
     }
 }
 

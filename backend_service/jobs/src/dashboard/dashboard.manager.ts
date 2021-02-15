@@ -16,10 +16,12 @@ export const getCounts = (_body) => {
                 {
                     const hirerPositionCounts =  await client.query(queryService.hirerPositionCounts(_body))
                     const clientHiringCountsHirer =  await client.query(queryService.clientHiringCountsHirer(_body))
+                    const clientHiringSideCountsHirer =  await client.query(queryService.clientHiringSideCountsHirer(_body))
 
                     data = {
                         positionCounts : hirerPositionCounts.rows[0],
-                        clientScreening : clientHiringCountsHirer.rows
+                        clientScreening : clientHiringCountsHirer.rows,
+                        clientScreeningSideCount : clientHiringSideCountsHirer.rows
                     }
                 }
                 else if(_body.userRoleId == 1)
@@ -28,10 +30,12 @@ export const getCounts = (_body) => {
                     const clientHiringCountsAdmin =  await client.query(queryService.clientHiringCountsAdmin(_body))
                     const candidateVetted_NonVettedCount =  await client.query(queryService.candidateVetted_NonVettedCount(_body))
                     const ellowScreeningCount =  await client.query(queryService.ellowScreeningCount(_body))
+                    const clientHiringSideCountsAdmin =  await client.query(queryService.clientHiringSideCountsAdmin(_body))
 
                     data = {
                         positionCounts : adminPositionCounts.rows[0],
                         clientScreening : clientHiringCountsAdmin.rows,
+                        clientScreeningSideCount : clientHiringSideCountsAdmin.rows,
                         candidateCounts : candidateVetted_NonVettedCount.rows[0],
                         ellowScreening : ellowScreeningCount.rows
                     }
