@@ -300,14 +300,6 @@
 *         type: string
 *         enum: [candidateId,candidateFirstName,candidatelastName,email,phoneNumber,companyName,updatedOn]
 *       - in: query
-*         name: limit
-*         schema:
-*         type: integer
-*       - in: query
-*         name: offset
-*         schema:
-*         type: integer
-*       - in: query
 *         name: sortType
 *         schema:
 *         type: string
@@ -317,6 +309,16 @@
 *         name: filter
 *         schema:
 *         type: string
+*       - in: query
+*         name: pageSize
+*         schema:
+*         type: integer
+*         enum: [10,20,50,100]
+*       - in: query
+*         name: pageNumber
+*         schema:
+*         type: integer
+*         enum: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
 *       - name: body
 *         in: body
 *         schema:
@@ -414,7 +416,7 @@
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum: [candidateId,candidateFirstName,candidatelastName,companyName,updatedOn]
 *       - in: query
 *         name: sortType
@@ -427,13 +429,15 @@
 *         schema:
 *         type: string
 *       - in: query
-*         name: limit
+*         name: pageSize
 *         schema:
 *         type: integer
+*         enum: [10,20,50,100]
 *       - in: query
-*         name: offset
+*         name: pageNumber
 *         schema:
 *         type: integer
+*         enum: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
 *       - name: body
 *         in: body
 *         schema:

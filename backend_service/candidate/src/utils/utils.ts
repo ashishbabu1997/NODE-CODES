@@ -140,10 +140,9 @@ export const resourceSort = (body) => {
 
 export const resourcePagination = (body) => {
     let pagination = '';
-    // Sorting keys with values
-    if (body.limit && body.offset) {
-        console.log("limit",body.limit)
-        pagination= `  limit ${body.limit} offset ((${body.offset}-1)*${body.limit})`
+    // Pagination
+    if (body.pageSize && body.pageNumber) {
+        pagination= `  limit ${body.pageSize} offset ((${body.pageNumber}-1)*${body.pageSize}) `
     }
     return pagination;
 }
