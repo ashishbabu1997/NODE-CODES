@@ -39,11 +39,22 @@
 *       - bearerAuth: []
 *     produces:
 *       - application/json
+*     parameters:
+*       - in: query
+*         name: sortBy
+*         schema:
+*         type: string
+*         enum:  [name,positionName,assignedTo]
+*       - in: query
+*         name: sortType
+*         schema:
+*         type: string
+*         enum: [asc,desc]
 *     responses:
 *       200:
 *         description: Api success
 *       400:
-*         description: Api Failed
+*         description: Api Failed 
 *       401:
 *         description: Unauthorised access
 *       403:
@@ -66,6 +77,17 @@
 *       - bearerAuth: []
 *     produces:
 *       - application/json
+*     parameters:
+*       - in: query
+*         name: sortBy
+*         schema:
+*         type: string
+*         enum:  [positionName,developerCount,companyName]
+*       - in: query
+*         name: sortType
+*         schema:
+*         type: string
+*         enum: [asc,desc]
 *     responses:
 *       200:
 *         description: Api success

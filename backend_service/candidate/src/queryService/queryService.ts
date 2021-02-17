@@ -594,6 +594,38 @@ export const insertCandidatePublicationQuery = (_body) => {
     // *******************************************************************************************************************************//
     // -------------------------------------------Candidate filter related queries------------------------------------------------//
     
+    export const listCandidates = (queryText,queryValues) => {
+        return {
+            name: 'get-free-candidates',
+            text: queryText,
+            values: queryValues
+        }
+    }
+
+    export const listCandidatesTotal = (queryText,queryValues) => {
+        return {
+            name: 'get-free-candidates-total',
+            text: queryText,
+            values: queryValues
+        }
+    }
+
+    export const listAddFromList = (queryText,queryValues) => {
+        return {
+            name: 'get-addfromlist-candidates',
+            text: queryText,
+            values: queryValues
+        }
+    }
+
+    export const listAddFromListTotal = (queryText,queryValues) => {
+        return {
+            name: 'get-addfromlist-candidates-total',
+            text: queryText,
+            values: queryValues
+        }
+    }
+
     export const getCompanyNames = (_body) => {
         return {
             name: 'get-distinct-company-names',

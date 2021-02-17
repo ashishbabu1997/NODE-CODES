@@ -19,10 +19,38 @@ export const recruiterPostSignup = (_body) => {
         
         if(hashedAccess === '2201c26b2bc107c5d5a80ffe48fe7f750135695cf2168698cab5332aef173b90ccf98175c2258f47d1bc38818b2225f8030a7bcadecfc8db8475bc22847990c8')
         {
-            const currentTime = Math.floor(Date.now());        
+            const currentTime = Math.floor(Date.now());
+            const mailId = _body.body.email
+            const loweremailId = mailId.toLowerCase()        
             (async () => {
                 const client = await database()
                 try {
+                    const getEmailQuery = {
+                        name: 'get-email',
+                        text: recruiterSignupQuery.getEmail,
+                        values: [loweremailId],
+                    }
+                    const getEmailResult = await client.query(getEmailQuery);
+                    
+                    if (getEmailResult.rowCount >= 1) {
+                        var adminStatus = getEmailResult.rows[0].admin_approve_status
+                        var emailId = getEmailResult.rows[0].email
+                        if (emailId == loweremailId) {
+                            if (adminStatus == 2 || adminStatus == null) {
+                                reject({ code: 400, statusCode: 406, message: "Your account is held for Admin approval", data: {} });
+                                return;
+                            }
+                            else if (adminStatus == 1) {
+                                reject({ code: 400, statusCode: 407, message: "You are already registered", data: {} });
+                                return;
+                            }
+                            else if (adminStatus == 0) {
+                                reject({ code: 400, statusCode: 408, message: "This account is rejected by Ellow", data: {} });
+                                return;
+                            }
+                        }
+                        
+                    }
                     await client.query('BEGIN');
                     var hashedPassword = crypto.createHash("sha256").update('admin@ellow').digest("hex");
                     const adminSignup = {
