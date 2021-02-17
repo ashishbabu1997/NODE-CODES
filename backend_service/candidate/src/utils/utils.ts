@@ -138,6 +138,16 @@ export const resourceSort = (body) => {
     return sort;
 }
 
+export const resourcePagination = (body) => {
+    let pagination = '';
+    // Sorting keys with values
+    if (body.limit && body.offset) {
+        console.log("limit",body.limit)
+        pagination= `  limit ${body.limit} offset ((${body.offset}-1)*${body.limit})`
+    }
+    return pagination;
+}
+
 
 export const resourceSearch = (body,queryValues) =>{
     let searchKey = '%%',searchQuery= '';

@@ -300,6 +300,14 @@
 *         type: string
 *         enum: [candidateId,candidateFirstName,candidatelastName,email,phoneNumber,companyName,updatedOn]
 *       - in: query
+*         name: limit
+*         schema:
+*         type: integer
+*       - in: query
+*         name: offset
+*         schema:
+*         type: integer
+*       - in: query
 *         name: sortType
 *         schema:
 *         type: string
@@ -418,6 +426,14 @@
 *         name: filter
 *         schema:
 *         type: string
+*       - in: query
+*         name: limit
+*         schema:
+*         type: integer
+*       - in: query
+*         name: offset
+*         schema:
+*         type: integer
 *       - name: body
 *         in: body
 *         schema:
