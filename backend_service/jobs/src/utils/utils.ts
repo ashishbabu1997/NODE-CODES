@@ -7,6 +7,15 @@ export const objectToArray = (objectArray,keyName) => {
     return reqArray;
 }
 
+export const positionPagination = (body) => {
+    let pagination = '';
+    // Pagination
+    if (body.pageSize && body.pageNumber) {
+        pagination= `  limit ${body.pageSize} offset ((${body.pageNumber}-1)*${body.pageSize}) `
+    }
+    return pagination;
+}
+
 export  const positionFilter = (filter,filterQuery,queryValues) =>{
     if(filter)
     {               

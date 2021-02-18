@@ -149,6 +149,14 @@ export const  fetchCompanyPositionsById = (_body) =>{
 
     }
 }
+export const  fetchPositionsCount = (_body) =>{
+    return {
+        name: 'id-fetch-company-positions-count',
+        text: _body.queryCountText,
+        values: _body.queryValues
+
+    }
+}
 export const  addCompanyPositionsQuery = (_body) =>{
     return {
         name: 'add-company-positions',
