@@ -45,49 +45,62 @@ export const listUsersDetails = (_body) => {
 
 
 
+
  // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>List all registered users 
 export const allUsersList = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = admineQuery.allRegisteredUsersList;
-        console.log("filter : ",_body.filter);
-        
-        if (_body.filter) {
-            selectQuery = selectQuery + " " + "AND (c.company_name ilike '%"+_body.filter+"%' OR e.firstname ilike '%"+_body.filter+"%' OR e.lastname ilike '%"+_body.filter+"%')";
-        }
-        const orderBy = {
-            "updatedOn": 'e.updated_on',
-            "firstName":'e.firstname',
-            "lastName":'e.lastname',
-            "email":'e.email',
-            "accountType":'e.account_type',
-            "phoneNumber":'e.telephone_number',
-            "companyName":'c.company_name'
+        (async () => {
+            const client = await database()
+            try {
+                        var selectQuery = admineQuery.allRegisteredUsersList;
+                        console.log("filter : ",_body.filter);
+                        
+                        if (_body.filter) {
+                            selectQuery = selectQuery + " " + "AND (c.company_name ilike '%"+_body.filter+"%' OR e.firstname ilike '%"+_body.filter+"%' OR e.lastname ilike '%"+_body.filter+"%')";
+                        }
+                        const orderBy = {
+                            "updatedOn": 'e.updated_on',
+                            "firstName":'e.firstname',
+                            "lastName":'e.lastname',
+                            "email":'e.email',
+                            "accountType":'e.account_type',
+                            "phoneNumber":'e.telephone_number',
+                            "companyName":'c.company_name'
 
-        }
-
-
-        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
-                {
-                    selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
-                }  
-        
-        const listquery = {
-            name: 'list-candidates',
-            text: selectQuery,
-            values:[_body.usersType]
-        }
-        database().query(listquery, (error, results) => {
-            if (error) {
-                console.log(error)
-                reject({ code: 400, message: "Database Error", data: {} });
-                return;
-            }
-            resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows } });
-        })
+                        }
+                        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+                                {
+                                    selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+                                }  
+                        if (_body.pageSize && _body.pageNumber) {
+                                    selectQuery= selectQuery+`  limit ${_body.pageSize} offset ((${_body.pageNumber}-1)*${_body.pageSize}) `
+                                }
+                        const listquery = {
+                            name: 'list-candidates',
+                            text: selectQuery,
+                            values:[_body.usersType]
+                        }
+                        const listQueryCount = {
+                            name: 'total-count',
+                            text: admineQuery.allRegisteredUsersListCount,
+                            values:[_body.usersType]
+                        }
+                        var results=await client.query(listquery)
+                        var counts=await client.query(listQueryCount)
+                        resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
+       
+    } catch (e) {
+        await client.query('ROLLBACK')
+        console.log("e : ",e)
+        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+    }
+})().catch(e => {
+    console.log('e : ',e)
+    reject({ code: 400, message: "Failed. Please try again.", data: {} })
+})
     })
 }
-
 
  // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Get details of a single user.
