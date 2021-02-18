@@ -103,7 +103,14 @@ export const positionSort = (body) => {
     }
     return sort;
 }
-
+export const positionPagination = (body) => {
+    let pagination = '';
+    // Pagination
+    if (body.pageSize && body.pageNumber) {
+        pagination= `  limit ${body.pageSize} offset ((${body.pageNumber}-1)*${body.pageSize}) `
+    }
+    return pagination;
+}
 
 export const activePositionSort = (body) => {
     let sort = '';
