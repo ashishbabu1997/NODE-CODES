@@ -68,8 +68,6 @@ export const allUsersList = (_body) => {
                             "companyName":'c.company_name'
 
                         }
-
-
                         if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
                                 {
                                     selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
