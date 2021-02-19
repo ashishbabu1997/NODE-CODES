@@ -131,13 +131,14 @@ export const upcomingInterviewSort = (body) => {
     let sort = '';
     // Sorting keys with values
     const orderBy = {
-        "name": 'name',
-        "positionName": 'position_name',
-        "assignedTo": 'assignedTo',
+        "name": 'c.candidate_first_name',
+        "position": 'p.position_name',
+        "allocateTo": 'e.firstname',
     }
     
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
+        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;  
+        console.log(sort)              
     }
     return sort;
 }
