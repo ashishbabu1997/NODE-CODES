@@ -16,17 +16,17 @@
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum: [firstName,lastName,email,phoneNumber]
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *       - in: query
 *         name: filter
 *         schema:
-*           type: string
+*         type: string
 *     responses:
 *       200:
 *         description: Api success
@@ -59,17 +59,17 @@
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum: [firstName,lastName,updatedOn,accountType,companyName,email,phoneNumber]
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *       - in: query
 *         name: filter
 *         schema:
-*           type: string
+*         type: string
 *     responses:
 *       200:
 *         description: Api success
@@ -101,8 +101,8 @@
 *       - in: query
 *         name: selectedEmployeeId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [selectedEmployeeId]
 *     responses:
 *       200:
 *         description: Api success
@@ -143,6 +143,79 @@
 *               description: positionId will be null for free candidates
 *             description:
 *               type:string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /admin/addJobCategory:
+*   post:
+*     tags:
+*       - Admins
+*     name: Add new job category
+*     summary: Add a new job category
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: body
+*         schema:
+*           type: object
+*           properties:
+*             jobCategoryName:
+*               type: string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+/**
+* @swagger
+* /admin/addSkills:
+*   post:
+*     tags:
+*       - Admins
+*     name: Add new skills
+*     summary: Add multiple skills under a given job category
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: body
+*         schema:
+*           type: object
+*           properties:
+*             jobCategoryId:
+*               type: integer
+*             skill:
+*               type: array
+*               items:
+*                 type: string
 *     responses:
 *       200:
 *         description: Api success
