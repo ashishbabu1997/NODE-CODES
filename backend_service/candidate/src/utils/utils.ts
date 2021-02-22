@@ -133,7 +133,7 @@ export const resourceSort = (body) => {
         {
             sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
         }
-
+        
     }
     return sort;
 }
@@ -159,4 +159,59 @@ export const resourceSearch = (body,queryValues) =>{
     }
     
     return {searchQuery,queryValues};
+}
+
+export const resourceTab = (body) =>{
+    var vettedQuery = '';
+    
+    switch (body.tabValue) {
+        
+        case '0':
+        vettedQuery='  and chsv."candidateStatus"=3 '
+        break;
+        case '1':
+        vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateStatus"=6'
+        break;
+        case '2':
+        vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateStatus"!=6'
+        break;
+        case '3':
+        vettedQuery='  and chsv."candidateStatus"=4'
+        break; 
+        
+        default:
+        break;
+    }
+    
+    return vettedQuery;
+}
+
+export const resourceHirerTab = (body) =>{
+    let vettedQuery = '';
+    switch (body.tabValue) {
+        case '1':
+        vettedQuery=' and chsv."candidateStatus"=6 '
+        break;
+        case '2':
+        vettedQuery=' and chsv."candidateStatus"!=6 '
+        break;
+        default:
+        break;
+    }
+    
+    return vettedQuery;
+}
+
+export const resourceRoleBased = (reqBody,queryValues) =>{
+    let roleBasedQuery = '';
+    if (reqBody.userRoleId != 1) {
+        roleBasedQuery = ' where chsv."companyId" = $companyid '
+        queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
+    }
+    else {
+        roleBasedQuery =  ' where (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid)) ' 
+        queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
+    }     
+    
+    return {roleBasedQuery,queryValues};
 }

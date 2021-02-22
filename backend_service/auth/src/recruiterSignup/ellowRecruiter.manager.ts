@@ -1,9 +1,5 @@
 import database from '../common/database/database';
-import * as jwt from 'jsonwebtoken';
-import config from '../config/config';
 import * as crypto from 'crypto';
-import * as emailClient from '../emailService/emailService';
-import * as fs from 'fs';
 import recruiterSignupQuery from './query/recruiterSignupQuery';
 
 
@@ -11,7 +7,6 @@ import recruiterSignupQuery from './query/recruiterSignupQuery';
 // FUNC. Signup for ellow recruiter
 export const recruiterPostSignup = (_body) => {
     return new Promise((resolve, reject) => {
-        console.log("_body : ",_body.body);
         let hashedAccess = crypto
         .createHash("sha512")
         .update(_body.accesskey)
