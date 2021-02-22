@@ -116,6 +116,7 @@ export const getAllActivePositions = (_body) => {
                 }
                 else  
                 {
+                    console.log(_body.companyId)
                     const hirerActivePositions =  await client.query(queryService.getHirerActivePositions(_body,utils.activePositionSort(_body)))
                     data = {
                         activePositions : hirerActivePositions.rows,

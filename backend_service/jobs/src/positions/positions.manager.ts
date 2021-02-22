@@ -35,12 +35,12 @@ export const getCompanyPositions = (_body) => {
                     // Object.assign({searchkey:searchKey,employeeid:reqBody.employeeId},queryValues)
                 }
                 else { 
-                    _body.queryCountText=positionsQuery.getCompanyPositionsForBuyerTotalCount+filterQuery
+                     _body.queryCountText=positionsQuery.getCompanyPositionsForBuyerTotalCount+filterQuery
                     _body.queryText = positionsQuery.getCompanyPositionsForBuyer +filterQuery+ utils.positionSort(body+utils.positionPagination(body));
                     _body.queryValues =  Object.assign({companyid:reqBody.companyId,searchkey:searchKey,employeeid:reqBody.employeeId},_body.queryValues)
                 }
                 let results=await client.query(queryService.fetchCompanyPositionsById(_body))
-                let counts=await client.query(queryService.fetchPositionsCount(_body))
+                let counts=await client.query(queryService.fetchPositionsCount(_body)) 
                 var steps = results.rows
                 resolve({ code: 200, message: "Positions listed successfully", data: { positions: steps,totalCount:counts.rows[0].totalCount } })
             } catch (e) {
