@@ -1889,7 +1889,7 @@ export const createPdfFromHtml = (_body) => {
 //>>>>>>>>>>>Listing all the free candidates from the candidates list of hirer.
 export const listHirerResources = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView;
+        var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView,totalQuery=candidateQuery.listFreeCandidatesofHirerTotalCount;
         var queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
         body=_body.query;  
         
@@ -1907,16 +1907,23 @@ export const listHirerResources = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                queryText = selectQuery+filterQuery+searchQuery+utils.resourceSort(body);
+                queryText = selectQuery+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
+                var queryCountText=totalQuery+filterQuery+searchQuery
                 queryValues =  Object.assign({hirercompanyid:_body.body.companyId},queryValues)
                 const listCandidatesOfHirer = {
                     name: 'get-free-candidates-of-hirer',
                     text: queryText,
                     values: queryValues
                 }
+                const listCandidatesOfHirerCount = {
+                    name: 'get-free-candidates-of-hirer-count',
+                    text: queryCountText,
+                    values: queryValues
+                }
                 const candidatesResult = await client.query(listCandidatesOfHirer);
+                const totalCount=await client.query(listCandidatesOfHirerCount)
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows } });
+                resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows,totalCount:totalCount.rows[0].totalCount } });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
