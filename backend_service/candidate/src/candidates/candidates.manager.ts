@@ -1889,7 +1889,7 @@ export const createPdfFromHtml = (_body) => {
 //>>>>>>>>>>>Listing all the free candidates from the candidates list of hirer.
 export const listHirerResources = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView,totalQuery=candidateQuery.listFreeCandidatesofHirerTotalCount;
+        var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView,totalQuery=candidateQuery.listFreeCandidatesofHirerTotalCount,vettedQuery='';
         var queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
         body=_body.query;  
         
@@ -1907,19 +1907,40 @@ export const listHirerResources = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                queryText = selectQuery+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
-                var queryCountText=totalQuery+filterQuery+searchQuery
+                if(body.tabValue==1)
+                {
+                    vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateStatus"=6'
+                }
+                else if(body.tabValue==2)
+                {
+                    vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateStatus"!=6'
+
+                }
+                else if(body.tabValue==3)
+                {
+                    vettedQuery='  and chsv."candidateStatus"=4'
+
+                }
+                else 
+                {
+                    vettedQuery=''
+
+                }
+                queryText = selectQuery+vettedQuery+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
+                var queryCountText=totalQuery+vettedQuery+filterQuery+searchQuery
                 queryValues =  Object.assign({hirercompanyid:_body.body.companyId},queryValues)
                 const listCandidatesOfHirer = {
                     name: 'get-free-candidates-of-hirer',
                     text: queryText,
                     values: queryValues
                 }
+                console.log(queryCountText)
                 const listCandidatesOfHirerCount = {
                     name: 'get-free-candidates-of-hirer-count',
                     text: queryCountText,
                     values: queryValues
                 }
+
                 const candidatesResult = await client.query(listCandidatesOfHirer);
                 const totalCount=await client.query(listCandidatesOfHirerCount)
                 await client.query('COMMIT')
