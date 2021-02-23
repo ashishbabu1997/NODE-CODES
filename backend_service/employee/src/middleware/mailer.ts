@@ -43,7 +43,7 @@ export const sendUserMail = (email, subject, html, callback) => {
         html
     };
     
-    transporter.sendUserMail(mailOptions, function (err, data) {
+    noreplyTransporter.sendMail(mailOptions, function (err, data) {
         if (err) {
             return callback(err, null);
         }
