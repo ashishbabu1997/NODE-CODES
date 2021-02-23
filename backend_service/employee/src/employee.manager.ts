@@ -332,7 +332,7 @@ export const createFreelancer = (_body) => {
                     text: employeeQuery.createFreelancer,
                     values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.telephoneNumber,createdtime:currentTime,token:uniqueId},
                 }
-                let result=await client.query(createFreelancerQuery);
+                await client.query(createFreelancerQuery);
                 let Name = _body.firstName + " " + _body.lastName
                 let companyName = "Freelancer"
                 let emailAddress = _body.email
