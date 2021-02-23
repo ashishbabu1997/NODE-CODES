@@ -678,6 +678,13 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
+    export const adminSignup =()=> {
+        return {
+            name: 'admin-signup',
+            text: candidateQuery.getellowAdmins,
+            values: []
+        }
+    }
     
     export const insertAuditLog = (_body) => {
         return {
