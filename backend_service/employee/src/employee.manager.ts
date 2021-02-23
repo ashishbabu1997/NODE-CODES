@@ -332,7 +332,7 @@ export const createFreelancer = (_body) => {
                     text: employeeQuery.createFreelancer,
                     values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.telephoneNumber,createdtime:currentTime,token:uniqueId},
                 }
-                let result=await client.query(createFreelancerQuery);
+                await client.query(createFreelancerQuery);
                 let Name = _body.firstName + " " + _body.lastName
                 let companyName = "Freelancer"
                 let emailAddress = _body.email
@@ -350,7 +350,7 @@ export const createFreelancer = (_body) => {
                 };
                 var companyId=22
                 path ='src/emailTemplates/sendLinkText.html';
-                emailClient.emailManager(loweremailId,config.text.userSubject,path,freelancerReplacements);
+                emailClient.emailManagerForNoReply(loweremailId,config.text.userSubject,path,freelancerReplacements);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
