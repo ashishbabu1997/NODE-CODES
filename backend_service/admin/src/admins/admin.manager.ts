@@ -60,7 +60,9 @@ export const allUsersList = (_body) => {
         (async () => {
             const client = await database()
             try {
-                        var selectQuery = adminQuery.allRegisteredUsersList;
+                        var selectQuery = adminQuery.registeredUsersList;
+                        var listquery={}
+                        var listQueryCount={}
                         console.log("filter : ",_body.filter);
                         
                         if (_body.filter) {
@@ -83,16 +85,33 @@ export const allUsersList = (_body) => {
                         if (_body.pageSize && _body.pageNumber) {
                                     selectQuery= selectQuery+`  limit ${_body.pageSize} offset ((${_body.pageNumber}-1)*${_body.pageSize}) `
                                 }
-                        const listquery = {
-                            name: 'list-candidates',
-                            text: selectQuery,
-                            values:[_body.usersType]
+                        if(_body.usersType)
+                        {
+                                listquery = {
+                                    name: 'list-candidates',
+                                    text: selectQuery,
+                                    values:[_body.usersType]
+                                }
+                                listQueryCount = {
+                                    name: 'total-count',
+                                    text: adminQuery.registeredUsersListCount,
+                                    values:[_body.usersType]
+                                }
                         }
-                        const listQueryCount = {
-                            name: 'total-count',
-                            text: adminQuery.allRegisteredUsersListCount,
-                            values:[_body.usersType]
+                        else{
+                            
+                            listquery = {
+                                name: 'list-all-candidates',
+                                text: adminQuery.allRegisteredUsersList,
+                                values:[]
+                            }
+                            listQueryCount = {
+                                name: 'all-candidates-total-count',
+                                text: adminQuery.allRegisteredUsersListCount,
+                                values:[]
+                            }
                         }
+
                         var results=await client.query(listquery)
                         var counts=await client.query(listQueryCount)
                         resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
