@@ -103,6 +103,23 @@ export const positionSort = (body) => {
     }
     return sort;
 }
+export const positionTab = (body) =>{
+    var vettedQuery = '';
+    
+    switch (body.tabValue) {
+        
+        case '0':
+        vettedQuery='  and p.job_status = 6  '
+        break;
+        case '1':
+        vettedQuery=' and p.job_status = 5 and p.created_by = $employeeid'
+        break;
+        default:
+        break;
+    }
+    
+    return vettedQuery;
+}
 export const positionPagination = (body) => {
     let pagination = '';
     // Pagination
