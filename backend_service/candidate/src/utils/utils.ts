@@ -205,7 +205,20 @@ export const resourceHirerTab = (body) =>{
 export const resourceRoleBased = (reqBody,queryValues) =>{
     let roleBasedQuery = '';
     if (reqBody.userRoleId != 1) {
-        roleBasedQuery = ' and chsv."companyId" = $companyid '
+        roleBasedQuery = ' and  chsv."companyId" = $companyid '
+        queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
+    }
+    else {
+        roleBasedQuery =  ' and (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid)) ' 
+        queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
+    }     
+    
+    return {roleBasedQuery,queryValues};
+}
+export const listFreResourceRoleBased = (reqBody,queryValues) =>{
+    let roleBasedQuery = '';
+    if (reqBody.userRoleId != 1) {
+        roleBasedQuery = ' where  chsv."companyId" = $companyid '
         queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
     }
     else {
