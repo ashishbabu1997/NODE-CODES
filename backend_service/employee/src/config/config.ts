@@ -18,10 +18,15 @@ export default {
         "user": "sales@ellow.io",
         "password": "yteinevvuuchtmvb"
     },
+    "noreplymail": {
+        "service": "gmail",
+        "user": "no-reply@ellow.io",
+        "password": "fqlroidzaxmlhgml"
+    },
     "text": {
     
         "subject":"Customer Registration Notification",
-        "userSubject":"Freelancer Verification Link",
+        "userSubject":"Candidate Verification Link",
         "resetConfirmSubject":" ellow Confirmation Mail"
     },
     "defaultHiringStep": {

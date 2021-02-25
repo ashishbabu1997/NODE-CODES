@@ -7,6 +7,8 @@ export const objectToArray = (objectArray,keyName) => {
     return reqArray;
 }
 
+
+
 export  const positionFilter = (filter,filterQuery,queryValues) =>{
     if(filter)
     {               
@@ -19,7 +21,8 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
         duration = filter.range,
         coreSkills = filter.skills,
         otherSkills = filter.otherSkills,
-        positionStatus = filter.positionStatus
+        positionStatus = filter.positionStatus,
+        activeStatus=filter.activeStatus
         ; 
         
         if(![null,undefined,''].includes(startDate) && ![null,undefined,''].includes(endDate))
@@ -80,6 +83,16 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
         {
             filterQuery+=' and $otherskill::integer[] && (select ARRAY (select js.skill_id from job_skills js where p.position_id=js.position_id and js.status=true and js.top_rated_skill=false)) '
             queryValues =  Object.assign({otherskill:objectToArray(otherSkills,'skillId')},queryValues)
+        }
+        if(![null,undefined,''].includes(activeStatus) && activeStatus=='active')
+        {
+            filterQuery=filterQuery+' AND p.job_status=$active'
+            queryValues = Object.assign({active:6},queryValues)
+        }
+        if(![null,undefined,''].includes(activeStatus) && activeStatus=='closed')
+        {
+            filterQuery=filterQuery+' AND p.job_status=$closed'
+            queryValues = Object.assign({closed:8},queryValues)
         }  
     }
     return {filterQuery,queryValues};
@@ -100,6 +113,62 @@ export const positionSort = (body) => {
     
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
         sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
+    }
+    return sort;
+}
+export const positionTab = (body) =>{
+    var vettedQuery = '';
+    
+    switch (body.tabValue) {
+        
+        case '0':
+        vettedQuery='  and (p.job_status = 6 or p.job_status=8)   '
+        break;
+        case '1':
+        vettedQuery=' and p.job_status = 5 and p.created_by = $employeeid'
+        break;
+        default:
+        break;
+    }
+    
+    return vettedQuery;
+}
+export const positionPagination = (body) => {
+    let pagination = '';
+    // Pagination
+    if (body.pageSize && body.pageNumber) {
+        pagination= `  limit ${body.pageSize} offset ((${body.pageNumber}-1)*${body.pageSize}) `
+    }
+    return pagination;
+}
+
+export const activePositionSort = (body) => {
+    let sort = '';
+    // Sorting keys with values
+    const orderBy = {
+        "positionName": 'position_name',
+        "developerCount": 'developer_count',
+        "companyName": 'company_name',
+    }
+    
+    if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
+    }
+    return sort;
+}
+
+export const upcomingInterviewSort = (body) => {
+    let sort = '';
+    // Sorting keys with values
+    const orderBy = {
+        "name": 'c.candidate_first_name',
+        "position": 'p.position_name',
+        "allocateTo": 'e.firstname',
+    }
+    
+    if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;  
+        console.log(sort)              
     }
     return sort;
 }

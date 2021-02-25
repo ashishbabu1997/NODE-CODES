@@ -113,46 +113,47 @@ export const listCandidatesDetails = (_body) => {
 //>>>>>>>>>>>Listing all the free candidates from the candidates list.
 export const listFreeCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
+        
         var selectQuery = candidateQuery.listFreeCandidatesFromView;
+        let totalQuery = candidateQuery.listFreeCandidatesTotalCount;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
-        body=_body.query, reqBody = _body.body;  
-     
+        body=_body.query, reqBody = _body.body;
+        let promise = [];
+        
+        
         // Search for filters in the body        
         let filterResult = utils.resourceFilter(filter,filterQuery,queryValues);
         filterQuery = filterResult.filterQuery;
         queryValues = filterResult.queryValues;
         
+        // Apply query based on userRoleId      
+        let roleBasedQueryResult = utils.listFreResourceRoleBased(reqBody,queryValues);
+        roleBasedQuery = roleBasedQueryResult.roleBasedQuery;
+        queryValues = roleBasedQueryResult.queryValues;
+        
         // Search for company name / candidate name
         let searchResult = utils.resourceSearch(body,queryValues);
         searchQuery = searchResult.searchQuery;
         queryValues = searchResult.queryValues;
-                
-        if (reqBody.userRoleId != 1) {
-            roleBasedQuery = ' where chsv."companyId" = $companyid'
-            queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
-        }
-        else {
-            roleBasedQuery =  ' where (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid))' 
-            queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
-        }      
-        
         
         (async () => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body);
+                
+                queryText = selectQuery+roleBasedQuery+utils.resourceTab(body)+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
                 queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
-
-                const listCandidates = {
-                    name: 'get-free-candidates',
-                    text: queryText,
-                    values: queryValues
-                }
-      
-                const candidatesResult = await client.query(listCandidates);
-                await client.query('COMMIT')
-                resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows } });
+                promise.push(client.query(queryService.listCandidates(queryText,queryValues)));
+                
+                var queryCountText = totalQuery+roleBasedQuery+utils.resourceTab(body)+filterQuery+searchQuery;
+                promise.push(client.query(queryService.listCandidatesTotal(queryCountText,queryValues)));
+                
+                let response = await Promise.all(promise);
+                let candidates = response[0].rows;
+                let totalCount = response[1].rows[0].totalCount;
+                await client.query('COMMIT');
+                
+                resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates, totalCount} });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
@@ -170,10 +171,11 @@ export const listFreeCandidatesDetails = (_body) => {
 //>>>>>>>>>>>Listing required candidates for add from list from the candidates list.
 export const listAddFromListCandidates = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.getCandidateForAddFromListViews;
+        var selectQuery = candidateQuery.getCandidateForAddFromListViewsFirstQuery;
+        var totaltQuery=candidateQuery.addFromListTotalCount;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
         body=_body.query,reqBody=_body.body;
-
+        
         // Search for filters in the body        
         let filterResult = utils.resourceFilter(filter,filterQuery,queryValues);
         filterQuery = filterResult.filterQuery;
@@ -184,30 +186,26 @@ export const listAddFromListCandidates = (_body) => {
         searchQuery = searchResult.searchQuery;
         queryValues = searchResult.queryValues;
         
-        if (reqBody.userRoleId != 1) {
-            roleBasedQuery = ' AND chsv."companyId" = $companyid'
-            console.log(body.companyId)
-            queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
-        }
-        else {
-            roleBasedQuery =  ' AND (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid))'
-            queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
-        }
+        // Apply query based on userRoleId      
+        let roleBasedQueryResult = utils.resourceRoleBased(reqBody,queryValues);
+        roleBasedQuery = roleBasedQueryResult.roleBasedQuery;
+        queryValues = roleBasedQueryResult.queryValues;
         
         (async () => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body);
+                queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
+                console.log(queryText)
                 queryValues =Object.assign({positionid:body.positionId},queryValues)
-                const listCandidates = {
-                    name: 'get-addfromlist-candidates',
-                    text: queryText,
-                    values: queryValues
-                }
-                const candidatesResult = await client.query(listCandidates);
+                const candidatesResult = await client.query(queryService.listAddFromList(queryText,queryValues));
+                
+                queryText = totaltQuery+roleBasedQuery+filterQuery+searchQuery;
+                const totalCountResult = await client.query(queryService.listAddFromListTotal(queryText,queryValues));
+                
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows } });
+                
+                resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows,totalCount:totalCountResult.rows[0].totalCount } });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
@@ -433,7 +431,7 @@ export const addCandidateReview = (_body) => {
                             name:candidateDetailResults.rows[0].name
                         };
                         emailClient.emailManager(candidateDetailResults.rows[0].email,subject,path,replacements);
-
+                        
                     }   
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });    
@@ -551,7 +549,7 @@ export const removeCandidateFromPosition = (_body) => {
                 var positions=await client.query(queryService. getPositionName(_body));
                 emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,path,replacements);
                 emailClient.emailManager(positions.rows[0].email,subject,path,replacements);
-
+                
                 await client.query('COMMIT')
                 await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                 resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });
@@ -577,7 +575,7 @@ export const linkCandidateWithPosition = (_body) => {
     return new Promise((resolve, reject) => {
         let nameList=[];
         (async () => {
-         
+            
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
@@ -626,7 +624,7 @@ export const linkCandidateWithPosition = (_body) => {
                         }
                         count=count+1
                         promise.push(client.query(linkCandidateQuery));
-                       
+                        
                     });
                     await Promise.all(promise);
                 }
@@ -635,7 +633,7 @@ export const linkCandidateWithPosition = (_body) => {
                 
                 
                 // Sending notification to ellow recuiter for each candidate linked to a position
-              
+                
                 // candidateList.forEach(async element => {
                 for (const element of candidateList)
                 {
@@ -1404,19 +1402,11 @@ export const shareResumeSignup = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                console.log("1");
                 
-                let result = await client.query(queryService.getSharedEmailsWithToken(_body));
-                console.log("result : ",result.rows);
-                
+                let result = await client.query(queryService.getSharedEmailsWithToken(_body));                
                 if(result.rows[0]['sharedEmails'].includes(_body.email))
-                {
-                    console.log("inside if ");
-                    
-                    let emailCheck = await client.query(queryService.getEmail(_body));
-                    
-                    console.log("email check ",emailCheck);
-                    
+                {                    
+                    let emailCheck = await client.query(queryService.getEmail(_body));                    
                     if(emailCheck.rowCount==0)
                     {
                         const getId = {
@@ -1656,20 +1646,15 @@ export const createPdfFromHtml = (_body) => {
             (async () => {
                 const client = await database()
                 try {
-                    console.log("fetchResumeDataForPdf");
-                    console.log("body : ",_body);
-                    console.log("hasUniqueId : ",myCache.has(_body.uniqueId));
-                    
+
                     if(myCache.has(_body.uniqueId))
                     {
                         let candidateId = myCache.take(_body.uniqueId);                                        
                         _body.candidateId = candidateId;
-                        console.log("candidateId : ",candidateId);
                         let data = await getResume(_body);            
                         delete data["data"].assesmentLink;
                         delete data["data"].assesementComment;
                         delete data["data"].assesments;
-                        console.log('data : ',data["data"]);
                         resolve({ code: 200, message: "Candidate resume shared data fetched successfully", data:data["data"] });
                         
                     }
@@ -1720,21 +1705,29 @@ export const createPdfFromHtml = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-                    let result = await client.query(queryService.getAssesmentDetails(_body));
+                    await client.query('BEGIN')
+                    let promises = [];
+
+                    // let result = await client.query(queryService.getAssesmentDetails(_body));
+                    promises.push(client.query(queryService.getAssesmentDetails(_body)));
                     
-                    let results = await client.query(queryService.getAllocatedVettedStatus(_body));
-                    const adminSignup = {
-                        name: 'admin-signup',
-                        text: candidateQuery.getellowAdmins,
-                        values: []
-                    }
-                    let adminResult=await client.query(adminSignup);
-                    resolve({ code: 200, message: "Assessment details listed successfully", data:{reviews:result.rows,
-                        candidateVetted:results.rows[0].candidate_vetted,
-                        currentEllowStage:results.rows[0].current_ellow_stage,
-                        allocatedTo:results.rows[0].allocated_to,
-                        admins:adminResult.rows
-                    }});
+                    // let results = await client.query(queryService.getAllocatedVettedStatus(_body));
+                    promises.push(client.query(queryService.getAllocatedVettedStatus(_body)));
+                    
+                    // let adminResult=await client.query(queryService.adminSignup);
+                    promises.push(client.query(queryService.adminSignup()));
+                    
+                    let response = await Promise.all(promises);
+
+                    let reviews = response[0].rows,
+                    candidateVetted = response[1].rows[0].candidate_vetted,
+                    currentEllowStage = response[1].rows[0].current_ellow_stage,
+                    allocatedTo = response[1].rows[0].allocated_to,
+                    admins = response[2].rows;
+
+                    await client.query('COMMIT')
+
+                    resolve({ code: 200, message: "Assessment details listed successfully", data:{reviews,candidateVetted,currentEllowStage,allocatedTo,admins}});
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
@@ -1764,8 +1757,8 @@ export const createPdfFromHtml = (_body) => {
                     _body.auditLogComment=`Assignee for the candidate ${_body.candidateName} has been changed to ${assigneeName}`
                     let subject="ellow Screening Assignee Notification"
                     let replacements = {
-                               aName:assigneeName,
-                               cName:_body.candidateName     
+                        aName:assigneeName,
+                        cName:_body.candidateName     
                     };
                     let path = 'src/emailTemplates/changeAssigneeText.html';
                     emailClient.emailManager(assigneeMail,subject,path,replacements);
@@ -1875,52 +1868,49 @@ export const createPdfFromHtml = (_body) => {
     }
     
     // >>>>>>> FUNC. >>>>>>>
-//>>>>>>>>>>>Listing all the free candidates from the candidates list of hirer.
-export const listHirerResources = (_body) => {
-    return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView;
-        var queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
-        body=_body.query;  
-        
-        // Search for filters in the body        
-        let filterResult = utils.resourceFilter(filter,filterQuery,queryValues);
-        filterQuery = filterResult.filterQuery;
-        queryValues = filterResult.queryValues;
-        
-        // Search for company name / candidate name
-        let searchResult = utils.resourceSearch(body,queryValues);
-        searchQuery = searchResult.searchQuery;
-        queryValues = searchResult.queryValues;
-        
-        (async () => {
-            const client = await database()
-            try {
-                await client.query('BEGIN');
-                queryText = selectQuery+filterQuery+searchQuery+utils.resourceSort(body);
-                queryValues =  Object.assign({hirercompanyid:_body.body.companyId},queryValues)
-                const listCandidatesOfHirer = {
-                    name: 'get-free-candidates-of-hirer',
-                    text: queryText,
-                    values: queryValues
+    //>>>>>>>>>>>Listing all the free candidates from the candidates list of hirer.
+    export const listHirerResources = (_body) => {
+        return new Promise((resolve, reject) => {
+            var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView,totalQuery=candidateQuery.listFreeCandidatesofHirerTotalCount,vettedQuery='';
+            var queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
+            body=_body.query;  
+            
+            // Search for filters in the body        
+            let filterResult = utils.resourceFilter(filter,filterQuery,queryValues);
+            filterQuery = filterResult.filterQuery;
+            queryValues = filterResult.queryValues;
+            
+            // Search for company name / candidate name
+            let searchResult = utils.resourceSearch(body,queryValues);
+            searchQuery = searchResult.searchQuery;
+            queryValues = searchResult.queryValues;
+            
+            (async () => {
+                const client = await database()
+                try {
+                    await client.query('BEGIN');
+                    queryText = selectQuery+utils.resourceHirerTab(body)+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
+                    var queryCountText=totalQuery+utils.resourceHirerTab(body)+filterQuery+searchQuery
+                    queryValues =  Object.assign({hirercompanyid:_body.body.companyId},queryValues)
+                    
+                    const candidatesResult = await client.query(queryService.listCandidatesOfHirer(queryText,queryValues));
+                    const totalCount=await client.query(queryService.listCandidatesOfHirerCount(queryCountText,queryValues))
+                    await client.query('COMMIT')
+                    resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows,totalCount:totalCount.rows[0].totalCount } });
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                } finally {
+                    client.release();
                 }
-                const candidatesResult = await client.query(listCandidatesOfHirer);
-                await client.query('COMMIT')
-                resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows } });
-            } catch (e) {
-                console.log(e)
-                await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
-                client.release();
-            }
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            })
         })
-    })
-}
-
+    }
+    
     // >>>>>>> FUNC. >>>>>>>
-
     // Change availability of a candidate    
     export const changeAvailability = (_body) => {
         return new Promise((resolve, reject) => {
@@ -1942,3 +1932,4 @@ export const listHirerResources = (_body) => {
             })
         })
     }
+    

@@ -98,7 +98,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         }
         if(![undefined,null,''].includes(positionStatus) && Array.isArray(positionStatus) && positionStatus.length)
         {
-            filterQuery=filterQuery+' and (select case when chsv."positionStatusName" is null then \'Submitted to hirer\' else chsv."positionStatusName" end) ilike any (select concat(array_element,\'%\') from unnest($positionstatus::text[]) array_element(array_element)) '
+            filterQuery=filterQuery+' and (select case when chsv."positionStatusName" is null then \'Submitted to hirer\' else chsv."positionStatusName" end) ilike any (select concat(array_element,\'%\') from unnest($positionstatus::text[]) array_element(array_element)) and "positionId" is not null '
             queryValues =  Object.assign({positionstatus: positionStatus},queryValues) 
         }
         if(![undefined,null,''].includes(candStatus) && Array.isArray(candStatus) && candStatus.length)
@@ -133,9 +133,18 @@ export const resourceSort = (body) => {
         {
             sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
         }
-
+        
     }
     return sort;
+}
+
+export const resourcePagination = (body) => {
+    let pagination = '';
+    // Pagination
+    if (body.pageSize && body.pageNumber) {
+        pagination= `  limit ${body.pageSize} offset ((${body.pageNumber}-1)*${body.pageSize}) `
+    }
+    return pagination;
 }
 
 
@@ -150,4 +159,72 @@ export const resourceSearch = (body,queryValues) =>{
     }
     
     return {searchQuery,queryValues};
+}
+
+export const resourceTab = (body) =>{
+    var vettedQuery = '';
+    
+    switch (body.tabValue) {
+        
+        case '0':
+        vettedQuery='  and chsv."candidateStatus"=3 '
+        break;
+        case '1':
+        vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6'
+        break;
+        case '2':
+        vettedQuery='  and chsv."candidateStatus"=3 and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
+        break;
+        case '3':
+        vettedQuery='  and chsv."candidateStatus"=4'
+        break; 
+        
+        default:
+        break;
+    }
+    
+    return vettedQuery;
+}
+
+export const resourceHirerTab = (body) =>{
+    let vettedQuery = '';
+    switch (body.tabValue) {
+        case '1':
+        vettedQuery=' and chsv."candidateStatus"=6 '
+        break;
+        case '2':
+        vettedQuery=' and chsv."candidateStatus"!=6 '
+        break;
+        default:
+        break;
+    }
+    
+    return vettedQuery;
+}
+
+export const resourceRoleBased = (reqBody,queryValues) =>{
+    let roleBasedQuery = '';
+    if (reqBody.userRoleId != 1) {
+        roleBasedQuery = ' and  chsv."companyId" = $companyid '
+        queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
+    }
+    else {
+        roleBasedQuery =  ' and (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid)) ' 
+        queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
+    }     
+    
+    return {roleBasedQuery,queryValues};
+}
+export const listFreResourceRoleBased = (reqBody,queryValues) =>{
+    let roleBasedQuery = '';
+    if (reqBody.userRoleId != 1) {
+        roleBasedQuery = ' where  chsv."companyId" = $companyid  '
+        queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
+    }
+    else {
+        roleBasedQuery =  ' and (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid)) ' 
+        queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
+    }     
+    
+    return {roleBasedQuery,queryValues};
 }

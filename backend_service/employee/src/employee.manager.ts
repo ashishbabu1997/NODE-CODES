@@ -65,6 +65,7 @@ export const createEmployee = (_body) => {
                 else{
                     console.log("Subuser registration")
                 }
+                console.log("User Type",_body.query.userType)
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
@@ -331,7 +332,7 @@ export const createFreelancer = (_body) => {
                     text: employeeQuery.createFreelancer,
                     values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.telephoneNumber,createdtime:currentTime,token:uniqueId},
                 }
-                let result=await client.query(createFreelancerQuery);
+                await client.query(createFreelancerQuery);
                 let Name = _body.firstName + " " + _body.lastName
                 let companyName = "Freelancer"
                 let emailAddress = _body.email
@@ -349,7 +350,7 @@ export const createFreelancer = (_body) => {
                 };
                 var companyId=22
                 path ='src/emailTemplates/sendLinkText.html';
-                emailClient.emailManager(loweremailId,config.text.userSubject,path,freelancerReplacements);
+                emailClient.emailManagerForNoReply(loweremailId,config.text.userSubject,path,freelancerReplacements);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
@@ -461,10 +462,38 @@ export const tokenCheck = (_body) => {
 //>>>>>>>>>>>>>>>>>>Ellow recruiter signup API  
 export const ellowAdminSignup = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());        
+        const currentTime = Math.floor(Date.now());
+        const mailId = _body.body.email
+        const loweremailId = mailId.toLowerCase()        
         (async () => {
             const client = await database()
             try {
+                const getEmailQuery = {
+                    name: 'get-email',
+                    text: employeeQuery.getEmail,
+                    values: [loweremailId],
+                }
+                const getEmailResult = await client.query(getEmailQuery);
+                
+                if (getEmailResult.rowCount >= 1) {
+                    var adminStatus = getEmailResult.rows[0].admin_approve_status
+                    var emailId = getEmailResult.rows[0].email
+                    if (emailId == loweremailId) {
+                        if (adminStatus == 2 || adminStatus == null) {
+                            reject({ code: 400, statusCode: 406, message: "Your account is held for Admin approval", data: {} });
+                            return;
+                        }
+                        else if (adminStatus == 1) {
+                            reject({ code: 400, statusCode: 407, message: "You are already registered", data: {} });
+                            return;
+                        }
+                        else if (adminStatus == 0) {
+                            reject({ code: 400, statusCode: 408, message: "This account is rejected by Ellow", data: {} });
+                            return;
+                        }
+                    }
+                    
+                }
                 await client.query('BEGIN');
                 var password='admin@ellow'
                 var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");

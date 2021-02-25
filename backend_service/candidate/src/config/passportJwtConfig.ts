@@ -10,7 +10,6 @@ const opts: StrategyOptions = {
 
 export default () => {
     passport.use(new Strategy(opts, (jwt_payload, done) => {
-        console.log(jwt_payload,"asdsf")
         return done(null, jwt_payload);
     }));
 };

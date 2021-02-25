@@ -149,6 +149,14 @@ export const  fetchCompanyPositionsById = (_body) =>{
 
     }
 }
+export const  fetchPositionsCount = (_body) =>{
+    return {
+        name: 'id-fetch-company-positions-count',
+        text: _body.queryCountText,
+        values: _body.queryValues
+
+    }
+}
 export const  addCompanyPositionsQuery = (_body) =>{
     return {
         name: 'add-company-positions',
@@ -280,7 +288,7 @@ export const  changeJobReceivedStatusQuery = (_body) =>{
     return {
         name: 'change-job-received-status',
         text: positionsQuery.changeJobReceivedStatus,
-        values: [currentTime, _body.positionId,_body.jobStatus],
+        values: [currentTime(), _body.positionId,_body.jobStatus],
 
     }
 }
@@ -318,6 +326,14 @@ export const  clientHiringCountsHirer = (_body) =>{
     }
 }
 
+export const  clientHiringSideCountsHirer = (_body) =>{
+    return {
+        name: 'client-hiring-side-counts-hirer',
+        text:dashboardQuery.clientHiringSideCountHirer,
+        values : [_body.companyId]
+    }
+}
+
 export const  adminPositionCounts = (_body) =>{
     return {
         name: 'admin-position-counts',
@@ -329,6 +345,13 @@ export const  clientHiringCountsAdmin = (_body) =>{
     return {
         name: 'client-hiring-counts-admin',
         text:dashboardQuery.clientHiringCountsAdmin
+    }
+}
+
+export const  clientHiringSideCountsAdmin = (_body) =>{
+    return {
+        name: 'client-hiring-side-counts-admin',
+        text:dashboardQuery.clientHiringSideCountAdmin
     }
 }
 
@@ -344,31 +367,31 @@ export const  ellowScreeningCount = (_body) =>{
         text:dashboardQuery.ellowScreeningCount
     }
 }
-export const  upcomingInterviewsForEllowRecruiter = (_body) =>{
+export const  upcomingInterviewsForEllowRecruiter = (_body,sort) =>{
     return {
         name: 'recruiter-interview-list',
-        text:dashboardQuery.fetchRecruiterInterviewList,
+        text:dashboardQuery.fetchRecruiterInterviewList + sort,
         values : []
     }
 }
-export const  getActivePositions = (_body) =>{
+export const  getActivePositions = (_body,sort) =>{
     return {
         name: 'recruiter-active-positions',
-        text:dashboardQuery.fetchAllActivePositionsForEllowRecruiter,
+        text:dashboardQuery.fetchAllActivePositionsForEllowRecruiter + sort,
         values : []
     }
 }
-export const  getHirerActivePositions = (_body) =>{
+export const  getHirerActivePositions = (_body,sort) =>{
     return {
         name: 'hirer-active-positions',
-        text:dashboardQuery.fetchAllActivePositionsForHirer,
+        text:dashboardQuery.fetchAllActivePositionsForHirer + sort,
         values : [_body.companyId]
     }
 }
-export const  upcomingInterviewsForHirer = (_body) =>{
+export const  upcomingInterviewsForHirer = (_body,sort) =>{
     return {
         name: 'hirer-interview-list',
-        text:dashboardQuery.fetchRecruiterInterviewList,
+        text:dashboardQuery.fetchHirerInterviewList + sort,
         values : [_body.companyId]
     }
 }
