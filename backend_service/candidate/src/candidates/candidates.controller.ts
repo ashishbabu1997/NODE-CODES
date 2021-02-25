@@ -16,7 +16,7 @@ export const listCandidates = (req, res) => {
 export const listFreeCandidates = (req, res) => {
     const body = req;
     candidateManager.listFreeCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))        
 }
 
 export const listForAddFromListCandidates = (req, res) => {

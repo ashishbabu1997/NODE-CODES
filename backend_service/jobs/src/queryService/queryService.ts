@@ -288,7 +288,7 @@ export const  changeJobReceivedStatusQuery = (_body) =>{
     return {
         name: 'change-job-received-status',
         text: positionsQuery.changeJobReceivedStatus,
-        values: [currentTime, _body.positionId,_body.jobStatus],
+        values: [currentTime(), _body.positionId,_body.jobStatus],
 
     }
 }

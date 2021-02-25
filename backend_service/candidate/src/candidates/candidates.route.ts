@@ -44,7 +44,7 @@ router
     .put('/sharePdf',jwtAuth, setData(),candidateController.getPdf)
     .get('/getSharedEmailsForPdf',jwtAuth, setData(),candidateController.getSharedEmailsForPdf)
     .get('/sharedResumePdfData',candidateController.sharedResumePdfData)
-    .get('/getAssementOfCandidate',jwtAuth, setData(),candidateController.getAssesments)
+    .get('/getAssementOfCandidate',jwtAuth, setData(),validate(interviewRequestSchema),candidateController.getAssesments)
     .put('/changeCandidateAssignee',jwtAuth, setData(),candidateController.changeAssignee)
     .put('/updateCandidateEllowStage',jwtAuth, setData(),candidateController.changeEllowRecruitmentStage)
     .put('/rejectCandidateEllowStage',jwtAuth, setData(),candidateController.rejectFromCandidateEllowRecruitment)

@@ -102,7 +102,7 @@ export const modifyOtherInfoAndSubmit = (_body) => {
 export const submitFreelancerProfile = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
-            const client = await database().connect()
+            const client = await database()
             try {
                 await client.query('BEGIN');
                 _body.candidateStatus = 3; 
@@ -117,6 +117,7 @@ export const submitFreelancerProfile = (_body) => {
                 };
                 let path = 'src/emailTemplates/freelancerSubmitText.html';
                 let imageResults=await client.query(queryService.getImageDetails(_body))
+                await client.query('COMMIT');
                 let message=`${firstName + ' ' + lastName} has submitted his profile for review`
                 await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'freelancer',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                 emailClient.emailManager(config.adminEmail,config.text.submitProfileSubject,path,replacements);

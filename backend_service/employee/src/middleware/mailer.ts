@@ -10,6 +10,15 @@ const transporter = nodemailer.createTransport({
         pass: config.mail.password
     }
 })
+const noreplyTransporter = nodemailer.createTransport({
+    service:config.noreplymail.service,
+    // host:"smtp.gmail.com",
+    // port: 465,
+    auth: {
+        user: config.noreplymail.user,
+        pass: config.noreplymail.password
+    }
+})
 export const sendMail = (email, subject, html, callback) => {
     const mailOptions = {
         from: config.mail.user, 
@@ -18,7 +27,23 @@ export const sendMail = (email, subject, html, callback) => {
         html
     };
     
-    transporter.sendMail(mailOptions, function (err, data) {
+    noreplyTransporter.sendMail(mailOptions, function (err, data) {
+        if (err) {
+            return callback(err, null);
+        }
+        return callback(null, data);
+    });
+}
+
+export const sendUserMail = (email, subject, html, callback) => {
+    const mailOptions = {
+        from: config.noreplymail.user, 
+        to: email, 
+        subject,
+        html
+    };
+    
+    noreplyTransporter.sendMail(mailOptions, function (err, data) {
         if (err) {
             return callback(err, null);
         }
