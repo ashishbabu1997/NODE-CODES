@@ -127,7 +127,7 @@ export const listFreeCandidatesDetails = (_body) => {
         queryValues = filterResult.queryValues;
         
         // Apply query based on userRoleId      
-        let roleBasedQueryResult = utils.resourceRoleBased(reqBody,queryValues);
+        let roleBasedQueryResult = utils.listFreResourceRoleBased(reqBody,queryValues);
         roleBasedQuery = roleBasedQueryResult.roleBasedQuery;
         queryValues = roleBasedQueryResult.queryValues;
         
