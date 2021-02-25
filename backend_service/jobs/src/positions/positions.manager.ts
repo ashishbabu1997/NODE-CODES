@@ -123,7 +123,7 @@ export const fetchPositionDetails = (_body) => {
         (async () => {
             const client = await database()
             try {
-                
+                console.log("PositionId",_body.positionId)
                 let results= await client.query(queryService.fetchPositionDetails(_body))
                 const queryResult = results.rows;
                 let skills = [];
