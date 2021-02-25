@@ -196,6 +196,7 @@ export const listAddFromListCandidates = (_body) => {
             try {
                 await client.query('BEGIN');
                 queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
+                console.log(queryText)
                 queryValues =Object.assign({positionid:body.positionId},queryValues)
                 const candidatesResult = await client.query(queryService.listAddFromList(queryText,queryValues));
                 
