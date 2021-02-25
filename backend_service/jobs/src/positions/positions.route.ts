@@ -17,7 +17,7 @@ router
     .get('/companyNames',jwtAuth, setData(),validate(getCompanyNameSchema),positionController.getCompanyNames)
     .post('/',jwtAuth, setData(), validate(addPositionSchema),positionController.createPositions)
     .put('/', jwtAuth, setData(), validate(updatePositionSchema),positionController.updatePositions)
-    .get('/:positionId', jwtAuth, setData(),validate(positionIdSchema),positionController.getPositionDetails)
+    .get('/:positionId', jwtAuth, setData(),positionController.getPositionDetails)
     .post('/publish',jwtAuth, setData(), validate(positionIdSchema), positionController.publishPositions)
     .post('/changePositionStatus',jwtAuth, setData(),validate(jobStatusSchema),positionController.changePositionStatus)
     .post('/deletePosition',jwtAuth, setData(),validate(positionIdSchema),positionController.positionDeletion)
