@@ -109,7 +109,7 @@ export const positionTab = (body) =>{
     switch (body.tabValue) {
         
         case '0':
-        vettedQuery='  and p.job_status = 6  '
+        vettedQuery='  and (p.job_status = 6 or p.job_status=8)   '
         break;
         case '1':
         vettedQuery=' and p.job_status = 5 and p.created_by = $employeeid'

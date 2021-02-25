@@ -173,7 +173,7 @@ export const resourceTab = (body) =>{
         vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6'
         break;
         case '2':
-        vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"!=6'
+        vettedQuery='  and chsv."candidateStatus"=3 and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
         break;
         case '3':
         vettedQuery='  and chsv."candidateStatus"=4'
