@@ -19,7 +19,8 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
         duration = filter.range,
         coreSkills = filter.skills,
         otherSkills = filter.otherSkills,
-        positionStatus = filter.positionStatus
+        positionStatus = filter.positionStatus,
+        activeStatus=filter.activeStatus
         ; 
         
         if(![null,undefined,''].includes(startDate) && ![null,undefined,''].includes(endDate))
@@ -80,6 +81,16 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
         {
             filterQuery+=' and $otherskill::integer[] && (select ARRAY (select js.skill_id from job_skills js where p.position_id=js.position_id and js.status=true and js.top_rated_skill=false)) '
             queryValues =  Object.assign({otherskill:objectToArray(otherSkills,'skillId')},queryValues)
+        }
+        if(![null,undefined,''].includes(activeStatus) && activeStatus=='active')
+        {
+            filterQuery=filterQuery+' AND p.job_status=$active'
+            queryValues = Object.assign({active:6},queryValues)
+        }
+        if(![null,undefined,''].includes(activeStatus) && activeStatus=='closed')
+        {
+            filterQuery=filterQuery+' AND p.job_status=$closed'
+            queryValues = Object.assign({closed:8},queryValues)
         }  
     }
     return {filterQuery,queryValues};
