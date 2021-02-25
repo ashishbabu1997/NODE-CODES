@@ -218,7 +218,7 @@ export const resourceRoleBased = (reqBody,queryValues) =>{
 export const listFreResourceRoleBased = (reqBody,queryValues) =>{
     let roleBasedQuery = '';
     if (reqBody.userRoleId != 1) {
-        roleBasedQuery = ' where  chsv."companyId" = $companyid '
+        roleBasedQuery = ' where  chsv."companyId" = $companyid  '
         queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
     }
     else {
