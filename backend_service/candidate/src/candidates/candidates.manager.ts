@@ -1401,19 +1401,11 @@ export const shareResumeSignup = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                console.log("1");
                 
-                let result = await client.query(queryService.getSharedEmailsWithToken(_body));
-                console.log("result : ",result.rows);
-                
+                let result = await client.query(queryService.getSharedEmailsWithToken(_body));                
                 if(result.rows[0]['sharedEmails'].includes(_body.email))
-                {
-                    console.log("inside if ");
-                    
-                    let emailCheck = await client.query(queryService.getEmail(_body));
-                    
-                    console.log("email check ",emailCheck);
-                    
+                {                    
+                    let emailCheck = await client.query(queryService.getEmail(_body));                    
                     if(emailCheck.rowCount==0)
                     {
                         const getId = {
@@ -1653,20 +1645,15 @@ export const createPdfFromHtml = (_body) => {
             (async () => {
                 const client = await database()
                 try {
-                    console.log("fetchResumeDataForPdf");
-                    console.log("body : ",_body);
-                    console.log("hasUniqueId : ",myCache.has(_body.uniqueId));
-                    
+
                     if(myCache.has(_body.uniqueId))
                     {
                         let candidateId = myCache.take(_body.uniqueId);                                        
                         _body.candidateId = candidateId;
-                        console.log("candidateId : ",candidateId);
                         let data = await getResume(_body);            
                         delete data["data"].assesmentLink;
                         delete data["data"].assesementComment;
                         delete data["data"].assesments;
-                        console.log('data : ',data["data"]);
                         resolve({ code: 200, message: "Candidate resume shared data fetched successfully", data:data["data"] });
                         
                     }
