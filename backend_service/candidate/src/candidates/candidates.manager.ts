@@ -171,7 +171,7 @@ export const listFreeCandidatesDetails = (_body) => {
 //>>>>>>>>>>>Listing required candidates for add from list from the candidates list.
 export const listAddFromListCandidates = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.getCandidateForAddFromListViewsFirstQuery;
+        var selectQuery = candidateQuery.getCandidateForAddFromListView;
         var totaltQuery=candidateQuery.addFromListTotalCount;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
         body=_body.query,reqBody=_body.body;
