@@ -143,6 +143,7 @@ export const listFreeCandidatesDetails = (_body) => {
                 
                 queryText = selectQuery+roleBasedQuery+utils.resourceTab(body)+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
                 queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
+                console.log(queryText)
                 promise.push(client.query(queryService.listCandidates(queryText,queryValues)));
                 
                 var queryCountText = totalQuery+roleBasedQuery+utils.resourceTab(body)+filterQuery+searchQuery;
