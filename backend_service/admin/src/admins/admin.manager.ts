@@ -233,7 +233,8 @@ export const clearance = (_body) => {
                         text: adminQuery.clearanceQuery,
                         values: [_body.selectedEmployeeId, false, 0,currentTime]
                     }
-                    await client.query(adminRejectQuery);
+                    var rejectResultSet= await client.query(adminRejectQuery);
+                    var employeeMail=rejectResultSet.rows[0].email
                     var desc = _body.description
                     var subject = "ellow.io ACCOUNT REJECTION MAIL "
                     
@@ -242,14 +243,15 @@ export const clearance = (_body) => {
                     var userReplacements = {
                         description: desc
                     };
-                    emailClient.emailManager(email,subject,path,userReplacements);
+                    emailClient.emailManager(employeeMail,subject,path,userReplacements);
                     await client.query('COMMIT'); 
                     if(Array.isArray(ellowAdmins.rows))
                     {
                         let subject='User Rejection Notification'
-                        let path = 'src/emailTemplates/userRejecetionMailText.html';
-                        let replacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
+                        let path = 'src/emailTemplates/userRejectionMailText.html';
+                        let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyName.rows[0].company_name};
                         ellowAdmins.rows.forEach(element => {
+                            console.log(element.email)
                             emailClient.emailManager(element.email,subject,path,replacements);         
                         })
                         resolve({ code: 200, message: "User Rejection Successfull", data: {} });
@@ -257,11 +259,13 @@ export const clearance = (_body) => {
                 }
             } catch (e) {
                 await client.query('ROLLBACK')
+                console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             } finally {
                 client.release();
             }
         })().catch(e => {
+            console.log(e)
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
