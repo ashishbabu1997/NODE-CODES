@@ -719,8 +719,17 @@ export const modifyResumeFile = (_body) => {
         (async () => {
             const client = await database().connect()
             try {  
-                await client.query(queryService.updateResumeFile(_body));
-                resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
+                if(_body.candidateId)
+                {
+                    await client.query(queryService.updateResumeFile(_body));
+                    resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
+                }
+                else
+                {
+                    var results=await client.query(queryService.updateResumeForNewEntry(_body));
+                    resolve({ code: 200, message: "Candidate resume file updated successfully", data: {candidateId:results.rows[0].candidate_id} });
+                }
+              
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')

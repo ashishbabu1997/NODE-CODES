@@ -103,6 +103,7 @@ export const getJobReceivedByJobReceivedId = (_body) => {
             const client = await database().connect()
             try {
                 let results=await client.query(queryService.getJobReceivedByIdQuery(_body))  
+                console.log(results.rows)
                 resolve({ code: 200, message: "Job Received listed successfully", data: results.rows[0] });
                 
             } catch (e) {
