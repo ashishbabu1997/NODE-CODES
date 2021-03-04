@@ -6,6 +6,7 @@ import * as crypto from "crypto";
 import * as handlebars from 'handlebars'
 import {readHTMLFile} from '../middleware/htmlReader'
 import * as emailClient from '../emailService/emailService';
+import * as utils from '../utils/utils';
 
 export const objectToArray = (objectArray,keyName) => {
     let reqArray = [];
@@ -19,34 +20,47 @@ export const objectToArray = (objectArray,keyName) => {
 //>>>>>>>>>>>>>>>>>>List all the users
 export const listUsersDetails = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = adminQuery.listUsers;
-        if (_body.filter) {
-            selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%'";
-        }
-        const orderBy = {
-            "name":'e.firstname',
-            "lastName":'e.lastname',
-            "email":'e.email',
-            "phoneNumber":'e.telephone_number',
-            "company":'p.company_name'
-        }
-        
-        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
-        {
-            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
-        }  
-        
-        const listquery = {
-            name: 'list-candidates',
-            text: selectQuery
-        }
-        database().query(listquery, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Database Error", data: {} });
-                return;
-            }
-            resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows } });
-        })
+        (async () => {
+            const client = await database()
+            try {
+                        var selectQuery = adminQuery.listUsers;
+                        var totalQuery=adminQuery.listUsersTotalCount;
+                        if (_body.filter) {
+                            selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%'";
+                        }
+                        const orderBy = {
+                            "name":'e.firstname',
+                            "lastName":'e.lastname',
+                            "email":'e.email',
+                            "phoneNumber":'e.telephone_number',
+                            "company":'p.company_name'
+                        }
+                        
+                        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+                        {
+                            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+                        }  
+                        selectQuery=selectQuery+utils.adminPagination(_body)
+                        const listquery = {
+                            name: 'list-candidates',
+                            text: selectQuery
+                        }
+                        const countQuery = {
+                            name: 'count-total-candidates',
+                            text: totalQuery
+                        }
+                        var results=await client.query(listquery)
+                        var counts=await client.query(countQuery)
+                        resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
+                } catch (e) {
+                    await client.query('ROLLBACK')
+                    console.log("e : ",e)
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                }
+            })().catch(e => {
+                console.log('e : ',e)
+                reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            })
     })
 }
 
