@@ -85,8 +85,8 @@ export const allUsersList = (_body) => {
                         var selectQuery = adminQuery.registeredUsersList;
                         if(![undefined,null].includes(body.searchKey))
                         {
-                                 searchKey='%' + body.searchKey + '%';
-                        }    
+                                 searchKey= body.searchKey + '%';
+                        } 
                         if(body.usersType)
                         {         
                                 _body.queryText=selectQuery+filterQuery+utils.userSort(body)+utils.usersPagination(body)
@@ -101,6 +101,8 @@ export const allUsersList = (_body) => {
                             _body.queryText=adminQuery.allRegisteredUsersList+filterQuery+utils.userSort(body)+utils.usersPagination(body)
     
                         }
+                        console.log(_body.queryText)
+                        console.log(_body.queryValues)
                         var results=await client.query(queryService.listquery(_body))
                         var counts=await client.query(queryService.listQueryCount(_body))
                         resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
