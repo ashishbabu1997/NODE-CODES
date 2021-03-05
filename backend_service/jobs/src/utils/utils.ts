@@ -146,9 +146,9 @@ export const activePositionSort = (body) => {
     let sort = '';
     // Sorting keys with values
     const orderBy = {
-        "positionName": 'positionName',
-        "developerCount": 'developer_count',
-        "companyName": 'company_name',
+        "position": 'position_name',
+        "positions": 'developer_count',
+        "company": 'company_name',
     }
     
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {

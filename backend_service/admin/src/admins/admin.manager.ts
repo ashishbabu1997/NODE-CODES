@@ -7,6 +7,7 @@ import * as handlebars from 'handlebars'
 import {readHTMLFile} from '../middleware/htmlReader'
 import * as emailClient from '../emailService/emailService';
 import * as utils from '../utils/utils';
+import * as queryService from '../queryService/queryService';
 
 export const objectToArray = (objectArray,keyName) => {
     let reqArray = [];
@@ -74,67 +75,43 @@ export const allUsersList = (_body) => {
         (async () => {
             const client = await database()
             try {
+                        _body.queryValues={};
+                        var filterQuery='', filter=_body.body.filter,
+                        body=_body.query, searchKey = '%%';
+                        // Search for filters in the body        
+                        let filterResult = utils.usersFilter(filter,filterQuery,_body.queryValues);
+                        filterQuery = filterResult.filterQuery;
+                        _body.queryValues = filterResult.queryValues;
                         var selectQuery = adminQuery.registeredUsersList;
-                        var listquery={}
-                        var listQueryCount={}
-                        console.log("filter : ",_body.filter);
-                        
-                        if (_body.filter) {
-                            selectQuery = selectQuery + " " + "AND (c.company_name ilike '%"+_body.filter+"%' OR e.firstname ilike '%"+_body.filter+"%' OR e.lastname ilike '%"+_body.filter+"%')";
-                        }
-                        const orderBy = {
-                            "updatedOn": 'e.updated_on',
-                            "firstName":'e.firstname',
-                            "lastName":'e.lastname',
-                            "email":'e.email',
-                            "accountType":'e.account_type',
-                            "phoneNumber":'e.telephone_number',
-                            "companyName":'c.company_name'
-
-                        }
-                        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
-                                {
-                                    selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
-                                }  
-                        if (_body.pageSize && _body.pageNumber) {
-                                    selectQuery= selectQuery+`  limit ${_body.pageSize} offset ((${_body.pageNumber}-1)*${_body.pageSize}) `
-                                }
-                        if(_body.usersType)
+                        if(![undefined,null].includes(body.searchKey))
                         {
-                                listquery = {
-                                    name: 'list-candidates',
-                                    text: selectQuery,
-                                    values:[_body.usersType]
-                                }
-                                listQueryCount = {
-                                    name: 'total-count',
-                                    text: adminQuery.registeredUsersListCount,
-                                    values:[_body.usersType]
-                                }
+                                 searchKey='%' + body.searchKey + '%';
+                        }    
+                        if(body.usersType)
+                        {         
+                                _body.queryText=selectQuery+filterQuery+utils.userSort(body)+utils.usersPagination(body)
+                                _body.queryCountText=adminQuery.registeredUsersListCount+filterQuery
+                                _body.queryValues =Object.assign({searchkey:searchKey,userstype:body.usersType},_body.queryValues)
+                                
                         }
                         else{
-                            
-                            listquery = {
-                                name: 'list-all-candidates',
-                                text: adminQuery.allRegisteredUsersList,
-                                values:[]
-                            }
-                            listQueryCount = {
-                                name: 'all-candidates-total-count',
-                                text: adminQuery.allRegisteredUsersListCount,
-                                values:[]
-                            }
+                            _body.queryValues =   Object.assign({searchkey:searchKey},_body.queryValues)
+                            console.log(_body.queryValues)
+                            _body.queryCountText=adminQuery.allRegisteredUsersListCount+filterQuery,
+                            _body.queryText=adminQuery.allRegisteredUsersList+filterQuery+utils.userSort(body)+utils.usersPagination(body)
+    
                         }
-
-                        var results=await client.query(listquery)
-                        var counts=await client.query(listQueryCount)
+                        var results=await client.query(queryService.listquery(_body))
+                        var counts=await client.query(queryService.listQueryCount(_body))
                         resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
        
     } catch (e) {
         await client.query('ROLLBACK')
         console.log("e : ",e)
         reject({ code: 400, message: "Failed. Please try again.", data: {} });
+        
     }
+   
 })().catch(e => {
     console.log('e : ',e)
     reject({ code: 400, message: "Failed. Please try again.", data: {} })
