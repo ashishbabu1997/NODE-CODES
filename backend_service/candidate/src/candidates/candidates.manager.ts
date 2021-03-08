@@ -197,7 +197,6 @@ export const listAddFromListCandidates = (_body) => {
             try {
                 await client.query('BEGIN');
                 queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
-                console.log(queryText)
                 queryValues =Object.assign({positionid:body.positionId},queryValues)
                 const candidatesResult = await client.query(queryService.listAddFromList(queryText,queryValues));
                 
@@ -211,8 +210,6 @@ export const listAddFromListCandidates = (_body) => {
                 console.log(e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
-                client.release();
             }
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
