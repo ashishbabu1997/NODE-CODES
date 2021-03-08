@@ -30,11 +30,11 @@ export const listUsersDetails = (_body) => {
                             selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%'";
                         }
                         const orderBy = {
-                            "name":'e.firstname',
+                            "firstName":'e.firstname',
                             "lastName":'e.lastname',
                             "email":'e.email',
                             "phoneNumber":'e.telephone_number',
-                            "company":'p.company_name'
+                            "companyName":'p.company_name'
                         }
                         
                         if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  

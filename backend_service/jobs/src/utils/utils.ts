@@ -108,7 +108,8 @@ export const positionSort = (body) => {
         "candidateCount": '"candidateCount"',
         "resourceCount": 'p.developer_count',
         "companyName": 'c.company_name',
-        "updatedOn":'p.updated_on'
+        "updatedOn":'p.updated_on',
+        "jobCategory":'jc.job_category_name'
     }
     
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
