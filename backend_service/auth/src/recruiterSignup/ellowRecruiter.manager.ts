@@ -15,8 +15,8 @@ export const recruiterPostSignup = (_body) => {
         if(hashedAccess === '2201c26b2bc107c5d5a80ffe48fe7f750135695cf2168698cab5332aef173b90ccf98175c2258f47d1bc38818b2225f8030a7bcadecfc8db8475bc22847990c8')
         {
             const currentTime = Math.floor(Date.now());
-            const mailId = _body.email
-            const loweremailId = mailId.toLowerCase()        
+            const mailId = _body.email;
+            const loweremailId = mailId.toLowerCase();
             (async () => {
                 const client = await database()
                 try {
