@@ -231,6 +231,13 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateId,_body.resume,currentTime(),_body.employeeId],
         }
     }
+    export const updateResumeForNewEntry = (_body) => {
+        return {
+            name: 'update-resumeFile-for-new-candidate',
+            text: candidateQuery.insertResumeFile,
+            values: [_body.resume,currentTime(),_body.employeeId],
+        }
+    }
     
     // *******************************************************************************************************************************//
     

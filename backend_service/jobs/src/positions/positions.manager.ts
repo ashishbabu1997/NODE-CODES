@@ -98,6 +98,41 @@ export const createCompanyPositions = async (_body) => {
                     });   
                 }
                 await Promise.all(hiringStepQueries);
+                if(_body.publish==true)
+                {
+                        await client.query(queryService.changePositionStatusQuery(_body))
+                        const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
+                        const jobReceivedId = data.rows[0].job_received_id;
+                        const details = await client.query(queryService.getNotificationDetailsQuery(_body));
+                        
+                        if(_body.userRoleId == 1)
+                        {
+                            _body.allocatedTo = _body.employeeId;
+                            await client.query(queryService.assigneeQuery(_body));
+                        }
+                        
+                        await client.query('COMMIT');
+                        const { positionCompanyId, positionCompanyName,positionName } = details.rows[0];
+                        const message = `A new position,${positionName} has been created by ${positionCompanyName}`
+                        var cName=positionCompanyName
+                        var cpName=positionName
+                        await createNotification({ positionId, jobReceivedId, positionCompanyId, message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
+                        var subject='New position notification'
+                        // Sending a notification mail about position creation; to the admin
+                        let path = 'src/emailTemplates/positionCreationText.html';
+                        var userReplacements = {
+                            company:cName,
+                            position:cpName  
+                        };
+                        var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
+                        if(Array.isArray(ellowAdmins.rows))
+                        {
+                            ellowAdmins.rows.forEach(element => {
+                                emailClient.emailManager(element.email,subject,path,userReplacements);
+                                
+                            })                            
+                        }
+                }
                 if (_body.flag == 0) {
                     resolve({ code: 200, message: "Positions created successfully", data: { positionId, companyName } });
                     return;
@@ -238,6 +273,44 @@ export const fetchPositionDetails = (_body) => {
                             });   
                         }
                         await Promise.all(hiringStepQueries);
+                        if(_body.publish==true)
+                        {
+                                await client.query(queryService.changePositionStatusQuery(_body))
+                                const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
+                                const jobReceivedId = data.rows[0].job_received_id;
+                                const details = await client.query(queryService.getNotificationDetailsQuery(_body));
+                                
+                                if(_body.userRoleId == 1)
+                                {
+                                    _body.allocatedTo = _body.employeeId;
+                                    await client.query(queryService.assigneeQuery(_body));
+                                }
+                                
+                                await client.query('COMMIT');
+                                const { positionCompanyId, positionCompanyName,positionName } = details.rows[0];
+                                const message = `A new position,${positionName} has been created by ${positionCompanyName}`
+                                var cName=positionCompanyName
+                                var cpName=positionName
+                                await createNotification({ positionId, jobReceivedId, positionCompanyId, message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
+                                var subject='New position notification'
+                                // Sending a notification mail about position creation; to the admin
+                                let path = 'src/emailTemplates/positionCreationText.html';
+                                var userReplacements = {
+                                    company:cName,
+                                    position:cpName  
+                                };
+                                var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
+                                if(Array.isArray(ellowAdmins.rows))
+                                {
+                                    ellowAdmins.rows.forEach(element => {
+                                        emailClient.emailManager(element.email,subject,path,userReplacements);
+                                        
+                                    })                            
+                                }
+                        }
+                        else{
+                            console.log("Position saved as draft")
+                        }
                         resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
                         
                     } catch (e) {

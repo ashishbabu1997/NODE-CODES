@@ -143,6 +143,7 @@ export const listFreeCandidatesDetails = (_body) => {
                 
                 queryText = selectQuery+roleBasedQuery+utils.resourceTab(body)+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
                 queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
+                console.log(queryText)
                 promise.push(client.query(queryService.listCandidates(queryText,queryValues)));
                 
                 var queryCountText = totalQuery+roleBasedQuery+utils.resourceTab(body)+filterQuery+searchQuery;
@@ -196,6 +197,7 @@ export const listAddFromListCandidates = (_body) => {
             try {
                 await client.query('BEGIN');
                 queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
+                console.log(queryText)
                 queryValues =Object.assign({positionid:body.positionId},queryValues)
                 const candidatesResult = await client.query(queryService.listAddFromList(queryText,queryValues));
                 
@@ -717,8 +719,17 @@ export const modifyResumeFile = (_body) => {
         (async () => {
             const client = await database().connect()
             try {  
-                await client.query(queryService.updateResumeFile(_body));
-                resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
+                if(_body.candidateId)
+                {
+                    await client.query(queryService.updateResumeFile(_body));
+                    resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
+                }
+                else
+                {
+                    var results=await client.query(queryService.updateResumeForNewEntry(_body));
+                    resolve({ code: 200, message: "Candidate resume file updated successfully", data: {candidateId:results.rows[0].candidate_id} });
+                }
+              
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')

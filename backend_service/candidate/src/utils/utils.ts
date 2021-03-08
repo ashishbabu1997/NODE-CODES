@@ -122,7 +122,9 @@ export const resourceSort = (body) => {
         "updatedOn" : 'chsv."updatedOn"',
         "availability":'chsv."availability"',
         "createdOn":'chsv."createdOn"',        
-        "experience":'chsv."workExperience"'
+        "experience":'chsv."workExperience"',
+        "email":'chsv."email"'
+
     }
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
         if(body.sortBy=="availability")

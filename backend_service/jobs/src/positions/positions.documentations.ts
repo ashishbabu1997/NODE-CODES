@@ -207,6 +207,8 @@
 *               type: integer
 *             immediate:
 *               type: boolean
+*             publish:
+*               type: boolean
 *             skills:
 *               type: object
 *               properties:
@@ -421,6 +423,8 @@
 *             jobCategoryId:
 *               type: integer
 *             immediate:
+*               type: boolean
+*             publish:
 *               type: boolean
 *             skills:
 *               type: object

@@ -6,6 +6,8 @@ import * as crypto from "crypto";
 import * as handlebars from 'handlebars'
 import {readHTMLFile} from '../middleware/htmlReader'
 import * as emailClient from '../emailService/emailService';
+import * as utils from '../utils/utils';
+import * as queryService from '../queryService/queryService';
 
 export const objectToArray = (objectArray,keyName) => {
     let reqArray = [];
@@ -19,34 +21,47 @@ export const objectToArray = (objectArray,keyName) => {
 //>>>>>>>>>>>>>>>>>>List all the users
 export const listUsersDetails = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = adminQuery.listUsers;
-        if (_body.filter) {
-            selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%'";
-        }
-        const orderBy = {
-            "name":'e.firstname',
-            "lastName":'e.lastname',
-            "email":'e.email',
-            "phoneNumber":'e.telephone_number',
-            "company":'p.company_name'
-        }
-        
-        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
-        {
-            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
-        }  
-        
-        const listquery = {
-            name: 'list-candidates',
-            text: selectQuery
-        }
-        database().query(listquery, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Database Error", data: {} });
-                return;
-            }
-            resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows } });
-        })
+        (async () => {
+            const client = await database()
+            try {
+                        var selectQuery = adminQuery.listUsers;
+                        var totalQuery=adminQuery.listUsersTotalCount;
+                        if (_body.filter) {
+                            selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%'";
+                        }
+                        const orderBy = {
+                            "name":'e.firstname',
+                            "lastName":'e.lastname',
+                            "email":'e.email',
+                            "phoneNumber":'e.telephone_number',
+                            "company":'p.company_name'
+                        }
+                        
+                        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+                        {
+                            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+                        }  
+                        selectQuery=selectQuery+utils.adminPagination(_body)
+                        const listquery = {
+                            name: 'list-candidates',
+                            text: selectQuery
+                        }
+                        const countQuery = {
+                            name: 'count-total-candidates',
+                            text: totalQuery
+                        }
+                        var results=await client.query(listquery)
+                        var counts=await client.query(countQuery)
+                        resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
+                } catch (e) {
+                    await client.query('ROLLBACK')
+                    console.log("e : ",e)
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                }
+            })().catch(e => {
+                console.log('e : ',e)
+                reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            })
     })
 }
 
@@ -60,67 +75,45 @@ export const allUsersList = (_body) => {
         (async () => {
             const client = await database()
             try {
+                        _body.queryValues={};
+                        var filterQuery='', filter=_body.body.filter,
+                        body=_body.query, searchKey = '%%';
+                        // Search for filters in the body        
+                        let filterResult = utils.usersFilter(filter,filterQuery,_body.queryValues);
+                        filterQuery = filterResult.filterQuery;
+                        _body.queryValues = filterResult.queryValues;
                         var selectQuery = adminQuery.registeredUsersList;
-                        var listquery={}
-                        var listQueryCount={}
-                        console.log("filter : ",_body.filter);
-                        
-                        if (_body.filter) {
-                            selectQuery = selectQuery + " " + "AND (c.company_name ilike '%"+_body.filter+"%' OR e.firstname ilike '%"+_body.filter+"%' OR e.lastname ilike '%"+_body.filter+"%')";
-                        }
-                        const orderBy = {
-                            "updatedOn": 'e.updated_on',
-                            "firstName":'e.firstname',
-                            "lastName":'e.lastname',
-                            "email":'e.email',
-                            "accountType":'e.account_type',
-                            "phoneNumber":'e.telephone_number',
-                            "companyName":'c.company_name'
-
-                        }
-                        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
-                                {
-                                    selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
-                                }  
-                        if (_body.pageSize && _body.pageNumber) {
-                                    selectQuery= selectQuery+`  limit ${_body.pageSize} offset ((${_body.pageNumber}-1)*${_body.pageSize}) `
-                                }
-                        if(_body.usersType)
+                        if(![undefined,null].includes(body.searchKey))
                         {
-                                listquery = {
-                                    name: 'list-candidates',
-                                    text: selectQuery,
-                                    values:[_body.usersType]
-                                }
-                                listQueryCount = {
-                                    name: 'total-count',
-                                    text: adminQuery.registeredUsersListCount,
-                                    values:[_body.usersType]
-                                }
+                                 searchKey= body.searchKey + '%';
+                        } 
+                        if(body.usersType)
+                        {         
+                                _body.queryText=selectQuery+filterQuery+utils.userSort(body)+utils.usersPagination(body)
+                                _body.queryCountText=adminQuery.registeredUsersListCount+filterQuery
+                                _body.queryValues =Object.assign({searchkey:searchKey,userstype:body.usersType},_body.queryValues)
+                                
                         }
                         else{
-                            
-                            listquery = {
-                                name: 'list-all-candidates',
-                                text: adminQuery.allRegisteredUsersList,
-                                values:[]
-                            }
-                            listQueryCount = {
-                                name: 'all-candidates-total-count',
-                                text: adminQuery.allRegisteredUsersListCount,
-                                values:[]
-                            }
+                            _body.queryValues =   Object.assign({searchkey:searchKey},_body.queryValues)
+                            console.log(_body.queryValues)
+                            _body.queryCountText=adminQuery.allRegisteredUsersListCount+filterQuery,
+                            _body.queryText=adminQuery.allRegisteredUsersList+filterQuery+utils.userSort(body)+utils.usersPagination(body)
+    
                         }
-
-                        var results=await client.query(listquery)
-                        var counts=await client.query(listQueryCount)
+                        console.log(_body.queryText)
+                        console.log(_body.queryValues)
+                        var results=await client.query(queryService.listquery(_body))
+                        var counts=await client.query(queryService.listQueryCount(_body))
                         resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
        
     } catch (e) {
         await client.query('ROLLBACK')
         console.log("e : ",e)
         reject({ code: 400, message: "Failed. Please try again.", data: {} });
+        
     }
+   
 })().catch(e => {
     console.log('e : ',e)
     reject({ code: 400, message: "Failed. Please try again.", data: {} })
@@ -233,7 +226,8 @@ export const clearance = (_body) => {
                         text: adminQuery.clearanceQuery,
                         values: [_body.selectedEmployeeId, false, 0,currentTime]
                     }
-                    await client.query(adminRejectQuery);
+                    var rejectResultSet= await client.query(adminRejectQuery);
+                    var employeeMail=rejectResultSet.rows[0].email
                     var desc = _body.description
                     var subject = "ellow.io ACCOUNT REJECTION MAIL "
                     
@@ -242,14 +236,15 @@ export const clearance = (_body) => {
                     var userReplacements = {
                         description: desc
                     };
-                    emailClient.emailManager(email,subject,path,userReplacements);
+                    emailClient.emailManager(employeeMail,subject,path,userReplacements);
                     await client.query('COMMIT'); 
                     if(Array.isArray(ellowAdmins.rows))
                     {
                         let subject='User Rejection Notification'
-                        let path = 'src/emailTemplates/userRejecetionMailText.html';
-                        let replacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
+                        let path = 'src/emailTemplates/userRejectionMailText.html';
+                        let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyName.rows[0].company_name};
                         ellowAdmins.rows.forEach(element => {
+                            console.log(element.email)
                             emailClient.emailManager(element.email,subject,path,replacements);         
                         })
                         resolve({ code: 200, message: "User Rejection Successfull", data: {} });
@@ -257,11 +252,13 @@ export const clearance = (_body) => {
                 }
             } catch (e) {
                 await client.query('ROLLBACK')
+                console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             } finally {
                 client.release();
             }
         })().catch(e => {
+            console.log(e)
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })

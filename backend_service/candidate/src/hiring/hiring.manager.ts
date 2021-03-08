@@ -179,7 +179,6 @@ export const updateHiringStepDetails = (_body) => {
                                     lName: imageResults.rows[0].candidate_last_name,
                                     pName:positions.rows[0].position_name
                             }; 
-                           
                             emailClient.emailManager(assignee.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
                             emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
                             emailClient.emailManager(positions.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);

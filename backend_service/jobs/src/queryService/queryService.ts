@@ -157,7 +157,6 @@ export const  fetchPositionsCount = (_body) =>{
 
     }
 }
-
 export const  addCompanyPositionsQuery = (_body) =>{
     return {
         name: 'add-company-positions',
