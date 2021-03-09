@@ -108,6 +108,10 @@ export default {
     getellowAdmins:"select concat(firstname,' ',lastname) as name ,employee_id as employeeId from employee where status=true and user_role_id=1",
     getAuditLogs:'select audit_log_id as "auditLogId",audit_name as "auditName",audit_type as "auditType",audit_log_comment as "auditLogComment",created_on as "createdOn",created_by as "createdBy" from audit_log',
     getCandidateProfileDetails:"select concat(candidate_first_name,' ',candidate_last_name) as name,email_address as email from candidate where candidate_id=$1",
-    fetchResourceAllocatedRecruiterDetails:'select e.email from employee e inner join candidate c on c.allocated_to=e.employee_id where c.candidate_id=$1'
+    fetchResourceAllocatedRecruiterDetails:'select e.email from employee e inner join candidate c on c.allocated_to=e.employee_id where c.candidate_id=$1',
 
+
+    // Resume parser related queries
+
+    insertExtractedCandidateDetails : "insert into candidate (candidate_first_name, candidate_last_name, cover_note, resume, phone_number, email_address, work_experience, citizenship, residence, candidate_position_name, resume_file_name, candidate_status, created_on, updated_on, created_by, updated_by) values ($firstname, $lastname, $summary, $resume, $phone, $email, $workexperience, $citizenship, $residence, $positionname,$resumefilename, $candidatestatus, $currenttime, $currenttime,$employeeid, $employeeid) on conflict on constraint candidate_resume_file_name_unique_key do nothing returning candidate_id"
 }

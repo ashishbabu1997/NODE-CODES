@@ -10,6 +10,8 @@ import * as crypto from "crypto";
 import * as htmlToPdf from "html-pdf-node";
 import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
+import * as rchilliExtractor from '../utils/RchilliExtractor';
+
 const myCache = new nodeCache();
 
 // >>>>>>> FUNC. >>>>>>>
@@ -740,7 +742,36 @@ export const modifyResumeFile = (_body) => {
     })
 }
 
-
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>> Update resume file name
+export const modifyResumeData = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {  
+                if(_body.candidateId)
+                {
+                    await client.query(queryService.updateResumeFile(_body));
+                    resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
+                }
+                else
+                {
+                    let response  = rchilliExtractor.rchilliExtractor(_body);
+                    resolve({ code: 200, message: "Candidate resume file updated successfully", data:response });
+                }
+              
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
 
 
 

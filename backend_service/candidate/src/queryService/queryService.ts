@@ -881,3 +881,16 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
+
+     // *******************************************************************************************************************************//
+    
+    // -------------------------------------------Resume parser queries -------------------------------------------------//
+
+
+     export const insertExtractedCandidateDetails = (data) => {
+        return {
+            name: 'insert-extracted-candidate-details',
+            text: candidateQuery.insertExtractedCandidateDetails,
+            values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, resume:data.resume, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId}
+        }
+    }

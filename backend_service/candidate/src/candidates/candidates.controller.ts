@@ -99,6 +99,16 @@ export const updateResumeFile = (req, res) => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)
     })
 }
+
+export const updateResumeData = (req, res) => {
+    const body = req.body;
+    candidateManager.modifyResumeData(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
 export const updateSocialProfile = (req, res) => {
     const body = req.body;
     candidateManager.modifySocialPresence(body).then((response: any) => {
