@@ -26,15 +26,18 @@ export const listUsersDetails = (_body) => {
             try {
                         var selectQuery = adminQuery.listUsers;
                         var totalQuery=adminQuery.listUsersTotalCount;
-                        if (_body.filter) {
-                            selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%'";
+                        if (_body.searchKey) {
+                            selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '" + _body.searchKey.toLowerCase()+ "%'";
                         }
                         const orderBy = {
                             "firstName":'e.firstname',
                             "lastName":'e.lastname',
+                            "name":'e.firstname',
                             "email":'e.email',
                             "phoneNumber":'e.telephone_number',
-                            "companyName":'p.company_name'
+                            "companyName":'p.company_name',
+                            "company":'p.company_name'
+
                         }
                         
                         if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
@@ -42,6 +45,7 @@ export const listUsersDetails = (_body) => {
                             selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
                         }  
                         selectQuery=selectQuery+utils.adminPagination(_body)
+                        console.log(selectQuery)
                         const listquery = {
                             name: 'list-candidates',
                             text: selectQuery
