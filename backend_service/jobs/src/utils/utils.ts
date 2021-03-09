@@ -105,7 +105,7 @@ export const positionSort = (body) => {
         "position": 'p.position_id',
         "positionName": 'p.position_name',
         "createdOn": 'p.created_on',
-        "candidateCount": '"candidateCount"',
+        "candidateCount": '"totalResourceCount"',
         "resourceCount": 'p.developer_count',
         "companyName": 'c.company_name',
         "updatedOn":'p.updated_on',
