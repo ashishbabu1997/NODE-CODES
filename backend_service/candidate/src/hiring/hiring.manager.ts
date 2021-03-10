@@ -130,7 +130,7 @@ export const updateHiringStepDetails = (_body) => {
                         
                         if (_body.hiringAssesmentValue==0)
                         {   
-                            let message=`${imageResults.rows[0].candidate_first_name +' '+imageResults.rows[0].candidate_last_name} has accepted the offer by ${positions.rows[0].companyName}`
+                            let message=`${imageResults.rows[0].candidate_first_name +' '+imageResults.rows[0].candidate_last_name} has accepted the offer by ${positions.rows[0].company_name}`
                             await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                             var subj = "Resource Acceptance Notification";
                             let path = 'src/emailTemplates/resourceAcceptionMailText.html';
