@@ -11,6 +11,8 @@ import * as htmlToPdf from "html-pdf-node";
 import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
 import * as rchilliExtractor from '../utils/RchilliExtractor';
+import response from '../common/response/response';
+import { isNull } from 'util';
 
 const myCache = new nodeCache();
 
@@ -747,17 +749,71 @@ export const modifyResumeFile = (_body) => {
 export const modifyResumeData = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
-            const client = await database().connect()
+            const client = await database()
             try {  
-                if(_body.candidateId)
+                if(_body.candidateId) 
                 {
                     await client.query(queryService.updateResumeFile(_body));
                     resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
                 }
                 else
                 {
-                    let response  = rchilliExtractor.rchilliExtractor(_body);
-                    resolve({ code: 200, message: "Candidate resume file updated successfully", data:response });
+                    await client.query('BEGIN');
+
+                    let extractedData  = rchilliExtractor.rchilliExtractor(_body);
+                    extractedData["employeeId"] = _body.employeeId;
+                   
+                    let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
+                    await client.query('COMMIT');
+
+                    if(![null,undefined,''].includes(candidateResult) && candidateResult.rows[0])
+                    {
+                        let promises =[],candidateId = candidateResult.rows[0].candidate_id;
+
+                        extractedData["candidateId"] = candidateId;
+
+                        promises.push(client.query(queryService.insertExtractedCandidateSkills(extractedData)));
+
+                        extractedData["workHistory"].map((data)=>{
+                            data["candidateId"] = candidateId;
+                            data["employeeId"] = _body.employeeId;
+                            promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
+                        });
+
+                        extractedData["projects"].map((data)=>{
+                            data["candidateId"] = candidateId;
+                            data["employeeId"] = _body.employeeId;
+                            promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
+                        });
+                        
+                        extractedData["education"].map((data)=>{
+                            data["candidateId"] = candidateId;
+                            data["employeeId"] = _body.employeeId;
+                            promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
+                        });
+
+                        extractedData["certifications"].map((data)=>{
+                            data["candidateId"] = candidateId;
+                            data["employeeId"] = _body.employeeId;
+                            promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
+                        });
+
+                        extractedData["publications"].map((data)=>{
+                            data["candidateId"] = candidateId;
+                            data["employeeId"] = _body.employeeId;
+                            promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
+                        });
+
+                        promises.push(client.query(queryService.insertExtractedLanguagesQuery(extractedData)));
+
+                        await Promise.all(promises);
+                        await client.query('COMMIT');
+
+                        resolve({ code: 200, message: "Candidate resume file updated successfully", data:{} });
+                    }
+
+                    else
+                    reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
                 }
               
             } catch (e) {
@@ -792,7 +848,7 @@ export const modifyProfileDetails = (_body) => {
                 client.release();
             }
         })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            reject({ code: 400, message: "Failed. Please try again ", data: e.message })
         })
     })
 }

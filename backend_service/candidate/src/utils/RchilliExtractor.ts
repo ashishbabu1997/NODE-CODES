@@ -1,3 +1,5 @@
+import config from '../config/config';
+
 export const rchilliExtractor = (data) =>{
     let extractedData = {};
 
@@ -17,7 +19,7 @@ export const rchilliExtractor = (data) =>{
         
         extractedData["overallWorkExperience"] = resumeData["WorkedPeriod"]["TotalExperienceInYear"];
         
-        extractedData["skills"] = resumeData["SkillKeywords"].split(",");
+        extractedData["skillArray"] = resumeData["SkillKeywords"].split(",");
 
         extractedData["workHistory"] = extractWorkHistory(resumeData["SegregatedExperience"]);
 
@@ -27,11 +29,15 @@ export const rchilliExtractor = (data) =>{
 
         extractedData["certifications"] = extractCertification(resumeData["SegregatedCertification"]);
 
-        extractedData["Publications"] = extractPublication(resumeData["SegregatedPublication"]);
+        extractedData["publications"] = extractPublication(resumeData["SegregatedPublication"]);
 
         extractedData["socialProfile"] = extractSocialProfile(resumeData["WebSite"]);
 
         extractedData["languages"] = extractLanguages(resumeData["LanguageKnown"]);
+
+        let citizenshipList = config.countries.filter(element=>element.name == extractedData["country"])[0];
+
+        extractedData["citizenship"] = citizenshipList?citizenshipList.id:null;
 
     }
     
@@ -45,10 +51,10 @@ const extractWorkHistory = (data) =>{
         experience.push({
             companyName:details["Employer"]["EmployerName"],
             positionName : details["JobProfile"]["Title"],
-            roleDescription : details["JobDescription"],
+            description : details["JobDescription"],
             startDate : dateToMillisec(details["StartDate"]),
             endDate : dateToMillisec(details["EndDate"]),
-            presentWorking : details["IsCurrentEmployer"]
+            stillWorking : details["IsCurrentEmployer"] === "true"
         })
     })
     
@@ -59,16 +65,16 @@ const extractWorkHistory = (data) =>{
 const extractProjects = (data) =>{
     let projects = [];
     data.map((details)=>{
-        let projectDoneFor = details["Employer"]["EmployerName"],
+        let clientName = details["Employer"]["EmployerName"],
         projectRole = details["JobProfile"]["Title"],
-        roleDescription = details["JobDescription"];
+        projectDescription = details["JobDescription"];
         
         details["Projects"].map((projectDetails)=>{
             projects.push({
                 projectName : projectDetails["ProjectName"],
-                projectDoneFor,
+                clientName,
                 projectRole,
-                roleDescription,
+                projectDescription,
                 skills : projectDetails["UsedSkills"].split(",").map(item=>item.trim()),
             })
         })
@@ -97,12 +103,8 @@ const extractCertification = (data) =>{
     data.map((details)=>{
         if(!['',undefined,null].includes(details["CertificationTitle"]))
         certifications.push({
-            name:details["CertificationTitle"],
-            year : details["EndDate"],
-            roleDescription : details["JobDescription"],
-            startDate : dateToMillisec(details["StartDate"]),
-            endDate : dateToMillisec(details["EndDate"]),
-            presentWorking : details["IsCurrentEmployer"]
+            certificationId: details["CertificationTitle"],
+            certifiedYear : details["EndDate"],
         })
     })
     
@@ -114,7 +116,7 @@ const extractPublication = (data) =>{
     data.map((details)=>{
         if(!['',undefined,null].includes(details["PublicationTitle"]))
         publications.push({
-            title:details["PublicationTitle"],
+            title: details["PublicationTitle"],
             link : details["PublicationUrl"]
         })
     })
@@ -154,5 +156,5 @@ const dateToMillisec = (dateString) =>{
         day = dateArgs[0];
         return new Date(year, month, day).getTime();
     }
-    return "";    
+    return null;    
 }
