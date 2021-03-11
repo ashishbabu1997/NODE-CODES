@@ -719,6 +719,46 @@
 
 /**
 * @swagger
+* /candidates/resumeParser:
+*   post:
+*     tags:
+*       - Candidates
+*     name: Parse resume and extract data
+*     summary: Parse resume and extract data
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             publicUrl:
+*               type: string            
+*             fileName:
+*               type: string
+*           required:
+*             - publicUrl
+*             - fileName
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /candidates/candidateApproveReject:
 *   post:
 *     tags:

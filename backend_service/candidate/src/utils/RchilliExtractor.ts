@@ -7,6 +7,8 @@ export const rchilliExtractor = (data) =>{
     {
         let resumeData = data.ResumeParserData;
         
+        extractedData["resumeData"] = data;
+
         extractedData["resumeFileName"] = resumeData["ResumeFileName"];
         extractedData["firstName"] = resumeData["Name"]["FirstName"];
         extractedData["lastName"] = resumeData["Name"]["LastName"];

@@ -34,7 +34,7 @@ router
     .put('/updateCloudProficiency',jwtAuth, setData(),validate(profileDetailSchema), candidateController.updateCloudProficiency)
     .put('/updatePublication',jwtAuth, setData(),validate(publicationSchema), candidateController.updatePublication)
     .put('/updateResumeFile',jwtAuth,setData(),candidateController.updateResumeFile)
-    .put('/updateResumeData',candidateController.updateResumeData)
+    .put('/updateResumeData',jwtAuth,setData(),candidateController.updateResumeData)
     .put('/updateOverallWorkExperience',jwtAuth, setData(),validate(profileDetailSchema), candidateController.WorkExperience)
     .get('/resume',jwtAuth, setData(), candidateController.resumeDetails)
     .get('/resumeSharedEmails',jwtAuth, setData(),candidateController.resumeSharedEmails)
@@ -52,4 +52,6 @@ router
     .get('/getAllAuditLogs',candidateController.getAuditLogs)
     .post('/listFreeCandidatesOfHirer', jwtAuth, setData(), candidateController.listResourcesOfHirer)
     .post('/updateCandidateAvailability', jwtAuth, setData(), candidateController.changeCandidateAvailability)
+
+    .post('/resumeParser',candidateController.resumeParser)
     export default router;
