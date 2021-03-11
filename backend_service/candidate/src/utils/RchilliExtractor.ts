@@ -2,46 +2,45 @@ import config from '../config/config';
 
 export const rchilliExtractor = (data) =>{
     let extractedData = {};
-
+    
     if(data.ResumeParserData)
     {
         let resumeData = data.ResumeParserData;
         
         extractedData["resumeData"] = data;
-
+        
         extractedData["resumeFileName"] = resumeData["ResumeFileName"];
         extractedData["firstName"] = resumeData["Name"]["FirstName"];
         extractedData["lastName"] = resumeData["Name"]["LastName"];
         extractedData["email"] = resumeData["Email"][0]["EmailAddress"];
         extractedData["city"] = resumeData["Address"][0]["City"];
-        extractedData["country"] = resumeData["Address"][0]["Country"];
+        extractedData["Address"] = resumeData["Address"][0];
         extractedData["designation"] = resumeData["SubCategory"];
         extractedData["summary"] = resumeData["Summary"];
         extractedData["phone"] = extractedPhoneNumber(resumeData["PhoneNumber"]);
-
+        
         
         extractedData["overallWorkExperience"] = resumeData["WorkedPeriod"]["TotalExperienceInYear"];
         
         extractedData["skillArray"] = resumeData["SkillKeywords"].split(",");
-
+        
         extractedData["workHistory"] = extractWorkHistory(resumeData["SegregatedExperience"]);
-
+        
         extractedData["projects"] = extractProjects(resumeData["SegregatedExperience"]);
-
+        
         extractedData["education"] = extractEducation(resumeData["SegregatedQualification"]);
-
+        
         extractedData["certifications"] = extractCertification(resumeData["SegregatedCertification"]);
-
+        
         extractedData["publications"] = extractPublication(resumeData["SegregatedPublication"]);
-
+        
         extractedData["socialProfile"] = extractSocialProfile(resumeData["WebSite"]);
-
+        
         extractedData["languages"] = extractLanguages(resumeData["LanguageKnown"]);
-
-        let citizenshipList = config.countries.filter(element=>element.name == extractedData["country"])[0];
-
-        extractedData["citizenship"] = citizenshipList?citizenshipList.id:null;
-
+        
+        extractedData["citizenship"] = extractCitizenship(extractedData["Address"]);
+        
+        console.log("extractedData[citizenship] : ",extractedData["citizenship"]);
     }
     
     return extractedData;
@@ -49,9 +48,21 @@ export const rchilliExtractor = (data) =>{
 
 const extractedPhoneNumber = (data) =>{
     if(Array.isArray(data) && data.length)
-        return data[0]["FormattedNumber"].replace(/[^0-9]/g,'');
+    return data[0]["FormattedNumber"].replace(/[^0-9]/g,'');
     else return null;
     
+}
+
+const extractCitizenship = (data) => {
+    console.log("data : ",data);
+    
+    if(![null,undefined,''].includes(data))
+    {
+        let iso3 = data["CountryCode"]["IsoAlpha3"];        
+        let citizenshipId = config.countries.filter(element=>element.iso3 == iso3)[0];
+        return citizenshipId?citizenshipId.id:null;
+    }
+    return null;
 }
 
 const extractWorkHistory = (data) =>{
@@ -96,11 +107,11 @@ const extractEducation = (data) =>{
     let education = [];
     data.map((details)=>{
         education.push({
-                college:details["Institution"]["Name"],
-                degree:details["Degree"]["DegreeName"],
-                startDate:dateToMillisec(details["StartDate"]),
-                endDate:dateToMillisec(details["EndDate"])
-            })
+            college:details["Institution"]["Name"],
+            degree:details["Degree"]["DegreeName"],
+            startDate:dateToMillisec(details["StartDate"]),
+            endDate:dateToMillisec(details["EndDate"])
+        })
     })
     
     return education;

@@ -2041,10 +2041,6 @@ export const createPdfFromHtml = (_body) => {
             (async () => {
                 const client = await database()
                 try {
-                    console.log("_body : ",_body.publicUrl);
-                    console.log("_body : ",_body.fileName);
-                    console.log("_body : ",_body.employeeId);
-                    
                     let responseData = null;
                     
                     let jsonObject = JSON.stringify({
