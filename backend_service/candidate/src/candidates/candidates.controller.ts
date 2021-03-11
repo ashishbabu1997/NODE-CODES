@@ -300,3 +300,10 @@ export const changeCandidateAvailability = (req, res) => {
     candidateManager.changeAvailability(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
+
+
+export const resumeParser = (req, res) => {
+    const body = req.body;
+    candidateManager.resumeParser(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
