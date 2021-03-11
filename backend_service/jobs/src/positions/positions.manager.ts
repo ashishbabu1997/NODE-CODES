@@ -5,6 +5,7 @@ import config from '../config/config'
 import * as emailClient from '../emailService/emailService';
 import * as queryService from '../queryService/queryService';
 import * as utils from '../utils/utils';
+import { Console } from 'console';
 
 // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Get the position detils of a company
@@ -66,11 +67,16 @@ export const createCompanyPositions = async (_body) => {
                 let hiringStepQueries = [];
                 _body.cmpId = _body.userRoleId==1?_body.positionCreatedCompanyId:_body.companyId;
                 let companyId= _body.cmpId
+                console.log("Company  Id",_body.cmpId)
                 const getCompanyNameResponse =  await client.query(queryService.getCompanyNameQuery(_body))
+                await client.query('COMMIT')
                 const companyName = getCompanyNameResponse.rows[0].companyName
+                console.log("CompanyName")
                 const companyPositionResponse = await client.query(queryService.addCompanyPositionsQuery(_body))
+                await client.query('COMMIT')
                 const positionId = companyPositionResponse.rows[0].position_id
                 _body.positionId=positionId
+                console.log("Position ID",_body.positionId)
                 _body.tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
                 _body.oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];
                 
@@ -104,19 +110,22 @@ export const createCompanyPositions = async (_body) => {
                         const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
                         const jobReceivedId = data.rows[0].job_received_id;
                         const details = await client.query(queryService.getNotificationDetailsQuery(_body));
-                        
                         if(_body.userRoleId == 1)
                         {
                             _body.allocatedTo = _body.employeeId;
                             await client.query(queryService.assigneeQuery(_body));
                         }
-                        
+                        else{
+                            // console.log("Hirer or provider")
+                        }
                         await client.query('COMMIT');
-                        const { positionCompanyId, positionCompanyName,positionName } = details.rows[0];
-                        const message = `A new position,${positionName} has been created by ${positionCompanyName}`
-                        var cName=positionCompanyName
-                        var cpName=positionName
-                        await createNotification({ positionId, jobReceivedId, positionCompanyId, message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
+
+                        console.log("COMPNAME",details.rows[0].companyName)
+                        
+                        const message = `A new position,${details.rows[0].positionName} has been created by ${details.rows[0].companyName}`
+                        var cName=details.rows[0].companyName
+                        var cpName=details.rows[0].positionName
+                        await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
                         var subject='New position notification'
                         // Sending a notification mail about position creation; to the admin
                         let path = 'src/emailTemplates/positionCreationText.html';
@@ -239,10 +248,12 @@ export const fetchPositionDetails = (_body) => {
                     const client = await database().connect()
                     try {
                         _body.cmpId=companyId
+                        console.log("COmpany ID",_body.cmpId)
                         await client.query('BEGIN');
                         let hiringStepQueries=[];
                         const getCompanyNameResponse =  await client.query(queryService.getCompanyNameQuery(_body))
                         const companyName = getCompanyNameResponse.rows[0].companyName
+                        console.log("CompanyName",companyName)
                         await client.query(queryService.updateCompanyPositionsFirstQuery(_body))
                         await client.query(queryService.updateCompanyPositionsSecondQuery(_body))
                         await client.query('COMMIT')
@@ -285,11 +296,13 @@ export const fetchPositionDetails = (_body) => {
                                     _body.allocatedTo = _body.employeeId;
                                     await client.query(queryService.assigneeQuery(_body));
                                 }
-                                
+                                else{
+                                    console.log("Hirer")
+                                }
                                 await client.query('COMMIT');
                                 const { positionCompanyId, positionCompanyName,positionName } = details.rows[0];
-                                const message = `A new position,${positionName} has been created by ${positionCompanyName}`
-                                var cName=positionCompanyName
+                                const message = `A new position,${positionName} has been created by ${details.rows[0].companyName}`
+                                var cName=details.rows[0].companyName
                                 var cpName=positionName
                                 await createNotification({ positionId, jobReceivedId, positionCompanyId, message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
                                 var subject='New position notification'
