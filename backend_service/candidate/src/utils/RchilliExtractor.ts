@@ -13,11 +13,12 @@ export const rchilliExtractor = (data) =>{
         extractedData["firstName"] = resumeData["Name"]["FirstName"];
         extractedData["lastName"] = resumeData["Name"]["LastName"];
         extractedData["email"] = resumeData["Email"][0]["EmailAddress"];
-        extractedData["phone"] = resumeData["PhoneNumber"][0]["FormattedNumber"].replace(/[^0-9]/g,'');
         extractedData["city"] = resumeData["Address"][0]["City"];
         extractedData["country"] = resumeData["Address"][0]["Country"];
         extractedData["designation"] = resumeData["SubCategory"];
         extractedData["summary"] = resumeData["Summary"];
+        extractedData["phone"] = extractedPhoneNumber(resumeData["PhoneNumber"]);
+
         
         extractedData["overallWorkExperience"] = resumeData["WorkedPeriod"]["TotalExperienceInYear"];
         
@@ -46,6 +47,12 @@ export const rchilliExtractor = (data) =>{
     return extractedData;
 }
 
+const extractedPhoneNumber = (data) =>{
+    if(Array.isArray(data) && data.length)
+        return data[0]["FormattedNumber"].replace(/[^0-9]/g,'');
+    else return null;
+    
+}
 
 const extractWorkHistory = (data) =>{
     let experience = [];
