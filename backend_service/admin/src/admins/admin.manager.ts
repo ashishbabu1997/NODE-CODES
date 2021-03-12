@@ -100,13 +100,13 @@ export const allUsersList = (_body) => {
                         }
                         else{
                             _body.queryValues =   Object.assign({searchkey:searchKey},_body.queryValues)
-                            console.log(_body.queryValues)
                             _body.queryCountText=adminQuery.allRegisteredUsersListCount+filterQuery,
                             _body.queryText=adminQuery.allRegisteredUsersList+filterQuery+utils.userSort(body)+utils.usersPagination(body)
     
                         }
-                        console.log(_body.queryText)
-                        console.log(_body.queryValues)
+                        console.log("QUeryTExt",_body.queryText)
+                        console.log("QUeryValues",_body.queryValues)
+
                         var results=await client.query(queryService.listquery(_body))
                         var counts=await client.query(queryService.listQueryCount(_body))
                         resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
