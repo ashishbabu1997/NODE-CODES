@@ -751,6 +751,9 @@ export const modifyResumeFile = (_body) => {
 export const modifyResumeData = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
+            
+            // console.log("_body  from resumeData : ",_body);
+            
             const client = await database()
             try {  
                 if(_body.candidateId) 
@@ -764,6 +767,8 @@ export const modifyResumeData = (_body) => {
                     
                     let extractedData  = rchilliExtractor.rchilliExtractor(_body);
                     extractedData["employeeId"] = _body.employeeId;
+                    extractedData["resume"] = _body.resume;
+                    
                     
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
                     await client.query('COMMIT');
@@ -811,7 +816,7 @@ export const modifyResumeData = (_body) => {
                         await Promise.all(promises);
                         await client.query('COMMIT');
                         
-                        resolve({ code: 200, message: "Candidate resume file updated successfully", data:{} });
+                        resolve({ code: 200, message: "Candidate resume file updated successfully", data:candidateId });
                     }
                     
                     else
@@ -821,12 +826,12 @@ export const modifyResumeData = (_body) => {
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             } finally {
                 client.release();
             }
         })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })
 }
@@ -1996,12 +2001,12 @@ export const createPdfFromHtml = (_body) => {
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
                 } finally {
                     client.release();
                 }
             })().catch(e => {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
             })
         })
     }
@@ -2036,11 +2041,10 @@ export const createPdfFromHtml = (_body) => {
             (async () => {
                 const client = await database()
                 try {
-                    console.log("_body : ",_body.publicUrl);
-                    console.log("_body : ",_body.fileName);
+                    let responseData = null;
                     
                     let jsonObject = JSON.stringify({
-                        "url" : _body.publicUrl,
+                        "url" : _body.publicUrl+_body.fileName,
                         "userkey" : "IC8Q6BQ5",
                         "version" : "8.0.0",
                         "subuserid" : "Deena Sasidhar"
@@ -2056,7 +2060,7 @@ export const createPdfFromHtml = (_body) => {
                     var optionspost = {
                         host : 'rest.rchilli.com',
                         port : 80,
-                        path : '/RChilliParser/Rchilli/parseResumeBinary',
+                        path : '/RChilliParser/Rchilli/parseResume',
                         method : 'POST',
                         headers : postheaders
                     };
@@ -2066,35 +2070,67 @@ export const createPdfFromHtml = (_body) => {
                     console.info('Do the POST call');
                     
                     // do the POST call
-                    // var reqPost = https.request(optionspost, function(res) {
-                    //     console.log("statusCode: ", res.statusCode);
-                    //     // uncomment it for header details
-                    //     //  console.log("headers: ", res.headers);
-                    //     res.on('data', function(d) {
-                    //         console.info('POST result:\n');
-                    //         process.stdout.write(d);
-                    //         console.info('\n\nPOST completed');
-                    //     });
-                    // });
+                    var reqPost =  https.request(optionspost, function(res) {
+                        console.log("statusCode: ", res.statusCode);
+                        // uncomment it for header details
+                        //  console.log("headers: ", res.headers);
+                        let data ='';
+                        res.on('data', function(d) {
+                            console.info('POST result:\n');
+                            data += d;
+                            console.info('\n\nPOST completed');
+                        });
+                        
+                        res.on('end',async () => {
+                            console.log('Body: ', JSON.parse(data));
+                            
+                            // process.stdout.write(data);
+                            responseData = JSON.parse(data);
+                            
+                            if(responseData["error"]!== undefined)
+                            reject({ code: 400, message: "Failed Please try again, parser error ", data: responseData["error"]});
+                            
+                            else
+                            {
+                                responseData["employeeId"] = _body.employeeId;
+                                responseData["resume"] = _body.fileName;
+                                responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
+                                
+                                let resp = await modifyResumeData(responseData);
+                                
+                                console.log("response from modifyResumeData  : ",resp);
+                                resolve({ code: 200, message: "Resume parsed successfully", data:{candidateId:resp["data"]}});
+                                
+                            }
+                        });
+                        
+                    }).on("error", (err) => {
+                        console.log("Error: ", err.message);
+                        reject({ code: 400, message: "Error from parser", data: err.message });
+                    });
                     
-                    // // write the json data
-                    // reqPost.write(jsonObject);
-                    // reqPost.end();
-                    // reqPost.on('error', function(e) {
-                    //     console.error(e);
-                    // });
                     
-                    await client.query('COMMIT')
-                    resolve({ code: 200, message: "Resume parsed successfully", data:{}});
+                    console.log("jsonObject from parser  : ",jsonObject);
+                    
+                    // write the json data
+                    reqPost.write(jsonObject);
+                    reqPost.end();
+                    reqPost.on('error', function(e) {
+                        // console.error(e);                        
+                        responseData = e.message;
+                    });
+                    
+                    
+                    await client.query('COMMIT');
+                    
+                    
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
-                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-                } finally {
-                    client.release();
+                    reject({ code: 400, message: "Failed. Please try again ", data: e.message });
                 }
             })().catch(e => {
-                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+                reject({ code: 400, message: "Failed. Please try again", data: e.message })
             })
         })
     }

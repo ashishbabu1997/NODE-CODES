@@ -53,5 +53,5 @@ router
     .post('/listFreeCandidatesOfHirer', jwtAuth, setData(), candidateController.listResourcesOfHirer)
     .post('/updateCandidateAvailability', jwtAuth, setData(), candidateController.changeCandidateAvailability)
 
-    .post('/resumeParser',candidateController.resumeParser)
+    .post('/resumeParser',jwtAuth, setData(),candidateController.resumeParser)
     export default router;
