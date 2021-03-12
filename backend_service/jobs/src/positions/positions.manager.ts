@@ -524,41 +524,30 @@ export const fetchPositionDetails = (_body) => {
                         
                         const currentTime = Math.floor(Date.now());
                         const updateStatus=false;
+                        const getMailAddress = {
+                            name: 'fetch-emailaddress',
+                            text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
+                            values:[positionId]
+                        }
+                        var employeeData = await client.query(getMailAddress); 
+                        const updateJobReceivedStatus = {
+                            name: 'change-JobReceivedStatus',
+                            text:positionsQuery.updateJobReceivedStatus,
+                            values:[positionId]
+                        }
+                        let result = await client.query(updateJobReceivedStatus);     
+                        await client.query('COMMIT');         
+                        let jobReceivedId = result.rows[0]!=undefined?result.rows[0].job_received_id:null;    
                         const updatePositionStatus = {
                             name: 'change-positionstatus',
                             text:positionsQuery.updatePositionStatus,
                             values:[positionId,currentTime,updateStatus]
                         }
                         await client.query(updatePositionStatus);
-                        
-                        const updateJobReceivedStatus = {
-                            name: 'change-JobReceivedStatus',
-                            text:positionsQuery.updateJobReceivedStatus,
-                            values:[positionId,currentTime,updateStatus]
-                        }
-                        let result = await client.query(updateJobReceivedStatus);
-                        
-                        let jobReceivedId = result.rows[0]!=undefined?result.rows[0].job_received_id:null;                                    
-                        if(![null,undefined].includes(jobReceivedId))
-                        {
-                            const updateCompanyJobStatus = {
-                                name: 'change-CompanyJobStatus',
-                                text:positionsQuery.updateCompanyJobStatus,
-                                values:[jobReceivedId,currentTime,updateStatus]
-                            }
-                            await client.query(updateCompanyJobStatus);
-                        }
-                        
-                        const getMailAddress = {
-                            name: 'fetch-emailaddress',
-                            text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
-                            values:[positionId]
-                        }
-                        var employeeData = await client.query(getMailAddress);                
+                        await client.query('COMMIT');              
                         var positionName=employeeData.rows[0].position_name
                         var emailAddress=employeeData.rows[0].email
                         await client.query('COMMIT');
-                        
                         let path = 'src/emailTemplates/positionDeletionText.html';
                         let adminPath = 'src/emailTemplates/positionDeletionAdminText.html';
                         var userReplacements = {
