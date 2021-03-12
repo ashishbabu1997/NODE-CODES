@@ -507,7 +507,7 @@ export const removeCandidateFromPosition = (_body) => {
             try {
                 var candidateId = _body.candidateId;
                 var positionId = _body.positionId;
-                
+                console.log(positionId,candidateId)
                 await client.query('BEGIN');
                 // Query to change the status of a candidate to false.
                 const removeCandidateQuery = {
