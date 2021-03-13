@@ -165,8 +165,6 @@ export const listFreeCandidatesDetails = (_body) => {
                 console.log(e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
-                client.release();
             }
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
