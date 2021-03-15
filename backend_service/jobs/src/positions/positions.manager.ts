@@ -37,9 +37,10 @@ export const getCompanyPositions = (_body) => {
                 }
                 else { 
                      _body.queryCountText=positionsQuery.getCompanyPositionsForBuyerTotalCount+utils.positionTab(body)+filterQuery
-                    _body.queryText = positionsQuery.getCompanyPositionsForBuyer +utils.positionTab(body)+filterQuery+ utils.positionSort(body+utils.positionPagination(body));
+                    _body.queryText = positionsQuery.getCompanyPositionsForBuyer +utils.positionTab(body)+filterQuery+ utils.hirerPositionSort(body)+utils.positionPagination(body);
                     _body.queryValues =  Object.assign({companyid:reqBody.companyId,searchkey:searchKey,employeeid:reqBody.employeeId},_body.queryValues)
                 }
+                console.log(_body.queryText)
                 let results=await client.query(queryService.fetchCompanyPositionsById(_body))
                 let counts=await client.query(queryService.fetchPositionsCount(_body)) 
                 var steps = results.rows
