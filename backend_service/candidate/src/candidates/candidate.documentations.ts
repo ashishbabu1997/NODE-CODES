@@ -368,7 +368,7 @@
 *                   type: integer
 *                 maxCost:
 *                   type: integer
-*                 billingType:
+*                 billingTypeId:
 *                   type: integer
 *                 currencyType:
 *                   type: integer
@@ -487,7 +487,7 @@
 *                   type: integer
 *                 maxCost:
 *                   type: integer
-*                 billingType:
+*                 billingTypeId:
 *                   type: integer
 *                 currencyType:
 *                   type: integer
@@ -606,7 +606,7 @@
 *                   type: integer
 *                 maxCost:
 *                   type: integer
-*                 billingType:
+*                 billingTypeId:
 *                   type: integer
 *                 currencyType:
 *                   type: integer
@@ -987,7 +987,7 @@
 *       - Candidates
 *     name: Link to position
 *     summary: Add a candidate to a given open position
-*     description: For ellow recruiter,candidates array consists of candidateId,ellowrate,billingtype,currencytypeid,admincomment. For other users, candidates rray consists of only candidateId
+*     description: For ellow recruiter,candidates array consists of candidateId,ellowrate,billingtypeid,currencytypeid,admincomment. For other users, candidates rray consists of only candidateId
 *     security:
 *       - bearerAuth: []
 *     consumes:
@@ -1013,7 +1013,7 @@
 *                     type: integer
 *                   currencyTypeId:
 *                     type: integer
-*                   billingType:
+*                   billingTypeId:
 *                     type: integer
 *                   adminComment:
 *                     type: string

@@ -164,7 +164,7 @@ export const  addCompanyPositionsQuery = (_body) =>{
         values: {
             name:_body.positionName,location:_body.locationName, devcount:_body.developerCount, companyid: _body.cmpId,
             explevel:_body.experienceLevel, jobdesc:_body.jobDescription, doc:_body.document, 
-            currencyid:_body.currencyTypeId, billingtype:_body.billingType,contractstartDate: _body.contractStartDate,contractduration:_body.contractDuration,maxbudget:_body.maxBudget,minbudget:-_body.minBudget,
+            currencyid:_body.currencyTypeId, billingtypeid:_body.billingTypeId,contractstartdate: _body.contractStartDate,contractduration:_body.contractDuration,maxbudget:_body.maxBudget,minbudget:_body.minBudget,
             empid:_body.employeeId,  time:currentTime(), jobcatid:_body.jobCategoryId
         }
     }
@@ -230,7 +230,7 @@ export const  updateCompanyPositionsSecondQuery = (_body) =>{
         name: 'update-company-positions-second',
         text: positionsQuery.updatePositionSecond,
         values: [_body.contractStartDate,
-            _body.currencyTypeId, _body.billingType, _body.minBudget, _body.maxBudget,
+            _body.currencyTypeId, _body.billingTypeId, _body.minBudget, _body.maxBudget,
             _body.employeeId, currentTime(), _body.positionId, _body.cmpId,_body.contractDuration,_body.immediate]
     }
 }

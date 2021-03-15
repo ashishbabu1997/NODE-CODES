@@ -57,7 +57,7 @@ export const getCompanyPositions = (_body) => {
 }
 // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Create a new position for a company
-export const createCompanyPositions = async (_body) => {
+export const createCompanyPositions =  async (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now());
         (async () => {
@@ -173,7 +173,7 @@ export const fetchPositionDetails = (_body) => {
                     result = {
                         maxBudget: step.max_budget,
                         minBudget: step.min_budget,
-                        billingType: step.billing_type,
+                        billingTypeId: step.billing_type,
                         contractStartDate: step.contract_start_date,
                         contractDuration:step.contract_duration,
                         immediate:step.immediate,
@@ -244,12 +244,10 @@ export const fetchPositionDetails = (_body) => {
                     const client = await database().connect()
                     try {
                         _body.cmpId=companyId
-                        console.log("COmpany ID",_body.cmpId)
                         await client.query('BEGIN');
                         let hiringStepQueries=[];
                         const getCompanyNameResponse =  await client.query(queryService.getCompanyNameQuery(_body))
                         const companyName = getCompanyNameResponse.rows[0].companyName
-                        console.log("CompanyName",companyName)
                         await client.query(queryService.updateCompanyPositionsFirstQuery(_body))
                         await client.query(queryService.updateCompanyPositionsSecondQuery(_body))
                         await client.query('COMMIT')
@@ -292,9 +290,7 @@ export const fetchPositionDetails = (_body) => {
                                     _body.allocatedTo = _body.employeeId;
                                     await client.query(queryService.assigneeQuery(_body));
                                 }
-                                else{
-                                    console.log("Hirer")
-                                }
+                                
                                 await client.query('COMMIT');
                                 const { positionCompanyId, positionCompanyName,positionName } = details.rows[0];
                                 const message = `A new position,${positionName} has been created by ${details.rows[0].companyName}`
@@ -468,8 +464,8 @@ export const fetchPositionDetails = (_body) => {
                                 }
                             }
                         }   
-                        
-                        
+                        await client.query('COMMIT');
+
                         resolve({ code: 200, message: "Job status changed", data: {} });
                         
                     } catch (e) {
