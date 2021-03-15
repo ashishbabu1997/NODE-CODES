@@ -23,7 +23,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         candStatus = filter.candidateStatus,
         minCost = filter.mincost,
         maxCost = filter.maxcost,
-        billingType = filter.billingType,
+        billingTypeId = filter.billingTypeId,
         currencyType = filter.currencyType,
         otherSkills = filter.otherSkills
         ;
@@ -47,10 +47,10 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
             queryValues =  Object.assign({otherskill:objectToArray(otherSkills,'skillName')},queryValues)
         }
         
-        if(minCost >= 0 && maxCost >= 0 && ![undefined,null,''].includes(currencyType) && ![undefined,null,''].includes(billingType))
+        if(minCost >= 0 && maxCost >= 0 && ![undefined,null,''].includes(currencyType) && ![undefined,null,''].includes(billingTypeId))
         {
-            filterQuery=filterQuery+' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtype AND chsv."rate" BETWEEN $cost_min and $cost_max '
-            queryValues =  Object.assign({billingtype:billingType,currencytype:currencyType,cost_min:minCost,cost_max:maxCost},queryValues) 
+            filterQuery=filterQuery+' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtypeid AND chsv."rate" BETWEEN $cost_min and $cost_max '
+            queryValues =  Object.assign({billingtypeid:billingTypeId,currencytype:currencyType,cost_min:minCost,cost_max:maxCost},queryValues) 
         }
         
         if(![undefined,null,''].includes(experience) && Object.keys(experience).length != 0)

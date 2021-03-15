@@ -610,7 +610,7 @@ export const linkCandidateWithPosition = (_body) => {
                         const linkCandidateByAdminQuery = {
                             name: 'link-candidate-with-position',
                             text: candidateQuery.linkCandidateWithPositionByAdmin,
-                            values: [positionId, element.candidateId, _body.employeeId, currentTime,element.ellowRate,element.currencyTypeId,element.billingType,element.adminComment,1],
+                            values: [positionId, element.candidateId, _body.employeeId, currentTime,element.ellowRate,element.currencyTypeId,element.billingTypeId,element.adminComment,1],
                         }
                         count=count+1
                         promise.push(client.query(linkCandidateByAdminQuery));
