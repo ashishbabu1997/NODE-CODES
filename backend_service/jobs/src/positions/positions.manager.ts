@@ -67,16 +67,12 @@ export const createCompanyPositions = async (_body) => {
                 let hiringStepQueries = [];
                 _body.cmpId = _body.userRoleId==1?_body.positionCreatedCompanyId:_body.companyId;
                 let companyId= _body.cmpId
-                console.log("Company  Id",_body.cmpId)
                 const getCompanyNameResponse =  await client.query(queryService.getCompanyNameQuery(_body))
-                await client.query('COMMIT')
                 const companyName = getCompanyNameResponse.rows[0].companyName
-                console.log("CompanyName")
                 const companyPositionResponse = await client.query(queryService.addCompanyPositionsQuery(_body))
                 await client.query('COMMIT')
                 const positionId = companyPositionResponse.rows[0].position_id
                 _body.positionId=positionId
-                console.log("Position ID",_body.positionId)
                 _body.tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
                 _body.oSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"]))?_body.skills["otherSkill"].map(a => a.skillId):[];
                 
@@ -521,30 +517,10 @@ export const fetchPositionDetails = (_body) => {
                     try {
                         await client.query('BEGIN');
                         const positionId = _body.positionId;
-                        
-                        const currentTime = Math.floor(Date.now());
-                        const updateStatus=false;
-                        const getMailAddress = {
-                            name: 'fetch-emailaddress',
-                            text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
-                            values:[positionId]
-                        }
-                        var employeeData = await client.query(getMailAddress); 
-                        const updateJobReceivedStatus = {
-                            name: 'change-JobReceivedStatus',
-                            text:positionsQuery.updateJobReceivedStatus,
-                            values:[positionId]
-                        }
-                        let result = await client.query(updateJobReceivedStatus);     
-                        await client.query('COMMIT');         
-                        let jobReceivedId = result.rows[0]!=undefined?result.rows[0].job_received_id:null;    
-                        const updatePositionStatus = {
-                            name: 'change-positionstatus',
-                            text:positionsQuery.updatePositionStatus,
-                            values:[positionId,currentTime,updateStatus]
-                        }
-                        await client.query(updatePositionStatus);
-                        await client.query('COMMIT');              
+                        var employeeData = await client.query(queryService.getMailAddressofHirer(_body))
+                        await client.query('COMMIT');           
+                        await client.query(queryService.deleteHirerPositions(_body))
+                        await client.query('COMMIT');    
                         var positionName=employeeData.rows[0].position_name
                         var emailAddress=employeeData.rows[0].email
                         await client.query('COMMIT');
@@ -562,7 +538,7 @@ export const fetchPositionDetails = (_body) => {
                                 
                             })
                             const message=`The position, ${positionName}  has been removed .`
-                            await createNotification({ positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
+                            await createNotification({ positionId, jobReceivedId:null, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
                             resolve({ code: 200, message: "Position deletion successfull", data: {} });
                         }
                         
