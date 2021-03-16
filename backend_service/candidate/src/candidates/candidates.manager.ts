@@ -120,9 +120,7 @@ export const listFreeCandidatesDetails = (_body) => {
         var selectQuery = candidateQuery.listFreeCandidatesFromView;
         let totalQuery = candidateQuery.listFreeCandidatesTotalCount;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
-        body=_body.query, reqBody = _body.body;
-        let promise = [];
-        
+        body=_body.query, reqBody = _body.body;        
         
         // Search for filters in the body        
         let filterResult = utils.resourceFilter(filter,filterQuery,queryValues);
@@ -142,20 +140,15 @@ export const listFreeCandidatesDetails = (_body) => {
         (async () => {
             const client = await database()
             try {
-                await client.query('BEGIN');
-                
                 queryText = selectQuery+roleBasedQuery+utils.resourceTab(body)+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
                 queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
-                console.log(queryText)
-                promise.push(client.query(queryService.listCandidates(queryText,queryValues)));
+                let candidateList = await client.query(queryService.listCandidates(queryText,queryValues));
                 
                 var queryCountText = totalQuery+roleBasedQuery+utils.resourceTab(body)+filterQuery+searchQuery;
-                promise.push(client.query(queryService.listCandidatesTotal(queryCountText,queryValues)));
+                let candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText,queryValues));
                 
-                let response = await Promise.all(promise);
-                let candidates = response[0].rows;
-                let totalCount = response[1].rows[0].totalCount;
-                await client.query('COMMIT');
+                let candidates = candidateList.rows;
+                let totalCount = candidateTotal.rows[0].totalCount;
                 
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates, totalCount} });
             } catch (e) {
@@ -196,16 +189,13 @@ export const listAddFromListCandidates = (_body) => {
         (async () => {
             const client = await database()
             try {
-                await client.query('BEGIN');
                 queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
                 queryValues =Object.assign({positionid:body.positionId},queryValues)
                 const candidatesResult = await client.query(queryService.listAddFromList(queryText,queryValues));
                 
                 queryText = totaltQuery+roleBasedQuery+filterQuery+searchQuery;
                 const totalCountResult = await client.query(queryService.listAddFromListTotal(queryText,queryValues));
-                
-                await client.query('COMMIT')
-                
+                                
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows,totalCount:totalCountResult.rows[0].totalCount } });
             } catch (e) {
                 console.log(e)
@@ -502,7 +492,6 @@ export const removeCandidateFromPosition = (_body) => {
             try {
                 var candidateId = _body.candidateId;
                 var positionId = _body.positionId;
-                console.log(positionId,candidateId)
                 await client.query('BEGIN');
                 // Query to change the status of a candidate to false.
                 const removeCandidateQuery = {
@@ -1801,27 +1790,15 @@ export const createPdfFromHtml = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-                    await client.query('BEGIN')
-                    let promises = [];
                     
-                    // let result = await client.query(queryService.getAssesmentDetails(_body));
-                    promises.push(client.query(queryService.getAssesmentDetails(_body)));
-                    
-                    // let results = await client.query(queryService.getAllocatedVettedStatus(_body));
-                    promises.push(client.query(queryService.getAllocatedVettedStatus(_body)));
-                    
-                    // let adminResult=await client.query(queryService.adminSignup);
-                    promises.push(client.query(queryService.adminSignup()));
-                    
-                    let response = await Promise.all(promises);
-                    
-                    let reviews = response[0].rows,
-                    candidateVetted = response[1].rows[0].candidate_vetted,
-                    currentEllowStage = response[1].rows[0].current_ellow_stage,
-                    allocatedTo = response[1].rows[0].allocated_to,
-                    admins = response[2].rows;
-                    
-                    await client.query('COMMIT')
+                    let query1 = await client.query(queryService.getAssesmentDetails(_body));         
+                    let query2 = await client.query(queryService.getAllocatedVettedStatus(_body));
+                    let query3= await client.query(queryService.adminSignup);                                        
+                    let reviews = query1.rows,
+                    candidateVetted = query2.rows[0].candidate_vetted,
+                    currentEllowStage = query2.rows[0].current_ellow_stage,
+                    allocatedTo = query2.rows[0].allocated_to,
+                    admins = query3.rows;
                     
                     resolve({ code: 200, message: "Assessment details listed successfully", data:{reviews,candidateVetted,currentEllowStage,allocatedTo,admins}});
                 } catch (e) {
@@ -1984,14 +1961,12 @@ export const createPdfFromHtml = (_body) => {
             (async () => {
                 const client = await database()
                 try {
-                    await client.query('BEGIN');
                     queryText = selectQuery+utils.resourceHirerTab(body)+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
                     var queryCountText=totalQuery+utils.resourceHirerTab(body)+filterQuery+searchQuery
                     queryValues =  Object.assign({hirercompanyid:_body.body.companyId},queryValues)
                     
                     const candidatesResult = await client.query(queryService.listCandidatesOfHirer(queryText,queryValues));
                     const totalCount=await client.query(queryService.listCandidatesOfHirerCount(queryCountText,queryValues))
-                    await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows,totalCount:totalCount.rows[0].totalCount } });
                 } catch (e) {
                     console.log(e)
@@ -2066,7 +2041,6 @@ export const createPdfFromHtml = (_body) => {
                     
                     // do the POST call
                     var reqPost =  https.request(optionspost, function(res) {
-                        console.log("statusCode: ", res.statusCode);
                         // uncomment it for header details
                         //  console.log("headers: ", res.headers);
                         let data ='';
@@ -2077,7 +2051,6 @@ export const createPdfFromHtml = (_body) => {
                         });
                         
                         res.on('end',async () => {
-                            console.log('Body: ', JSON.parse(data));
                             
                             // process.stdout.write(data);
                             responseData = JSON.parse(data);
@@ -2092,8 +2065,6 @@ export const createPdfFromHtml = (_body) => {
                                 responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
                                 
                                 let resp = await modifyResumeData(responseData);
-                                
-                                console.log("response from modifyResumeData  : ",resp);
                                 resolve({ code: 200, message: "Resume parsed successfully", data:{candidateId:resp["data"]}});
                                 
                             }
@@ -2103,9 +2074,6 @@ export const createPdfFromHtml = (_body) => {
                         console.log("Error: ", err.message);
                         reject({ code: 400, message: "Error from parser", data: err.message });
                     });
-                    
-                    
-                    console.log("jsonObject from parser  : ",jsonObject);
                     
                     // write the json data
                     reqPost.write(jsonObject);
