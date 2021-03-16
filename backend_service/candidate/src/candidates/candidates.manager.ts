@@ -511,7 +511,12 @@ export const removeCandidateFromPosition = (_body) => {
                     values: [candidateId, positionId],
                 }
                 await client.query(removeCandidateQuery);
-                
+                const removeFromCandidateClientHiringStep = {
+                    name: 'delete-candidate-from-clienthiringstep',
+                    text: candidateQuery.deleteCandidateFromCandidateClientHiringStep,
+                    values: [candidateId, positionId],
+                }
+                await client.query(removeFromCandidateClientHiringStep);
                 // Retreving the details of the candidate to add to the mail
                 const getPositionDetails = {
                     name: 'delete-position-details',

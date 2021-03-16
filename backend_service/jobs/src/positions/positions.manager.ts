@@ -531,6 +531,7 @@ export const fetchPositionDetails = (_body) => {
                         if(Array.isArray(ellowAdmins.rows))
                         {
                             ellowAdmins.rows.forEach(element => {
+                                console.log(element.email)
                                 emailClient.emailManager(element.email,config.PositionText.subject,adminPath,userReplacements);
                                 
                             })
