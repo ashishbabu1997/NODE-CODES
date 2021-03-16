@@ -374,6 +374,7 @@ export const updateDefaultAssignee = (_body) => {
                 }
                 else{
                     var positions=await client.query(queryService. getPositionName(_body));
+                    console.log("Positions",_body.positionId)
                     var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
                     var companyName=companies.rows[0].companyName

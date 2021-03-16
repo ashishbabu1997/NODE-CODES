@@ -1432,7 +1432,7 @@ export const addResumeShareLink = (_body) => {
                     if(flag==0)
                     resolve({ code: 200, message: "Candidate resume share link updated", data: sharedEmails });
                     else
-                    resolve({ code: 201, message: "Some of the emails shared does not belong to your company email domain", data: sharedEmails });
+                    resolve({ code: 201, message: "The entered email does not belong to your company domain", data: sharedEmails });
                     
                 }
                 else
@@ -1710,7 +1710,7 @@ export const createPdfFromHtml = (_body) => {
                     });
                     await client.query('COMMIT')
                     
-                    resolve({ code: 200, message: "“Resume in PDF format has been shared", data:{} });
+                    resolve({ code: 200, message: "Resume in PDF format has been shared", data:{} });
                     
                 } catch (e) {
                     console.log(e)
