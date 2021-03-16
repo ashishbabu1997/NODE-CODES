@@ -10,26 +10,31 @@ export const recruiterPostSignup = (_body) => {
         let hashedAccess = crypto
         .createHash("sha512")
         .update(_body.accesskey)
-        .digest("hex");
-        
+        .digest("hex");        
         if(hashedAccess === '2201c26b2bc107c5d5a80ffe48fe7f750135695cf2168698cab5332aef173b90ccf98175c2258f47d1bc38818b2225f8030a7bcadecfc8db8475bc22847990c8')
         {
             const currentTime = Math.floor(Date.now());
             const mailId = _body.email;
             const loweremailId = mailId.toLowerCase();
             
+<<<<<<< HEAD
             (async () => {
                 const client = await database()
                 try {
                     await client.query('BEGIN');
 
+=======
+            (async () => {                
+                const client = await database()
+                try {     
+                    await client.query('BEGIN');
+>>>>>>> develop
                     const getEmailQuery = {
                         name: 'get-email',
                         text: recruiterSignupQuery.getEmail,
                         values: [loweremailId],
                     }
-                    const getEmailResult = await client.query(getEmailQuery);
-                    
+                    const getEmailResult = await client.query(getEmailQuery);                    
                     if (getEmailResult.rowCount >= 1) {
                         var adminStatus = getEmailResult.rows[0].admin_approve_status
                         var emailId = getEmailResult.rows[0].email
@@ -56,9 +61,9 @@ export const recruiterPostSignup = (_body) => {
                         values: {firstname:_body.firstname,lastname:_body.lastname,email:_body.email,telephonenumber:_body.number,password:hashedPassword,accounttype:3,userroleid:1,status:true,adminapprovestatus:1,createdon:currentTime}
                     }
                     
-                   await client.query(adminSignup);
-                   resolve({ code: 200, message: "Signed up succesfully", data: {} });
-                  await client.query('COMMIT')
+                    await client.query(adminSignup);
+                    resolve({ code: 200, message: "Signed up succesfully", data: {} });
+                    await client.query('COMMIT')
                 } catch (e) {
                     console.log("Error e1: ",e );
                     await client.query('ROLLBACK')
@@ -71,6 +76,7 @@ export const recruiterPostSignup = (_body) => {
         }
         else
         reject({ code: 200, message: "Access key invalid", _body });
+        
         
     })
 }

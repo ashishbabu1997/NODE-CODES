@@ -50,7 +50,7 @@ export const candidateVettingStatus = (req, res) => {
 }
 
 export const deleteCandidateFromPosition = (req, res) => {
-    const body = req.query;
+    const body = req.body;
     candidateManager.removeCandidateFromPosition(body).then((response: any) => {
         sendResponse(res, response.code, 1, 203, response.message, response.data)
     }).catch(error => {
@@ -99,6 +99,16 @@ export const updateResumeFile = (req, res) => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)
     })
 }
+
+export const updateResumeData = (req, res) => {
+    const body = req.body;
+    candidateManager.modifyResumeData(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}
+
 export const updateSocialProfile = (req, res) => {
     const body = req.body;
     candidateManager.modifySocialPresence(body).then((response: any) => {
@@ -288,5 +298,12 @@ export const listResourcesOfHirer = (req, res) => {
 export const changeCandidateAvailability = (req, res) => {
     const body = req.body;
     candidateManager.changeAvailability(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
+
+
+export const resumeParser = (req, res) => {
+    const body = req.body;
+    candidateManager.resumeParser(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }

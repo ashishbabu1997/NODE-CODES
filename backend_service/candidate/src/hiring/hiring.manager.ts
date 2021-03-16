@@ -37,7 +37,7 @@ export const getCandidateHiringSteps = (_body) => {
             const client = await database().connect()
             try {
                 var result=await client.query(queryService.candidateHiringStepsQuery(_body));
-                var candidatePositionResult=await client.query(queryService.candidateCurrentStageQuery(_body));                
+                var candidatePositionResult=await client.query(queryService.candidatePositionDetailsQuery(_body));                
                 resolve({ code: 200, message: "Candidate client hiring steps listed successfully", data: {hiringSteps:result.rows,commonData : candidatePositionResult.rows[0] } });
             } catch (e) {
                 console.log("Error raised from try : ",e)
@@ -130,7 +130,7 @@ export const updateHiringStepDetails = (_body) => {
                         
                         if (_body.hiringAssesmentValue==0)
                         {   
-                            let message=`${imageResults.rows[0].candidate_first_name +' '+imageResults.rows[0].candidate_last_name} has accepted the offer by ${positions.rows[0].companyName}`
+                            let message=`${imageResults.rows[0].candidate_first_name +' '+imageResults.rows[0].candidate_last_name} has accepted the offer by ${positions.rows[0].company_name}`
                             await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                             var subj = "Resource Acceptance Notification";
                             let path = 'src/emailTemplates/resourceAcceptionMailText.html';
@@ -374,6 +374,7 @@ export const updateDefaultAssignee = (_body) => {
                 }
                 else{
                     var positions=await client.query(queryService. getPositionName(_body));
+                    console.log("Positions",_body.positionId)
                     var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
                     var companyName=companies.rows[0].companyName

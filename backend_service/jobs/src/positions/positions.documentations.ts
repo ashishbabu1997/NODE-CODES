@@ -197,7 +197,7 @@
 *               type: integer
 *             currencyTypeId:
 *               type: integer            
-*             billingType:
+*             billingTypeId:
 *               type: integer
 *             minBudget:
 *               type: number
@@ -414,7 +414,7 @@
 *               type: integer
 *             currencyTypeId:
 *               type: integer            
-*             billingType:
+*             billingTypeId:
 *               type: integer
 *             minBudget:
 *               type: number

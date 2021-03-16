@@ -26,15 +26,18 @@ export const listUsersDetails = (_body) => {
             try {
                         var selectQuery = adminQuery.listUsers;
                         var totalQuery=adminQuery.listUsersTotalCount;
-                        if (_body.filter) {
-                            selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '%" + _body.filter.toLowerCase() + "%'";
+                        if (_body.searchKey) {
+                            selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '" + _body.searchKey.toLowerCase()+ "%'";
                         }
                         const orderBy = {
-                            "name":'e.firstname',
+                            "firstName":'e.firstname',
                             "lastName":'e.lastname',
+                            "name":'e.firstname',
                             "email":'e.email',
                             "phoneNumber":'e.telephone_number',
+                            "companyName":'p.company_name',
                             "company":'p.company_name'
+
                         }
                         
                         if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
@@ -42,6 +45,7 @@ export const listUsersDetails = (_body) => {
                             selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
                         }  
                         selectQuery=selectQuery+utils.adminPagination(_body)
+                        console.log(selectQuery)
                         const listquery = {
                             name: 'list-candidates',
                             text: selectQuery
@@ -96,13 +100,13 @@ export const allUsersList = (_body) => {
                         }
                         else{
                             _body.queryValues =   Object.assign({searchkey:searchKey},_body.queryValues)
-                            console.log(_body.queryValues)
                             _body.queryCountText=adminQuery.allRegisteredUsersListCount+filterQuery,
                             _body.queryText=adminQuery.allRegisteredUsersList+filterQuery+utils.userSort(body)+utils.usersPagination(body)
     
                         }
-                        console.log(_body.queryText)
-                        console.log(_body.queryValues)
+                        console.log("QUeryTExt",_body.queryText)
+                        console.log("QUeryValues",_body.queryValues)
+
                         var results=await client.query(queryService.listquery(_body))
                         var counts=await client.query(queryService.listQueryCount(_body))
                         resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });

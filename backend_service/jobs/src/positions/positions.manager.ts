@@ -5,6 +5,7 @@ import config from '../config/config'
 import * as emailClient from '../emailService/emailService';
 import * as queryService from '../queryService/queryService';
 import * as utils from '../utils/utils';
+import { Console } from 'console';
 
 // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Get the position detils of a company
@@ -36,9 +37,10 @@ export const getCompanyPositions = (_body) => {
                 }
                 else { 
                      _body.queryCountText=positionsQuery.getCompanyPositionsForBuyerTotalCount+utils.positionTab(body)+filterQuery
-                    _body.queryText = positionsQuery.getCompanyPositionsForBuyer +utils.positionTab(body)+filterQuery+ utils.positionSort(body+utils.positionPagination(body));
+                    _body.queryText = positionsQuery.getCompanyPositionsForBuyer +utils.positionTab(body)+filterQuery+ utils.hirerPositionSort(body)+utils.positionPagination(body);
                     _body.queryValues =  Object.assign({companyid:reqBody.companyId,searchkey:searchKey,employeeid:reqBody.employeeId},_body.queryValues)
                 }
+                console.log(_body.queryText)
                 let results=await client.query(queryService.fetchCompanyPositionsById(_body))
                 let counts=await client.query(queryService.fetchPositionsCount(_body)) 
                 var steps = results.rows
@@ -56,19 +58,21 @@ export const getCompanyPositions = (_body) => {
 }
 // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Create a new position for a company
-export const createCompanyPositions = async (_body) => {
+export const createCompanyPositions =  async (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database()
             try {
                 await client.query('BEGIN');
+                console.log("Hai")
                 let hiringStepQueries = [];
                 _body.cmpId = _body.userRoleId==1?_body.positionCreatedCompanyId:_body.companyId;
                 let companyId= _body.cmpId
                 const getCompanyNameResponse =  await client.query(queryService.getCompanyNameQuery(_body))
                 const companyName = getCompanyNameResponse.rows[0].companyName
                 const companyPositionResponse = await client.query(queryService.addCompanyPositionsQuery(_body))
+                await client.query('COMMIT')
                 const positionId = companyPositionResponse.rows[0].position_id
                 _body.positionId=positionId
                 _body.tSkill = (![undefined,null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"]))?_body.skills["topRatedSkill"].map(a => a.skillId):[];
@@ -104,19 +108,22 @@ export const createCompanyPositions = async (_body) => {
                         const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
                         const jobReceivedId = data.rows[0].job_received_id;
                         const details = await client.query(queryService.getNotificationDetailsQuery(_body));
-                        
                         if(_body.userRoleId == 1)
                         {
                             _body.allocatedTo = _body.employeeId;
                             await client.query(queryService.assigneeQuery(_body));
                         }
-                        
+                        else{
+                            // console.log("Hirer or provider")
+                        }
                         await client.query('COMMIT');
-                        const { positionCompanyId, positionCompanyName,positionName } = details.rows[0];
-                        const message = `A new position,${positionName} has been created by ${positionCompanyName}`
-                        var cName=positionCompanyName
-                        var cpName=positionName
-                        await createNotification({ positionId, jobReceivedId, positionCompanyId, message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
+
+                        console.log("COMPNAME",details.rows[0].companyName)
+                        
+                        const message = `A new position,${details.rows[0].positionName} has been created by ${details.rows[0].companyName}`
+                        var cName=details.rows[0].companyName
+                        var cpName=details.rows[0].positionName
+                        await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
                         var subject='New position notification'
                         // Sending a notification mail about position creation; to the admin
                         let path = 'src/emailTemplates/positionCreationText.html';
@@ -168,7 +175,7 @@ export const fetchPositionDetails = (_body) => {
                     result = {
                         maxBudget: step.max_budget,
                         minBudget: step.min_budget,
-                        billingType: step.billing_type,
+                        billingTypeId: step.billing_type,
                         contractStartDate: step.contract_start_date,
                         contractDuration:step.contract_duration,
                         immediate:step.immediate,
@@ -288,8 +295,8 @@ export const fetchPositionDetails = (_body) => {
                                 
                                 await client.query('COMMIT');
                                 const { positionCompanyId, positionCompanyName,positionName } = details.rows[0];
-                                const message = `A new position,${positionName} has been created by ${positionCompanyName}`
-                                var cName=positionCompanyName
+                                const message = `A new position,${positionName} has been created by ${details.rows[0].companyName}`
+                                var cName=details.rows[0].companyName
                                 var cpName=positionName
                                 await createNotification({ positionId, jobReceivedId, positionCompanyId, message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
                                 var subject='New position notification'
@@ -459,8 +466,8 @@ export const fetchPositionDetails = (_body) => {
                                 }
                             }
                         }   
-                        
-                        
+                        await client.query('COMMIT');
+
                         resolve({ code: 200, message: "Job status changed", data: {} });
                         
                     } catch (e) {
@@ -508,44 +515,13 @@ export const fetchPositionDetails = (_body) => {
                     try {
                         await client.query('BEGIN');
                         const positionId = _body.positionId;
-                        
-                        const currentTime = Math.floor(Date.now());
-                        const updateStatus=false;
-                        const updatePositionStatus = {
-                            name: 'change-positionstatus',
-                            text:positionsQuery.updatePositionStatus,
-                            values:[positionId,currentTime,updateStatus]
-                        }
-                        await client.query(updatePositionStatus);
-                        
-                        const updateJobReceivedStatus = {
-                            name: 'change-JobReceivedStatus',
-                            text:positionsQuery.updateJobReceivedStatus,
-                            values:[positionId,currentTime,updateStatus]
-                        }
-                        let result = await client.query(updateJobReceivedStatus);
-                        
-                        let jobReceivedId = result.rows[0]!=undefined?result.rows[0].job_received_id:null;                                    
-                        if(![null,undefined].includes(jobReceivedId))
-                        {
-                            const updateCompanyJobStatus = {
-                                name: 'change-CompanyJobStatus',
-                                text:positionsQuery.updateCompanyJobStatus,
-                                values:[jobReceivedId,currentTime,updateStatus]
-                            }
-                            await client.query(updateCompanyJobStatus);
-                        }
-                        
-                        const getMailAddress = {
-                            name: 'fetch-emailaddress',
-                            text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
-                            values:[positionId]
-                        }
-                        var employeeData = await client.query(getMailAddress);                
+                        var employeeData = await client.query(queryService.getMailAddressofHirer(_body))
+                        await client.query('COMMIT');           
+                        await client.query(queryService.deleteHirerPositions(_body))
+                        await client.query('COMMIT');    
                         var positionName=employeeData.rows[0].position_name
                         var emailAddress=employeeData.rows[0].email
                         await client.query('COMMIT');
-                        
                         let path = 'src/emailTemplates/positionDeletionText.html';
                         let adminPath = 'src/emailTemplates/positionDeletionAdminText.html';
                         var userReplacements = {
@@ -556,11 +532,12 @@ export const fetchPositionDetails = (_body) => {
                         if(Array.isArray(ellowAdmins.rows))
                         {
                             ellowAdmins.rows.forEach(element => {
+                                console.log(element.email)
                                 emailClient.emailManager(element.email,config.PositionText.subject,adminPath,userReplacements);
                                 
                             })
                             const message=`The position, ${positionName}  has been removed .`
-                            await createNotification({ positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
+                            await createNotification({ positionId, jobReceivedId:null, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
                             resolve({ code: 200, message: "Position deletion successfull", data: {} });
                         }
                         
