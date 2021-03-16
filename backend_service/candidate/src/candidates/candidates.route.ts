@@ -52,6 +52,5 @@ router
     .get('/getAllAuditLogs',candidateController.getAuditLogs)
     .post('/listFreeCandidatesOfHirer', jwtAuth, setData(), candidateController.listResourcesOfHirer)
     .post('/updateCandidateAvailability', jwtAuth, setData(), candidateController.changeCandidateAvailability)
-
     .post('/resumeParser',jwtAuth, setData(),candidateController.resumeParser)
     export default router;
