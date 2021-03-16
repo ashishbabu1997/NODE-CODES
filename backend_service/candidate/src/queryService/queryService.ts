@@ -755,10 +755,10 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
-    export const candidateCurrentStageQuery = (_body) => {
+    export const candidatePositionDetailsQuery = (_body) => {
         return {
             name: 'get-candidate-current-step',
-            text: hiringQuery.candidateCurrentStage,
+            text: hiringQuery.candidatePositionDetails,
             values:[_body.candidateId,_body.positionId],
         }
     }

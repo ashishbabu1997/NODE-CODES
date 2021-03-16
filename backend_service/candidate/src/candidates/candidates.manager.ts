@@ -13,9 +13,6 @@ import * as utils from '../utils/utils';
 import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
 
-import response from '../common/response/response';
-import { isNull } from 'util';
-
 const myCache = new nodeCache();
 
 // >>>>>>> FUNC. >>>>>>>

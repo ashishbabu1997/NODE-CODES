@@ -12,6 +12,7 @@ export default {
     updateDefaultAssignee:'update candidate_position set assigned_to=$assignedto, updated_by=$employeeid, updated_on=$currenttime where candidate_id = $candidateid and position_id = $positionid',
     candidateCurrentStage:'select current_stage as "currentStage", assigned_to as "assignedTo",make_offer as "makeOffer" from candidate_position where candidate_id = $1 and position_id = $2',
     getPositionNameFromId:'select p.position_name,e.email,c.company_name from positions p left join employee e on e.employee_id=p.allocated_to left join company c on c.company_id=p.company_id where p.position_id=$1',
+    candidatePositionDetails:'select current_stage as "currentStage", assigned_to as "assignedTo",make_offer as "makeOffer",ellow_rate as "ellowRate",currency_type_id as "currencyTypeId",billing_type as "billingTypeId" from candidate_position where candidate_id = $1 and position_id = $2',   
     getCompanyNameFromId:'select company_name as "companyName" from company where company_id=$1',
     fetchResourceCounts:'select developer_count,close_count from positions where position_id=$1',
     closeJobStatus:'update positions set job_status=8 where position_id=$1',
