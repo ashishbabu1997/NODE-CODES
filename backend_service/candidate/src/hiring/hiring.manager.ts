@@ -37,7 +37,7 @@ export const getCandidateHiringSteps = (_body) => {
             const client = await database().connect()
             try {
                 var result=await client.query(queryService.candidateHiringStepsQuery(_body));
-                var candidatePositionResult=await client.query(queryService.candidateCurrentStageQuery(_body));                
+                var candidatePositionResult=await client.query(queryService.candidatePositionDetailsQuery(_body));                
                 resolve({ code: 200, message: "Candidate client hiring steps listed successfully", data: {hiringSteps:result.rows,commonData : candidatePositionResult.rows[0] } });
             } catch (e) {
                 console.log("Error raised from try : ",e)
