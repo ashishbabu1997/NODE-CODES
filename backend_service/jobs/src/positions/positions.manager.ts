@@ -65,6 +65,7 @@ export const createCompanyPositions =  async (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
+                console.log("Hai")
                 let hiringStepQueries = [];
                 _body.cmpId = _body.userRoleId==1?_body.positionCreatedCompanyId:_body.companyId;
                 let companyId= _body.cmpId
