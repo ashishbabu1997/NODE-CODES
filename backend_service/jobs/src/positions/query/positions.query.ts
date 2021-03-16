@@ -18,7 +18,7 @@ export default {
     getCompanyName: 'SELECT company_name as "companyName" FROM company WHERE company_id=$1',
     getNotificationDetails: `select p.company_id as "companyId",p.position_name as "positionName", c.company_name as "companyName"from positions p left join company c on c.company_id = p.company_id where p.position_id = $1 and p.status = true`,
     getEmailAddressOfBuyerFromPositionId:'SELECT p.position_name ,e.email,j.job_received_id FROM positions p LEFT JOIN employee e ON e.company_id=p.company_id LEFT JOIN job_received j ON j.position_id=p.position_id WHERE p.position_id=$1 ORDER BY e.employee_id LIMIT 1',
-    updatePositionStatus:'delete from positions where position_id=$1',
+    deletePosition:'delete from positions where position_id=$1',
     updateJobReceivedStatus:'select job_received_id from  job_received  WHERE position_id=$1',
     updateCompanyJobStatus:'UPDATE company_job SET status=$3,updated_on=$2 WHERE job_received_id=$1',
     insertReadStatus:'INSERT INTO position_read_status( position_id, employee_id, created_on, updated_on) values ($1,$2,$3,$3) on conflict on constraint position_read_status_position_id_employee_id_unique_key do nothing',

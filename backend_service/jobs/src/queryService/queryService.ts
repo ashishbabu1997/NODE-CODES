@@ -261,7 +261,7 @@ export const  getMailAddressofHirer = (_body) =>{
 export const  deleteHirerPositions = (_body) =>{
     return {
         name: 'delete-hirer-position',
-        text: positionsQuery.getEmailAddressOfBuyerFromPositionId,
+        text: positionsQuery.deletePosition,
         values: [_body.positionId]
 
     }
