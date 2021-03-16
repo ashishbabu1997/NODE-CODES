@@ -37,9 +37,10 @@ export const getCompanyPositions = (_body) => {
                 }
                 else { 
                      _body.queryCountText=positionsQuery.getCompanyPositionsForBuyerTotalCount+utils.positionTab(body)+filterQuery
-                    _body.queryText = positionsQuery.getCompanyPositionsForBuyer +utils.positionTab(body)+filterQuery+ utils.positionSort(body+utils.positionPagination(body));
+                    _body.queryText = positionsQuery.getCompanyPositionsForBuyer +utils.positionTab(body)+filterQuery+ utils.hirerPositionSort(body)+utils.positionPagination(body);
                     _body.queryValues =  Object.assign({companyid:reqBody.companyId,searchkey:searchKey,employeeid:reqBody.employeeId},_body.queryValues)
                 }
+                console.log(_body.queryText)
                 let results=await client.query(queryService.fetchCompanyPositionsById(_body))
                 let counts=await client.query(queryService.fetchPositionsCount(_body)) 
                 var steps = results.rows
@@ -513,30 +514,10 @@ export const fetchPositionDetails = (_body) => {
                     try {
                         await client.query('BEGIN');
                         const positionId = _body.positionId;
-                        
-                        const currentTime = Math.floor(Date.now());
-                        const updateStatus=false;
-                        const getMailAddress = {
-                            name: 'fetch-emailaddress',
-                            text:positionsQuery.getEmailAddressOfBuyerFromPositionId,
-                            values:[positionId]
-                        }
-                        var employeeData = await client.query(getMailAddress); 
-                        const updateJobReceivedStatus = {
-                            name: 'change-JobReceivedStatus',
-                            text:positionsQuery.updateJobReceivedStatus,
-                            values:[positionId]
-                        }
-                        let result = await client.query(updateJobReceivedStatus);     
-                        await client.query('COMMIT');         
-                        let jobReceivedId = result.rows[0]!=undefined?result.rows[0].job_received_id:null;    
-                        const updatePositionStatus = {
-                            name: 'change-positionstatus',
-                            text:positionsQuery.updatePositionStatus,
-                            values:[positionId,currentTime,updateStatus]
-                        }
-                        await client.query(updatePositionStatus);
-                        await client.query('COMMIT');              
+                        var employeeData = await client.query(queryService.getMailAddressofHirer(_body))
+                        await client.query('COMMIT');           
+                        await client.query(queryService.deleteHirerPositions(_body))
+                        await client.query('COMMIT');    
                         var positionName=employeeData.rows[0].position_name
                         var emailAddress=employeeData.rows[0].email
                         await client.query('COMMIT');
@@ -554,7 +535,7 @@ export const fetchPositionDetails = (_body) => {
                                 
                             })
                             const message=`The position, ${positionName}  has been removed .`
-                            await createNotification({ positionId, jobReceivedId, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
+                            await createNotification({ positionId, jobReceivedId:null, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
                             resolve({ code: 200, message: "Position deletion successfull", data: {} });
                         }
                         

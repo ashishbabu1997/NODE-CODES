@@ -250,6 +250,22 @@ export const  changePositionStatusQuery = (_body) =>{
 
     }
 }
+export const  getMailAddressofHirer = (_body) =>{
+    return {
+        name: 'fetch-emailaddress',
+        text: positionsQuery.getEmailAddressOfBuyerFromPositionId,
+        values: [_body.positionId]
+
+    }
+}
+export const  deleteHirerPositions = (_body) =>{
+    return {
+        name: 'delete-hirer-position',
+        text: positionsQuery.deletePosition,
+        values: [_body.positionId]
+
+    }
+}
 export const  addPositionToJobReceivedQuery = (_body) =>{
     return {
         name: 'add-position-to-job-received',
