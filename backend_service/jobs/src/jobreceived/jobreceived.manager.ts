@@ -299,7 +299,7 @@ export const submitCandidateProfile = (_body) => {
                 {
                     
                     const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for the position ${positionName} `
-                    await createNotification({ positionId:_body.positionId, jobReceivedId,companyId , message, candidateId, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
+                    await createNotification({ positionId:_body.positionId, jobReceivedId,companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     let path = 'src/emailTemplates/candidateAdditionText.html';
                     var userReplacements =  {
                         first:candidateFirstName,
@@ -328,7 +328,7 @@ export const submitCandidateProfile = (_body) => {
                 else
                 {
                     const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for veting `
-                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId , message, candidateId, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
+                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     var status='vetting';
                     let path = 'src/emailTemplates/candidateAdditionText.html';
                     var replacements =  {
