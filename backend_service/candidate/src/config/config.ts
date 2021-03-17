@@ -24,8 +24,8 @@ export default {
     "adminEmail":"jjoseph@ellow.io",
     "mail": {
         "service": "gmail",
-        "user": "sales@ellow.io",
-        "password": "yteinevvuuchtmvb"
+        "user": "hello@ellow.io",
+        "password": "yeibyhconietljtd"
     },
     "noreplymail": {
         "service": "gmail",
