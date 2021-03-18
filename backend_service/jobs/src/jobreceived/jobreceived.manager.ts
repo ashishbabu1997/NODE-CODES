@@ -343,11 +343,11 @@ export const submitCandidateProfile = (_body) => {
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             }
         })().catch(e => {
             console.log(e)
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })
 }
