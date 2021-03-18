@@ -1,6 +1,6 @@
 /**
 * @swagger
-* /admin/listUsers:
+* /listUsers:
 *   get:
 *     tags:
 *       - Admins
@@ -43,7 +43,7 @@
 
 /**
 * @swagger
-* /admin/registeredUserList:
+* /registeredUserList:
 *   get:
 *     tags:
 *       - Admins
@@ -85,7 +85,7 @@
 
 /**
 * @swagger
-* /admin/userDetails:
+* /userDetails:
 *   get:
 *     tags:
 *       - Admins
@@ -118,7 +118,7 @@
 
 /**
 * @swagger
-* /admin/userStatus:
+* /userStatus:
 *   post:
 *     tags:
 *       - Admins
@@ -158,7 +158,7 @@
 
 /**
 * @swagger
-* /admin/addJobCategory:
+* /addJobCategory:
 *   post:
 *     tags:
 *       - Admins
@@ -193,7 +193,7 @@
 
 /**
 * @swagger
-* /admin/addSkills:
+* /addSkills:
 *   post:
 *     tags:
 *       - Admins
@@ -216,6 +216,38 @@
 *               type: array
 *               items:
 *                 type: string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /extractSkills:
+*   post:
+*     tags:
+*       - Admins
+*     name: Extract and upload skills to database
+*     summary: Extract from excel file and upload skills to database
+*     consumes:
+*       - multipart/form-data
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: formData
+*         name: file
+*         type: file
+*         description: Upload an excel file which contains skills data with sheet name as corresponding job category
 *     responses:
 *       200:
 *         description: Api success
