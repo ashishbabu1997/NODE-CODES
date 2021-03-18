@@ -12,7 +12,7 @@ export default {
         "newUserAdminTextSubject":"New Employee Notification",
         "addCandidatesTextSubject":"Added Candidates List",
         "addCandidatesUsersTextSubject":"Profile Selection Notification",
-        "sharePdfTextSubject":"Resume PDF share Notification"
+        "sharePdfTextSubject":"ellow resume"
     },
     "db": {
         "user": "devdb_user",
@@ -24,8 +24,8 @@ export default {
     "adminEmail":"jjoseph@ellow.io",
     "mail": {
         "service": "gmail",
-        "user": "hello@ellow.io",
-        "password": "yeibyhconietljtd"
+        "user": "cs@ellow.io",
+        "password": "ricggklkmqeaxbxx"
     },
     "noreplymail": {
         "service": "gmail",

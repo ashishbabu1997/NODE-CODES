@@ -3,10 +3,6 @@ import config from '../config/config';
 
 const transporter = nodemailer.createTransport({
     service:config.mail.service,
-    host:"smtp.gmail.com",
-    port: 465,
-    pool:true,
-    secure:false,
     auth: {
         user: config.mail.user,
         pass: config.mail.password
@@ -32,8 +28,8 @@ export const sendMailWithAttachments = (email, subject, html,attach, callback) =
     const mailOptions = {
         from: config.mail.user, 
         to: email, 
-        subject,
-        html,
+        subject:subject,
+        html:html,
         attachments:{
             filename: 'resume.pdf',
             content:attach
