@@ -3,8 +3,7 @@ import database from '../common/database/database';
 import { sendMail } from '../middleware/mailer'
 import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
-import * as handlebars from 'handlebars'
-import {readHTMLFile} from '../middleware/htmlReader'
+import * as xlsxReader from 'xlsx';
 import * as emailClient from '../emailService/emailService';
 import * as utils from '../utils/utils';
 import * as queryService from '../queryService/queryService';
@@ -24,109 +23,109 @@ export const listUsersDetails = (_body) => {
         (async () => {
             const client = await database()
             try {
-                        var selectQuery = adminQuery.listUsers;
-                        var totalQuery=adminQuery.listUsersTotalCount;
-                        if (_body.searchKey) {
-                            selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '" + _body.searchKey.toLowerCase()+ "%'";
-                        }
-                        const orderBy = {
-                            "firstName":'e.firstname',
-                            "lastName":'e.lastname',
-                            "name":'e.firstname',
-                            "email":'e.email',
-                            "phoneNumber":'e.telephone_number',
-                            "companyName":'p.company_name',
-                            "company":'p.company_name'
-
-                        }
-                        
-                        if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
-                        {
-                            selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
-                        }  
-                        selectQuery=selectQuery+utils.adminPagination(_body)
-                        console.log(selectQuery)
-                        const listquery = {
-                            name: 'list-candidates',
-                            text: selectQuery
-                        }
-                        const countQuery = {
-                            name: 'count-total-candidates',
-                            text: totalQuery
-                        }
-                        var results=await client.query(listquery)
-                        var counts=await client.query(countQuery)
-                        resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
-                } catch (e) {
-                    await client.query('ROLLBACK')
-                    console.log("e : ",e)
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                var selectQuery = adminQuery.listUsers;
+                var totalQuery=adminQuery.listUsersTotalCount;
+                if (_body.searchKey) {
+                    selectQuery = selectQuery + " " + "AND LOWER(p.company_name) LIKE '" + _body.searchKey.toLowerCase()+ "%'";
                 }
-            })().catch(e => {
-                console.log('e : ',e)
-                reject({ code: 400, message: "Failed. Please try again.", data: {} })
-            })
+                const orderBy = {
+                    "firstName":'e.firstname',
+                    "lastName":'e.lastname',
+                    "name":'e.firstname',
+                    "email":'e.email',
+                    "phoneNumber":'e.telephone_number',
+                    "companyName":'p.company_name',
+                    "company":'p.company_name'
+                    
+                }
+                
+                if(_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy))  
+                {
+                    selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
+                }  
+                selectQuery=selectQuery+utils.adminPagination(_body)
+                console.log(selectQuery)
+                const listquery = {
+                    name: 'list-candidates',
+                    text: selectQuery
+                }
+                const countQuery = {
+                    name: 'count-total-candidates',
+                    text: totalQuery
+                }
+                var results=await client.query(listquery)
+                var counts=await client.query(countQuery)
+                resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
+            } catch (e) {
+                await client.query('ROLLBACK')
+                console.log("e : ",e)
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            }
+        })().catch(e => {
+            console.log('e : ',e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
     })
 }
 
 
 
 
- // >>>>>>> FUNC. >>>>>>> 
+// >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>List all registered users 
 export const allUsersList = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
             const client = await database()
             try {
-                        _body.queryValues={};
-                        var filterQuery='', filter=_body.body.filter,
-                        body=_body.query, searchKey = '%%';
-                        // Search for filters in the body        
-                        let filterResult = utils.usersFilter(filter,filterQuery,_body.queryValues);
-                        filterQuery = filterResult.filterQuery;
-                        _body.queryValues = filterResult.queryValues;
-                        var selectQuery = adminQuery.registeredUsersList;
-                        if(![undefined,null].includes(body.searchKey))
-                        {
-                                 searchKey= body.searchKey + '%';
-                        } 
-                        if(body.usersType)
-                        {         
-                                _body.queryText=selectQuery+filterQuery+utils.userSort(body)+utils.usersPagination(body)
-                                _body.queryCountText=adminQuery.registeredUsersListCount+filterQuery
-                                _body.queryValues =Object.assign({searchkey:searchKey,userstype:body.usersType},_body.queryValues)
-                                
-                        }
-                        else{
-                            _body.queryValues =   Object.assign({searchkey:searchKey},_body.queryValues)
-                            _body.queryCountText=adminQuery.allRegisteredUsersListCount+filterQuery,
-                            _body.queryText=adminQuery.allRegisteredUsersList+filterQuery+utils.userSort(body)+utils.usersPagination(body)
-    
-                        }
-                        console.log("QUeryTExt",_body.queryText)
-                        console.log("QUeryValues",_body.queryValues)
-
-                        var results=await client.query(queryService.listquery(_body))
-                        var counts=await client.query(queryService.listQueryCount(_body))
-                        console.log(results.rows)
-                        resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
-       
-    } catch (e) {
-        await client.query('ROLLBACK')
-        console.log("e : ",e)
-        reject({ code: 400, message: "Failed. Please try again.", data: {} });
-        
-    }
-   
-})().catch(e => {
-    console.log('e : ',e)
-    reject({ code: 400, message: "Failed. Please try again.", data: {} })
-})
+                _body.queryValues={};
+                var filterQuery='', filter=_body.body.filter,
+                body=_body.query, searchKey = '%%';
+                // Search for filters in the body        
+                let filterResult = utils.usersFilter(filter,filterQuery,_body.queryValues);
+                filterQuery = filterResult.filterQuery;
+                _body.queryValues = filterResult.queryValues;
+                var selectQuery = adminQuery.registeredUsersList;
+                if(![undefined,null].includes(body.searchKey))
+                {
+                    searchKey= body.searchKey + '%';
+                } 
+                if(body.usersType)
+                {         
+                    _body.queryText=selectQuery+filterQuery+utils.userSort(body)+utils.usersPagination(body)
+                    _body.queryCountText=adminQuery.registeredUsersListCount+filterQuery
+                    _body.queryValues =Object.assign({searchkey:searchKey,userstype:body.usersType},_body.queryValues)
+                    
+                }
+                else{
+                    _body.queryValues =   Object.assign({searchkey:searchKey},_body.queryValues)
+                    _body.queryCountText=adminQuery.allRegisteredUsersListCount+filterQuery,
+                    _body.queryText=adminQuery.allRegisteredUsersList+filterQuery+utils.userSort(body)+utils.usersPagination(body)
+                    
+                }
+                console.log("QUeryTExt",_body.queryText)
+                console.log("QUeryValues",_body.queryValues)
+                
+                var results=await client.query(queryService.listquery(_body))
+                var counts=await client.query(queryService.listQueryCount(_body))
+                console.log(results.rows)
+                resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
+                
+            } catch (e) {
+                await client.query('ROLLBACK')
+                console.log("e : ",e)
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                
+            }
+            
+        })().catch(e => {
+            console.log('e : ',e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
     })
 }
 
- // >>>>>>> FUNC. >>>>>>> 
+// >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Get details of a single user.
 export const getUserDetails = (_body) => {
     return new Promise((resolve, reject) => {
@@ -291,7 +290,7 @@ export const addJobCategory = (_body) => {
                     await client.query('COMMIT');
                     resolve({ code: 200, message: "Job category added successfully", data: {jobCategoryId : jobCategoryResult.rows[0].job_category_id} });
                 }
-
+                
                 else
                 {
                     reject({ code: 400, message: "Failed. Please try again.", data: "Provide a valid job category name"});
@@ -320,11 +319,11 @@ export const addSkills = (_body) => {
             try {
                 await client.query('BEGIN');
                 let skills =  _body.skill,jobCategoryId = _body.jobCategoryId;
-
+                
                 if(Array.isArray(skills) && skills.length && Number.isInteger(jobCategoryId) )
                 {
                     skills = skills.filter((data) => !["",undefined,null].includes(data))
-
+                    
                     // Add new skills
                     const addNewSkills = {
                         name: 'add-new-skills',
@@ -333,7 +332,7 @@ export const addSkills = (_body) => {
                     }
                     let skillIdReuslt = await client.query(addNewSkills);
                     let skillIds = objectToArray(skillIdReuslt.rows,"newskill");
-
+                    
                     // Add skills under respective jobcategory id
                     const addNewJobSkills = {
                         name: 'add-new-job-skills',
@@ -362,3 +361,86 @@ export const addSkills = (_body) => {
 }
 
 
+
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Extract skills from an excel file
+export const extractSkillsFromExcel = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            const currentTime = Math.floor(Date.now());
+            
+            try {    
+                if (!_body) {
+                    reject({ code: 400, message: "File not available for extraction", data: {} });
+                }           
+                
+                const myFile =_body.file;
+                       
+                const file = xlsxReader.read(myFile.data) 
+                let jobSkill = [] ,allJobSkills = {}, jobCategoryName = [],promise=[];
+                
+                const sheets = file.SheetNames
+                
+                sheets.forEach((sheetName)=>{
+                    const temp = xlsxReader.utils.sheet_to_json( 
+                        // Fetch data in each sheets
+                        file.Sheets[sheetName])                            
+                        
+                        // Push skill data in each sheet to corresponding jobSkill Array and entire skill Array
+                        temp.forEach((res) => { jobSkill.push(res["SkillName"]); })      
+                        
+                        // Push the sheetnames to jobCategoryName array
+                        jobCategoryName.push(sheetName);
+                        
+                        // Add each jobSkill Array to aggregated array
+                        allJobSkills[sheetName]= jobSkill;
+                        
+                        // Empty the jobSkill array which pertains to each jobCategory
+                        jobSkill=[];
+                    });
+                                        
+                    const addNewJobCategory = {
+                        name: 'add-new-job-category-after-compare',
+                        text: adminQuery.addJobCategoryWithComparison,
+                        values: [jobCategoryName,currentTime]
+                    }
+                    let jobCategoryNameResult = await client.query(addNewJobCategory);
+                    await client.query('COMMIT');
+
+                    jobCategoryNameResult.rows.forEach(async element => {
+                        let reqSkills = allJobSkills[element.newjobname];
+                        const addNewSkills = {
+                            name: 'add-new-skills',
+                            text: adminQuery.addNewSkills,
+                            values: [reqSkills,currentTime]
+                        }
+                        
+                        let skillIdReuslt = await client.query(addNewSkills);
+                        let skillIds = objectToArray(skillIdReuslt.rows,"newskill");
+                        
+                        // Add skills under respective jobcategory id
+                        const addNewJobSkills = {
+                            name: 'add-new-job-skills',
+                            text: adminQuery.addJobSkill,
+                            values: [element.newjobid,skillIds,currentTime]
+                        }
+                        await client.query(addNewJobSkills);
+
+                        await client.query('COMMIT');
+                        
+                    });
+                    
+                    resolve({ code: 200, message: "Users listed successfully", data:allJobSkills });
+                    
+                } catch (e) {
+                    await client.query('ROLLBACK')
+                    console.log("e : ",e)
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                }
+            })().catch(e => {
+                console.log('e : ',e)
+                reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            })
+        })
+    }

@@ -6,6 +6,7 @@ import router from './admin.router';
 import configurePassport from './config/passportJwtConfig';
 import {swaggerSpec} from './swagger';
 import * as swaggerUi from 'swagger-ui-express';
+import * as fileUpload  from 'express-fileupload';  
 
 
 const app = express();
@@ -15,6 +16,7 @@ app.use(bodyParser.urlencoded({
   limit: '150mb',
   extended: true
 }));
+app.use(fileUpload());
 
 configurePassport();
 
