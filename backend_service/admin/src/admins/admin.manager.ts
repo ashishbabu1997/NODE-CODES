@@ -109,6 +109,7 @@ export const allUsersList = (_body) => {
 
                         var results=await client.query(queryService.listquery(_body))
                         var counts=await client.query(queryService.listQueryCount(_body))
+                        console.log(results.rows)
                         resolve({ code: 200, message: "Users listed successfully", data: { Users: results.rows,totalCount:counts.rows[0].totalCount } });
        
     } catch (e) {

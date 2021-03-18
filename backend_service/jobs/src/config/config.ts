@@ -15,8 +15,8 @@ export default {
     },
     "mail": {
         "service": "gmail",
-        "user": "sales@ellow.io",
-        "password": "yteinevvuuchtmvb"
+        "user": "hello@ellow.io",
+        "password": "yeibyhconietljtd"
     },
    
     "PositionText": {
