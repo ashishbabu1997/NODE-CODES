@@ -21,6 +21,7 @@
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
     "file-system": "^2.2.2",
     "fs": "0.0.1-security",
     "generate-password": "^1.5.1",
@@ -33,7 +34,8 @@
     "pg": "^8.2.1",
     "pm2": "^4.4.0",
     "swagger-jsdoc": "^5.0.1",
-    "swagger-ui-express": "^4.1.4"
+    "swagger-ui-express": "^4.1.4",
+    "xlsx": "^0.16.9"
   },
   "devDependencies": {
     "@types/es6-promise": "^3.3.0",

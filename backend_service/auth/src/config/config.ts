@@ -13,8 +13,8 @@ export default {
     },
     "mail": {
         "service": "gmail",
-        "user": "hello@ellow.io",
-        "password": "yeibyhconietljtd"
+        "user": "cs@ellow.io",
+        "password": "ricggklkmqeaxbxx"
     },
     "emailUsername":"no-reply@ellow.io",
     "adminPassword":"admin@ellow",
