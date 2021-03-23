@@ -685,9 +685,9 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
-    export const adminSignup =()=> {
+    export const adminSignup =(_body)=> {
         return {
-            name: 'admin-signup',
+            name: 'details-admin',
             text: candidateQuery.getellowAdmins,
             values: []
         }
