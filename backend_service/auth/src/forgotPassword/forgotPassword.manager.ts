@@ -45,7 +45,7 @@ export const sendLink = (_body) => {
               link=_body.host+"/passwordset/"+token
             }
             else{
-              link=_body.host+"/create-password/"+token
+              link=_body.host+"/passwordSet/"+token
             }
             const subject="ellow.io RESET PASSWORD LINK"
             let path = 'src/emailTemplates/forgotPasswordText.html';
