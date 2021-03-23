@@ -10,7 +10,7 @@ import config from './config/config';
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const port = 4001;
+const port = 3999;
 
 app.use(cors({
     methods: ["GET", "POST","PUT","DELETE"],
