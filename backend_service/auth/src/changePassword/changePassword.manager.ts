@@ -29,6 +29,10 @@ export const addNewPassword = (_body) => {
                 reject({ code: 400, message: "Your current password  is incorrect", data: {} });
                 return;
             }
+            if (_body.currentPassword==_body.newPassword)
+            {
+              reject({ code: 400, message: "You are using the same password! Please enter a new password.", data:{} });
+            }
             if (_body.newPassword == _body.confirmPassword)
                       {   
                           var hashedPassword = crypto.createHash("sha256").update(_body.newPassword).digest("hex");

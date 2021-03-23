@@ -198,6 +198,7 @@ export const fetchPositionDetails = (_body) => {
                         createdBy : step.createdBy,
                         fullName : step.fullName,
                         email : step.email,
+                        positionStatus:step.job_status,
                         phoneNumber : step.phoneNumber,
                         companyLinkedinId: step.company_linkedin_id,
                         skills: []
