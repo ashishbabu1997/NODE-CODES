@@ -284,6 +284,7 @@ export const fetchPositionDetails = (_body) => {
                         if(_body.publish==true)
                         {
                                 await client.query(queryService.changePositionStatusQuery(_body))
+                                await client.query(queryService.deleteReadStatusQuery(_body))
                                 const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
                                 const jobReceivedId = data.rows[0].job_received_id;
                                 const details = await client.query(queryService.getNotificationDetailsQuery(_body));

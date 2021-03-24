@@ -12,6 +12,7 @@ export default {
     updatePositionSecond: `UPDATE positions SET contract_start_date = $1, currency_type_id = $2, billing_type = $3, min_budget = $4, max_budget = $5 , updated_by = $6, updated_on = $7,contract_duration=$10,immediate=$11 WHERE position_id = $8 AND  company_id = $9 AND status = true`,
     deletePositionSkills: `delete from job_skills WHERE position_id = $1 AND status = true AND skill_id <> ALL ($2)`,
     changePositionStatus: `UPDATE positions SET job_status = 6, updated_on = $2,active_date=$2 WHERE position_id = $1 AND status = true`,
+    deletePositionReadStatus:'delete from position_read_status where position_id=$1',
     changeJobStatus: 'UPDATE positions SET job_status=$3,updated_on=$1 WHERE position_id=$2 ',
     changeJobReceivedStatus: 'UPDATE job_received SET job_received_status=$3,updated_on=$1 WHERE position_id=$2 ',
     getNames: 'SELECT DISTINCT c.company_id as "companyId", c.company_name as "companyName" from company c left join employee e on c.company_id = e.company_id WHERE c.status = true AND (e.account_type=$accounttype) ORDER BY c.company_name',

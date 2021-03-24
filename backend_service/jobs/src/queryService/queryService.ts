@@ -250,6 +250,14 @@ export const  changePositionStatusQuery = (_body) =>{
 
     }
 }
+export const  deleteReadStatusQuery = (_body) =>{
+    return {
+        name: 'delete-read-status',
+        text: positionsQuery.deletePositionReadStatus,
+        values: [_body.positionId]
+
+    }
+}
 export const  getMailAddressofHirer = (_body) =>{
     return {
         name: 'fetch-emailaddress',
