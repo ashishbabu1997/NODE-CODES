@@ -197,7 +197,7 @@ export const listAddFromListCandidates = (_body) => {
                 
                 queryText = totaltQuery+roleBasedQuery+filterQuery+searchQuery;
                 const totalCountResult = await client.query(queryService.listAddFromListTotal(queryText,queryValues));
-                                
+                
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows,totalCount:totalCountResult.rows[0].totalCount } });
             } catch (e) {
                 console.log(e)
@@ -763,55 +763,92 @@ export const modifyResumeData = (_body) => {
                     
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
                     await client.query('COMMIT');
-                    
-                    if(![null,undefined,''].includes(candidateResult) && candidateResult.rows[0])
-                    {
-                        let promises =[],candidateId = candidateResult.rows[0].candidate_id;
+                    try {
                         
-                        extractedData["candidateId"] = candidateId;
+                        if(![null,undefined,''].includes(candidateResult) && candidateResult.rows[0])
+                        {
+                            let promises =[],candidateId = candidateResult.rows[0].candidate_id;
+                            
+                            extractedData["candidateId"] = candidateId;
+                            
+                            await client.query(queryService.insertExtractedCandidateSkills(extractedData));
+                            console.log("skillArray done");
+                            
+                            
+                            extractedData["workHistory"].map((data)=>{
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
+                            });
+
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("workHisory done");
+
+                            extractedData["projects"].map((data)=>{
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
+                            });
+                            
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("projects done");
+
+
+                            extractedData["education"].map((data)=>{
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
+                            });
+
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("education done");
+
+                            
+                            extractedData["certifications"].map((data)=>{
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
+                            });
+
+
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("certifications done");
+
+                            extractedData["publications"].map((data)=>{
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
+                            });
+
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("publications done");
+
+                            await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
+                            console.log("language done");
+
+                            
+                            await client.query('COMMIT');
+                            
+                            return resolve({ code: 200, message: "Candidate resume file updated successfully", data:candidateId });
+                            
+                            
+                        }
                         
-                        promises.push(client.query(queryService.insertExtractedCandidateSkills(extractedData)));
+                        else
+                        {
+                            console.log("error resume already uploaded");
+                           return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
+                        }
+                    } catch (error) {
+                        console.log("error : ",error.message);
                         
-                        extractedData["workHistory"].map((data)=>{
-                            data["candidateId"] = candidateId;
-                            data["employeeId"] = _body.employeeId;
-                            promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
-                        });
-                        
-                        extractedData["projects"].map((data)=>{
-                            data["candidateId"] = candidateId;
-                            data["employeeId"] = _body.employeeId;
-                            promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
-                        });
-                        
-                        extractedData["education"].map((data)=>{
-                            data["candidateId"] = candidateId;
-                            data["employeeId"] = _body.employeeId;
-                            promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
-                        });
-                        
-                        extractedData["certifications"].map((data)=>{
-                            data["candidateId"] = candidateId;
-                            data["employeeId"] = _body.employeeId;
-                            promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
-                        });
-                        
-                        extractedData["publications"].map((data)=>{
-                            data["candidateId"] = candidateId;
-                            data["employeeId"] = _body.employeeId;
-                            promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
-                        });
-                        
-                        promises.push(client.query(queryService.insertExtractedLanguagesQuery(extractedData)));
-                        
-                        await Promise.all(promises);
-                        await client.query('COMMIT');
-                        
-                        resolve({ code: 200, message: "Candidate resume file updated successfully", data:candidateId });
+                        reject({ code: 400, message: "Error occured during extraction ", data: error.message });
                     }
-                    
-                    else
-                    reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
                 }
                 
             } catch (e) {
@@ -2017,9 +2054,10 @@ export const createPdfFromHtml = (_body) => {
                 const client = await database()
                 try {
                     let responseData = null;
+                    console.log("URI : ",_body.publicUrl+encodeURIComponent(_body.fileName));
                     
                     let jsonObject = JSON.stringify({
-                        "url" : _body.publicUrl+_body.fileName,
+                        "url" : _body.publicUrl+encodeURIComponent(_body.fileName),
                         "userkey" : "IC8Q6BQ5",
                         "version" : "8.0.0",
                         "subuserid" : "Deena Sasidhar"
@@ -2069,7 +2107,9 @@ export const createPdfFromHtml = (_body) => {
                                 responseData["resume"] = _body.fileName;
                                 responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
                                 
-                                let resp = await modifyResumeData(responseData);
+                                let resp = await modifyResumeData(responseData).catch((e)=>{
+                                    reject({ code: 400, message: "Failed Please try again, parser error ", data: e.message});
+                                });
                                 resolve({ code: 200, message: "Resume parsed successfully", data:{candidateId:resp["data"]}});
                                 
                             }

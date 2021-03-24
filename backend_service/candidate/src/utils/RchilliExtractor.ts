@@ -20,7 +20,7 @@ export const rchilliExtractor = (data) =>{
         extractedData["phone"] = extractedPhoneNumber(resumeData["PhoneNumber"]);
         
         
-        extractedData["overallWorkExperience"] = resumeData["WorkedPeriod"]["TotalExperienceInYear"];
+        extractedData["overallWorkExperience"] = extractOverallWorkExperience(resumeData["WorkedPeriod"]["TotalExperienceInYear"]);
         
         extractedData["skillArray"] = resumeData["SkillKeywords"].split(",");
         
@@ -40,8 +40,9 @@ export const rchilliExtractor = (data) =>{
         
         extractedData["citizenship"] = extractCitizenship(extractedData["Address"]);
         
-        console.log("extractedData[citizenship] : ",extractedData["citizenship"]);
+        // console.log("extractedData[citizenship] : ",extractedData["citizenship"]);
     }
+    // console.log("extracatedData : ",extractedData);
     
     return extractedData;
 }
@@ -52,10 +53,17 @@ const extractedPhoneNumber = (data) =>{
     else return null;
     
 }
+const extractOverallWorkExperience = (data) =>{
+    if(![null,undefined,''].includes(data) && !isNaN(data))
+    return data;
 
-const extractCitizenship = (data) => {
-    console.log("data : ",data);
-    
+    return null;
+
+}
+
+
+
+const extractCitizenship = (data) => {    
     if(![null,undefined,''].includes(data))
     {
         let iso3 = data["CountryCode"]["IsoAlpha3"];        
@@ -120,12 +128,19 @@ const extractEducation = (data) =>{
 
 const extractCertification = (data) =>{
     let certifications = [];
+    
     data.map((details)=>{
+        console.log("data : ",details);
+        
         if(!['',undefined,null].includes(details["CertificationTitle"]))
-        certifications.push({
-            certificationId: details["CertificationTitle"],
-            certifiedYear : details["EndDate"],
-        })
+        {
+            console.log("date : ",dateToMillisec(details["EndDate"]));
+            certifications.push({
+                certificationId: details["CertificationTitle"],
+                certifiedYear : dateToMillisec(details["EndDate"]),
+            })
+        }
+        
     })
     
     return certifications;
@@ -168,13 +183,15 @@ const extractLanguages = (data) =>{
 }
 
 const dateToMillisec = (dateString) =>{
-    if(!['',undefined,null].includes(dateString))
-    {
-        var dateArgs = dateString.match(/\d{2,4}/g),
-        year = dateArgs[2],
-        month = parseInt(dateArgs[1]) - 1,
-        day = dateArgs[0];
-        return new Date(year, month, day).getTime();
+    try {
+        if(!['',undefined,null].includes(dateString))
+        {
+            const [day, month, year] = dateString.split("/");
+            return new Date(year, month - 1, day).getTime();
+        }
+    } catch (error) {
+        console.log("date parse error : ",error.message);
+        return null;
     }
-    return null;    
+    
 }
