@@ -754,6 +754,13 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId],
         }
     }
+    export const candidateAllPositionHiringStepsOfHirerQuery = (_body) => {
+        return {
+            name: 'get-all-positions-candidate-client-hiring-steps-of-hirer',
+            text: hiringQuery.candidateAllPositionsHiringStepsOfHirerQuery,
+            values:[_body.candidateId,_body.companyId],
+        }
+    }
     
     export const candidatePositionDetailsQuery = (_body) => {
         return {
