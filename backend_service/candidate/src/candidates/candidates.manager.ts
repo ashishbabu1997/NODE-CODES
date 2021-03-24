@@ -14,7 +14,8 @@ import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
 import {Word} from 'pdf-officegen'
 import * as fs from 'fs'
-import * as PDFParser from 'pdf2json'
+import render from '@kurone-kito/jsonresume-theme-japanese-cv-style-docx';
+// import  {resume} from '../emailTemplates/resume'
 const myCache = new nodeCache();
 
 // >>>>>>> FUNC. >>>>>>>
@@ -2105,4 +2106,26 @@ export const createPdfFromHtml = (_body) => {
 
 
 
-   
+export const resumetoDoc = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                const filename = 'resume.docx';
+                const resume=require('./resume.json')
+                render(resume).then(buffer => {
+                  fs.writeFileSync(filename, buffer);
+                  console.log(`writted: ${filename}`);
+                });
+                resolve({ code: 200, message: "Candidate project updated successfully", data: {} });
+                
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
