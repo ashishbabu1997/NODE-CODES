@@ -17,7 +17,7 @@ export default {
     getNames: 'SELECT DISTINCT c.company_id as "companyId", c.company_name as "companyName" from company c left join employee e on c.company_id = e.company_id WHERE c.status = true AND (e.account_type=$accounttype) ORDER BY c.company_name',
     getCompanyName: 'SELECT company_name as "companyName" FROM company WHERE company_id=$1',
     getNotificationDetails: `select p.company_id as "companyId",p.position_name as "positionName", c.company_name as "companyName"from positions p left join company c on c.company_id = p.company_id where p.position_id = $1 and p.status = true`,
-    getEmailAddressOfBuyerFromPositionId:'SELECT p.position_name ,e.email,j.job_received_id FROM positions p LEFT JOIN employee e ON e.company_id=p.company_id LEFT JOIN job_received j ON j.position_id=p.position_id WHERE p.position_id=$1 ORDER BY e.employee_id LIMIT 1',
+    getEmailAddressOfBuyerFromPositionId:'SELECT p.position_name ,e.email,p.job_status,j.job_received_id FROM positions p LEFT JOIN employee e ON e.company_id=p.company_id LEFT JOIN job_received j ON j.position_id=p.position_id WHERE p.position_id=$1 ORDER BY e.employee_id LIMIT 1',
     deletePosition:'delete from positions where position_id=$1',
     updateJobReceivedStatus:'select job_received_id from  job_received  WHERE position_id=$1',
     updateCompanyJobStatus:'UPDATE company_job SET status=$3,updated_on=$2 WHERE job_received_id=$1',
