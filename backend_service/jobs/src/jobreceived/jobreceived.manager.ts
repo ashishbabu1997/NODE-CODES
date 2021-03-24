@@ -371,8 +371,8 @@ export const editSkills = (_body) => {
                         let competency=element.competency
                         let preffered=element.preferred
                         let skillId=element.skill["skillId"]
-                        let yearsOfExperience=element.yoe
-                        let skillVersion = element.skillVersion
+                        let yearsOfExperience=element.yoe=== '' ? null :element.yoe
+                        let skillVersion = element.skillVersion=== ''? null :element.skillVersion
                         const addSkills = {
                             name: 'add-candidate-skills',
                             text: jobReceivedQuery.addCandidateSkills,

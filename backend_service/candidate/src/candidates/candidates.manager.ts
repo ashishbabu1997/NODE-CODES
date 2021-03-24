@@ -12,7 +12,9 @@ import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
 import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
-
+import {Word} from 'pdf-officegen'
+import * as fs from 'fs'
+import * as PDFParser from 'pdf2json'
 const myCache = new nodeCache();
 
 // >>>>>>> FUNC. >>>>>>>
@@ -1793,27 +1795,25 @@ export const createPdfFromHtml = (_body) => {
     export const getCandidateAssesmentDetails = (_body) => {
         return new Promise((resolve, reject) => {
             (async () => {
-                const client = await database().connect()
+                const client = await database()
                 try {
                     
                     let query1 = await client.query(queryService.getAssesmentDetails(_body));         
                     let query2 = await client.query(queryService.getAllocatedVettedStatus(_body));
-                    let query3= await client.query(queryService.adminSignup);                                        
+                    let query3= await client.query(queryService.adminSignup(_body));                                     
                     let reviews = query1.rows,
                     candidateVetted = query2.rows[0].candidate_vetted,
                     currentEllowStage = query2.rows[0].current_ellow_stage,
                     allocatedTo = query2.rows[0].allocated_to,
                     admins = query3.rows;
-                    
                     resolve({ code: 200, message: "Assessment details listed successfully", data:{reviews,candidateVetted,currentEllowStage,allocatedTo,admins}});
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
                     reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-                } finally {
-                    client.release();
-                }
+                } 
             })().catch(e => {
+                console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message })
             })
         })
@@ -2102,6 +2102,7 @@ export const createPdfFromHtml = (_body) => {
             })
         })
     }
-    
-    
-    
+
+
+
+   
