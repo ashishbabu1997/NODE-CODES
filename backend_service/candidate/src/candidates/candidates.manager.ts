@@ -12,7 +12,9 @@ import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
 import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
-
+import {Word} from 'pdf-officegen'
+import * as fs from 'fs'
+import * as PDFParser from 'pdf2json'
 const myCache = new nodeCache();
 
 // >>>>>>> FUNC. >>>>>>>
@@ -2140,6 +2142,7 @@ export const createPdfFromHtml = (_body) => {
             })
         })
     }
-    
-    
-    
+
+
+
+   
