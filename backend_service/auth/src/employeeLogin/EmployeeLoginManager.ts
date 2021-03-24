@@ -16,7 +16,7 @@ export const employeeLoginMethod = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                let userRole = _body.type === 'freelancer'?[4]:[1,2,3]
+                let userRole = [1,2,3,4];
                 const query = {
                     name: 'employee-login',
                     text: employeeLoginQuery.employeeLogin,

@@ -197,7 +197,7 @@
 *               type: integer
 *             currencyTypeId:
 *               type: integer            
-*             billingType:
+*             billingTypeId:
 *               type: integer
 *             minBudget:
 *               type: number
@@ -206,6 +206,8 @@
 *             jobCategoryId:
 *               type: integer
 *             immediate:
+*               type: boolean
+*             publish:
 *               type: boolean
 *             skills:
 *               type: object
@@ -412,7 +414,7 @@
 *               type: integer
 *             currencyTypeId:
 *               type: integer            
-*             billingType:
+*             billingTypeId:
 *               type: integer
 *             minBudget:
 *               type: number
@@ -421,6 +423,8 @@
 *             jobCategoryId:
 *               type: integer
 *             immediate:
+*               type: boolean
+*             publish:
 *               type: boolean
 *             skills:
 *               type: object

@@ -10,6 +10,11 @@ import * as crypto from "crypto";
 import * as htmlToPdf from "html-pdf-node";
 import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
+import * as rchilliExtractor from '../utils/RchilliExtractor';
+import * as https from 'http';
+import {Word} from 'pdf-officegen'
+import * as fs from 'fs'
+import * as PDFParser from 'pdf2json'
 const myCache = new nodeCache();
 
 // >>>>>>> FUNC. >>>>>>>
@@ -117,9 +122,7 @@ export const listFreeCandidatesDetails = (_body) => {
         var selectQuery = candidateQuery.listFreeCandidatesFromView;
         let totalQuery = candidateQuery.listFreeCandidatesTotalCount;
         var roleBasedQuery='',queryText='', searchQuery='',queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',
-        body=_body.query, reqBody = _body.body;
-        let promise = [];
-        
+        body=_body.query, reqBody = _body.body;        
         
         // Search for filters in the body        
         let filterResult = utils.resourceFilter(filter,filterQuery,queryValues);
@@ -139,27 +142,21 @@ export const listFreeCandidatesDetails = (_body) => {
         (async () => {
             const client = await database()
             try {
-                await client.query('BEGIN');
-                
                 queryText = selectQuery+roleBasedQuery+utils.resourceTab(body)+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
                 queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
-                promise.push(client.query(queryService.listCandidates(queryText,queryValues)));
+                let candidateList = await client.query(queryService.listCandidates(queryText,queryValues));
                 
                 var queryCountText = totalQuery+roleBasedQuery+utils.resourceTab(body)+filterQuery+searchQuery;
-                promise.push(client.query(queryService.listCandidatesTotal(queryCountText,queryValues)));
+                let candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText,queryValues));
                 
-                let response = await Promise.all(promise);
-                let candidates = response[0].rows;
-                let totalCount = response[1].rows[0].totalCount;
-                await client.query('COMMIT');
+                let candidates = candidateList.rows;
+                let totalCount = candidateTotal.rows[0].totalCount;
                 
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates, totalCount} });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
-                client.release();
             }
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
@@ -194,24 +191,18 @@ export const listAddFromListCandidates = (_body) => {
         (async () => {
             const client = await database()
             try {
-                await client.query('BEGIN');
                 queryText = selectQuery+roleBasedQuery+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
-                console.log(queryText)
                 queryValues =Object.assign({positionid:body.positionId},queryValues)
                 const candidatesResult = await client.query(queryService.listAddFromList(queryText,queryValues));
                 
                 queryText = totaltQuery+roleBasedQuery+filterQuery+searchQuery;
                 const totalCountResult = await client.query(queryService.listAddFromListTotal(queryText,queryValues));
                 
-                await client.query('COMMIT')
-                
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows,totalCount:totalCountResult.rows[0].totalCount } });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
-                client.release();
             }
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
@@ -503,7 +494,6 @@ export const removeCandidateFromPosition = (_body) => {
             try {
                 var candidateId = _body.candidateId;
                 var positionId = _body.positionId;
-                
                 await client.query('BEGIN');
                 // Query to change the status of a candidate to false.
                 const removeCandidateQuery = {
@@ -512,7 +502,12 @@ export const removeCandidateFromPosition = (_body) => {
                     values: [candidateId, positionId],
                 }
                 await client.query(removeCandidateQuery);
-                
+                const removeFromCandidateClientHiringStep = {
+                    name: 'delete-candidate-from-clienthiringstep',
+                    text: candidateQuery.deleteCandidateFromCandidateClientHiringStep,
+                    values: [candidateId, positionId],
+                }
+                await client.query(removeFromCandidateClientHiringStep);
                 // Retreving the details of the candidate to add to the mail
                 const getPositionDetails = {
                     name: 'delete-position-details',
@@ -608,7 +603,7 @@ export const linkCandidateWithPosition = (_body) => {
                         const linkCandidateByAdminQuery = {
                             name: 'link-candidate-with-position',
                             text: candidateQuery.linkCandidateWithPositionByAdmin,
-                            values: [positionId, element.candidateId, _body.employeeId, currentTime,element.ellowRate,element.currencyTypeId,element.billingType,element.adminComment,1],
+                            values: [positionId, element.candidateId, _body.employeeId, currentTime,element.ellowRate,element.currencyTypeId,element.billingTypeId,element.adminComment,1],
                         }
                         count=count+1
                         promise.push(client.query(linkCandidateByAdminQuery));
@@ -718,8 +713,17 @@ export const modifyResumeFile = (_body) => {
         (async () => {
             const client = await database().connect()
             try {  
-                await client.query(queryService.updateResumeFile(_body));
-                resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
+                if(_body.candidateId)
+                {
+                    await client.query(queryService.updateResumeFile(_body));
+                    resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
+                }
+                else
+                {
+                    var results=await client.query(queryService.updateResumeForNewEntry(_body));
+                    resolve({ code: 200, message: "Candidate resume file updated successfully", data: {candidateId:results.rows[0].candidate_id} });
+                }
+                
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
@@ -733,7 +737,132 @@ export const modifyResumeFile = (_body) => {
     })
 }
 
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>> Update resume file name
+export const modifyResumeData = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            
+            // console.log("_body  from resumeData : ",_body);
+            
+            const client = await database()
+            try {  
+                if(_body.candidateId) 
+                {
+                    await client.query(queryService.updateResumeFile(_body));
+                    resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
+                }
+                else
+                {
+                    await client.query('BEGIN');
+                    
+                    let extractedData  = rchilliExtractor.rchilliExtractor(_body);
+                    extractedData["employeeId"] = _body.employeeId;
+                    extractedData["resume"] = _body.resume;
+                    
+                    
+                    let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
+                    await client.query('COMMIT');
+                    try {
+                        
+                        if(![null,undefined,''].includes(candidateResult) && candidateResult.rows[0])
+                        {
+                            let promises =[],candidateId = candidateResult.rows[0].candidate_id;
+                            
+                            extractedData["candidateId"] = candidateId;
+                            
+                            await client.query(queryService.insertExtractedCandidateSkills(extractedData));
+                            console.log("skillArray done");
+                            
+                            
+                            extractedData["workHistory"].map((data)=>{
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
+                            });
 
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("workHisory done");
+
+                            extractedData["projects"].map((data)=>{
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
+                            });
+                            
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("projects done");
+
+
+                            extractedData["education"].map((data)=>{
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
+                            });
+
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("education done");
+
+                            
+                            extractedData["certifications"].map((data)=>{
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
+                            });
+
+
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("certifications done");
+
+                            extractedData["publications"].map((data)=>{
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
+                            });
+
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("publications done");
+
+                            await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
+                            console.log("language done");
+
+                            
+                            await client.query('COMMIT');
+                            
+                            return resolve({ code: 200, message: "Candidate resume file updated successfully", data:candidateId });
+                            
+                            
+                        }
+                        
+                        else
+                        {
+                            console.log("error resume already uploaded");
+                           return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
+                        }
+                    } catch (error) {
+                        console.log("error : ",error.message);
+                        
+                        reject({ code: 400, message: "Error occured during extraction ", data: error.message });
+                    }
+                }
+                
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
 
 
 
@@ -754,7 +883,7 @@ export const modifyProfileDetails = (_body) => {
                 client.release();
             }
         })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            reject({ code: 400, message: "Failed. Please try again ", data: e.message })
         })
     })
 }
@@ -1347,7 +1476,7 @@ export const addResumeShareLink = (_body) => {
                     if(flag==0)
                     resolve({ code: 200, message: "Candidate resume share link updated", data: sharedEmails });
                     else
-                    resolve({ code: 201, message: "Some of the emails shared does not belong to your company email domain", data: sharedEmails });
+                    resolve({ code: 201, message: "The entered email does not belong to your company domain", data: sharedEmails });
                     
                 }
                 else
@@ -1625,7 +1754,7 @@ export const createPdfFromHtml = (_body) => {
                     });
                     await client.query('COMMIT')
                     
-                    resolve({ code: 200, message: "“Resume in PDF format has been shared", data:{} });
+                    resolve({ code: 200, message: "Resume in PDF format has been shared", data:{} });
                     
                 } catch (e) {
                     console.log(e)
@@ -1646,7 +1775,7 @@ export const createPdfFromHtml = (_body) => {
             (async () => {
                 const client = await database()
                 try {
-
+                    
                     if(myCache.has(_body.uniqueId))
                     {
                         let candidateId = myCache.take(_body.uniqueId);                                        
@@ -1703,39 +1832,25 @@ export const createPdfFromHtml = (_body) => {
     export const getCandidateAssesmentDetails = (_body) => {
         return new Promise((resolve, reject) => {
             (async () => {
-                const client = await database().connect()
+                const client = await database()
                 try {
-                    await client.query('BEGIN')
-                    let promises = [];
-
-                    // let result = await client.query(queryService.getAssesmentDetails(_body));
-                    promises.push(client.query(queryService.getAssesmentDetails(_body)));
                     
-                    // let results = await client.query(queryService.getAllocatedVettedStatus(_body));
-                    promises.push(client.query(queryService.getAllocatedVettedStatus(_body)));
-                    
-                    // let adminResult=await client.query(queryService.adminSignup);
-                    promises.push(client.query(queryService.adminSignup()));
-                    
-                    let response = await Promise.all(promises);
-
-                    let reviews = response[0].rows,
-                    candidateVetted = response[1].rows[0].candidate_vetted,
-                    currentEllowStage = response[1].rows[0].current_ellow_stage,
-                    allocatedTo = response[1].rows[0].allocated_to,
-                    admins = response[2].rows;
-
-                    await client.query('COMMIT')
-
+                    let query1 = await client.query(queryService.getAssesmentDetails(_body));         
+                    let query2 = await client.query(queryService.getAllocatedVettedStatus(_body));
+                    let query3= await client.query(queryService.adminSignup(_body));                                     
+                    let reviews = query1.rows,
+                    candidateVetted = query2.rows[0].candidate_vetted,
+                    currentEllowStage = query2.rows[0].current_ellow_stage,
+                    allocatedTo = query2.rows[0].allocated_to,
+                    admins = query3.rows;
                     resolve({ code: 200, message: "Assessment details listed successfully", data:{reviews,candidateVetted,currentEllowStage,allocatedTo,admins}});
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
                     reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-                } finally {
-                    client.release();
-                }
+                } 
             })().catch(e => {
+                console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message })
             })
         })
@@ -1888,24 +2003,22 @@ export const createPdfFromHtml = (_body) => {
             (async () => {
                 const client = await database()
                 try {
-                    await client.query('BEGIN');
                     queryText = selectQuery+utils.resourceHirerTab(body)+filterQuery+searchQuery+utils.resourceSort(body)+utils.resourcePagination(body);
                     var queryCountText=totalQuery+utils.resourceHirerTab(body)+filterQuery+searchQuery
                     queryValues =  Object.assign({hirercompanyid:_body.body.companyId},queryValues)
                     
                     const candidatesResult = await client.query(queryService.listCandidatesOfHirer(queryText,queryValues));
                     const totalCount=await client.query(queryService.listCandidatesOfHirerCount(queryCountText,queryValues))
-                    await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates:candidatesResult.rows,totalCount:totalCount.rows[0].totalCount } });
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
                 } finally {
                     client.release();
                 }
             })().catch(e => {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} })
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
             })
         })
     }
@@ -1933,3 +2046,103 @@ export const createPdfFromHtml = (_body) => {
         })
     }
     
+    // >>>>>>> FUNC. >>>>>>>
+    // Extract resume data and parse content from response
+    export const resumeParser = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database()
+                try {
+                    let responseData = null;
+                    console.log("URI : ",_body.publicUrl+encodeURIComponent(_body.fileName));
+                    
+                    let jsonObject = JSON.stringify({
+                        "url" : _body.publicUrl+encodeURIComponent(_body.fileName),
+                        "userkey" : "IC8Q6BQ5",
+                        "version" : "8.0.0",
+                        "subuserid" : "Deena Sasidhar"
+                    });
+                    
+                    // prepare the header
+                    var postheaders = {
+                        'Content-Type' : 'application/json',
+                        'Content-Length' : Buffer.byteLength(jsonObject, 'utf8')
+                    };
+                    
+                    // the post options
+                    var optionspost = {
+                        host : 'rest.rchilli.com',
+                        port : 80,
+                        path : '/RChilliParser/Rchilli/parseResume',
+                        method : 'POST',
+                        headers : postheaders
+                    };
+                    
+                    console.info('Options prepared:');
+                    console.info(optionspost);
+                    console.info('Do the POST call');
+                    
+                    // do the POST call
+                    var reqPost =  https.request(optionspost, function(res) {
+                        // uncomment it for header details
+                        //  console.log("headers: ", res.headers);
+                        let data ='';
+                        res.on('data', function(d) {
+                            console.info('POST result:\n');
+                            data += d;
+                            console.info('\n\nPOST completed');
+                        });
+                        
+                        res.on('end',async () => {
+                            
+                            // process.stdout.write(data);
+                            responseData = JSON.parse(data);
+                            
+                            if(responseData["error"]!== undefined)
+                            reject({ code: 400, message: "Failed Please try again, parser error ", data: responseData["error"]});
+                            
+                            else
+                            {
+                                responseData["employeeId"] = _body.employeeId;
+                                responseData["resume"] = _body.fileName;
+                                responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
+                                
+                                let resp = await modifyResumeData(responseData).catch((e)=>{
+                                    reject({ code: 400, message: "Failed Please try again, parser error ", data: e.message});
+                                });
+                                resolve({ code: 200, message: "Resume parsed successfully", data:{candidateId:resp["data"]}});
+                                
+                            }
+                        });
+                        
+                    }).on("error", (err) => {
+                        console.log("Error: ", err.message);
+                        reject({ code: 400, message: "Error from parser", data: err.message });
+                    });
+                    
+                    // write the json data
+                    reqPost.write(jsonObject);
+                    reqPost.end();
+                    reqPost.on('error', function(e) {
+                        // console.error(e);                        
+                        responseData = e.message;
+                    });
+                    
+                    
+                    await client.query('COMMIT');
+                    
+                    
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again ", data: e.message });
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again", data: e.message })
+            })
+        })
+    }
+
+
+
+   

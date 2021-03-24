@@ -65,10 +65,11 @@ export const createEmployee = (_body) => {
                 else{
                     console.log("Subuser registration")
                 }
+                console.log("User Type",_body.body.accountType)
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
-                    values: [_body.body.firstName, _body.body.lastName, loweremailId, _body.query.accountType, companyId, _body.body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus],
+                    values: [_body.body.firstName, _body.body.lastName, loweremailId, _body.body.accountType, companyId, _body.body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus],
                 }
                 await client.query(createEmployeeQuery);
                 let message=`A new user ${_body.body.firstName + ' ' + _body.body.lastName} with company name ${_body.body.companyName} has registered with us`
@@ -156,7 +157,7 @@ export const createEmployee = (_body) => {
 export const createEmployeeByAdmin = (_body) => {
     return new Promise((resolve, reject) => {
         const loweremailId = _body.email.toLowerCase()
-        const currentTime = Math.floor(Date.now() / 1000);
+        const currentTime = Math.floor(Date.now());
         
         (async () => {
             const client = await database().connect()

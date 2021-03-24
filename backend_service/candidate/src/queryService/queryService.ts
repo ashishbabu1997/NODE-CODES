@@ -14,7 +14,7 @@ export const modifyCandidateProfileDetailsQuery = (_body) => {
     return {
         name: 'modify-candidate-ProfileDetails',
         text: candidateQuery.modifyProfileDetails,
-        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName],
+        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.sellerCompanyId],
     }
 }
 
@@ -86,7 +86,7 @@ export const insertCandidateWorkHistoryQuery = (_body)=>{
     return {
         name: 'insert-candidate-work-history',
         text: candidateQuery.insertCandidateWorkHistory,
-        values: [_body.candidateId,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,_body.employeeid,currentTime(),_body.positionName],
+        values: [_body.candidateId,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,_body.employeeId,currentTime(),_body.positionName],
     }
 }
 
@@ -94,7 +94,7 @@ export const modifyCandidateWorkHistoryQuery = (_body) => {
     return {
         name: 'modify-candidate-work-history',
         text: candidateQuery.modifyCandidateWorkHistory,
-        values: [_body.candidateWorkExperienceId,_body.candidateId,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,currentTime(),_body.employeeid,_body.positionName],
+        values: [_body.candidateWorkExperienceId,_body.candidateId,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,currentTime(),_body.employeeId,_body.positionName],
     }
 }
 
@@ -110,7 +110,7 @@ export const insertCandidateEducationQuery = (_body) => {
     return {
         name: 'insert-candidate-education',
         text: candidateQuery.insertCandidateEducation,
-        values: [_body.candidateId,_body.degree,_body.college,_body.startDate,_body.endDate,_body.employeeid,currentTime()],
+        values: [_body.candidateId,_body.degree,_body.college,_body.startDate,_body.endDate,_body.employeeId,currentTime()],
         
     }
 }
@@ -229,6 +229,13 @@ export const insertCandidatePublicationQuery = (_body) => {
             name: 'update-resumeFile',
             text: candidateQuery.modifyResumeFile,
             values: [_body.candidateId,_body.resume,currentTime(),_body.employeeId],
+        }
+    }
+    export const updateResumeForNewEntry = (_body) => {
+        return {
+            name: 'update-resumeFile-for-new-candidate',
+            text: candidateQuery.insertResumeFile,
+            values: [_body.resume,currentTime(),_body.employeeId],
         }
     }
     
@@ -678,9 +685,9 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
-    export const adminSignup =()=> {
+    export const adminSignup =(_body)=> {
         return {
-            name: 'admin-signup',
+            name: 'details-admin',
             text: candidateQuery.getellowAdmins,
             values: []
         }
@@ -747,11 +754,18 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:[_body.candidateId],
         }
     }
+    export const candidateAllPositionHiringStepsOfHirerQuery = (_body) => {
+        return {
+            name: 'get-all-positions-candidate-client-hiring-steps-of-hirer',
+            text: hiringQuery.candidateAllPositionsHiringStepsOfHirerQuery,
+            values:[_body.candidateId,_body.companyId],
+        }
+    }
     
-    export const candidateCurrentStageQuery = (_body) => {
+    export const candidatePositionDetailsQuery = (_body) => {
         return {
             name: 'get-candidate-current-step',
-            text: hiringQuery.candidateCurrentStage,
+            text: hiringQuery.candidatePositionDetails,
             values:[_body.candidateId,_body.positionId],
         }
     }
@@ -874,3 +888,40 @@ export const insertCandidatePublicationQuery = (_body) => {
         }
     }
     
+
+     // *******************************************************************************************************************************//
+    
+    // -------------------------------------------Resume parser queries -------------------------------------------------//
+
+
+     export const insertExtractedCandidateDetails = (data) => {
+        return {
+            name: 'insert-extracted-candidate-details',
+            text: candidateQuery.insertExtractedCandidateDetails,
+            values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, resume:data.resume, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData}
+        }
+    }
+
+    export const insertExtractedCandidateSkills = (data) => {
+        return {
+            name: 'insert-extracted-candidate-skills',
+            text: candidateQuery.insertExtractedCandidateSkills,
+            values:{candidateid:data.candidateId, skillarray:data.skillArray, currenttime:currentTime(), employeeid:data.employeeId}
+        }
+    }
+
+    export const insertExtractedCandidateProjectsQuery = (_body) => {
+        return {
+            name: 'insert-extracted-candidate-projects',
+            text: candidateQuery.insertExtractedCandidateProject,
+            values: {candidateid:_body.candidateId,projectname:_body.projectName,clientname:_body.clientName,description:_body.projectDescription,extractedskill:_body.skills,employeeid: _body.employeeId,currenttime:currentTime(),role:_body.projetRole},
+        }
+    }
+    
+    export const insertExtractedLanguagesQuery = (_body) => {
+        return {
+            name: 'insert-extracted-candidate-language',
+            text: candidateQuery.insertExtractedLanguagesQuery,
+            values: [_body.candidateId,_body.languages, _body.employeeId,currentTime()],
+        }
+    }

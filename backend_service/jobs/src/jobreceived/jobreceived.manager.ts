@@ -103,6 +103,7 @@ export const getJobReceivedByJobReceivedId = (_body) => {
             const client = await database().connect()
             try {
                 let results=await client.query(queryService.getJobReceivedByIdQuery(_body))  
+                console.log(results.rows)
                 resolve({ code: 200, message: "Job Received listed successfully", data: results.rows[0] });
                 
             } catch (e) {
@@ -298,7 +299,7 @@ export const submitCandidateProfile = (_body) => {
                 {
                     
                     const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for the position ${positionName} `
-                    await createNotification({ positionId:_body.positionId, jobReceivedId,companyId , message, candidateId, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
+                    await createNotification({ positionId:_body.positionId, jobReceivedId,companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     let path = 'src/emailTemplates/candidateAdditionText.html';
                     var userReplacements =  {
                         first:candidateFirstName,
@@ -327,7 +328,7 @@ export const submitCandidateProfile = (_body) => {
                 else
                 {
                     const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for veting `
-                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId , message, candidateId, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
+                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     var status='vetting';
                     let path = 'src/emailTemplates/candidateAdditionText.html';
                     var replacements =  {
@@ -342,11 +343,11 @@ export const submitCandidateProfile = (_body) => {
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             }
         })().catch(e => {
             console.log(e)
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })
 }
@@ -370,8 +371,8 @@ export const editSkills = (_body) => {
                         let competency=element.competency
                         let preffered=element.preferred
                         let skillId=element.skill["skillId"]
-                        let yearsOfExperience=element.yoe
-                        let skillVersion = element.skillVersion
+                        let yearsOfExperience=element.yoe=== '' ? null :element.yoe
+                        let skillVersion = element.skillVersion=== ''? null :element.skillVersion
                         const addSkills = {
                             name: 'add-candidate-skills',
                             text: jobReceivedQuery.addCandidateSkills,

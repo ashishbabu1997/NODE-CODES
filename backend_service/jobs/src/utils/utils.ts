@@ -105,10 +105,33 @@ export const positionSort = (body) => {
         "position": 'p.position_id',
         "positionName": 'p.position_name',
         "createdOn": 'p.created_on',
-        "candidateCount": '"candidateCount"',
+        "candidateCount": '"totalResourceCount"',
         "resourceCount": 'p.developer_count',
         "companyName": 'c.company_name',
-        "updatedOn":'p.updated_on'
+        "updatedOn":'p.updated_on',
+        "jobCategory":'jc.job_category_name'
+        // p.developer_count
+    }
+    
+    if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
+    }
+    return sort;
+}
+
+export const hirerPositionSort = (body) => {
+    let sort = '';
+    // Sorting keys with values
+    const orderBy = {
+        "position": 'p.position_id',
+        "positionName": 'p.position_name',
+        "createdOn": 'p.created_on',
+        "candidateCount": '"totalResourceCount"',
+        "resourceCount": '"resourceCount"',
+        "companyName": 'c.company_name',
+        "updatedOn":'p.updated_on',
+        "jobCategory":'jc.job_category_name'
+        // p.developer_count
     }
     
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
@@ -146,13 +169,13 @@ export const activePositionSort = (body) => {
     let sort = '';
     // Sorting keys with values
     const orderBy = {
-        "positionName": 'position_name',
-        "developerCount": 'developer_count',
-        "companyName": 'company_name',
+        "position": 'position_name',
+        "positions": 'developer_count',
+        "company": 'company_name',
     }
     
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
+        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;            
     }
     return sort;
 }
@@ -161,14 +184,26 @@ export const upcomingInterviewSort = (body) => {
     let sort = '';
     // Sorting keys with values
     const orderBy = {
-        "name": 'c.candidate_first_name',
-        "position": 'p.position_name',
+        "name": 'chsv."candidateFirstName"',
+        "position": 'chsv."positionName"',
         "allocateTo": 'e.firstname',
     }
     
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;  
-        console.log(sort)              
+        if(body.sortBy=="name")
+        {
+            sort= ` order by name ${body.sortType} `;
+        }
+        else if(body.sortBy=="allocateTo")
+        {
+           
+            sort= ` order by assignedTo ${body.sortType} `;
+        }
+        else
+        {
+            sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;  
+        }
+                  
     }
     return sort;
 }
