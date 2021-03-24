@@ -250,6 +250,14 @@ export const  changePositionStatusQuery = (_body) =>{
 
     }
 }
+export const  checkPositionStatus = (_body) =>{
+    return {
+        name: 'check-position-status',
+        text: positionsQuery.checkJobStatus,
+        values: [_body.positionId]
+
+    }
+}
 export const  deleteReadStatusQuery = (_body) =>{
     return {
         name: 'delete-read-status',

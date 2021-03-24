@@ -283,8 +283,8 @@ export const fetchPositionDetails = (_body) => {
                         await Promise.all(hiringStepQueries);
                         if(_body.publish==true)
                         {
+                                var positionStatus=await client.query(queryService.checkPositionStatus(_body))
                                 await client.query(queryService.changePositionStatusQuery(_body))
-                                await client.query(queryService.deleteReadStatusQuery(_body))
                                 const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
                                 const jobReceivedId = data.rows[0].job_received_id;
                                 const details = await client.query(queryService.getNotificationDetailsQuery(_body));
@@ -315,6 +315,11 @@ export const fetchPositionDetails = (_body) => {
                                         emailClient.emailManager(element.email,subject,path,userReplacements);
                                         
                                     })                            
+                                }
+                                if (positionStatus.rows[0].job_status==5)
+                                {
+                                    await client.query(queryService.deleteReadStatusQuery(_body))
+
                                 }
                         }
                         else{
