@@ -470,9 +470,7 @@ export const allSkills = (_body) => {
                 else{
                     reject({ code: 400, message: "Unauthorized User", data:{} });
                 }
-                    // Add new skills
-                 
-                
+
             } catch (e) {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
