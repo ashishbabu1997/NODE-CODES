@@ -11,4 +11,6 @@ router
     .post('/registeredUserList', jwtAuth, adminController.registeredUserList)
     .post('/addJobCategory', jwtAuth, adminController.addJobCategory)
     .post('/addSkills', jwtAuth, adminController.addSkills)
+    .get('/allSkills',  adminController.allSkills)
+
 export default router;
