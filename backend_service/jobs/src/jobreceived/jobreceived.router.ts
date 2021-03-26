@@ -14,6 +14,6 @@ router
     .put('/submitProfile',jwtAuth, setData(),submitProfile)
     .put('/editSkills',jwtAuth, setData(),skillEdits)
     .get('/profile',jwtAuth, setData(), getProfile)
-    .get('/allJobsSkills', getAllJobSkills)
+    .get('/allJobsSkills',jwtAuth, setData(), getAllJobSkills)
 
 export default router;
