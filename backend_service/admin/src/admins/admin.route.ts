@@ -13,6 +13,6 @@ router
     .post('/registeredUserList', jwtAuth, adminController.registeredUserList)
     .post('/addJobCategory', jwtAuth, adminController.addJobCategory)
     .post('/addSkills', jwtAuth, adminController.addSkills)
-    .get('/allSkills',  jwtAuth,setData, adminController.allSkills)
+    .get('/allSkills',  jwtAuth,setData(), adminController.allSkills)
 
 export default router;
