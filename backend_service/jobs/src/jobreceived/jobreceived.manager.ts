@@ -428,17 +428,14 @@ export const getAllJobCategoryAndSkills = (_body) => {
                         skillSets=await client.query(queryService.getSkillsFromId(_body))  
                         if (Array.isArray(skillSets.rows))
                         {
-                            skillSets.rows.forEach(skills => {
-                             resultSet[element.job_category_id]=skills.skill_name
-                            })
-                            console.log(resultSet)
+                             resultSet[element.job_category_name]=skillSets.rows[0].array
                         }
                     });
 
 
                 }
-                console.log(resultSet)
-                resolve({ code: 200, message: "Job Received listed successfully", data: {} });
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Job Received listed successfully",  data:{resultSet} });
                 
             } catch (e) {
                 console.log(e)
