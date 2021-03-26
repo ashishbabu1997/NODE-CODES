@@ -455,8 +455,8 @@ export const allSkills = (_body) => {
             try {
                 await client.query('BEGIN');
                 
-                
-                    // Add new skills
+                if(_body.userRoleId==1)
+                {
                     const allSkills = {
                         name: 'get-all-skills',
                         text: adminQuery.allSkills
@@ -466,6 +466,12 @@ export const allSkills = (_body) => {
                     await client.query('COMMIT');
                     resolve({ code: 200, message: "Skills fetched", data: result['rows'] });
                 
+                }
+                else{
+                    reject({ code: 400, message: "Unauthorized User", data:{} });
+                }
+                    // Add new skills
+                 
                 
             } catch (e) {
                 await client.query('ROLLBACK')

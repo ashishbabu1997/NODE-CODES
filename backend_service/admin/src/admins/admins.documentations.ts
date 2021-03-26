@@ -260,3 +260,30 @@
 *       500:
 *         description: Server down
 */
+
+/**
+* @swagger
+* /allSkills:
+*   get:
+*     tags:
+*       - Admins
+*     name: Get all skills and job categories
+*     summary: Get all skills and job categories for admin
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
