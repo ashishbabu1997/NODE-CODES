@@ -24,6 +24,20 @@ export const  getJobReceivedByIdQuery = (_body) =>{
         values: [parseInt(_body.jobReceivedId), parseInt(_body.companyId)]
     }
 }
+export const  getDistinctJobCategoryId = (_body) =>{
+    return {
+        name: 'get-jobs-id',
+        text: jobReceivedQuery.getDistinctJobId,
+        values: []
+    }
+}
+export const  getSkillsFromId = (_body) =>{
+    return {
+        name: 'get-skills-id',
+        text: jobReceivedQuery.getSkillsFromJobCategoryId,
+        values: [_body.jobCategoryId]
+    }
+}
 export const  updateJobReceivedRejectQuery = (_body) =>{
     return {
         name: 'update-JobReceived-reject',
