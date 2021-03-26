@@ -399,3 +399,54 @@ export const editSkills = (_body) => {
     
     
 }
+
+
+
+
+
+
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get all job received details using job received id
+export const getAllJobCategoryAndSkills = (_body) => {
+    return new Promise((resolve, reject) => {
+        var skillSets;
+        (async () => {
+            const client = await database()
+         
+            try {
+                if (_body.userRoleId==1)
+                    {
+                                let results=await client.query(queryService.getDistinctJobCategoryId(_body))  
+                                let resultSet={}
+                                
+                                if (Array.isArray(results.rows))
+                                {
+                                    results.rows.forEach( async element => { 
+                                        _body.jobCategoryId=element.job_category_id
+                                        skillSets=await client.query(queryService.getSkillsFromId(_body))  
+                                        if (Array.isArray(skillSets.rows))
+                                        {
+                                            resultSet[element.job_category_name]=skillSets.rows[0].array
+                                        }
+                                    });
+
+
+                                }
+                                await client.query('COMMIT')
+                                resolve({ code: 200, message: "Job Received listed successfully",  data:{resultSet} });
+                }
+                else{
+                    reject({ code: 400, message: "Unauthorized User", data:{} });
+
+                }
+                
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } 
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}

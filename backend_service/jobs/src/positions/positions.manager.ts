@@ -283,6 +283,7 @@ export const fetchPositionDetails = (_body) => {
                         await Promise.all(hiringStepQueries);
                         if(_body.publish==true)
                         {
+                                var positionStatus=await client.query(queryService.checkPositionStatus(_body))
                                 await client.query(queryService.changePositionStatusQuery(_body))
                                 const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
                                 const jobReceivedId = data.rows[0].job_received_id;
@@ -314,6 +315,11 @@ export const fetchPositionDetails = (_body) => {
                                         emailClient.emailManager(element.email,subject,path,userReplacements);
                                         
                                     })                            
+                                }
+                                if (positionStatus.rows[0].job_status==5)
+                                {
+                                    await client.query(queryService.deleteReadStatusQuery(_body))
+
                                 }
                         }
                         else{
@@ -511,6 +517,8 @@ export const fetchPositionDetails = (_body) => {
         //>>>>>>>>>>>>>>>>>>Delete a position from a users position page
         export const deletePositions = (_body) => {
             return new Promise((resolve, reject) => {
+                var path='';
+                var adminPath='';
                 (async () => {
                     const client = await database().connect()
                     try {
@@ -522,24 +530,42 @@ export const fetchPositionDetails = (_body) => {
                         await client.query('COMMIT');    
                         var positionName=employeeData.rows[0].position_name
                         var emailAddress=employeeData.rows[0].email
+                        var jobStatus=employeeData.rows[0].job_status
                         await client.query('COMMIT');
-                        let path = 'src/emailTemplates/positionDeletionText.html';
-                        let adminPath = 'src/emailTemplates/positionDeletionAdminText.html';
+                        adminPath = 'src/emailTemplates/positionDeletionAdminText.html';
+                        if (_body.userRoleId==1)
+                        {
+                            path = 'src/emailTemplates/positionDeletionText.html';
+                            adminPath = 'src/emailTemplates/positionDeletionAdminText.html';
+                        }
+                        else{
+                            path = 'src/emailTemplates/selfPositionDeletionText.html';
+                            adminPath = 'src/emailTemplates/positionDeletionAdminSelfText.html';
+                        }
+                        console.log(path,adminPath)
                         var userReplacements = {
                             position:positionName
                         };
-                        emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);
-                        var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
-                        if(Array.isArray(ellowAdmins.rows))
+                        if(jobStatus==5)
                         {
-                            ellowAdmins.rows.forEach(element => {
-                                console.log(element.email)
-                                emailClient.emailManager(element.email,config.PositionText.subject,adminPath,userReplacements);
-                                
-                            })
-                            const message=`The position, ${positionName}  has been removed .`
-                            await createNotification({ positionId, jobReceivedId:null, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
+                            emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);
                             resolve({ code: 200, message: "Position deletion successfull", data: {} });
+
+                        }
+                        else{
+                            emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);
+                            var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
+                            if(Array.isArray(ellowAdmins.rows))
+                            {
+                                ellowAdmins.rows.forEach(element => {
+                                    console.log(element.email)
+                                    emailClient.emailManager(element.email,config.PositionText.subject,adminPath,userReplacements);
+                                    
+                                })
+                                const message=`The position, ${positionName}  has been removed .`
+                                await createNotification({ positionId, jobReceivedId:null, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
+                                resolve({ code: 200, message: "Position deletion successfull", data: {} });
+                            }
                         }
                         
                     } catch (e) {

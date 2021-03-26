@@ -16,6 +16,8 @@ export default {
     checkEMail:'SELECT * from employee WHERE email like $1',
     getellowAdmins:"select concat(firstname,' ',lastname) as name ,employee_id as employeeId,email as email from employee where status=true and user_role_id=1",
     fetchCompanyName:'select company_name from company where company_id=$1',
+    getDistinctJobId:'select distinct jcs.job_category_id,jc.job_category_name from job_category_skills jcs inner join job_category jc on jc.job_category_id=jcs.job_category_id order by job_category_id',
+    getSkillsFromJobCategoryId:'select array( select s.skill_name from skills s inner join job_category_skills jcs on jcs.skill_id=s.skill_id where jcs.job_category_id=$1)',
     updatePassword:'update employee set password=$1,status=$2,admin_approve_status=$3 where email like $4',
     addCandidateEmployeeDetails:'insert into candidate_employee (employee_id,candidate_id,status,created_on,updated_on) values ($1,$2,$3,$4,$5)',
     addEmployee:'insert into employee (firstname,lastname,company_id,email,telephone_number,created_on,updated_on,account_type,user_role_id,admin_approve_status) values ($1,$2,$3,$4,$5,$6,$6,4,4,1) returning employee_id',

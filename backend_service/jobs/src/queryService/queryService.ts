@@ -24,6 +24,20 @@ export const  getJobReceivedByIdQuery = (_body) =>{
         values: [parseInt(_body.jobReceivedId), parseInt(_body.companyId)]
     }
 }
+export const  getDistinctJobCategoryId = (_body) =>{
+    return {
+        name: 'get-jobs-id',
+        text: jobReceivedQuery.getDistinctJobId,
+        values: []
+    }
+}
+export const  getSkillsFromId = (_body) =>{
+    return {
+        name: 'get-skills-id',
+        text: jobReceivedQuery.getSkillsFromJobCategoryId,
+        values: [_body.jobCategoryId]
+    }
+}
 export const  updateJobReceivedRejectQuery = (_body) =>{
     return {
         name: 'update-JobReceived-reject',
@@ -247,6 +261,22 @@ export const  changePositionStatusQuery = (_body) =>{
         name: 'change-position-status',
         text: positionsQuery.changePositionStatus,
         values: [_body.positionId, currentTime()]
+
+    }
+}
+export const  checkPositionStatus = (_body) =>{
+    return {
+        name: 'check-position-status',
+        text: positionsQuery.checkJobStatus,
+        values: [_body.positionId]
+
+    }
+}
+export const  deleteReadStatusQuery = (_body) =>{
+    return {
+        name: 'delete-read-status',
+        text: positionsQuery.deletePositionReadStatus,
+        values: [_body.positionId]
 
     }
 }
