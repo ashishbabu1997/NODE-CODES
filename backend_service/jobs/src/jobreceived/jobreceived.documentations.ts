@@ -319,29 +319,3 @@
 */
 
 
-/**
-* @swagger
-* /jobreceived/allJobsSkills:
-*   put:
-*     tags:
-*       - Jobreceieved
-*     name: get all job category based  skills
-*     summary:get all job category based  skills for admin 
-*     security:
-*       - bearerAuth: []
-*     consumes:
-*       - application/json
-*     produces:
-*       - application/json
-*     responses:
-*       200:
-*         description: Api success
-*       400:
-*         description: Api Failed
-*       401:
-*         description: Unauthorised access
-*       403:
-*         description: Permission denied
-*       500:
-*         description: Server down
-*/
