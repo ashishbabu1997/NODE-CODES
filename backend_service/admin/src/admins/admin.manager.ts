@@ -451,28 +451,30 @@ export const allSkills = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now());
         (async () => {
-            const client = await database().connect()
+            const client = await database()
             try {
                 await client.query('BEGIN');
                 
-                
-                    // Add new skills
+                if(_body.userRoleId==1)
+                {
+                    console.log(_body.userRoleId)
                     const allSkills = {
                         name: 'get-all-skills',
                         text: adminQuery.allSkills
                     }
                     let result = await client.query(allSkills);
-
                     await client.query('COMMIT');
                     resolve({ code: 200, message: "Skills fetched", data: result['rows'] });
                 
-                
+                }
+                else{
+                    reject({ code: 400, message: "Unauthorized User", data:{} });
+                }
+
             } catch (e) {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            } finally {
-                client.release();
-            }
+            } 
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })

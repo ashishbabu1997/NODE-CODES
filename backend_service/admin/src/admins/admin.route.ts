@@ -1,6 +1,8 @@
 import * as adminController from './admin.controller';
 import * as express from 'express';
 import { jwtAuth } from '../middleware/jwtAuthenticate';
+import setData from '../middleware/setData';
+
 const router = express.Router();
 
 router
@@ -11,6 +13,6 @@ router
     .post('/registeredUserList', jwtAuth, adminController.registeredUserList)
     .post('/addJobCategory', jwtAuth, adminController.addJobCategory)
     .post('/addSkills', jwtAuth, adminController.addSkills)
-    .get('/allSkills',  adminController.allSkills)
+    .get('/allSkills',  jwtAuth,setData(), adminController.allSkills)
 
 export default router;
