@@ -1,10 +1,7 @@
-import notificationsQuery from './query/notifications.query';
 import database from '../common/database/database';
-import {notify} from '../common/database/database';
 import * as queryService from '../queryService/queryService';
-import * as socket from '../Socket';
 
-socket;
+// socket;
 
 // FUNC. Notifications to the admin. 
 export const getNotifications = (_body) => {
