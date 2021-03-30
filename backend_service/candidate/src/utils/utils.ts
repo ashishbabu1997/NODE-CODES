@@ -38,7 +38,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         }
         if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
         {
-            filterQuery=filterQuery+' AND skills @> $skill::varchar[] '                
+            filterQuery=filterQuery+' AND skills && $skill::varchar[] '                
             queryValues =  Object.assign({skill:objectToArray(skills,'skillName')},queryValues)
         }
         if(![undefined,null,''].includes(otherSkills) && Array.isArray(otherSkills) && otherSkills.length)
