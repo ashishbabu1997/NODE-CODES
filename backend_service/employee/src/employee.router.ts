@@ -4,6 +4,7 @@ import { addEmployee,addEmployeeByAdmin,resetToken,addFreelancer,getCompanyByEma
  import {companyRegistrationSchema,freelancerSchema,tokenSchema} from './schema/create.schema';
  import { jwtAuth } from './middleware/jwtAuthenticate';
  import setData from './middleware/setData';
+ import setProfileAuth from './middleware/setProfileAuth';
 
 const router = express.Router();
 
@@ -12,10 +13,10 @@ router
     .post('/freelancer', validate(freelancerSchema), addFreelancer)
     .post('/freelancer/setTokenAndPassword', validate(tokenSchema), resetToken)
     .get('/getCompanyByEmail', getCompanyByEmail)
-    .post('/addEmployeeByAdmin',jwtAuth, setData(), validate(companyRegistrationSchema), addEmployeeByAdmin)
+    .post('/addEmployeeByAdmin',jwtAuth, setData(),setProfileAuth([1]), validate(companyRegistrationSchema), addEmployeeByAdmin)
     .get('/verifyToken', checkVerificationLink)
     .post('/ellowRecruiterSignup',ellowRecruiterSignup)
-    .get('/getAllAdmins', getellowAdminsDetails)
+    .get('/getAllAdmins',setProfileAuth([1,2,3,4]), getellowAdminsDetails)
     .get('/getEmployees',jwtAuth, setData(), getEmployeesFromCompany)
 
     
