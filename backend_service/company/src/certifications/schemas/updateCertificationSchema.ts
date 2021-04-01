@@ -17,12 +17,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),    
-    certificationId: Joi.number().required().error(errors => {
+    certificationId: Joi.number().allow('').error(errors => {
         errors.forEach(err => {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Certification Id should not be empty!";
-                    break;
                 case "number.base":
                     err.message = "Certification Id must be a number"
                     break;
@@ -33,12 +30,9 @@ export default Joi.object().keys({
         });
         return errors;
     }), 
-    certificationNumber: Joi.string().required().error(errors => {
+    certificationNumber: Joi.string().allow('').error(errors => {
         errors.forEach(err => {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Certification Number should not be empty";
-                    break;
                 case "string.base":
                     err.message = "Certification Number must be a string"
                     break;
@@ -49,12 +43,9 @@ export default Joi.object().keys({
         });
         return errors;
     }), 
-    logo: Joi.string().required().error(errors => {
+    logo: Joi.string().allow('').error(errors => {
         errors.forEach(err => {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Logo should not be empty";
-                    break;
                 case "string.base":
                     err.message = "Logo must be a string"
                     break;
@@ -65,7 +56,7 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    document: Joi.string().required().error(errors => {
+    document: Joi.string().allow('').error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                case "string.base":
@@ -78,12 +69,9 @@ export default Joi.object().keys({
         });
         return errors;
     }),    
-    companyCertificationId: Joi.number().required().error(errors => {
+    companyCertificationId: Joi.number().allow('').error(errors => {
         errors.forEach(err => {
             switch (err.code) {
-                case "any.required":
-                    err.message = "Company Certification Id should not be empty!";
-                    break;
                 case "number.base":
                     err.message = "Company Certification Id must be a number"
                     break;
@@ -94,7 +82,7 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    certificationType: Joi.string().required().valid('certification', 'award').insensitive().lowercase().error(errors => {
+    certificationType: Joi.string().allow('').valid('certification', 'award').insensitive().lowercase().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                case "string.base":
