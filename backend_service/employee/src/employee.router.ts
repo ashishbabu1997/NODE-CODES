@@ -16,7 +16,7 @@ router
     .post('/addEmployeeByAdmin',jwtAuth, setData(),setProfileAuth([1]), validate(companyRegistrationSchema), addEmployeeByAdmin)
     .get('/verifyToken', checkVerificationLink)
     .post('/ellowRecruiterSignup',ellowRecruiterSignup)
-    .get('/getAllAdmins',setProfileAuth([1,2,3,4]), getellowAdminsDetails)
+    .get('/getAllAdmins', getellowAdminsDetails)
     .get('/getEmployees',jwtAuth, setData(), getEmployeesFromCompany)
 
     
