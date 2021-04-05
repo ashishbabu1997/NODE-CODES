@@ -95,10 +95,12 @@ export const updateCompanyCertifications = (_body) => {
 export const deleteCompanyCertifications = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
+        console.log(_body.companycertificationId)
+        console.log(_body.companyId)
         const query = {
             name: 'delete-company-certification',
             text: certificationQuery.deleteCompanyCertifications,
-            values: [currentTime, parseInt(_body.companycertificationId), _body.companyId],
+            values: [currentTime, _body.companycertificationId, _body.companyId],
         }
         const getprofilePercentge = {
             name: 'get-profile-percentge',

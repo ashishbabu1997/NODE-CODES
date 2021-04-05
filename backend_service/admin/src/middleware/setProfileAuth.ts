@@ -7,11 +7,13 @@ export default (profiles) => {
         if (req.user.hasOwnProperty('companyId')) {
             if (req.route.methods.hasOwnProperty("post") || req.route.methods.hasOwnProperty("put")) {
                 let roleId = parseInt(req.body['userRoleId']);
+                console.log(parseInt(req.body['userRoleId']))
                 if(!profiles.includes(roleId)) 
                 return sendResponse(res, 403, 0, 401, 'Unauthorised Access','Access not permitted to this API');
             }
             else if (req.route.methods.hasOwnProperty("get") || req.route.methods.hasOwnProperty("delete")) {
                 let roleId = parseInt(req.query['userRoleId']);
+                console.log(roleId)
                 if(!profiles.includes(roleId)) 
                 return sendResponse(res, 403, 0, 401, 'Unauthorised Access','Access not permitted to this API');
             }

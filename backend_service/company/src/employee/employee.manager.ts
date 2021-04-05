@@ -44,10 +44,11 @@ export const getEmployeesByCompanyId = (_body) => {
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
+        let contactNumber=_body.contactNumber=null?'':_body.contactNumber
         const query = {
             name: 'add-employee',
             text: employeeQuery.addEmploye,
-            values: [_body.firstName, _body.lastName, _body.companyId, _body.email, _body.roleId, currentTime, _body.contactNumber,true,_body.document,3],
+            values: [_body.firstName, _body.lastName, _body.companyId, _body.email, _body.roleId, currentTime, contactNumber,true,_body.document,3],
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -65,12 +66,13 @@ export const updateUser = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
+                let contactNumber=_body.phoneNumber=null?'':_body.phoneNumber
                 if (_body.decisionValue==1)
                 {
                     const employeeUpdate = {
                         name: 'update-employees',
                         text:employeeQuery.updateEmployee,
-                        values:[_body.empId,_body.firstName,_body.lastName,_body.roleId,_body.phoneNumber]
+                        values:[_body.empId,_body.firstName,_body.lastName,_body.roleId,contactNumber]
                     }
                     await client.query(employeeUpdate);
                 }
