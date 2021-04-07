@@ -37,7 +37,7 @@ router
 .put('/updateResumeData',jwtAuth,setData(),setProfileAuth([1]),candidateController.updateResumeData)
 .put('/updateOverallWorkExperience',jwtAuth, setData(),setProfileAuth([1,3,4]),validate(schema.profileDetailSchema), candidateController.WorkExperience)
 .get('/resume',jwtAuth, setData(), setProfileAuth([1,2,3,4]),candidateController.resumeDetails)
-.get('/resumeSharedEmails',jwtAuth,setProfileAuth([1,2]), setData(),candidateController.resumeSharedEmails)
+.get('/resumeSharedEmails',jwtAuth,setData(),candidateController.resumeSharedEmails)
 .post('/resumeShareLink',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.resumeShareLink)
 .get('/initialSharedResumeData',candidateController.initialResumeData)
 .get('/sharedResumeData',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.sharedResumeData)
