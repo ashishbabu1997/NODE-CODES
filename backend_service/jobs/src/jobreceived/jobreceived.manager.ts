@@ -1,7 +1,7 @@
 import jobReceivedQuery from './query/jobreceived.query';
 import database from '../common/database/database';
 import * as format from 'pg-format';
-import { createNotification } from '../common/notifications/notifications';
+import { createNotification,createHirerNotifications } from '../common/notifications/notifications';
 import * as handlebars from 'handlebars'
 import config from '../config/config'
 import {readHTMLFile} from '../middlewares/htmlReader'
@@ -299,6 +299,8 @@ export const submitCandidateProfile = (_body) => {
                 {
                     
                     const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for the position ${positionName} `
+                    await createHirerNotifications({ positionId:_body.positionId, jobReceivedId,companyId:_body.sellerCompanyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
+
                     await createNotification({ positionId:_body.positionId, jobReceivedId,companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     let path = 'src/emailTemplates/candidateAdditionText.html';
                     var userReplacements =  {
