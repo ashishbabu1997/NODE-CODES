@@ -24,7 +24,8 @@ export const  connect =(app) =>{
                         return next(new Error('Authentication error'));
                     };
                     socket.decoded = decoded;
-                    if(decoded.userRoleId !=1 )
+
+                    if(!['1','2'].includes(decoded.userRoleId))
                     return next(new Error('Unauthorised access'));
                
                     next();
@@ -44,20 +45,35 @@ export const  connect =(app) =>{
         
         
         const getApiAndEmit = (socket) => {
-            // Emitting a new message. Will be consumed by the client
+            // Emitting a new message. Will be consumed by the client            
             getData(socket);
             dbListener(socket);
         };  
         
         const getData = (socket) =>{
-            database().query(queryService.listNotifications(), (error, results) => {
-                if (error) {
-                    console.error({ code: 400, message: "Database Error", data: {} });
-                    return;
-                }
-                
-                socket.emit("FromAPI", { code: 200, message: "Notification listed", data: results.rows });
-            })
+
+            let userRoleId = socket.decoded.userRoleId,companyId = socket.decoded.companyId;            
+
+            if(userRoleId == 1)
+            {
+                database().query(queryService.listNotifications(), (error, results) => {
+                    if (error) {
+                        console.error({ code: 400, message: "Database Error", data: {} });
+                        return;
+                    }
+                    socket.emit("recruiter", { code: 200, message: "Recruiter Notification listed", data: results.rows });
+                })
+            }
+            else
+            {
+                database().query(queryService.listHirerNotifications(companyId), (error, results) => {
+                    if (error) {
+                        console.error({ code: 400, message: "Database Error", data: {} });
+                        return;
+                    }
+                    socket.emit("hirer", { code: 200, message: "User Notification listed", data: results.rows });
+                })
+            }
         }
         
         const dbListener = (socket) =>{
@@ -68,6 +84,12 @@ export const  connect =(app) =>{
                 }
                 client.query('LISTEN "notificationEvent"');
                 client.on('notification', function(data) {
+                    getData(socket);
+                });
+
+
+                client.query('LISTEN "hirerNotificationEvent"');
+                client.on('notification', function(data) {                    
                     getData(socket);
                 });
             });
