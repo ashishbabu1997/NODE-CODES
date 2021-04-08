@@ -116,7 +116,7 @@ export const createCompanyPositions =  async (_body) => {
                         {
                             _body.allocatedTo = _body.employeeId;
                             const hirerMessage=`New position, ${details.rows[0].positionName} has been created for you by ellow.io admin`
-                            await createHirerNotifications({ positionId, jobReceivedId, companyId, hirerMessage, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
+                            await createHirerNotifications({ positionId, jobReceivedId, companyId:_body.cmpId, hirerMessage, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
                             await client.query(queryService.assigneeQuery(_body));
                         }
                         else{
@@ -536,6 +536,7 @@ export const fetchPositionDetails = (_body) => {
                         var positionName=employeeData.rows[0].position_name
                         var emailAddress=employeeData.rows[0].email
                         var jobStatus=employeeData.rows[0].job_status
+                        var hirerCompanyId=employeeData.rows[0].company_id
                         await client.query('COMMIT');
                         adminPath = 'src/emailTemplates/positionDeletionAdminText.html';
                         if (_body.userRoleId==1)
@@ -568,7 +569,7 @@ export const fetchPositionDetails = (_body) => {
                                     
                                 })
                                 const message=`The position, ${positionName}  has been removed .`
-                                await createHirerNotifications({ positionId, jobReceivedId:null, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
+                                await createHirerNotifications({ positionId, jobReceivedId:null, companyId:hirerCompanyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
                                 await createNotification({ positionId, jobReceivedId:null, companyId:_body.companyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
                                 resolve({ code: 200, message: "Position deletion successfull", data: {} });
                             }
