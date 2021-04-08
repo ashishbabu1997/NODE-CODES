@@ -13,4 +13,4 @@ app.use(bodyParser.urlencoded({
 app.use('/', router);
 app.listen(AppConfig.http.port, () => {
   console.log('Listening on port ' + AppConfig.http.port);
-});
+}); 
