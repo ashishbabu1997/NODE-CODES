@@ -83,15 +83,16 @@ export const  connect =(app) =>{
                     return console.error('could not connect to postgres', err);
                 }
                 client.query('LISTEN "notificationEvent"');
+                client.query('LISTEN "hirerNotificationEvent"');
+
                 client.on('notification', function(data) {
                     getData(socket);
                 });
 
 
-                client.query('LISTEN "hirerNotificationEvent"');
-                client.on('notification', function(data) {                    
-                    getData(socket);
-                });
+                // client.on('notification', function(data) {                    
+                //     getData(socket);
+                // });
             });
         }
         server.listen(AppConfig.http.port, () => console.log(`Listening on port ${AppConfig.http.port}`));
