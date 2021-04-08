@@ -116,7 +116,7 @@ export const createCompanyPositions =  async (_body) => {
                         {
                             _body.allocatedTo = _body.employeeId;
                             const hirerMessage=`New position, ${details.rows[0].positionName} has been created for you by ellow.io admin`
-                            await createHirerNotifications({ positionId, jobReceivedId, companyId:_body.cmpId, hirerMessage, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
+                            await createHirerNotifications({ positionId, jobReceivedId, companyId:_body.cmpId, message:hirerMessage, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
                             await client.query(queryService.assigneeQuery(_body));
                         }
                         else{
@@ -299,7 +299,7 @@ export const fetchPositionDetails = (_body) => {
                                 {
                                     _body.allocatedTo = _body.employeeId;
                                     const hirerMessage=`New position, ${details.rows[0].positionName} has been created for you by ellow.io admin`
-                                    await createHirerNotifications({ positionId, jobReceivedId, companyId, hirerMessage, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
+                                    await createHirerNotifications({ positionId, jobReceivedId, companyId, message:hirerMessage, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId})
                                     await client.query(queryService.assigneeQuery(_body));
                                 }
                                 

@@ -2,7 +2,7 @@ import candidateQuery from './query/candidates.query';
 import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
 import config from '../config/config';
-import { createNotification } from '../common/notifications/notifications';
+import { createNotification ,createHirerNotifications} from '../common/notifications/notifications';
 import * as emailClient from '../emailService/emailService';
 import {nanoid} from 'nanoid';
 import * as passwordGenerator from 'generate-password'
@@ -591,6 +591,7 @@ export const linkCandidateWithPosition = (_body) => {
                 var positionResult=await client.query(getPositionNames);
                 positionName=positionResult.rows[0].positionName
                 hirerName=positionResult.rows[0].hirerName
+                var positionCompanyId=positionResult.rows[0].companyId
                 var jobReceivedId=positionResult.rows[0].jobReceivedId
                 
                 // Inserting candidates to candidate_positions table
@@ -649,6 +650,7 @@ export const linkCandidateWithPosition = (_body) => {
                 // });                     
                 await client.query('COMMIT')
                 let message=`${count} candidates has been added for the position ${positionName}`
+                createHirerNotifications({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId: positionCompanyId, message:message, candidateId:null, notificationType: 'candidateList',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:null,firstName:null,lastName:null})
                 createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId: _body.companyId, message:message, candidateId:null, notificationType: 'candidateList',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:null,firstName:null,lastName:null})
                 let replacements = {
                     positionName:positionName,

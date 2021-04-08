@@ -300,7 +300,6 @@ export const submitCandidateProfile = (_body) => {
                     
                     const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for the position ${positionName} `
                     await createHirerNotifications({ positionId:_body.positionId, jobReceivedId,companyId:_body.sellerCompanyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
-
                     await createNotification({ positionId:_body.positionId, jobReceivedId,companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     let path = 'src/emailTemplates/candidateAdditionText.html';
                     var userReplacements =  {
