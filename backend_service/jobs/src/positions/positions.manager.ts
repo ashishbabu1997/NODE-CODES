@@ -554,7 +554,6 @@ export const fetchPositionDetails = (_body) => {
                         };
                         if(jobStatus==5)
                         {
-                            emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);
                             resolve({ code: 200, message: "Position deletion successfull", data: {} });
 
                         }

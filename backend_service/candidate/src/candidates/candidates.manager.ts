@@ -12,6 +12,7 @@ import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
 import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
+import request from 'request'
 const myCache = new nodeCache();
 
 // >>>>>>> FUNC. >>>>>>>
@@ -2144,4 +2145,70 @@ export const createPdfFromHtml = (_body) => {
 
 
 
-   
+
+
+
+
+
+
+    // >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>>Function to edit the vetting status of the candidate.
+export const singleSignOn = (_body) => {
+    return new Promise((resolve, reject) => {
+        const candidateId = _body.candidateId;
+        const vettingStatus = _body.candidateVetted;
+        const currentTime = Math.floor(Date.now());
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                console.log(_body.code)
+                // const accessToken = _body.code;
+                //     const options = {
+                //         host: 'api.linkedin.com',
+                //         path: '/v2/me',
+                //         method: 'GET',
+                //         headers: {
+                //             'Authorization': `Bearer ${accessToken}`,
+                //             'cache-control': 'no-cache',
+                //             'X-Restli-Protocol-Version': '2.0.0'
+                //         }
+                //     };
+
+                //     const profileRequest = https.request(options, function(result) {
+                //         let data = '';
+                //         result.on('data', (chunk) => {
+                //             data += chunk;
+                //             console.log(data)
+                //         });
+
+                //  result.on('end', () => {
+                // const profileData = JSON.parse(data);
+                // console.log(profileData)
+                //     });
+                //  });
+                // profileRequest.end();
+            //     console.log("Hello")
+            //    request.({ url:'https://api.linkedin.com/v2/me',Headers: {'Authorization': `Bearer ${_body.code}`}}, function (error, response, body) {
+            //     if (!error && response.statusCode == 200) {
+            //     console.log(response) 
+            //     }
+            //     else {
+            //         console.log("Its ERERORRRRRR")
+            //     console.log("Error "+response)
+            //     }
+            //     })
+                resolve({ code: 200, message: "Candidate Vetting Updated successfully", data: {} });
+                
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
