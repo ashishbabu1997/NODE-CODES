@@ -8,6 +8,7 @@ import AppConfig from './config/config';
 
 const jwt = require('jsonwebtoken');
 
+
 export const  connect =(app) =>{
     let server = require('http').createServer();    
     server.on('request', app);
@@ -24,10 +25,10 @@ export const  connect =(app) =>{
                         return next(new Error('Authentication error'));
                     };
                     socket.decoded = decoded;
-
+                    
                     if(!['1','2'].includes(decoded.userRoleId))
                     return next(new Error('Unauthorised access'));
-               
+                    
                     next();
                 });
             }
@@ -37,23 +38,37 @@ export const  connect =(app) =>{
             }    
         }).on("connection", (socket) => {
             console.log("New client connected");
-            getApiAndEmit(socket);
+            
+            const client = notify();
+            client.connect(function(err) {
+                if(err) {
+                    return console.error('could not connect to postgres', err);
+                }
+            });
+
+            getApiAndEmit(socket,client);
             socket.on("disconnect", () => {
                 console.log("Client disconnected");
+                client.end(err => {
+                    console.log('client has disconnected from db')
+                    if (err) {
+                        console.log('error during disconnection', err.stack)
+                    }
+                })
             });
         });
         
         
-        const getApiAndEmit = (socket) => {
+        const getApiAndEmit = (socket,client) => {
             // Emitting a new message. Will be consumed by the client            
             getData(socket);
-            dbListener(socket);
+            dbListener(socket,client);
         };  
         
         const getData = (socket) =>{
-
+            
             let userRoleId = socket.decoded.userRoleId,companyId = socket.decoded.companyId;            
-
+            
             if(userRoleId == 1)
             {
                 database().query(queryService.listNotifications(), (error, results) => {
@@ -76,23 +91,21 @@ export const  connect =(app) =>{
             }
         }
         
-        const dbListener = (socket) =>{
-            var client = notify();
-            client.connect(function(err) {
-                if(err) {
-                    return console.error('could not connect to postgres', err);
-                }
+        const dbListener = (socket,client) =>{
+            
+            let userRoleId = socket.decoded.userRoleId;                        
+            if(userRoleId == '1')
+            {                
                 client.query('LISTEN "notificationEvent"');
-                client.on('notification', function(data) {
-                    getData(socket);
-                });
-
-
+            }
+            else
+            {                
                 client.query('LISTEN "hirerNotificationEvent"');
-                client.on('notification', function(data) {                    
-                    getData(socket);
-                });
+            }
+            
+            client.on('notification', function(data) {
+                getData(socket);
             });
         }
         server.listen(AppConfig.http.port, () => console.log(`Listening on port ${AppConfig.http.port}`));
-}    
+    }    
