@@ -122,3 +122,35 @@ export const update_Details = (_body) => {
 
     }) 
 }
+
+
+
+
+export const updateProfileLogo = (_body) => {
+    return new Promise((resolve, reject) => {
+        var query
+        if(_body.type==1)
+        {
+            query = {
+                name: 'update-logo',
+                text: companyQuery.updateLogo,
+                values: [_body.companyId,_body.fileName],
+            }  
+        }
+        else
+        {
+         query = {
+            name: 'update-profile',
+            text: companyQuery.updateProfile,
+            values: [_body.companyId,_body.fileName],
+        }
+    }
+        database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed to update image. Please try again.", data: {} });
+                return;
+            }
+            resolve({ code: 200, message: "Image updated successfully", data: {  } });
+        })
+    });
+}
