@@ -53,5 +53,6 @@ router
 .post('/updateCandidateAvailability', jwtAuth, setData(), setProfileAuth([1,2,3,4]), candidateController.changeCandidateAvailability)
 .post('/resumeParser',jwtAuth, setData(), setProfileAuth([1]),candidateController.resumeParser)
 .post('/userSignup', candidateController.newUserSignup)
+.post('updateBlacklisted',candidateController.updateBlacklisted)
 
 export default router;
