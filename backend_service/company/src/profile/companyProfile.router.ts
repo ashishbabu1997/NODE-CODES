@@ -9,4 +9,5 @@ router
     .get('/', jwtAuth, setData(), getDetails)
     .put('/updateCompanyProfile', jwtAuth, setData(), validate(updateDetailsSchema), updateDetails)
     .put('/updateProfileLogo', jwtAuth, setData(), updateLogoAndProfile)
+    
 export default router;
