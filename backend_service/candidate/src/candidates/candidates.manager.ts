@@ -960,6 +960,7 @@ export const addWorkExperience = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
+                _body.remoteWorkExperience===""?null:_body.remoteWorkExperience
                 await client.query(queryService.addWorkExperiences(_body));
                 resolve({ code: 200, message: "Candidate overall work experience updated successfully", data: {} });
             } catch (e) {
@@ -2162,42 +2163,31 @@ export const singleSignOn = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                console.log(_body.code)
-                // const accessToken = _body.code;
-                //     const options = {
-                //         host: 'api.linkedin.com',
-                //         path: '/v2/me',
-                //         method: 'GET',
-                //         headers: {
-                //             'Authorization': `Bearer ${accessToken}`,
-                //             'cache-control': 'no-cache',
-                //             'X-Restli-Protocol-Version': '2.0.0'
-                //         }
-                //     };
-
-                //     const profileRequest = https.request(options, function(result) {
-                //         let data = '';
-                //         result.on('data', (chunk) => {
-                //             data += chunk;
-                //             console.log(data)
-                //         });
-
-                //  result.on('end', () => {
-                // const profileData = JSON.parse(data);
-                // console.log(profileData)
-                //     });
-                //  });
-                // profileRequest.end();
-            //     console.log("Hello")
-            //    request.({ url:'https://api.linkedin.com/v2/me',Headers: {'Authorization': `Bearer ${_body.code}`}}, function (error, response, body) {
-            //     if (!error && response.statusCode == 200) {
-            //     console.log(response) 
-            //     }
-            //     else {
-            //         console.log("Its ERERORRRRRR")
-            //     console.log("Error "+response)
-            //     }
-            //     })
+                const accessToken = 'AQVl9SyBQmd2BMItikLaVNyL-Tem21A6XlJNzb8la2M6mxp9lN8v4H9UZw_07nrZwIqQKGTeIVZMz_Iqv501Ws9Z1DSqj9vc1bbo5AV2WiMG9w3OlDKMEglimCsUhpJXRg6ySALdB7X-RfHLS-GfGVquKUwwWp5V1EZOj1kbaVqn10TncK8rj3foLFRaQF-4zBOVRd5YMg-H4UHrWHzNrC_1it3r-SQzFBIjJEAOh-JlLVikcXVizZ2Xz-_rynnbOrSucDTC_B8BHeiSaCK08PdBf-oBRABGlsFkA94_m-2uKG0vO-FJc2l8VJ8dvPjdiEX_dS21lj5ba20pEkNiMaiat4___g';
+                const options = {
+                  host: 'api.linkedin.com',
+                  path: '/v2/me',
+                  method: 'GET',
+                  headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'cache-control': 'no-cache',
+                    'X-Restli-Protocol-Version': '2.0.0'
+                  }
+                };
+                
+                const profileRequest = https.request(options, function(res) {
+                  let data = '';
+                  res.on('data', (chunk) => {
+                    data += chunk;
+                  });
+                
+                  res.on('end', () => {
+                    const profileData = JSON.parse(data);
+                    console.log(JSON.stringify(profileData));
+                  });
+                });
+                profileRequest.end();
+          
                 resolve({ code: 200, message: "Candidate Vetting Updated successfully", data: {} });
                 
             } catch (e) {
