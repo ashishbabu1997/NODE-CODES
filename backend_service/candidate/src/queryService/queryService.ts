@@ -396,6 +396,14 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateId,_body.availability],
         }
     }
+
+    export const changeBlacklistedOfCandidate =(_body)=> {
+        return {
+            name: 'update-blacklisted',
+            text: candidateQuery.updateCandidateAvailability,
+            values: [_body.candidateId,currentTime(),_body.employeeId],
+        }
+    }
     
     
     // *******************************************************************************************************************************//
@@ -605,7 +613,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'get-free-candidates',
             text: queryText,
-            values: queryValues
+            values: queryValues 
         }
     }
     
@@ -614,6 +622,13 @@ export const insertCandidatePublicationQuery = (_body) => {
             name: 'get-free-candidates-total',
             text: queryText,
             values: queryValues
+        }
+    }
+    export const getJobReceivedId = (body) => {
+        return {
+            name: 'get-jobreceived-id',
+            text: candidateQuery.getJobReceivedId,
+            values: [body.positionId]
         }
     }
     

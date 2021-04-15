@@ -87,19 +87,10 @@ export const listCandidatesDetails = (_body) => {
                 queryText = selectQuery+adminApproveQuery+filterQuery+searchQuery+sort;
                 queryValues =  Object.assign({positionid:body.positionId,employeeid:body.employeeId},queryValues)
                 
-                const listCandidates = {
-                    name: 'get-candidate-under-position',
-                    text: queryText,
-                    values: queryValues
-                }
-                const candidatesResult = await client.query(listCandidates);                    
-                const getJobReceivedId = {
-                    name: 'get-jobreceived-id',
-                    text: candidateQuery.getJobReceivedId,
-                    values: [body.positionId]
-                }
-                const jobReceivedIdResult = await client.query(getJobReceivedId);                    
-                await client.query('COMMIT')
+                const candidatesResult = await client.query(queryService.listCandidates(queryText,queryValues));
+                const jobReceivedIdResult = await client.query(queryService.getJobReceivedId(body));                    
+                await client.query('COMMIT');
+
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { jobReceivedId:jobReceivedIdResult.rows[0].job_received_id, allCandidates:candidatesResult.rows } });
                 
             } catch (e) {
@@ -2040,6 +2031,28 @@ export const createPdfFromHtml = (_body) => {
                     await client.query(queryService.changeAvailabilityOfCandidate(_body));
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Availability changed successfully", data:{}});
+                } catch (e) {
+                    console.log(e)
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                } finally {
+                    client.release();
+                }
+            })().catch(e => {
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+            })
+        })
+    }
+
+    // >>>>>>> FUNC. >>>>>>>
+    // blacklist or revert blacklist candidate    
+    export const changeBlacklisted = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                const client = await database().connect()
+                try {
+                    await client.query(queryService.changeBlacklistedOfCandidate(_body));
+                    resolve({ code: 200, message: "Blacklisted toggled successfully", data:{}});
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')
