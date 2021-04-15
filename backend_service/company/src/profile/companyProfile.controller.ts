@@ -1,4 +1,4 @@
-import { get_Details,update_Details} from './companyProfile.manager';
+import { get_Details,update_Details,updateProfileLogo} from './companyProfile.manager';
 import sendResponse from '../common/response/response';
 
 export const getDetails = (req, res) => {
@@ -13,4 +13,9 @@ export const updateDetails = (req, res) => {
     }).catch(error => {
         sendResponse(res, error.code, 0,402, error.message, error.data)
     })
+}
+export const updateLogoAndProfile = (req, res) => {
+    const body = req.body;
+    updateProfileLogo(body).then((response: any) => sendResponse(res, response.code, 1,200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0,400, error.message, error.data))
 }

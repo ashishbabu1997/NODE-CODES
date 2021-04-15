@@ -100,35 +100,35 @@ export const deleteCompanyCertifications = (_body) => {
         const query = {
             name: 'delete-company-certification',
             text: certificationQuery.deleteCompanyCertifications,
-            values: [currentTime, _body.companycertificationId, _body.companyId],
+            values: [currentTime, _body.companycertificationId],
         }
-        const getprofilePercentge = {
-            name: 'get-profile-percentge',
-            text: certificationQuery.getProfilePercentage,
-            values: [_body.companyId],
-        }
-        database().query(getprofilePercentge, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed to fetch profile percentage", data: {} });
-                return;
-            }
-            else {
-                const profilePercentage = results.rows[0].profilePercentage
-                var count = profilePercentage - 25
+        // const getprofilePercentge = {
+        //     name: 'get-profile-percentge',
+        //     text: certificationQuery.getProfilePercentage,
+        //     values: [_body.companyId],
+        // }
+        // database().query(getprofilePercentge, (error, results) => {
+        //     if (error) {
+        //         reject({ code: 400, message: "Failed to fetch profile percentage", data: {} });
+        //         return;
+        //     }
+        //     else {
+        //         const profilePercentage = results.rows[0].profilePercentage
+        //         var count = profilePercentage - 25
 
-            }
-            const updateProfile = {
-                name: 'profile-percentage-update',
-                text: certificationQuery.updateProfilePercentage,
-                values: [count, _body.companyId],
-            }
-            database().query(updateProfile, (error, results) => {
-                if (error) {
-                    reject({ code: 400, message: "Failed to update profile percentage", data: {} });
-                    return;
-                }
-            })
-        })
+        //     }
+        //     const updateProfile = {
+        //         name: 'profile-percentage-update',
+        //         text: certificationQuery.updateProfilePercentage,
+        //         values: [count, _body.companyId],
+        //     }
+        //     database().query(updateProfile, (error, results) => {
+        //         if (error) {
+        //             reject({ code: 400, message: "Failed to update profile percentage", data: {} });
+        //             return;
+        //         }
+        //     })
+        // })
         database().query(query, (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
