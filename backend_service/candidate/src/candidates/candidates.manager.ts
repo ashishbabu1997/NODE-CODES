@@ -1379,7 +1379,8 @@ export const getResume = (_body) => {
                     residence,
                     phoneNumber : allProfileDetails.rows[0].phoneNumber,
                     email : allProfileDetails.rows[0].email,
-                    candidateVetted : allProfileDetails.rows[0].candidateVetted
+                    candidateVetted : allProfileDetails.rows[0].candidateVetted,
+                    blacklisted:allProfileDetails.rows[0].blacklisted
                 }
                 
                 let overallWorkExperience = {
