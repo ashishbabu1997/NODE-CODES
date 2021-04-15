@@ -12,9 +12,14 @@ import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
 import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
-import request from 'request'
+import {request} from 'request'
+import passport from 'passport'
 const myCache = new nodeCache();
-
+import * as express from 'express';
+import fetch from 'node-fetch'
+import Strategy from 'passport-linkedin-oauth2'
+import response from '../common/response/response';
+import * as request1 from "request-promise-native";
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for listing all the candidates with his/her basic details.
 export const listCandidatesDetails = (_body) => {
@@ -2156,47 +2161,34 @@ export const createPdfFromHtml = (_body) => {
 //>>>>>>>>>>>>>>>Function to edit the vetting status of the candidate.
 export const singleSignOn = (_body) => {
     return new Promise((resolve, reject) => {
-        const candidateId = _body.candidateId;
-        const vettingStatus = _body.candidateVetted;
-        const currentTime = Math.floor(Date.now());
         (async () => {
-            const client = await database().connect()
             try {
-                await client.query('BEGIN');
-                const accessToken = 'AQVl9SyBQmd2BMItikLaVNyL-Tem21A6XlJNzb8la2M6mxp9lN8v4H9UZw_07nrZwIqQKGTeIVZMz_Iqv501Ws9Z1DSqj9vc1bbo5AV2WiMG9w3OlDKMEglimCsUhpJXRg6ySALdB7X-RfHLS-GfGVquKUwwWp5V1EZOj1kbaVqn10TncK8rj3foLFRaQF-4zBOVRd5YMg-H4UHrWHzNrC_1it3r-SQzFBIjJEAOh-JlLVikcXVizZ2Xz-_rynnbOrSucDTC_B8BHeiSaCK08PdBf-oBRABGlsFkA94_m-2uKG0vO-FJc2l8VJ8dvPjdiEX_dS21lj5ba20pEkNiMaiat4___g';
-                const options = {
-                  host: 'api.linkedin.com',
-                  path: '/v2/me',
-                  method: 'GET',
-                  headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'cache-control': 'no-cache',
-                    'X-Restli-Protocol-Version': '2.0.0'
-                  }
-                };
-                
-                const profileRequest = https.request(options, function(res) {
-                  let data = '';
-                  res.on('data', (chunk) => {
-                    data += chunk;
-                  });
-                
-                  res.on('end', () => {
-                    const profileData = JSON.parse(data);
-                    console.log(JSON.stringify(profileData));
-                  });
+                const rawResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A4005%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=86w0o74tpcdwl2&client_secret=SnYaChuW5W3yho2s&code='+_body.code, {
+                    method: 'POST',
+                    headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({a: 1, b: 'Textual content'})
                 });
-                profileRequest.end();
-          
-                resolve({ code: 200, message: "Candidate Vetting Updated successfully", data: {} });
-                
+                const content = await rawResponse.json();
+        var options = {
+
+            url: "https://api.linkedin.com/v2/me",
+            method: 'GET',
+            headers: {
+              'Host': "api.linkedin.com",
+              'Connection': "Keep-Alive",
+              'Authorization': 'Bearer ' + content.access_token
+            },
+        };
+        const result = await request1.get(options);
+        console.log(result)
+            resolve({ code: 200, message: "Candidate Vetting Updated successfully", data: {} })
             } catch (e) {
                 console.log(e)
-                await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
-                client.release();
-            }
+            } 
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
