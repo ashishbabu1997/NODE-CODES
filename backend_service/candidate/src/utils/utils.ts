@@ -180,6 +180,9 @@ export const resourceTab = (body) =>{
         case '3':
         vettedQuery='  and chsv."candidateStatus"=4'
         break; 
+        case '4':
+        vettedQuery='  and chsv."blacklisted"=true'
+        break; 
         
         default:
         break;
