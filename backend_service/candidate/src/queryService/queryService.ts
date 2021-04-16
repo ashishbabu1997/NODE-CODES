@@ -400,7 +400,7 @@ export const insertCandidatePublicationQuery = (_body) => {
     export const changeBlacklistedOfCandidate =(_body)=> {
         return {
             name: 'update-blacklisted',
-            text: candidateQuery.updateCandidateAvailability,
+            text: candidateQuery.updateCandidateBlacklisted,
             values: [_body.candidateId,currentTime(),_body.employeeId],
         }
     }

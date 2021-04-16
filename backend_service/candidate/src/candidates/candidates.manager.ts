@@ -2207,9 +2207,7 @@ export const createPdfFromHtml = (_body) => {
                 },
             });
             const emailAddressResult = await emailAddress.json();
-            console.log("email : ",emailAddressResult.elements[0]['handle~']['emailAddress']);
-            
-            
+            const emailId=emailAddressResult.elements[0]['handle~']['emailAddress']
             // console.log("emailAddressResult : ",JSON.stringify(emailAddressResult));
             resolve({ code: 200, message: "Candidate SSO successfull", data: {} })
             
