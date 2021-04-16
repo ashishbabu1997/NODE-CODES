@@ -12,7 +12,6 @@ import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
 import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
-import {request} from 'request'
 import passport from 'passport'
 const myCache = new nodeCache();
 import * as express from 'express';
@@ -20,6 +19,7 @@ import fetch from 'node-fetch'
 import Strategy from 'passport-linkedin-oauth2'
 import response from '../common/response/response';
 import * as request1 from "request-promise-native";
+
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for listing all the candidates with his/her basic details.
 export const listCandidatesDetails = (_body) => {
@@ -90,7 +90,7 @@ export const listCandidatesDetails = (_body) => {
                 const candidatesResult = await client.query(queryService.listCandidates(queryText,queryValues));
                 const jobReceivedIdResult = await client.query(queryService.getJobReceivedId(body));                    
                 await client.query('COMMIT');
-
+                
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { jobReceivedId:jobReceivedIdResult.rows[0].job_received_id, allCandidates:candidatesResult.rows } });
                 
             } catch (e) {
@@ -776,11 +776,11 @@ export const modifyResumeData = (_body) => {
                                 data["employeeId"] = _body.employeeId;
                                 promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
                             });
-
+                            
                             await Promise.all(promises);
                             promises = [];
                             console.log("workHisory done");
-
+                            
                             extractedData["projects"].map((data)=>{
                                 data["candidateId"] = candidateId;
                                 data["employeeId"] = _body.employeeId;
@@ -790,43 +790,43 @@ export const modifyResumeData = (_body) => {
                             await Promise.all(promises);
                             promises = [];
                             console.log("projects done");
-
-
+                            
+                            
                             extractedData["education"].map((data)=>{
                                 data["candidateId"] = candidateId;
                                 data["employeeId"] = _body.employeeId;
                                 promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
                             });
-
+                            
                             await Promise.all(promises);
                             promises = [];
                             console.log("education done");
-
+                            
                             
                             extractedData["certifications"].map((data)=>{
                                 data["candidateId"] = candidateId;
                                 data["employeeId"] = _body.employeeId;
                                 promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
                             });
-
-
+                            
+                            
                             await Promise.all(promises);
                             promises = [];
                             console.log("certifications done");
-
+                            
                             extractedData["publications"].map((data)=>{
                                 data["candidateId"] = candidateId;
                                 data["employeeId"] = _body.employeeId;
                                 promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
                             });
-
+                            
                             await Promise.all(promises);
                             promises = [];
                             console.log("publications done");
-
+                            
                             await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
                             console.log("language done");
-
+                            
                             
                             await client.query('COMMIT');
                             
@@ -838,7 +838,7 @@ export const modifyResumeData = (_body) => {
                         else
                         {
                             console.log("error resume already uploaded");
-                           return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
+                            return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
                         }
                     } catch (error) {
                         console.log("error : ",error.message);
@@ -2042,7 +2042,7 @@ export const createPdfFromHtml = (_body) => {
             })
         })
     }
-
+    
     // >>>>>>> FUNC. >>>>>>>
     // blacklist or revert blacklist candidate    
     export const changeBlacklisted = (_body) => {
@@ -2161,49 +2161,72 @@ export const createPdfFromHtml = (_body) => {
             })
         })
     }
-
-
-
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // >>>>>>> FUNC. >>>>>>>
-//>>>>>>>>>>>>>>>Function to edit the vetting status of the candidate.
-export const singleSignOn = (_body) => {
-    return new Promise((resolve, reject) => {
-        (async () => {
-            try {
-                const rawResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A4005%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=86w0o74tpcdwl2&client_secret=SnYaChuW5W3yho2s&code='+_body.code, {
+    //>>>>>>>>>>>>>>>Function to edit the vetting status of the candidate.
+    export const singleSignOn = (_body) => {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                try {
+                    console.log("body code : ",_body.code);
+                    
+                    const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A4005%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=86w0o74tpcdwl2&client_secret=SnYaChuW5W3yho2s&code='+_body.code, {
                     method: 'POST',
                     headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({a: 1, b: 'Textual content'})
                 });
-                const content = await rawResponse.json();
-        var options = {
+                const content = await tokenResponse.json();                                
+                const accessToken = content.access_token;   
+                
+                const profile = await fetch('https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))', {
+                method: 'GET',
+                headers: {
+                    'Host': "api.linkedin.com",
+                    'Connection': "Keep-Alive",
+                    'Authorization': 'Bearer ' + accessToken,
+                    'cache-control': 'no-cache',
+                    'X-Restli-Protocol-Version': '2.0.0'
+                },
+            });
+            const profileResult = await profile.json();
+        //    console.log("profileResult : ",profileResult);
+            console.log('firstName : ',profileResult['firstName']['localized']['en_US']);
+            console.log('lastName : ',profileResult['lastName']['localized']['en_US']);
 
-            url: "https://api.linkedin.com/v2/me",
-            method: 'GET',
-            headers: {
-              'Host': "api.linkedin.com",
-              'Connection': "Keep-Alive",
-              'Authorization': 'Bearer ' + content.access_token
-            },
-        };
-        const result = await request1.get(options);
-        console.log(result)
-            resolve({ code: 200, message: "Candidate Vetting Updated successfully", data: {} })
-            } catch (e) {
-                console.log(e)
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } 
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
-        })
+            const emailAddress = await fetch('https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))', {
+                method: 'GET',
+                headers: {
+                    'Host': "api.linkedin.com",
+                    'Connection': "Keep-Alive",
+                    'Authorization': 'Bearer ' + accessToken,
+                    'cache-control': 'no-cache',
+                    'X-Restli-Protocol-Version': '2.0.0'
+                },
+            });
+            const emailAddressResult = await emailAddress.json();
+            console.log("email : ",emailAddressResult.elements[0]['handle~']['emailAddress']);
+            
+            
+            // console.log("emailAddressResult : ",JSON.stringify(emailAddressResult));
+            resolve({ code: 200, message: "Candidate SSO successfull", data: {} })
+            
+        } catch (e) {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} });
+        } 
+    })().catch(e => {
+        reject({ code: 400, message: "Failed. Please try again.", data: {} })
     })
+})
 }

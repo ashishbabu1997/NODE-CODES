@@ -5,48 +5,48 @@ import sendResponse from '../common/response/response';
 export const getPdf = (req, res) => {
     const body = req.body;
     candidateManager.createPdfFromHtml(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
 export const listCandidates = (req, res) => {
     const body = req;
     candidateManager.listCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 export const listFreeCandidates = (req, res) => {
     const body = req;
     candidateManager.listFreeCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))        
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))        
 }
 
 export const listForAddFromListCandidates = (req, res) => {
     const body = req;
     candidateManager.listAddFromListCandidates(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
 export const approveRejectCandidates = (req, res) => {
     const body = req.body;
     candidateManager.candidateClearance(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
 export const interviewRequest = (req, res) => {
     const body = req.body;
     candidateManager.interviewRequestFunction(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
 export const candidateReview = (req, res) => {
     const body = req.body;
     candidateManager.addCandidateReview(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
 }
 
 export const candidateVettingStatus = (req, res) => {
     const body = req.body;
     candidateManager.editVettingStatus(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
 }
 
 export const deleteCandidateFromPosition = (req, res) => {
@@ -61,7 +61,7 @@ export const deleteCandidateFromPosition = (req, res) => {
 export const addCandidateToPosition = (req, res) => {
     const body = req.body;
     candidateManager.linkCandidateWithPosition(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
 }
 
 export const deleteCandidate = (req, res) => {
@@ -190,7 +190,7 @@ export const updatePublication = (req, res) => {
 export const resumeDetails = (req, res) => {
     const body = req.query;
     candidateManager.getResume(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
 }
 export const WorkExperience = (req, res) => {
     const body = req.body;
@@ -258,64 +258,67 @@ export const sharedResumePdfData = (req, res) => {
 export const newUserSignup = (req, res) => {
     const body = req.body;
     candidateManager.shareResumeSignup(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
 export const getAssesments = (req, res) => {
     const body = req.query;
     candidateManager.getCandidateAssesmentDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
 export const changeAssignee = (req, res) => {
     const body = req.body;
     candidateManager.changeAssignee(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
 export const changeEllowRecruitmentStage = (req, res) => {
     const body = req.body;
     candidateManager.changeEllowRecruitmentStage(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
 export const rejectFromCandidateEllowRecruitment = (req, res) => {
     const body = req.body;
     candidateManager.rejectFromCandidateEllowRecruitment(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 export const getAuditLogs = (req, res) => {
     const body = req.query;
     candidateManager.getAllAuditLogs(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 export const listResourcesOfHirer = (req, res) => {
     const body = req;
     candidateManager.listHirerResources(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
 export const changeCandidateAvailability = (req, res) => {
     const body = req.body;
     candidateManager.changeAvailability(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
 
 export const resumeParser = (req, res) => {
     const body = req.body;
     candidateManager.resumeParser(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
 
 export const updateBlacklisted = (req, res) => {
     const body = req.body;
     candidateManager.changeBlacklisted(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 export const sigOn = (req, res) => {
     const body = req.query;
-    candidateManager.singleSignOn(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    candidateManager.singleSignOn(body).then((response: any) => {
+        res.writeHead(301,{Location: 'https://dev.ellow.io/login?firtName='});
+        res.end();
+    })
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
