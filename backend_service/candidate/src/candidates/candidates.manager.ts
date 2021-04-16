@@ -18,7 +18,6 @@ import * as express from 'express';
 import fetch from 'node-fetch'
 import Strategy from 'passport-linkedin-oauth2'
 import response from '../common/response/response';
-import * as request1 from "request-promise-native";
 
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for listing all the candidates with his/her basic details.
@@ -1370,7 +1369,8 @@ export const getResume = (_body) => {
                     residence,
                     phoneNumber : allProfileDetails.rows[0].phoneNumber,
                     email : allProfileDetails.rows[0].email,
-                    candidateVetted : allProfileDetails.rows[0].candidateVetted
+                    candidateVetted : allProfileDetails.rows[0].candidateVetted,
+                    blacklisted:allProfileDetails.rows[0].blacklisted
                 }
                 
                 let overallWorkExperience = {
@@ -2161,15 +2161,7 @@ export const createPdfFromHtml = (_body) => {
             })
         })
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     // >>>>>>> FUNC. >>>>>>>
     //>>>>>>>>>>>>>>>Function to edit the vetting status of the candidate.
     export const singleSignOn = (_body) => {
