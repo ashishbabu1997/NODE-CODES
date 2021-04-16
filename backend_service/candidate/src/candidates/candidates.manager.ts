@@ -19,7 +19,7 @@ import * as express from 'express';
 import fetch from 'node-fetch'
 import Strategy from 'passport-linkedin-oauth2'
 import response from '../common/response/response';
-import * as request1 from "request-promise-native";
+// import * as request1 from "request-promise-native";
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for listing all the candidates with his/her basic details.
 export const listCandidatesDetails = (_body) => {
@@ -2196,8 +2196,8 @@ export const singleSignOn = (_body) => {
               'Authorization': 'Bearer ' + content.access_token
             },
         };
-        const result = await request1.get(options);
-        console.log(result)
+        // const result = await request1.get(options);
+        // console.log(result)
             // https.get('http://api.linkedin.com/v2/me?oath2_access_token'+content.access_token, res => {
             // let data = [];
             // const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';

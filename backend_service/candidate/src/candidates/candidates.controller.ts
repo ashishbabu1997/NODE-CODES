@@ -1,5 +1,4 @@
 import * as candidateManager from './candidates.manager';
-
 import sendResponse from '../common/response/response';
 
 export const getPdf = (req, res) => {
