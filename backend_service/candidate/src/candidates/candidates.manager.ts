@@ -12,12 +12,9 @@ import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
 import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
-import passport from 'passport'
 const myCache = new nodeCache();
-import * as express from 'express';
 import fetch from 'node-fetch'
-import Strategy from 'passport-linkedin-oauth2'
-import response from '../common/response/response';
+
 
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for listing all the candidates with his/her basic details.
