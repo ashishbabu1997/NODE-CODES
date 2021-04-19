@@ -57,5 +57,4 @@ router
 .post('/userSignup', candidateController.newUserSignup)
 .get('/singleSignOn', candidateController.sigOn)
 
-
 export default router;
