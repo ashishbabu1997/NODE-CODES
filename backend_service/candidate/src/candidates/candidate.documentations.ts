@@ -2054,3 +2054,37 @@
 *       500:
 *         description: Server down
 */
+
+
+/**
+* @swagger
+* /candidates/getEmployeeDetailsFromLinkedinToken:
+*   post:
+*     tags:
+*       - Candidates
+*     name: List employee details
+*     summary: list employee details from token
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             token:
+*               type: string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

@@ -56,7 +56,7 @@ router
 .post('/updateBlacklisted',candidateController.updateBlacklisted)
 .post('/userSignup', candidateController.newUserSignup)
 .get('/singleSignOn', candidateController.sigOn)
-.get('/getEmployeeDetailsFromLinkedinToken', candidateController.getEmployeeDetailsFromLinkedin)
+.post('/getEmployeeDetailsFromLinkedinToken', candidateController.getEmployeeDetailsFromLinkedin)
 
 
 
