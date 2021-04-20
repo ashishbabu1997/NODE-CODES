@@ -117,5 +117,16 @@ export default {
     insertExtractedCandidateDetails : "insert into candidate (candidate_first_name, candidate_last_name, cover_note, resume, phone_number, email_address, work_experience, citizenship, residence, candidate_position_name, resume_file_name, candidate_status, created_on, updated_on, created_by, updated_by,resume_data) values ($firstname, $lastname, $summary, $resume, $phone, $email, $workexperience, $citizenship, $residence, $positionname,$resumefilename, $candidatestatus, $currenttime, $currenttime,$employeeid, $employeeid,$resumedata) on conflict on constraint candidate_resume_file_name_unique_key do nothing returning candidate_id",
     insertExtractedCandidateSkills : "insert into candidate_skill (candidate_id, skill_id, created_by, updated_by, created_on, updated_on) values ($candidateid,unnest((select ARRAY((select skill_id from skills where skill_name ilike any (($skillarray)::varchar[]))))),$employeeid,$employeeid,$currenttime,$currenttime) ",
     insertExtractedCandidateProject:'insert into candidate_project (candidate_id, project_name, company_name, project_description, skills, role, created_by, updated_by, created_on, updated_on) values ($candidateid, $projectname, $clientname, $description, (SELECT json_agg(a) from (select skill_id as "skillId", skill_name as "skillName" from skills where skill_name ilike any ($extractedskill::varchar[])) as a), $role, $employeeid, $employeeid, $currenttime, $currenttime)',
-    insertExtractedLanguagesQuery:'insert into candidate_language (candidate_id, language_id, created_by, updated_by, created_on, updated_on) values ($1, unnest((select ARRAY((select "languageId" from languages where language ilike any (($2)::varchar[]))))), $3, $3, $4, $4)'
+    insertExtractedLanguagesQuery:'insert into candidate_language (candidate_id, language_id, created_by, updated_by, created_on, updated_on) values ($1, unnest((select ARRAY((select "languageId" from languages where language ilike any (($2)::varchar[]))))), $3, $3, $4, $4)',
+
+
+    
+    // Linkedin Queries
+    employeeLogin: `SELECT employee_id from employee where email = $1`,
+    insertIntoEmployee:'insert into employee (firstname,lastname,email,company_id,user_role_id,account_type,status) values($1,$2,$3,$4,$5,$5,$6) returning employee_id',
+    getCompanyDetails:'select * from company where company_name=$1',
+    insertIntoCandidate:'insert into candidate (candidate_first_name, candidate_last_name,email_address,candidate_status,created_on,updated_on) values ($1,$2,$3,$4,$5,$5) returning candidate_id ',
+    insertIntoCandidateEmployee:'insert into candidate_employee (employee_id,candidate_id,created_on,updated_on) values ($1,$2,$3,$3)',
+    insertEmployeeToken:'update employee set linkedin_token=$1 where employee_id=$2',
+    getDetailsUsingLinkedinToken:'SELECT s.masked as "masked", s.currency_type_id as "currencyTypeId", s.company_profile as "companyProfile", e.firstname as "firstName", e.lastname as "lastName", e.employee_id as "employeeId", e.account_type as "accountType", c.company_id as "companyId", e.email, e.user_role_id as "userRoleId", c.company_name as "companyName", c.company_logo as "companyLogo", ca.candidate_id as "candidateId", ca.candidate_status as "candidateStatus", e.token as "token", e.status FROM employee e left join company c on c.company_id = e.company_id left join settings s on s.company_id = c.company_id left join candidate_employee ce on e.employee_id = ce.employee_id left join candidate ca on ca.candidate_id = ce.candidate_id WHERE e.linkedin_token=$1'
 }

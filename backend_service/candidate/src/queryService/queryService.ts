@@ -404,6 +404,49 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateId,currentTime(),_body.employeeId],
         }
     }
+    export const linkedinLoginMailCheck =(_body)=> {
+        return {
+            name: 'linkedin-email-check',
+            text: candidateQuery.employeeLogin,
+            values: [_body.email],
+        }
+    }
+    export const insertLinkedinToCandidate =(_body)=> {
+        return {
+            name: 'insert-in-candidate',
+            text: candidateQuery.insertIntoCandidate,
+            values: [_body.firstName,_body.lastName._body.email,4,currentTime()],
+        }
+    }
+    export const insertLinkedinToCandidateEmployee =(_body)=> {
+        return {
+            name: 'insert-in-candidate-employee',
+            text: candidateQuery.insertIntoCandidateEmployee,
+            values: [_body.employeeId,_body.candidateId,currentTime()],
+        }
+    }
+    export const insertEmployeeToken =(_body)=> {
+        return {
+            name: 'insert-employee-token',
+            text: candidateQuery.insertEmployeeToken,
+            values: [_body.token,_body.employeeId],
+        }
+    }
+    export const getCompanyDetailsFromName =(_body)=> {
+        return {
+            name: 'get-company-details',
+            text: candidateQuery.getCompanyDetails,
+            values: [_body.companyName],
+        }
+    }
+    export const insertLinkedinToEmployee =(_body)=> {
+        return {
+            name: 'insert-into-employee',
+            text: candidateQuery.insertIntoEmployee,
+            values: [_body.firstName._body.lastName,_body.email,_body.cmpId,4,true],
+        }
+    }
+    
     
     
     // *******************************************************************************************************************************//

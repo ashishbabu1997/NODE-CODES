@@ -14,6 +14,7 @@ import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
 const myCache = new nodeCache();
 import fetch from 'node-fetch'
+import * as jwt from 'jsonwebtoken';
 
 
 // >>>>>>> FUNC. >>>>>>>
@@ -2163,7 +2164,9 @@ export const createPdfFromHtml = (_body) => {
     //>>>>>>>>>>>>>>>Function to edit the vetting status of the candidate.
     export const singleSignOn = (_body) => {
         return new Promise((resolve, reject) => {
+            var employeeId,candidateId
             (async () => {
+                const client = await database()
                 try {
                     console.log("body code : ",_body.code);
                     
@@ -2190,9 +2193,8 @@ export const createPdfFromHtml = (_body) => {
             });
             const profileResult = await profile.json();
         //    console.log("profileResult : ",profileResult);
-            console.log('firstName : ',profileResult['firstName']['localized']['en_US']);
-            console.log('lastName : ',profileResult['lastName']['localized']['en_US']);
-
+            _body.firstName=profileResult['firstName']['localized']['en_US']
+            _body.lastName=profileResult['lastName']['localized']['en_US']
             const emailAddress = await fetch('https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))', {
                 method: 'GET',
                 headers: {
@@ -2204,11 +2206,39 @@ export const createPdfFromHtml = (_body) => {
                 },
             });
             const emailAddressResult = await emailAddress.json();
-            const emailId=emailAddressResult.elements[0]['handle~']['emailAddress']
+            _body.email=emailAddressResult.elements[0]['handle~']['emailAddress']
+             var results=await client.query(queryService.linkedinLoginMailCheck(_body));
+             _body.companyName='Freelancer'
+             var companyResults=await client.query(queryService.getCompanyDetailsFromName(_body));
+             _body.cmpId=companyResults.rows[0].company_id
+             _body.userRoleId=4
+             if (results.rowCount==0)
+             {
+                var employeeResult=await client.query(queryService.insertLinkedinToEmployee(_body));
+                employeeId=employeeResult.rows[0].employee_id
+                var candidateResult=await client.query(queryService.insertLinkedinToCandidate(_body));
+                candidateId=candidateResult.rows[0].candidate_id
+                _body.employeeId=employeeId
+                _body.candidateId=candidateId
+                await client.query(queryService.insertLinkedinToCandidateEmployee(_body));
+
+             }
+             else
+             {
+                 employeeId=results.rows[0].employee_id
+             }
+             _body.token = jwt.sign({
+                employeeId: employeeId.toString(),
+                companyId: _body.cmpId.toString(),
+                userRoleId:_body.userRoleId.toString()
+            }, config.jwtSecretKey, { expiresIn: '24h' });
+            await client.query(queryService.insertLinkedinToCandidateEmployee(_body));
+             await client.query('COMMIT');
             // console.log("emailAddressResult : ",JSON.stringify(emailAddressResult));
-            resolve({ code: 200, message: "Candidate SSO successfull", data: {} })
+            resolve({ code: 200, message: "Candidate SSO successfull", data: {token:_body.token} })
             
         } catch (e) {
+            await client.query('ROLLBACK')
             console.log(e)
             reject({ code: 400, message: "Failed. Please try again.", data: {} });
         } 
@@ -2216,4 +2246,53 @@ export const createPdfFromHtml = (_body) => {
         reject({ code: 400, message: "Failed. Please try again.", data: {} })
     })
 })
+}
+
+
+export const getLinkedinEmployeeLoginDetails = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                
+                // Inserting the integer representing the vetting status value.
+                const getQuery = {
+                    name: 'get-employee-details',
+                    text: candidateQuery.getDetailsUsingLinkedinToken,
+                    values: [_body.token],
+                }
+                var results=await client.query(getQuery);
+                const data = results.rows
+                if (data.length > 0) {
+                    const value = data[0];
+                    if(value.status)
+                    {
+    
+                        resolve({
+                            code: 200, message: "Login successful", data: {
+                                token: `Bearer ${_body.token}`,
+                                companyName: value.companyName, companyLogo: value.companyLogo,
+                                candidateId:value.candidateId ,  candidateStatus:value.candidateStatus,
+                                email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,
+                                masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile,userRoleId:value.userRoleId
+                            }
+                        });
+                    }
+                    else
+                    {
+                        reject({ code: 400, message: "Employee does not exist.", data: {} });
+
+                    }
+                }
+                
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } 
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
 }
