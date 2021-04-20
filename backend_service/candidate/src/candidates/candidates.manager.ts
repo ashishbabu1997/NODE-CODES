@@ -2170,7 +2170,7 @@ export const createPdfFromHtml = (_body) => {
                 try {
                     console.log("body code : ",_body.code);
                     
-                    const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A4005%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=86w0o74tpcdwl2&client_secret=SnYaChuW5W3yho2s&code='+_body.code, {
+                    const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=86w0o74tpcdwl2&client_secret=SnYaChuW5W3yho2s&code='+_body.code, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
@@ -2192,9 +2192,10 @@ export const createPdfFromHtml = (_body) => {
                 },
             });
             const profileResult = await profile.json();
-        //    console.log("profileResult : ",profileResult);
+            console.log("profileResult : ",profileResult);
             _body.firstName=profileResult['firstName']['localized']['en_US']
             _body.lastName=profileResult['lastName']['localized']['en_US']
+            console.log(_body.firstName,_body.lastName)
             const emailAddress = await fetch('https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))', {
                 method: 'GET',
                 headers: {
@@ -2226,14 +2227,19 @@ export const createPdfFromHtml = (_body) => {
              else
              {
                  employeeId=results.rows[0].employee_id
+                 _body.employeeId=employeeId
+                 
              }
+             console.log(employeeId)
              _body.token = jwt.sign({
                 employeeId: employeeId.toString(),
                 companyId: _body.cmpId.toString(),
                 userRoleId:_body.userRoleId.toString()
             }, config.jwtSecretKey, { expiresIn: '24h' });
-            await client.query(queryService.insertLinkedinToCandidateEmployee(_body));
-             await client.query('COMMIT');
+            console.log("TOKEN",_body.token)
+            var r=await client.query(queryService.insertEmployeeToken(_body));
+            console.log("EMPLOYEE ID",r.rows[0].employee_id)
+            await client.query('COMMIT');
             // console.log("emailAddressResult : ",JSON.stringify(emailAddressResult));
             resolve({ code: 200, message: "Candidate SSO successfull", data: {token:_body.token} })
             
