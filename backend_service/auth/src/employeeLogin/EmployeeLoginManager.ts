@@ -25,7 +25,8 @@ export const employeeLoginMethod = (_body) => {
                 
                 let results = await client.query(query);
                 const data = results.rows
-
+                var i=1
+               
                 // Check if the password is correct
                 if (data.length > 0) {
                     const value = data[0];

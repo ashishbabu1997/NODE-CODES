@@ -169,7 +169,7 @@ export const resourceTab = (body) =>{
     switch (body.tabValue) {
         
         case '0':
-        vettedQuery='  and chsv."candidateStatus"=3 '
+        vettedQuery='  and chsv."candidateStatus"=3 and chsv."blacklisted"=false '
         break;
         case '1':
         vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6'
