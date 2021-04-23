@@ -73,7 +73,13 @@ export const  getCompanyName = (_body) =>{
 
     }
 }
-
+export const modifyCandidateAvailabilityQuery = (_body) => {
+    return {
+        name: 'modify-candidate-availability',
+        text: jobReceivedQuery.modifyCandidateAvailability,
+        values: [_body.candidateId,_body.availability,_body.typeOfAvailability,_body.readyToStart, currentTime(), _body.employeeId],
+    }
+}
 export const  addEmployee = (_body) =>{
     return {
         name: 'add-employee',
@@ -112,6 +118,13 @@ export const  updateCandidateStatus = (_body) =>{
         text: jobReceivedQuery.updateCandidateStatus,
         values: [_body.candidateId, _body.employeeId, currentTime()],
 
+    }
+}
+export const addWorkExperiences = (_body) => {
+    return {
+        name: 'add-work-experiences',
+        text: jobReceivedQuery.addExperience,
+        values: [_body.candidateId,_body.workExperience,_body.remoteWorkExperience,_body.cost,_body.billingTypeId,_body.currencyTypeId,currentTime(),_body.employeeId],
     }
 }
 export const getResourceAllocatedRecruiter = (_body) => {

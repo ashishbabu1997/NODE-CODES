@@ -203,6 +203,7 @@ export const saveCandidateProfile = (_body) => {
                     _body.sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
                     _body.candidates = [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
                     var addCandidateResult =await client.query(queryService.saveCandidateQuery(_body))
+                    _body.candidateId = addCandidateResult.rows[0].candidate_id;
                     var companyResults = await client.query(queryService.getCompanyName(_body))
                     var companyName=companyResults.rows[0].company_name
                     if (_body.userRoleId==1 &&companyName=='Freelancer')
@@ -219,7 +220,6 @@ export const saveCandidateProfile = (_body) => {
                     {
                         console.log("NOt a freelancer")
                     }
-                    _body.candidateId = addCandidateResult.rows[0].candidate_id;
                     if (![null, undefined, ''].includes(_body.positionId)) {
                         
                         await client.query(queryService.addPositionQuery(_body))
@@ -250,6 +250,78 @@ export const saveCandidateProfile = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Save the candidate profile details
+export const resumeBuilderProfile = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now());
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                var results= await client.query(queryService.checkEMailExistenceQuery(_body))
+                if (results.rowCount==1)
+                {
+                    reject({ code: 400, message: "Candidate already registered", data: {} });
+                    
+                }
+                else
+                {
+                    _body.sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
+                    _body.candidates = [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
+                    var addCandidateResult =await client.query(queryService.saveCandidateQuery(_body))
+                    _body.candidateId = addCandidateResult.rows[0].candidate_id;
+                    var companyResults = await client.query(queryService.getCompanyName(_body))
+                    var companyName=companyResults.rows[0].company_name
+                    if (_body.userRoleId==1 &&companyName=='Freelancer')
+                    {
+                        var employeeResult= await client.query(queryService.addEmployee(_body))
+                        const addCandidateEmployee = {
+                            name: 'add-candidate-employee',
+                            text: jobReceivedQuery.addCandidateEmployeeDetails,
+                            values:[employeeResult.rows[0].employee_id,addCandidateResult.rows[0].candidate_id,true,currentTime, currentTime]   
+                        }
+                        await client.query(addCandidateEmployee);
+                    }
+                    else
+                    {
+                        console.log("NOt a freelancer")
+                    }
+                    if (![null, undefined, ''].includes(_body.positionId)) {
+                        
+                        await client.query(queryService.addPositionQuery(_body))
+                        const response = await client.query(queryService.getJobStatusQuery(_body))
+                        _body.jobStatus = response.rows[0].jobStatus;
+                        await client.query(queryService.updateCompanyJobStatusQuery(_body))
+                        await client.query('COMMIT');
+                        
+                    }
+                    else
+                    {
+                        console.log("Added")
+                    }
+                    let candidateId=_body.candidateId
+                    _body.remoteWorkExperience===""?null:_body.remoteWorkExperience
+                    await client.query(queryService.addWorkExperiences(_body));
+                    await client.query(queryService.modifyCandidateAvailabilityQuery(_body));
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Candidate profile added", data: {candidateId} });
+                }
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
 // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Submit the candidate profile by sending a notificatin mail to the admin
 export const submitCandidateProfile = (_body) => {
