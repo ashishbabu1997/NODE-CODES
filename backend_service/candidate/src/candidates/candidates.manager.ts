@@ -908,30 +908,35 @@ export const modifyCandidateAvailability = (_body) => {
 // Checks if the action is add or update.
 export const modifyLanguageProficiency = (_body) => {
     return new Promise((resolve, reject) => {
+        var candidateLanguageId;
         (async () => {
             const client = await database().connect()
             try {
                 switch(_body.action)
                 {
                     case 'add':
-                    await client.query(queryService.insertLanguageProficiencyQuery(_body));
+                    var results=await client.query(queryService.insertLanguageProficiencyQuery(_body));
+                    candidateLanguageId=results.rows[0].candidate_language_id
                     break;
                     
                     case 'update' :
                     case ![null,undefined,''].includes(_body.candidateLanguageId):
                     await client.query(queryService.modifyLanguageProficiencyQuery(_body));
+                    candidateLanguageId=_body.candidateLanguageId
                     break;
                     
                     case 'delete':
                     case ![null,undefined,''].includes(_body.candidateLanguageId):
                     await client.query(queryService.deleteLanguageProficiencyQuery(_body));
+                    candidateLanguageId=_body.candidateLanguageId
+
                     break;
                     
                     default:
                     reject({ code: 400, message: "Invalid candidateLanguageId or action ", data: {} });
                 }
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Candidate Language updated successfully", data: {} });   
+                resolve({ code: 200, message: "Candidate Language updated successfully", data: {candidateLanguageId:candidateLanguageId} });   
             } catch (e) {
                 console.log("error caught : ",e)
                 await client.query('ROLLBACK')
@@ -977,6 +982,7 @@ export const addWorkExperience = (_body) => {
 // >>>>>>>>>>>>>> Insert,update or delete projects done by the candidate.
 export const modifyCandidateProject = (_body) => {
     return new Promise((resolve, reject) => {
+        var candidateProjectId;
         (async () => {
             const client = await database().connect()
             try {
@@ -984,25 +990,28 @@ export const modifyCandidateProject = (_body) => {
                 {
                     case 'add':
                     _body.skills=JSON.stringify(_body.skills)
-                    await client.query(queryService.insertCandidateProjectsQuery(_body));
+                    var results=await client.query(queryService.insertCandidateProjectsQuery(_body));
+                    candidateProjectId=results.rows[0].candidate_project_id
                     break;
                     
                     case 'update' :
                     case ![null,undefined,''].includes(_body.candidateProjectId):
                     _body.skills=JSON.stringify(_body.skills)
                     await client.query(queryService.modifyCandidateProjectsQuery(_body));
+                    candidateProjectId=_body.candidateProjectId
                     break;
                     
                     case 'delete':
                     case ![null,undefined,''].includes(_body.candidateProjectId):
                     await client.query(queryService.deleteCandidateProjectsQuery(_body));
+                    candidateProjectId=_body.candidateProjectId
                     break;
                     
                     default:
                     reject({ code: 400, message: "Invalid candidateProjectId or action ", data: {} });
                 }
                 
-                resolve({ code: 200, message: "Candidate project updated successfully", data: {} });
+                resolve({ code: 200, message: "Candidate project updated successfully", data: {candidateProjectId:candidateProjectId} });
                 
             } catch (e) {
                 console.log(e)
@@ -1023,29 +1032,33 @@ export const modifyCandidateProject = (_body) => {
 //>>>>>>>> Update candidate's work history
 export const modifyCandidateWorkHistory = (_body) => {
     return new Promise((resolve, reject) => {
+        var candidateWorExperienceId;
         (async () => {
             const client = await database().connect()
             try {
                 switch(_body.action)
                 {
                     case 'add':
-                    await client.query(queryService.insertCandidateWorkHistoryQuery(_body));
+                    var results= await client.query(queryService.insertCandidateWorkHistoryQuery(_body));
+                    candidateWorExperienceId=results.rows[0].candidate_work_experience_id
                     break;
                     
                     case 'update' :
                     case ![null,undefined,''].includes(_body.candidateWorkExperienceId):
                     await client.query(queryService.modifyCandidateWorkHistoryQuery(_body));
+                    candidateWorExperienceId=_body.candidateWorkExperienceId
                     break;
                     
                     case 'delete':
                     case ![null,undefined,''].includes(_body.candidateWorkExperienceId):
                     await client.query(queryService.deleteCandidateWorkHistoryQuery(_body));
+                    candidateWorExperienceId=_body.candidateWorkExperienceId
                     break;
                     
                     default:
                     reject({ code: 400, message: "Invalid candidateWorkExperienceId or action ", data: {} });
                 }
-                resolve({ code: 200, message: "Candidate work history updated successfully", data: {} });
+                resolve({ code: 200, message: "Candidate work history updated successfully", data: {candidateWorExperienceId:candidateWorExperienceId} });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
@@ -1065,30 +1078,34 @@ export const modifyCandidateWorkHistory = (_body) => {
 // >>>>>>>>>>>>> Insert,update or delete educational qualifications of candidate
 export const modifyEducation = (_body) => {
     return new Promise((resolve, reject) => {
+        var candidateEducationId;
         (async () => {
             const client = await database().connect()
             try {
                 switch(_body.action)
                 {
                     case 'add':
-                    await client.query(queryService.insertCandidateEducationQuery(_body));
+                    var results=await client.query(queryService.insertCandidateEducationQuery(_body));
+                    candidateEducationId=results.rows[0].candidate_education_id
                     break;
                     
                     case 'update' :
                     case ![null,undefined,''].includes(_body.candidateEducationId):
                     await client.query(queryService.modifyCandidateEducationQuery(_body));
+                    candidateEducationId=_body.candidateEducationId
                     break;
                     
                     case 'delete':
                     case ![null,undefined,''].includes(_body.candidateEducationId):
                     await client.query(queryService.deleteCandidateEducationQuery(_body));
+                    candidateEducationId=_body.candidateEducationId
                     break;
                     
                     default:
                     reject({ code: 400, message: "Invalid candidateEducationId or action ", data: {} });
                 }
                 
-                resolve({ code: 200, message: "Candidate education updated successfully", data: {} });
+                resolve({ code: 200, message: "Candidate education updated successfully", data: {candidateEducationId:candidateEducationId} });
                 
             } catch (e) {
                 console.log(e)
@@ -1169,29 +1186,33 @@ export const modifySocialPresence = (_body) =>{
 export const modifyPublication = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now());
+        var candidatePublicationId;
         (async () => {
             const client = await database().connect()
             try {
                 switch(_body.action)
                 {
                     case 'add':
-                    await client.query(queryService.insertCandidatePublicationQuery(_body));
+                    var results=await client.query(queryService.insertCandidatePublicationQuery(_body));
+                    candidatePublicationId=results.rows[0].candidate_publication_id
                     break;
                     
                     case 'update' :
                     case ![null,undefined,''].includes(_body.candidatePublicationId):
                     await client.query(queryService.modifyCandidatePublicationQuery(_body));
+                    candidatePublicationId=_body.candidatePublicationId
                     break;
                     
                     case 'delete':
                     case ![null,undefined,''].includes(_body.candidatePublicationId):
                     await client.query(queryService.deleteCandidatePublicationQuery(_body));
+                    candidatePublicationId=_body.candidatePublicationId
                     break;
                     
                     default:
                     reject({ code: 400, message: "Invalid candidatePublicationId or action ", data: {} });
                 }
-                resolve({ code: 200, message: "Candidate Publication updated successfully", data: {} });
+                resolve({ code: 200, message: "Candidate Publication updated successfully", data: {candidatePublicationId:candidatePublicationId} });
                 
             } catch (e) {
                 console.log(e)
