@@ -752,10 +752,8 @@ export const modifyResumeData = (_body) => {
                     let extractedData  = rchilliExtractor.rchilliExtractor(_body);
                     extractedData["employeeId"] = _body.employeeId;
                     extractedData["resume"] = _body.resume;
-                    
-                    
+                    console.log(extractedData)
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
-                    let resume=candidateResult.rows[0].resume_data
                     let resumeData=extractedData['resumeData']['ResumeParserData']['DetailResume']
                     var splitByLine=resumeData.split('\n')
                     var splitByLineToString=splitByLine.toString()
@@ -2108,7 +2106,7 @@ export const createPdfFromHtml = (_body) => {
                 try {
                     let responseData = null;
                     console.log("URI : ",_body.publicUrl+encodeURIComponent(_body.fileName));
-                    
+                    console.log(_body.fileName)
                     let jsonObject = JSON.stringify({
                         "url" : _body.publicUrl+encodeURIComponent(_body.fileName),
                         "userkey" : "IC8Q6BQ5",
