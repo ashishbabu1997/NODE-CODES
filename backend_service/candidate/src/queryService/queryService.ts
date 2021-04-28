@@ -959,6 +959,14 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, resume:data.resume, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData}
         }
     }
+    export const insertDetailResume = (_body) => {
+        return {
+            name: 'insert-detail-resume',
+            text: candidateQuery.insertDetailResumeQuery,
+            values:[_body.candidatesId,_body.detailResume]
+        }
+    }
+
 
     export const insertExtractedCandidateSkills = (data) => {
         return {

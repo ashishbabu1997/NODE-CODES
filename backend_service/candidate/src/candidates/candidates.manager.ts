@@ -755,6 +755,19 @@ export const modifyResumeData = (_body) => {
                     
                     
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
+                    let resumeData=candidateResult.rows[0].resume_data
+                    var splitByLine=resumeData.split('\n')
+                    var splitByLineToString=splitByLine.toString()
+                    var stringSplit=splitByLineToString.split('\t').toString()
+                    var splitByComma=stringSplit.split(',')
+                    let resumeList={}
+                    splitByComma.forEach(element => {  
+                                            
+                                               resumeList[splitByComma.indexOf(element)]=element
+                    });
+                    _body.detailResume=resumeList
+                    _body.candidatesId=candidateResult.rows[0].candidate_id
+                    await client.query(queryService.insertDetailResume(_body))
                     await client.query('COMMIT');
                     try {
                         
@@ -1389,7 +1402,8 @@ export const getResume = (_body) => {
                     phoneNumber : allProfileDetails.rows[0].phoneNumber,
                     email : allProfileDetails.rows[0].email,
                     candidateVetted : allProfileDetails.rows[0].candidateVetted,
-                    blacklisted:allProfileDetails.rows[0].blacklisted
+                    blacklisted:allProfileDetails.rows[0].blacklisted,
+                    detailResume:allProfileDetails.rows[0].detailResume
                 }
                 
                 let overallWorkExperience = {
