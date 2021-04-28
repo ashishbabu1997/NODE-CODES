@@ -755,7 +755,8 @@ export const modifyResumeData = (_body) => {
                     
                     
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
-                    let resumeData=candidateResult.rows[0].resume_data
+                    let resume=candidateResult.rows[0].resume_data
+                    let resumeData=resume.DetailResume
                     var splitByLine=resumeData.split('\n')
                     var splitByLineToString=splitByLine.toString()
                     var stringSplit=splitByLineToString.split('\t').toString()
