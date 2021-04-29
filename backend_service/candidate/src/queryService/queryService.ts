@@ -415,7 +415,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'insert-in-candidate',
             text: candidateQuery.insertIntoCandidate,
-            values: [_body.firstName,_body.lastName._body.email,4,currentTime()],
+            values: [_body.firstName,_body.lastName,_body.email,4,currentTime()],
         }
     }
     export const insertLinkedinToCandidateEmployee =(_body)=> {
@@ -441,9 +441,9 @@ export const insertCandidatePublicationQuery = (_body) => {
     }
     export const insertLinkedinToEmployee =(_body)=> {
         return {
-            name: 'insert-into-employee',
+            name: 'insert-employee',
             text: candidateQuery.insertIntoEmployee,
-            values: [_body.firstName._body.lastName,_body.email,_body.cmpId,4,true],
+            values: [_body.firstName,_body.lastName,_body.email,_body.cmpId,4,true],
         }
     }
     

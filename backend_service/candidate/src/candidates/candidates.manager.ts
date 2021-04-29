@@ -2242,27 +2242,32 @@ export const createPdfFromHtml = (_body) => {
             });
             const emailAddressResult = await emailAddress.json();
             _body.email=emailAddressResult.elements[0]['handle~']['emailAddress']
+            console.log(_body.email)
              var results=await client.query(queryService.linkedinLoginMailCheck(_body));
+             console.log(results.rowCount)
              _body.companyName='Freelancer'
              var companyResults=await client.query(queryService.getCompanyDetailsFromName(_body));
              _body.cmpId=companyResults.rows[0].company_id
              _body.userRoleId=4
              if (results.rowCount==0)
              {
+                console.log(_body.lastName)
+
                 var employeeResult=await client.query(queryService.insertLinkedinToEmployee(_body));
                 employeeId=employeeResult.rows[0].employee_id
+                console.log(employeeId)
                 var candidateResult=await client.query(queryService.insertLinkedinToCandidate(_body));
                 candidateId=candidateResult.rows[0].candidate_id
                 _body.employeeId=employeeId
                 _body.candidateId=candidateId
                 await client.query(queryService.insertLinkedinToCandidateEmployee(_body));
-
              }
              else
              {
                  employeeId=results.rows[0].employee_id
                  _body.employeeId=employeeId
-                 
+                 reject({ code: 400, message: "User Already Exist", data: {} });
+
              }
              console.log(employeeId)
              _body.token = jwt.sign({
@@ -2270,7 +2275,6 @@ export const createPdfFromHtml = (_body) => {
                 companyId: _body.cmpId.toString(),
                 userRoleId:_body.userRoleId.toString()
             }, config.jwtSecretKey, { expiresIn: '24h' });
-            console.log("TOKEN",_body.token)
             var r=await client.query(queryService.insertEmployeeToken(_body));
             console.log("EMPLOYEE ID",r.rows[0].employee_id)
             await client.query('COMMIT');
