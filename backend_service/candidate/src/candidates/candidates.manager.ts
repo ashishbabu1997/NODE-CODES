@@ -1402,7 +1402,6 @@ export const getResume = (_body) => {
                     email : allProfileDetails.rows[0].email,
                     candidateVetted : allProfileDetails.rows[0].candidateVetted,
                     blacklisted:allProfileDetails.rows[0].blacklisted,
-                    detailResume:allProfileDetails.rows[0].detailResume
                 }
                 
                 let overallWorkExperience = {
@@ -1424,6 +1423,7 @@ export const getResume = (_body) => {
                 data: 
                 {candidateId:Number(_body.candidateId),
                     profile:profileDetails,
+                    detailResume:allProfileDetails.rows[0].detailResume,
                     resume : allProfileDetails.rows[0].resume,
                     overallWorkExperience,
                     availability,
