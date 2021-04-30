@@ -2286,10 +2286,15 @@ export const createPdfFromHtml = (_body) => {
                                     }
                                     else
                                     {
-                                        reject({ code: 400, message: "Employee does not exist.", data: {} });
+                                        reject({ code: 400, message: "User does not exist.", data: {} });
 
                                     }
                                 }
+                        }
+                        else
+                        {
+                            reject({ code: 400, message: "User already registered.Please login with your email and password provided!", data: {} });
+
                         }
              }
             await client.query('COMMIT');
