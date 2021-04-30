@@ -443,7 +443,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'insert-employee',
             text: candidateQuery.insertIntoEmployee,
-            values: [_body.firstName,_body.lastName,_body.email,_body.cmpId,4,true],
+            values: [_body.firstName,_body.lastName,_body.email,_body.cmpId,4,true,1],
         }
     }
     

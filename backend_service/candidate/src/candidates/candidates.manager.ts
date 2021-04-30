@@ -2244,15 +2244,12 @@ export const createPdfFromHtml = (_body) => {
             _body.email=emailAddressResult.elements[0]['handle~']['emailAddress']
             console.log(_body.email)
              var results=await client.query(queryService.linkedinLoginMailCheck(_body));
-             console.log(results.rowCount)
              _body.companyName='Freelancer'
              var companyResults=await client.query(queryService.getCompanyDetailsFromName(_body));
              _body.cmpId=companyResults.rows[0].company_id
              _body.userRoleId=4
              if (results.rowCount==0)
              {
-                console.log(_body.lastName)
-
                 var employeeResult=await client.query(queryService.insertLinkedinToEmployee(_body));
                 employeeId=employeeResult.rows[0].employee_id
                 console.log(employeeId)
@@ -2261,22 +2258,40 @@ export const createPdfFromHtml = (_body) => {
                 _body.employeeId=employeeId
                 _body.candidateId=candidateId
                 await client.query(queryService.insertLinkedinToCandidateEmployee(_body));
+                _body.token = jwt.sign({
+                    employeeId: employeeId.toString(),
+                    companyId: _body.cmpId.toString(),
+                    userRoleId:_body.userRoleId.toString()
+                }, config.jwtSecretKey, { expiresIn: '24h' });
+                await client.query(queryService.insertEmployeeToken(_body));
              }
              else
              {
                  employeeId=results.rows[0].employee_id
                  _body.employeeId=employeeId
-                 reject({ code: 400, message: "User Already Exist", data: {} });
+                 if(results.rows[0].password==null && results.rows[0].linkedin_token!==null)
+                 {
+                                const getQuery = {
+                                    name: 'get-employee-details',
+                                    text: candidateQuery.getLoginDetailFromEmployeeId,
+                                    values: [_body.employeeId],
+                                }
+                                var results=await client.query(getQuery);
+                                const data = results.rows
+                                if (data.length > 0) {
+                                    const value = data[0];
+                                    if(value.status)
+                                    {
+                                        _body.token=value.linkedinToken
+                                    }
+                                    else
+                                    {
+                                        reject({ code: 400, message: "Employee does not exist.", data: {} });
 
+                                    }
+                                }
+                        }
              }
-             console.log(employeeId)
-             _body.token = jwt.sign({
-                employeeId: employeeId.toString(),
-                companyId: _body.cmpId.toString(),
-                userRoleId:_body.userRoleId.toString()
-            }, config.jwtSecretKey, { expiresIn: '24h' });
-            var r=await client.query(queryService.insertEmployeeToken(_body));
-            console.log("EMPLOYEE ID",r.rows[0].employee_id)
             await client.query('COMMIT');
             // console.log("emailAddressResult : ",JSON.stringify(emailAddressResult));
             resolve({ code: 200, message: "Candidate SSO successfull", data: {token:_body.token} })
@@ -2312,7 +2327,6 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
                     const value = data[0];
                     if(value.status)
                     {
-    
                         resolve({
                             code: 200, message: "Login successful", data: {
                                 token: `Bearer ${_body.token}`,
