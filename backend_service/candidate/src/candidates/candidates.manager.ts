@@ -752,17 +752,16 @@ export const modifyResumeData = (_body) => {
                     let extractedData  = rchilliExtractor.rchilliExtractor(_body);
                     extractedData["employeeId"] = _body.employeeId;
                     extractedData["resume"] = _body.resume;
-                    console.log(extractedData)
+                    extractedData["firstName"]=extractedData["firstName"]+' '+extractedData["middleName"]
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
                     let resumeData=extractedData['resumeData']['ResumeParserData']['DetailResume']
                     var splitByLine=resumeData.split('\n')
                     var splitByLineToString=splitByLine.toString()
-                    var stringSplit=splitByLineToString.split('\t').toString()
-                    var splitByComma=stringSplit.split(',')
+                    var stringSplit=splitByLineToString.split('\t')
                     let resumeList={}
-                    splitByComma.forEach(element => {  
+                    stringSplit.forEach(element => {  
                                             
-                                               resumeList[splitByComma.indexOf(element)]=element
+                                               resumeList[stringSplit.indexOf(element)]=element
                     });
                     _body.detailResume=resumeList
                     _body.candidatesId=candidateResult.rows[0].candidate_id

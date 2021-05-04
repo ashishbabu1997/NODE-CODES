@@ -1,3 +1,5 @@
+import adminQuery from '..//admins/query/admin.query';
+
 export const adminPagination = (body) => {
     let pagination = '';
     // Pagination

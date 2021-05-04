@@ -12,6 +12,7 @@ export const rchilliExtractor = (data) =>{
         extractedData["resumeFileName"] = resumeData["ResumeFileName"];
         extractedData["firstName"] = resumeData["Name"]["FirstName"];
         extractedData["lastName"] = resumeData["Name"]["LastName"];
+        extractedData["middleName"] = resumeData["Name"]["MiddleName"];
         extractedData["email"] = resumeData["Email"][0]["EmailAddress"];
         extractedData["city"] = resumeData["Address"][0]["City"];
         extractedData["Address"] = resumeData["Address"][0];
