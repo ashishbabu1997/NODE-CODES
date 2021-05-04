@@ -319,7 +319,7 @@ export const sigOn = (req, res) => {
         res.writeHead(301,{Location: 'https://dev.ellow.io/candidate-login?token='+response.data.token});
         res.end();
     })
-    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    .catch((error: any) =>res.writeHead(301,{Location: 'https://dev.ellow.io/candidate-login'}))
 }
 export const getEmployeeDetailsFromLinkedin = (req, res) => {
     const body = req.body;
