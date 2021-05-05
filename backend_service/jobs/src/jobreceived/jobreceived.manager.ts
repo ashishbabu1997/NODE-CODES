@@ -379,7 +379,26 @@ export const submitCandidateProfile = (_body) => {
                         last:candidateLastName,
                         position:positionName,     
                     };
-                    emailClient.emailManager(config.adminEmail,subject,path,userReplacements);
+                    const  getEllowAdmins = {
+                        name: 'get-ellow-admin',
+                        text: jobReceivedQuery.getellowAdmins,
+                        values: []
+                
+    
+                }
+                var ellowAdmins=await client.query(getEllowAdmins)
+                if(Array.isArray(ellowAdmins.rows))
+                {
+                    
+                    ellowAdmins.rows.forEach(element => {
+                        emailClient.emailManager(element.email,subject,path,userReplacements);
+                                
+                        })
+                            
+                }
+                else{
+                    console.log("Error in fetch admin query")
+                }
                     var positions=await client.query(queryService. getPositionName(_body));
                     var resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
                     if (_body.userRoleId==1)
@@ -409,7 +428,24 @@ export const submitCandidateProfile = (_body) => {
                         last:candidateLastName,
                         position:status   
                     };
-                    emailClient.emailManager(config.adminEmail,subject,path,replacements); 
+                    const  getEllowAdmins = {
+                        name: 'get-ellow-admin',
+                        text: jobReceivedQuery.getellowAdmins,
+                        values: []
+                
+    
+                }
+                var ellowAdmins=await client.query(getEllowAdmins)
+                if(Array.isArray(ellowAdmins.rows))
+                {
+                    
+                    ellowAdmins.rows.forEach(element => {
+                        emailClient.emailManager(element.email,subject,path,replacements); 
+                                
+                        })
+                            
+                }
+            
                 }
                 
                 resolve({ code: 200, message: "Candidate profile submitted", data: {} });

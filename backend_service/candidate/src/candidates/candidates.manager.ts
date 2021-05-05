@@ -256,7 +256,20 @@ export const candidateClearance = (_body) => {
                             cName: companyName,
                             pName: positionName
                         }; 
-                        emailClient.emailManager(config.adminEmail,subj,path,adminReplacements);
+                        const  getEllowAdmins = {
+                            name: 'get-ellow-admin',
+                            text: candidateQuery.getellowAdmins,
+                            values: []
+                            
+                            
+                        }
+                        var ellowAdmins=await client.query(getEllowAdmins)
+                        if(Array.isArray(ellowAdmins.rows))
+                        {
+                            ellowAdmins.rows.forEach(element => {
+                                emailClient.emailManager(element.email,subj,path,adminReplacements);
+                            })
+                        }
                     }
                 } else {
                     if (_body.userRoleId == 1) {
@@ -280,7 +293,21 @@ export const candidateClearance = (_body) => {
                             cName: companyName,
                             pName: positionName
                         };
-                        emailClient.emailManager(config.adminEmail,subj,path,adminReplacements);
+                        const  getEllowAdmins = {
+                            name: 'get-ellow-admin',
+                            text: candidateQuery.getellowAdmins,
+                            values: []
+                            
+                            
+                        }
+                        var ellowAdmins=await client.query(getEllowAdmins)
+                        if(Array.isArray(ellowAdmins.rows))
+                        {
+            
+                            ellowAdmins.rows.forEach(element => {
+                                emailClient.emailManager(element.email,subj,path,adminReplacements);
+                            })
+                        }
                     }  
                 }
                 const candidateApprovalQuery = {
@@ -370,7 +397,21 @@ export const interviewRequestFunction = (_body) => {
                     emailId: email,
                     telephoneNumber: phoneNumber
                 };
-                emailClient.emailManager(config.adminEmail,subject,path,adminReplacements);
+                const  getEllowAdmins = {
+                    name: 'get-ellow-admin',
+                    text: candidateQuery.getellowAdmins,
+                    values: []
+                    
+                    
+                }
+                var ellowAdmins=await client.query(getEllowAdmins)
+                if(Array.isArray(ellowAdmins.rows))
+                {
+    
+                    ellowAdmins.rows.forEach(element => {
+                        emailClient.emailManager(element.email,subject,path,adminReplacements);
+                    })
+                }
                 resolve({ code: 200, message: "Interview request has been sent successfully", data: {} });
             } catch (e) {
                 console.log(e)
@@ -1611,7 +1652,20 @@ export const shareResumeSignup = (_body) => {
                             
                         };
                         let adminPath = 'src/emailTemplates/newUserAdminText.html';
-                        emailClient.emailManager(config.adminEmail,config.text.newUserAdminTextSubject,adminPath,adminReplacements);
+                        const  getEllowAdmins = {
+                            name: 'get-ellow-admin',
+                            text: candidateQuery.getellowAdmins,
+                            values: []
+                            
+                            
+                        }
+                        var ellowAdmins=await client.query(getEllowAdmins)
+                        if(Array.isArray(ellowAdmins.rows))
+                        {
+                            ellowAdmins.rows.forEach(element => {
+                                emailClient.emailManager(element.email,config.text.newUserAdminTextSubject,adminPath,adminReplacements);
+                            })
+                        }
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Employee Added Successfully", data: {}})
                     }
