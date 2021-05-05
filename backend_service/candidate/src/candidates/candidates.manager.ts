@@ -662,7 +662,7 @@ export const linkCandidateWithPosition = (_body) => {
                                     };
                                     let path = 'src/emailTemplates/addCandidatesText.html';
                                     ellowAdmins.rows.forEach(element => {
-                                        emailClient.emailManager(config.adminEmail,config.text.addCandidatesTextSubject,path,replacements);
+                                        emailClient.emailManager(element.email,config.text.addCandidatesTextSubject,path,replacements);
                                     })
                                 }
                 

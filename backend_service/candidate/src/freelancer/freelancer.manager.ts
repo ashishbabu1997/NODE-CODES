@@ -105,6 +105,14 @@ export const submitFreelancerProfile = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
+                const  getEllowAdmins = {
+                    name: 'get-ellow-admin',
+                    text: freelancerQuery.getellowAdmins,
+                    values: []
+                    
+                    
+                }
+                var ellowAdmins=await client.query(getEllowAdmins)
                 _body.candidateStatus = 3; 
                 await client.query(queryService.addDefaultTraits(_body));
                 var result=await client.query(queryService.candidateStatusUpdate(_body));
@@ -120,7 +128,14 @@ export const submitFreelancerProfile = (_body) => {
                 await client.query('COMMIT');
                 let message=`${firstName + ' ' + lastName} has submitted his profile for review`
                 await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'freelancer',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
-                emailClient.emailManager(config.adminEmail,config.text.submitProfileSubject,path,replacements);
+                if(Array.isArray(ellowAdmins.rows))
+                                {
+                                   
+                                    ellowAdmins.rows.forEach(element => {
+                                        emailClient.emailManager(element.email,config.text.submitProfileSubject,path,replacements);
+
+                                    })
+                                }
                 resolve({ code: 200, message: "Freelancer submitted successfully", data: {} });
             } catch (e) {
                 console.log(e)
