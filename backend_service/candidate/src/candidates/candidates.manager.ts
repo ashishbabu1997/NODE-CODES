@@ -520,7 +520,7 @@ export const removeCandidateFromPosition = (_body) => {
                 candidateFirstName = emailResults.rows[0].cFirstName
                 candidateLastName = emailResults.rows[0].cLastName
                 var sellerMail = emailResults.rows[0].email
-                var subject = "Candidate Deletion Notification";
+                var subject = "Candidate Removal Notification";
                 let imageResults=await client.query(queryService.getImageDetails(_body))
                 message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position ${positionName} has been removed `
                 let path = 'src/emailTemplates/candidateDeletionMailText.html';
@@ -575,7 +575,14 @@ export const linkCandidateWithPosition = (_body) => {
                 var firstName;
                 var lastName
                 const currentTime = Math.floor(Date.now());
-                
+                const  getEllowAdmins = {
+                    name: 'get-ellow-admin',
+                    text: candidateQuery.getellowAdmins,
+                    values: []
+                    
+                    
+                }
+                var ellowAdmins=await client.query(getEllowAdmins)
                 // Get position realted details
                 const getPositionNames = {
                     name: 'get-position-details',
@@ -646,12 +653,18 @@ export const linkCandidateWithPosition = (_body) => {
                 let message=`${count} candidates has been added for the position ${positionName}`
                 createHirerNotifications({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId: positionCompanyId, message:message, candidateId:null, notificationType: 'candidateList',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:null,firstName:null,lastName:null})
                 createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId: _body.companyId, message:message, candidateId:null, notificationType: 'candidateList',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:null,firstName:null,lastName:null})
-                let replacements = {
-                    positionName:positionName,
-                    candidateNames:names
-                };
-                let path = 'src/emailTemplates/addCandidatesText.html';
-                emailClient.emailManager(config.adminEmail,config.text.addCandidatesTextSubject,path,replacements);
+                
+                if(Array.isArray(ellowAdmins.rows))
+                                {
+                                    let replacements = {
+                                        positionName:positionName,
+                                        candidateNames:names
+                                    };
+                                    let path = 'src/emailTemplates/addCandidatesText.html';
+                                    ellowAdmins.rows.forEach(element => {
+                                        emailClient.emailManager(config.adminEmail,config.text.addCandidatesTextSubject,path,replacements);
+                                    })
+                                }
                 
                 resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
             } catch (e) {

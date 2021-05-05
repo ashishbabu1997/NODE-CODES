@@ -316,11 +316,19 @@ export const updateBlacklisted = (req, res) => {
 export const sigOn = (req, res) => {
     const body = req.query;
     candidateManager.singleSignOn(body).then((response: any) => {
-        res.writeHead(301,{Location: 'https://dev.ellow.io/candidate-login?token='+response.data.token});
-        res.end();
+        if (response.code == 200)
+        {
+            res.writeHead(301,{Location: 'https://dev.ellow.io/candidate-login?token='+response.data.token});
+            res.end();
+        }
+        else
+        {
+            res.writeHead(302,{Location: 'https://dev.ellow.io/redirect-notification'});
+            res.end();
+        }
+       
     })
-    .catch((error: any) =>res.writeHead(301,{Location: 'https://dev.ellow.io/candidate-login'}))
-}
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))}
 export const getEmployeeDetailsFromLinkedin = (req, res) => {
     const body = req.body;
     candidateManager.getLinkedinEmployeeLoginDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
