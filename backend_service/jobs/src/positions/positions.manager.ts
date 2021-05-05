@@ -462,7 +462,8 @@ export const fetchPositionDetails = (_body) => {
                             }
                             else
                             {
-                                let subj="Close Position Notification"
+                                let 
+                                subj="Close Position Notification"
                                 let path = 'src/emailTemplates/positionCloseText.html';
                                 var userReplacements = {
                                     position:positionName

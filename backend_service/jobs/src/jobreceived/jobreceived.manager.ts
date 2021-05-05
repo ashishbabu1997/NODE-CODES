@@ -366,7 +366,7 @@ export const submitCandidateProfile = (_body) => {
                     }   
                 }
                 await client.query('COMMIT');
-                var subject='New Candidate Notification'
+                var subject='Candidate Addition Notification'
                 if(![null,undefined,""].includes(_body.positionId))
                 {
                     

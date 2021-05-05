@@ -25,7 +25,7 @@ export default {
     },
     "text": {
     
-        "subject":"Customer Registration Notification",
+        "subject":"Company Registration Notification",
         "userSubject":"Candidate Verification Link",
         "resetConfirmSubject":" ellow Confirmation Mail"
     },
