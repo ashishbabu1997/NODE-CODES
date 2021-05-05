@@ -56,6 +56,5 @@ router
 .post('updateBlacklisted',candidateController.updateBlacklisted)
 .post('/userSignup', candidateController.newUserSignup)
 .get('/singleSignOn', candidateController.sigOn)
-
-
+.get('/parse',candidateController.parse);
 export default router;

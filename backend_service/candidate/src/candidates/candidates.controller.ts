@@ -316,8 +316,16 @@ export const updateBlacklisted = (req, res) => {
 export const sigOn = (req, res) => {
     const body = req.query;
     candidateManager.singleSignOn(body).then((response: any) => {
-        res.writeHead(301,{Location: 'https://dev.ellow.io/login?firtName='});
-        res.end();
+        res.cookie('x-token', '86w0o74tpcdwl2');
+        res.redirect('https://dev.ellow.io/login?token=86w0o74tpcdwl2');
+        // res.writeHead(301,{Location: 'https://dev.ellow.io/login'});
+        // res.end();
     })
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
+
+export const parse = (req, res) => {
+    const body = req.query;
+    candidateManager.parse(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }

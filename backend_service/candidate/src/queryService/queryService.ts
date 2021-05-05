@@ -940,3 +940,12 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateId,_body.languages, _body.employeeId,currentTime()],
         }
     }
+
+
+    export const getCand = (_body) => {
+        return {
+            name: 'get-cand',
+            text: candidateQuery.getCand,
+            values: [],
+        }
+    }
