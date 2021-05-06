@@ -122,7 +122,7 @@ const extractEducation = (data) =>{
             endDate:dateToMillisec(details["EndDate"])
         })
     })
-    
+    console.log("EDUCATION",education)
     return education;
 }
 
