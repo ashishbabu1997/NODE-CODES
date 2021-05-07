@@ -207,6 +207,12 @@ export const resourceHirerTab = (body) =>{
     return vettedQuery;
 }
 
+export const emptyStringCheck = (_body) =>{
+    _body=_body===''?null:_body
+    return _body;
+
+}
+
 export const resourceRoleBased = (reqBody,queryValues) =>{
     let roleBasedQuery = '';
     if (reqBody.userRoleId != 1) {

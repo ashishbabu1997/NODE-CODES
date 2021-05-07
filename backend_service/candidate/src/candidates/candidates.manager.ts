@@ -1101,6 +1101,8 @@ export const modifyCandidateWorkHistory = (_body) => {
         var candidateWorExperienceId;
         (async () => {
             const client = await database().connect()
+            _body.startDate=utils.emptyStringCheck(_body.startDate)
+            _body.endDate=utils.emptyStringCheck(_body.endDate)
             try {
                 switch(_body.action)
                 {
@@ -1255,6 +1257,7 @@ export const modifyPublication = (_body) => {
         var candidatePublicationId;
         (async () => {
             const client = await database().connect()
+            _body.publishedYear=utils.emptyStringCheck(_body.publishedYear)
             try {
                 switch(_body.action)
                 {
@@ -1302,6 +1305,8 @@ export const modifyAward = (_body) => {
         const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database().connect()
+            _body.certifiedYear=utils.emptyStringCheck(_body.certifiedYear)
+            console.log(_body.certifiedYear)
             try {
                 switch(_body.action)
                 {
