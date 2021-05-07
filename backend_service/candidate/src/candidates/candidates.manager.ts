@@ -811,12 +811,10 @@ export const modifyResumeData = (_body) => {
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
                     let resumeData=extractedData['resumeData']['ResumeParserData']['DetailResume']
                     var splitByLine=resumeData.split('\n')
-                    var splitByLineToString=splitByLine.toString()
-                    var stringSplit=splitByLineToString.split('\t')
                     let resumeList={}
-                    stringSplit.forEach(element => {  
+                    splitByLine.forEach(element => {  
                                             
-                                               resumeList[stringSplit.indexOf(element)]=element
+                                               resumeList[splitByLine.indexOf(element)]=element
                     });
                     _body.detailResume=resumeList
                     _body.candidatesId=candidateResult.rows[0].candidate_id
