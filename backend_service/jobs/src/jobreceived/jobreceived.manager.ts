@@ -287,7 +287,7 @@ export const resumeBuilderProfile = (_body) => {
                     }
                     else
                     {
-                        console.log("NOt a freelancer")
+                        console.log("Not a freelancer")
                     }
                     if (![null, undefined, ''].includes(_body.positionId)) {
                         
@@ -477,12 +477,11 @@ export const editSkills = (_body) => {
                 {
                     let promise=[];
                     _body.skills.forEach(element => { 
-                        let competency=element.competency
+                        let competency=element.competency=== '' ? null :element.competency
                         let preffered=element.preferred
                         let skillId=element.skill["skillId"]
                         let yearsOfExperience=element.yoe=== '' ? null :element.yoe
                         let skillVersion = element.skillVersion=== ''? null :element.skillVersion
-                        console.log("SKILLVERSION",skillVersion)
                         const addSkills = {
                             name: 'add-candidate-skills',
                             text: jobReceivedQuery.addCandidateSkills,

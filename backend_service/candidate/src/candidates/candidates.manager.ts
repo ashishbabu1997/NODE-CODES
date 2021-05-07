@@ -802,8 +802,9 @@ export const modifyResumeData = (_body) => {
                 else
                 {
                     await client.query('BEGIN');
-                    
+                    let freelancer=await client.query(queryService.getFreelancerCompany)
                     let extractedData  = rchilliExtractor.rchilliExtractor(_body);
+                    extractedData["freelancerCompanyId"] =freelancer.rows[0].company_id
                     extractedData["employeeId"] = _body.employeeId;
                     extractedData["resume"] = _body.resume;
                     extractedData["firstName"]=extractedData["firstName"]+' '+extractedData["middleName"]

@@ -17,7 +17,13 @@ export const modifyCandidateProfileDetailsQuery = (_body) => {
         values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.sellerCompanyId],
     }
 }
-
+export const getFreelancerCompany = (_body) => {
+    return {
+        name: 'get-freelacer-companyId',
+        text: freelancerQuery.getFreelancerCompanyId,
+        values:{freelancer:'Freelancer'}
+}
+}
 export const modifyCandidateAvailabilityQuery = (_body) => {
     return {
         name: 'modify-candidate-availability',
@@ -956,7 +962,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'insert-extracted-candidate-details',
             text: candidateQuery.insertExtractedCandidateDetails,
-            values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, resume:data.resume, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData}
+            values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, resume:data.resume, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData,companyid:data.freelancerCompanyId}
         }
     }
     export const insertDetailResume = (_body) => {
