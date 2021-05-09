@@ -973,6 +973,7 @@ export const modifyCandidateAvailability = (_body) => {
 export const modifyLanguageProficiency = (_body) => {
     return new Promise((resolve, reject) => {
         var candidateLanguageId;
+        _body.proficiency=utils.emptyStringCheck(_body.proficiency)
         (async () => {
             const client = await database().connect()
             try {
