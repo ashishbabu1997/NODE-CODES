@@ -19,9 +19,10 @@ export const modifyCandidateProfileDetailsQuery = (_body) => {
 }
 export const getFreelancerCompany = (_body) => {
     return {
-        name: 'get-freelacer-companyId',
-        text: freelancerQuery.getFreelancerCompanyId,
-        values:{freelancer:'Freelancer'}
+        name: 'get-freelancer-companyid',
+        text: candidateQuery.getFreelancerCompanyId,
+        values:[]
+    
 }
 }
 export const modifyCandidateAvailabilityQuery = (_body) => {
