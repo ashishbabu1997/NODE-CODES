@@ -209,7 +209,7 @@ export const resourceHirerTab = (body) =>{
 
 export const emptyStringCheck = (_body) =>{
     console.log(_body)
-    _body=_body===''||undefined?null:parseInt(_body)
+    _body=_body===''||undefined?null:_body
     return _body;
 
 }

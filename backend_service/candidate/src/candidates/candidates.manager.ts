@@ -1105,6 +1105,8 @@ export const modifyCandidateWorkHistory = (_body) => {
             const client = await database().connect()
             _body.startDate=utils.emptyStringCheck(_body.startDate)
             _body.endDate=utils.emptyStringCheck(_body.endDate)
+            console.log("START DATE",_body.startDate)
+            console.log("END DATE",_body.startDate)
             try {
                 switch(_body.action)
                 {
