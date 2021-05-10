@@ -814,7 +814,7 @@ export const modifyResumeData = (_body) => {
                     let resumeList={}
                     splitByLine.forEach(element => {  
                                             
-                                               resumeList[splitByLine.indexOf(element)]=element.replace('\t',' ')
+                                               resumeList[splitByLine.indexOf(element)]=element.replace('\t',' ').trim(" ")
                     });
                     var stringify=JSON.stringify(resumeList)
                     _body.detailResume=stringify
