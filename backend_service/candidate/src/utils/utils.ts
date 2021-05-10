@@ -209,11 +209,20 @@ export const resourceHirerTab = (body) =>{
 
 export const emptyStringCheck = (_body) =>{
     console.log(_body)
-    _body=_body===''||undefined?null:_body
+    _body=_body===''||undefined?null:parseInt(_body)
     return _body;
 
 }
-
+export const JsonStringParse=(_body)=> {
+    let parsedString = "";
+    try {
+        parsedString = JSON.parse(_body);
+    } catch (e) {
+        console.log("Unable to parse : ",_body);
+        return parsedString;
+    }
+    return parsedString;
+}
 export const resourceRoleBased = (reqBody,queryValues) =>{
     let roleBasedQuery = '';
     if (reqBody.userRoleId != 1) {

@@ -59,5 +59,4 @@ router
 .post('/getEmployeeDetailsFromLinkedinToken', candidateController.getEmployeeDetailsFromLinkedin)
 
 
-
 export default router;

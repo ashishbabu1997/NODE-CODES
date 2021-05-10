@@ -810,13 +810,14 @@ export const modifyResumeData = (_body) => {
                     extractedData["firstName"]=extractedData["firstName"]+' '+extractedData["middleName"]
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
                     let resumeData=extractedData['resumeData']['ResumeParserData']['DetailResume']
-                    var splitByLine=resumeData.split('\n')
+                    var splitByLine=resumeData.replace('\t',' ').split('\n')
                     let resumeList={}
                     splitByLine.forEach(element => {  
                                             
-                                               resumeList[splitByLine.indexOf(element)]=element
+                                               resumeList[splitByLine.indexOf(element)]=element.replace('\t',' ')
                     });
-                    _body.detailResume=resumeList
+                    var stringify=JSON.stringify(resumeList)
+                    _body.detailResume=stringify
                     _body.candidatesId=candidateResult.rows[0].candidate_id
                     await client.query(queryService.insertDetailResume(_body))
                     await client.query('COMMIT');
@@ -1412,8 +1413,6 @@ export const getResume = (_body) => {
                 var publications=await client.query(queryService.fetchPublications(candidateId));
                 var awards=await client.query(queryService.fetchAwards(candidateId));
                 var languages=await client.query(queryService.fetchLanguages(candidateId));
-                
-                
                 let workedCompanyList =  workExperiences.rows.map(element => ({"id":element.candidateWorkExperienceId,"companyName":element.companyName}))
                 workedCompanyList  = [...workedCompanyList,{"id":0,"companyName":"On personal capacity"}];                                         
                 let companyJson = {};
@@ -1481,7 +1480,7 @@ export const getResume = (_body) => {
                 data: 
                 {candidateId:Number(_body.candidateId),
                     profile:profileDetails,
-                    detailResume:allProfileDetails.rows[0].detailResume,
+                    detailResume:utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
                     resume : allProfileDetails.rows[0].resume,
                     overallWorkExperience,
                     availability,
