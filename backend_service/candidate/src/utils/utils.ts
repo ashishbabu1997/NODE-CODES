@@ -172,13 +172,13 @@ export const resourceTab = (body) =>{
         vettedQuery='  and chsv."candidateStatus"=3 and chsv."blacklisted"=false '
         break;
         case '1':
-        vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6'
+        vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
         break;
         case '2':
-        vettedQuery='  and chsv."candidateStatus"=3 and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
+        vettedQuery='  and chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
         break;
         case '3':
-        vettedQuery='  and chsv."candidateStatus"=4'
+        vettedQuery='  and chsv."candidateStatus"=4 and chsv."blacklisted"=false'
         break; 
         case '4':
         vettedQuery='  and chsv."blacklisted"=true'

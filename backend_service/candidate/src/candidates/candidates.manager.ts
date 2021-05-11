@@ -2157,8 +2157,9 @@ export const createPdfFromHtml = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
-                    await client.query(queryService.changeBlacklistedOfCandidate(_body));
-                    resolve({ code: 200, message: "Blacklisted toggled successfully", data:{}});
+                        await client.query(queryService.changeBlacklistedOfCandidate(_body));
+                        resolve({ code: 200, message: "Blacklisted toggled successfully", data:{}});
+                   
                 } catch (e) {
                     console.log(e)
                     await client.query('ROLLBACK')

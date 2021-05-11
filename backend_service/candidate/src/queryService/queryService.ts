@@ -408,7 +408,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'update-blacklisted',
             text: candidateQuery.updateCandidateBlacklisted,
-            values: [_body.candidateId,currentTime(),_body.employeeId],
+            values: [_body.candidateId,currentTime(),_body.employeeId,_body.blacklisted],
         }
     }
     export const linkedinLoginMailCheck =(_body)=> {
