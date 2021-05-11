@@ -1485,6 +1485,7 @@ export const getResume = (_body) => {
                 {candidateId:Number(_body.candidateId),
                     profile:profileDetails,
                     detailResume:utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
+                    htmlResume:allProfileDetails.rows[0].htmlResume,
                     resume : allProfileDetails.rows[0].resume,
                     overallWorkExperience,
                     availability,
