@@ -57,6 +57,6 @@ router
 .post('/userSignup', candidateController.newUserSignup)
 .get('/singleSignOn', candidateController.sigOn)
 .post('/getEmployeeDetailsFromLinkedinToken', candidateController.getEmployeeDetailsFromLinkedin)
-
+.get('/htmlResume',candidateController.getHtmlResume)
 
 export default router;

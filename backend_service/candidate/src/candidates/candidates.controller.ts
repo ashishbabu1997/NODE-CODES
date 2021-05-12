@@ -331,3 +331,9 @@ export const getEmployeeDetailsFromLinkedin = (req, res) => {
     candidateManager.getLinkedinEmployeeLoginDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
+
+export const getHtmlResume = (req, res) => {
+    const body = req.query;
+    candidateManager.getHtmlResume(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
