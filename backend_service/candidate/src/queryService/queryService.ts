@@ -958,7 +958,6 @@ export const insertCandidatePublicationQuery = (_body) => {
     
     // -------------------------------------------Resume parser queries -------------------------------------------------//
 
-
      export const insertExtractedCandidateDetails = (data) => {
         return {
             name: 'insert-extracted-candidate-details',
