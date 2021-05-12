@@ -2157,7 +2157,40 @@ export const createPdfFromHtml = (_body) => {
             (async () => {
                 const client = await database().connect()
                 try {
+
                         await client.query(queryService.changeBlacklistedOfCandidate(_body));
+                        const  getEllowAdmins = {
+                            name: 'get-ellow-admin',
+                            text: candidateQuery.getellowAdmins,
+                            values: []
+                            
+                        }
+                        var ellowAdmins=await client.query(getEllowAdmins)
+                        var candidateDetails=await client.query(queryService.getCandidateProfileName)
+                        _body.name=candidateDetails.rows[0].name
+                        if(_body.blacklisted==true)
+                        {
+                            _body.subject = "Candidate Blacklist Notification";
+                            _body.path = 'src/emailTemplates/addToBlacklistMail.html';
+                            _body.adminReplacements = {
+                               fName:_body.name
+                                }
+                        }
+                        else
+                        {
+                            _body.subject = "Candidate Unblock Notification";
+                            _body.path = 'src/emailTemplates/removeFromBlacklistMail.html';
+                            _body.adminReplacements = {
+                               fName:_body.name
+                                }
+                        }
+                        if(Array.isArray(ellowAdmins.rows))
+                        {
+                            ellowAdmins.rows.forEach(element => {
+                                emailClient.emailManager(element.email,_body.subject,_body.path,_body.adminReplacements);
+                            })
+                        }
+                        
                         resolve({ code: 200, message: "Blacklisted toggled successfully", data:{}});
                    
                 } catch (e) {
