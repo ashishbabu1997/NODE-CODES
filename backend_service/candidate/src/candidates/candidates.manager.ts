@@ -2166,7 +2166,7 @@ export const createPdfFromHtml = (_body) => {
                             
                         }
                         var ellowAdmins=await client.query(getEllowAdmins)
-                        var candidateDetails=await client.query(queryService.getCandidateProfileName)
+                        var candidateDetails=await client.query(queryService.getCandidateProfileName(_body))
                         _body.name=candidateDetails.rows[0].name
                         if(_body.blacklisted==true)
                         {
@@ -2187,6 +2187,7 @@ export const createPdfFromHtml = (_body) => {
                         if(Array.isArray(ellowAdmins.rows))
                         {
                             ellowAdmins.rows.forEach(element => {
+                                console.log(element.email)
                                 emailClient.emailManager(element.email,_body.subject,_body.path,_body.adminReplacements);
                             })
                         }
