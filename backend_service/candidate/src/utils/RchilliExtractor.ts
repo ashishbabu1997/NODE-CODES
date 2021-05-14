@@ -34,7 +34,6 @@ export const rchilliExtractor = (data) => {
         extractedData["publications"] = extractPublication(resumeData["SegregatedPublication"]);
 
         extractedData["socialProfile"] = extractSocialProfile(resumeData["WebSite"]);
-        console.log("SOCIAL",extractedData["socialProfile"])
         extractedData["languages"] = extractLanguages(resumeData["LanguageKnown"]);
 
         extractedData["citizenship"] = extractCitizenship(extractedData["Address"]);

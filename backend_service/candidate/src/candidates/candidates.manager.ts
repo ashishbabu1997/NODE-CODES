@@ -853,16 +853,29 @@ export const modifyResumeData = (_body) => {
                                 data["employeeId"] = _body.employeeId;
                                 promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
                             });
-                            extractedData["socialProfile"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                console.log("SOCIAL",data)
-                            });
-
+                            
                             await Promise.all(promises);
                             promises = [];
                             console.log("publications done");
-
+                            extractedData["socialProfile"].map((data) => {
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                if(data.title=='Github')
+                                {
+                                    _body.githubId=data.link
+                                }
+                                else if (data.title=='Linkedin')
+                                {
+                                    _body.linkedinId=data.link
+                                }
+                                else if(data.title=='Stackoverflow')
+                                {
+                                    _body.stackoverflowId=data.link
+                                }
+                            });
+                            _body.candidateId=candidateId
+                            await client.query(queryService.insertCandidateSocialProfile(_body));
+                            console.log("Social Profile's  done");
                             await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
                             console.log("language done");
 

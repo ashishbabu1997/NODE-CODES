@@ -168,7 +168,12 @@ export const insertCandidatePublicationQuery = (_body) => {
         text: candidateQuery.insertCandidatePublication,
         values: [_body.candidateId,_body.title,_body.publishedYear,_body.link,_body.employeeId,currentTime()],    }
     }
-    
+    export const insertCandidateSocialProfile = (_body) => {
+        return {
+            name: 'insert-candidate-socials',
+            text: candidateQuery.insertCandidateSocials,
+            values: [_body.candidateId,_body.githubId,_body.linkedinId,_body.stackoverflowId,_body.employeeId,currentTime()],    }
+        }
     export const modifyCandidatePublicationQuery = (_body) => {
         return {
             name: 'modify-candidate-Publication',
