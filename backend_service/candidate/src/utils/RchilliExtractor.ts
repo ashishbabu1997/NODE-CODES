@@ -21,6 +21,7 @@ export const rchilliExtractor = (data) => {
         extractedData["overallWorkExperience"] = extractOverallWorkExperience(resumeData["WorkedPeriod"]["TotalExperienceInYear"]);
 
         extractedData["skillArray"] = resumeData["SkillKeywords"].split(",");
+        console.log("SKILLS",extractedData["skillArray"])
 
         extractedData["workHistory"] = extractWorkHistory(resumeData["SegregatedExperience"]);
 
@@ -33,7 +34,7 @@ export const rchilliExtractor = (data) => {
         extractedData["publications"] = extractPublication(resumeData["SegregatedPublication"]);
 
         extractedData["socialProfile"] = extractSocialProfile(resumeData["WebSite"]);
-
+        console.log("SOCIAL",extractedData["socialProfile"])
         extractedData["languages"] = extractLanguages(resumeData["LanguageKnown"]);
 
         extractedData["citizenship"] = extractCitizenship(extractedData["Address"]);

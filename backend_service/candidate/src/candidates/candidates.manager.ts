@@ -853,6 +853,11 @@ export const modifyResumeData = (_body) => {
                                 data["employeeId"] = _body.employeeId;
                                 promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
                             });
+                            extractedData["socialProfile"].map((data) => {
+                                data["candidateId"] = candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                console.log("SOCIAL",data)
+                            });
 
                             await Promise.all(promises);
                             promises = [];
