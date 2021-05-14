@@ -50,7 +50,7 @@ export default {
     modifyCandidatePublication: `update candidate_publication set candidate_id=$2, title = $3, published_year = $4, link = $5, updated_on = $6, updated_by = $7 where candidate_publication_id = $1`,
     insertCandidatePublication:'insert into candidate_publication (candidate_id, title, published_year, link, created_by, updated_by, created_on, updated_on) values ($1,$2,$3,$4,$5,$5,$6,$6) returning candidate_publication_id',
     deleteCandidatePublication:'update candidate_publication set status=false, updated_on = $2, updated_by = $3 where candidate_publication_id = $1',
-    
+    insertCandidateSocials:'insert into candidate_social(candidate_id, github_link,linkedin_link, stackoverflow_link, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$5,$5,$6,$6)  ',
     deleteCloud:'update candidate_cloud set status = false,updated_by=$3,updated_on=$4 where candidate_id=$1 and cloud_proficiency_id <> ALL ($2)',
     modifyCloud:'insert into candidate_cloud(candidate_id, cloud_proficiency_id, created_by, updated_by, created_on, updated_on) values ($1, unnest($2::int[]),$3, $3, $4, $4) on conflict on constraint candidate_id_cloud_proficiency_id_unique_key do update set status=true, updated_by=$3, updated_on=$4 returning candidate_cloud_id',
     modifySocial:'insert into candidate_social(candidate_id, github, github_link, linkedin, linkedin_link, stackoverflow, stackoverflow_link, kaggle, kaggle_link, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$10,$11,$11) on conflict(candidate_id) do update set github=$2, github_link=$3, linkedin=$4, linkedin_link=$5, stackoverflow=$6,stackoverflow_link=$7,kaggle=$8,kaggle_link=$9,updated_by=$10,updated_on=$11;',
