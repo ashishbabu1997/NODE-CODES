@@ -9,8 +9,8 @@ export const rchilliExtractor = (data) => {
         extractedData["resumeData"] = data;
 
         extractedData["resumeFileName"] = resumeData["ResumeFileName"];
-        extractedData["firstName"] = resumeData["Name"]["FirstName"];
-        extractedData["lastName"] = resumeData["Name"]["LastName"] + ' ' + resumeData["Name"]["MiddleName"];
+        extractedData["firstName"] = resumeData["Name"]["FirstName"]+ ' ' + resumeData["Name"]["MiddleName"];
+        extractedData["lastName"] = resumeData["Name"]["LastName"];
         extractedData["middleName"] = resumeData["Name"]["MiddleName"];
         extractedData["email"] = resumeData["Email"][0]["EmailAddress"];
         extractedData["city"] = resumeData["Address"][0]["City"];
@@ -18,8 +18,6 @@ export const rchilliExtractor = (data) => {
         extractedData["designation"] = resumeData["SubCategory"];
         extractedData["summary"] = resumeData["Summary"];
         extractedData["phone"] = extractedPhoneNumber(resumeData["PhoneNumber"]);
-
-
         extractedData["overallWorkExperience"] = extractOverallWorkExperience(resumeData["WorkedPeriod"]["TotalExperienceInYear"]);
 
         extractedData["skillArray"] = resumeData["SkillKeywords"].split(",");
