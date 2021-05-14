@@ -17,7 +17,14 @@ export const modifyCandidateProfileDetailsQuery = (_body) => {
         values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.sellerCompanyId],
     }
 }
-
+export const getFreelancerCompany = (_body) => {
+    return {
+        name: 'get-freelancer-companyid',
+        text: candidateQuery.getFreelancerCompanyId,
+        values:[]
+    
+}
+}
 export const modifyCandidateAvailabilityQuery = (_body) => {
     return {
         name: 'modify-candidate-availability',
@@ -396,6 +403,57 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [_body.candidateId,_body.availability],
         }
     }
+
+    export const changeBlacklistedOfCandidate =(_body)=> {
+        return {
+            name: 'update-blacklisted',
+            text: candidateQuery.updateCandidateBlacklisted,
+            values: [_body.candidateId,currentTime(),_body.employeeId,_body.blacklisted],
+        }
+    }
+    export const linkedinLoginMailCheck =(_body)=> {
+        return {
+            name: 'linkedin-email-check',
+            text: candidateQuery.employeeLogin,
+            values: [_body.email],
+        }
+    }
+    export const insertLinkedinToCandidate =(_body)=> {
+        return {
+            name: 'insert-in-candidate',
+            text: candidateQuery.insertIntoCandidate,
+            values: [_body.firstName,_body.lastName,_body.email,4,currentTime()],
+        }
+    }
+    export const insertLinkedinToCandidateEmployee =(_body)=> {
+        return {
+            name: 'insert-in-candidate-employee',
+            text: candidateQuery.insertIntoCandidateEmployee,
+            values: [_body.employeeId,_body.candidateId,currentTime()],
+        }
+    }
+    export const insertEmployeeToken =(_body)=> {
+        return {
+            name: 'insert-employee-token',
+            text: candidateQuery.insertEmployeeToken,
+            values: [_body.token,_body.employeeId],
+        }
+    }
+    export const getCompanyDetailsFromName =(_body)=> {
+        return {
+            name: 'get-company-details',
+            text: candidateQuery.getCompanyDetails,
+            values: [_body.companyName],
+        }
+    }
+    export const insertLinkedinToEmployee =(_body)=> {
+        return {
+            name: 'insert-employee',
+            text: candidateQuery.insertIntoEmployee,
+            values: [_body.firstName,_body.lastName,_body.email,_body.cmpId,4,true,1],
+        }
+    }
+    
     
     
     // *******************************************************************************************************************************//
@@ -605,7 +663,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'get-free-candidates',
             text: queryText,
-            values: queryValues
+            values: queryValues 
         }
     }
     
@@ -614,6 +672,13 @@ export const insertCandidatePublicationQuery = (_body) => {
             name: 'get-free-candidates-total',
             text: queryText,
             values: queryValues
+        }
+    }
+    export const getJobReceivedId = (body) => {
+        return {
+            name: 'get-jobreceived-id',
+            text: candidateQuery.getJobReceivedId,
+            values: [body.positionId]
         }
     }
     
@@ -893,14 +958,21 @@ export const insertCandidatePublicationQuery = (_body) => {
     
     // -------------------------------------------Resume parser queries -------------------------------------------------//
 
-
      export const insertExtractedCandidateDetails = (data) => {
         return {
             name: 'insert-extracted-candidate-details',
             text: candidateQuery.insertExtractedCandidateDetails,
-            values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, resume:data.resume, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData}
+            values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, resume:data.resume, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData,companyid:data.freelancerCompanyId,detailresume:data.detailResume,htmlresume:data.htmlResume}
         }
     }
+    export const insertDetailResume = (_body) => {
+        return {
+            name: 'insert-detail-resume',
+            text: candidateQuery.insertDetailResumeQuery,
+            values:[_body.candidatesId,_body.detailResume]
+        }
+    }
+
 
     export const insertExtractedCandidateSkills = (data) => {
         return {

@@ -24,3 +24,11 @@ export const  listNotifications = () =>{
         text: notificationsQuery.listNotifications
     }
 }
+
+export const  listHirerNotifications = (companyId) =>{
+    return {
+        name: 'list-hirer-notifications',
+        text: notificationsQuery.listHirerNotifications,
+        values : [companyId]
+    }
+}

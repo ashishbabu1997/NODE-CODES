@@ -223,7 +223,7 @@ export const updateHiringStepDetails = (_body) => {
                     }
                     else
                     {
-                        var makeOfferSubject = "Offer Acceptance Notification";
+                        var makeOfferSubject = "Offer of Recruitment";
                         let recruiterOfferPath = 'src/emailTemplates/makeOfferMailText.html';
                         let recruiterOfferReplacements = {
                                 fName: imageResults.rows[0].candidate_first_name,

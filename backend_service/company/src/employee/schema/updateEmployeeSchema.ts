@@ -5,7 +5,7 @@ export default Joi.object().keys({
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
-                    err.message = "Firstname should not be empty";
+                    err.message = "Employee Id should not be empty";
                     break;
                 case "number.base":
                     err.message = "employeeId must be a number"

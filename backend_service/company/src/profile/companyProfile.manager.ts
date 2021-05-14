@@ -109,7 +109,7 @@ export const update_Details = (_body) => {
         const query = {
             name: 'update_details',
             text: companyQuery.updateProfileDetails,
-            values: [_body.profileUrl, _body.description, _body.logo, _body.coverPage, _body.tagline,_body.linkedinId,count, parseInt(_body.companyId),_body.accountType,_body.roleId,_body.company_website,_body.companySizeId]
+            values: [_body.profileUrl, _body.description, _body.logo, _body.coverPage, _body.tagline,_body.linkedinId,count, parseInt(_body.companyId),_body.accountType,_body.roleId,_body.company_website,_body.companySizeId,_body.currencyTypeId]
         }
         database().query(query, (error, results) => {
             if (error) {
@@ -121,4 +121,36 @@ export const update_Details = (_body) => {
         })
 
     }) 
+}
+
+
+
+
+export const updateProfileLogo = (_body) => {
+    return new Promise((resolve, reject) => {
+        var query
+        if(_body.type==1)
+        {
+            query = {
+                name: 'update-logo',
+                text: companyQuery.updateLogo,
+                values: [_body.companyId,_body.fileName],
+            }  
+        }
+        else
+        {
+         query = {
+            name: 'update-profile',
+            text: companyQuery.updateProfile,
+            values: [_body.companyId,_body.fileName],
+        }
+    }
+        database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed to update image. Please try again.", data: {} });
+                return;
+            }
+            resolve({ code: 200, message: "Image updated successfully", data: {  } });
+        })
+    });
 }

@@ -1,7 +1,7 @@
 import jobReceivedQuery from './query/jobreceived.query';
 import database from '../common/database/database';
 import * as format from 'pg-format';
-import { createNotification } from '../common/notifications/notifications';
+import { createNotification,createHirerNotifications } from '../common/notifications/notifications';
 import * as handlebars from 'handlebars'
 import config from '../config/config'
 import {readHTMLFile} from '../middlewares/htmlReader'
@@ -203,6 +203,7 @@ export const saveCandidateProfile = (_body) => {
                     _body.sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
                     _body.candidates = [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
                     var addCandidateResult =await client.query(queryService.saveCandidateQuery(_body))
+                    _body.candidateId = addCandidateResult.rows[0].candidate_id;
                     var companyResults = await client.query(queryService.getCompanyName(_body))
                     var companyName=companyResults.rows[0].company_name
                     if (_body.userRoleId==1 &&companyName=='Freelancer')
@@ -219,7 +220,6 @@ export const saveCandidateProfile = (_body) => {
                     {
                         console.log("NOt a freelancer")
                     }
-                    _body.candidateId = addCandidateResult.rows[0].candidate_id;
                     if (![null, undefined, ''].includes(_body.positionId)) {
                         
                         await client.query(queryService.addPositionQuery(_body))
@@ -250,6 +250,78 @@ export const saveCandidateProfile = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Save the candidate profile details
+export const resumeBuilderProfile = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now());
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                var results= await client.query(queryService.checkEMailExistenceQuery(_body))
+                if (results.rowCount==1)
+                {
+                    reject({ code: 400, message: "Candidate already registered", data: {} });
+                    
+                }
+                else
+                {
+                    _body.sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
+                    _body.candidates = [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
+                    var addCandidateResult =await client.query(queryService.saveCandidateQuery(_body))
+                    _body.candidateId = addCandidateResult.rows[0].candidate_id;
+                    var companyResults = await client.query(queryService.getCompanyName(_body))
+                    var companyName=companyResults.rows[0].company_name
+                    if (_body.userRoleId==1 &&companyName=='Freelancer')
+                    {
+                        var employeeResult= await client.query(queryService.addEmployee(_body))
+                        const addCandidateEmployee = {
+                            name: 'add-candidate-employee',
+                            text: jobReceivedQuery.addCandidateEmployeeDetails,
+                            values:[employeeResult.rows[0].employee_id,addCandidateResult.rows[0].candidate_id,true,currentTime, currentTime]   
+                        }
+                        await client.query(addCandidateEmployee);
+                    }
+                    else
+                    {
+                        console.log("Not a freelancer")
+                    }
+                    if (![null, undefined, ''].includes(_body.positionId)) {
+                        
+                        await client.query(queryService.addPositionQuery(_body))
+                        const response = await client.query(queryService.getJobStatusQuery(_body))
+                        _body.jobStatus = response.rows[0].jobStatus;
+                        await client.query(queryService.updateCompanyJobStatusQuery(_body))
+                        await client.query('COMMIT');
+                        
+                    }
+                    else
+                    {
+                        console.log("Added")
+                    }
+                    let candidateId=_body.candidateId
+                    _body.remoteWorkExperience===""?null:_body.remoteWorkExperience
+                    await client.query(queryService.addWorkExperiences(_body));
+                    await client.query(queryService.modifyCandidateAvailabilityQuery(_body));
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Candidate profile added", data: {candidateId} });
+                }
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
 // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Submit the candidate profile by sending a notificatin mail to the admin
 export const submitCandidateProfile = (_body) => {
@@ -294,11 +366,12 @@ export const submitCandidateProfile = (_body) => {
                     }   
                 }
                 await client.query('COMMIT');
-                var subject='New Candidate Notification'
+                var subject='Candidate Addition Notification'
                 if(![null,undefined,""].includes(_body.positionId))
                 {
                     
                     const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for the position ${positionName} `
+                    await createHirerNotifications({ positionId:_body.positionId, jobReceivedId,companyId:_body.sellerCompanyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     await createNotification({ positionId:_body.positionId, jobReceivedId,companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     let path = 'src/emailTemplates/candidateAdditionText.html';
                     var userReplacements =  {
@@ -306,7 +379,26 @@ export const submitCandidateProfile = (_body) => {
                         last:candidateLastName,
                         position:positionName,     
                     };
-                    emailClient.emailManager(config.adminEmail,subject,path,userReplacements);
+                    const  getEllowAdmins = {
+                        name: 'get-ellow-admin',
+                        text: jobReceivedQuery.getellowAdmins,
+                        values: []
+                
+    
+                }
+                var ellowAdmins=await client.query(getEllowAdmins)
+                if(Array.isArray(ellowAdmins.rows))
+                {
+                    
+                    ellowAdmins.rows.forEach(element => {
+                        emailClient.emailManager(element.email,subject,path,userReplacements);
+                                
+                        })
+                            
+                }
+                else{
+                    console.log("Error in fetch admin query")
+                }
                     var positions=await client.query(queryService. getPositionName(_body));
                     var resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
                     if (_body.userRoleId==1)
@@ -336,7 +428,24 @@ export const submitCandidateProfile = (_body) => {
                         last:candidateLastName,
                         position:status   
                     };
-                    emailClient.emailManager(config.adminEmail,subject,path,replacements); 
+                    const  getEllowAdmins = {
+                        name: 'get-ellow-admin',
+                        text: jobReceivedQuery.getellowAdmins,
+                        values: []
+                
+    
+                }
+                var ellowAdmins=await client.query(getEllowAdmins)
+                if(Array.isArray(ellowAdmins.rows))
+                {
+                    
+                    ellowAdmins.rows.forEach(element => {
+                        emailClient.emailManager(element.email,subject,path,replacements); 
+                                
+                        })
+                            
+                }
+            
                 }
                 
                 resolve({ code: 200, message: "Candidate profile submitted", data: {} });
@@ -368,7 +477,7 @@ export const editSkills = (_body) => {
                 {
                     let promise=[];
                     _body.skills.forEach(element => { 
-                        let competency=element.competency
+                        let competency=element.competency=== '' ? null :element.competency
                         let preffered=element.preferred
                         let skillId=element.skill["skillId"]
                         let yearsOfExperience=element.yoe=== '' ? null :element.yoe
@@ -399,3 +508,9 @@ export const editSkills = (_body) => {
     
     
 }
+
+
+
+
+
+
