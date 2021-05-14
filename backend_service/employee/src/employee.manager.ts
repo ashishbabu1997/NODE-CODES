@@ -295,27 +295,36 @@ export const checkCompanyByWorkMail = (_body) => {
         
         var email = _body.emailId;
         var workMailExtension = email.substring(email.lastIndexOf('@') + 1);
-        const query = {
-            name: 'add-employee',
-            text: employeeQuery.checkEmailForCompany,
-            values: ['%@' + workMailExtension],
+        if (workMailExtension=='gmail.com')
+        {
+            resolve({ code: 200, message: "Please enter your work mail", data: {} });
+
         }
-        database().query(query, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                return;
+        else
+        {
+           const query = {
+                name: 'add-employee',
+                text: employeeQuery.checkEmailForCompany,
+               values: ['%@' + workMailExtension],
             }
-            var companyDetails = null;
-            if (Array.isArray(results.rows) && results.rows.length) {
-                companyDetails = {
-                    companyId:parseInt(results.rows[0].company_id),
-                    companyName:results.rows[0].company_name,
-                    adminApproveStatus:results.rows[0].admin_approve_status,
-                    accountType:results.rows[0].account_type
+           database().query(query, (error, results) => {
+                if (error) {
+                      reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    return;
                 }
-            }
-            resolve({ code: 200, message: "Company Details", data: companyDetails });
-        })
+                var companyDetails = null;
+                if (Array.isArray(results.rows) && results.rows.length) {
+                  companyDetails = {
+                      companyId:parseInt(results.rows[0].company_id),
+                      companyName:results.rows[0].company_name,
+                      adminApproveStatus:results.rows[0].admin_approve_status,
+                      accountType:results.rows[0].account_type
+                   }
+                }
+                resolve({ code: 200, message: "Company Details", data: companyDetails });
+           })
+      }
+
     })
 }
 
