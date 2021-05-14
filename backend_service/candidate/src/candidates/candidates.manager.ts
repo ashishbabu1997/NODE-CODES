@@ -379,7 +379,7 @@ export const interviewRequestFunction = (_body) => {
                 var positionName = interviewDetails[0].positionName === null ? '' : interviewDetails[0].positionName
                 var email = interviewDetails[0].emailAddress === null ? '' : interviewDetails[0].emailAddress
                 var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber
-                var subject = "Request for Interview from " + hirerCompanyName;
+                var subject = "Interview Requested from " + hirerCompanyName;
                 let path = 'src/emailTemplates/interviewRequestMailText.html';
                 let adminReplacements = {
                     hirerName: hirerCompanyName,
@@ -437,7 +437,7 @@ export const addCandidateReview = (_body) => {
                         _body.candidateId = result.rows[0].candidate_id;
                         await client.query(queryService.setVettedStatus(_body));
                         let candidateDetailResults = await client.query(queryService.getCandidateProfileName(_body));
-                        let subject = "ellow Screening Selection Notification"
+                        let subject = "ellow Certification Completion"
                         let path = 'src/emailTemplates/ellowVettedText.html';
                         let replacements = {
                             name: candidateDetailResults.rows[0].name
@@ -784,7 +784,6 @@ export const modifyResumeData = (_body) => {
                 }
                 else {
                     await client.query('BEGIN');
-                    console.log("START")
                     let freelancer = await client.query(queryService.getFreelancerCompany(_body))
                     console.log("FREELANCER", freelancer)
                     let extractedData = rchilliExtractor.rchilliExtractor(_body);
