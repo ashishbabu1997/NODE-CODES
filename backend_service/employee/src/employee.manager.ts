@@ -297,7 +297,7 @@ export const checkCompanyByWorkMail = (_body) => {
         var workMailExtension = email.substring(email.lastIndexOf('@') + 1);
         if (workMailExtension=='gmail.com')
         {
-            resolve({ code: 200, message: "Please enter your work mail", data: {} });
+            resolve({ code: 200, message: "Please enter your work mail", data:null });
 
         }
         else
@@ -309,7 +309,7 @@ export const checkCompanyByWorkMail = (_body) => {
             }
            database().query(query, (error, results) => {
                 if (error) {
-                      reject({ code: 400, message: "Failed. Please try again.", data:null});
+                      reject({ code: 400, message: "Failed. Please try again.", data: {} });
                     return;
                 }
                 var companyDetails = null;
