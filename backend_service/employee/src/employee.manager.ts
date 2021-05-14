@@ -309,7 +309,7 @@ export const checkCompanyByWorkMail = (_body) => {
             }
            database().query(query, (error, results) => {
                 if (error) {
-                      reject({ code: 400, message: "Failed. Please try again.", data:null});
+                      reject({ code: 400, message: "Failed. Please try again.", data: {} });
                     return;
                 }
                 var companyDetails = null;
