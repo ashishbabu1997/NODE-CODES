@@ -297,7 +297,7 @@ export const checkCompanyByWorkMail = (_body) => {
         var workMailExtension = email.substring(email.lastIndexOf('@') + 1);
         if (workMailExtension=='gmail.com')
         {
-            resolve({ code: 200, message: "Please enter your work mail", data: {} });
+            resolve({ code: 200, message: "Please enter your work mail", data:null});
 
         }
         else
