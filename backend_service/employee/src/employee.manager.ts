@@ -461,7 +461,7 @@ export const resetFreelancerToken = (_body) => {
                     emailClient.emailManager(emailAddress,config.text.resetConfirmSubject,path,replacements);
                     createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId,employeeId:_body.employeeId,firstName:firstName,lastName:lastName})
                     
-                    resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {} });
+                    resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {email:emailAddress} });
                 }
                 else
                 reject({ code: 400, message: "Invalid token id or token expired", data: {} });
