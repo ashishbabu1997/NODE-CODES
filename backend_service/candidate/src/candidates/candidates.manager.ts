@@ -780,6 +780,88 @@ export const modifyResumeData = (_body) => {
             try {
                 if (_body.candidateId) {
                     await client.query(queryService.updateResumeFile(_body));
+                    let extractedData = rchilliExtractor.rchilliExtractor(_body);
+                    extractedData["employeeId"] = _body.employeeId;
+                    extractedData["resume"] = _body.resume;
+                    await client.query(queryService.updateExtractedCandidateDetails(extractedData));
+                    let promises = []
+                            extractedData["candidateId"] = _body.candidateId;
+                            await client.query(queryService.insertExtractedCandidateSkills(extractedData));
+                            console.log("skillArray done");
+
+
+                            extractedData["workHistory"].map((data) => {
+                                data["candidateId"] = _body.candidateId;;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
+                            });
+
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("workHisory done");
+
+                            extractedData["projects"].map((data) => {
+                                data["candidateId"] = _body.candidateId;;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
+                            });
+
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("projects done");
+
+
+                            extractedData["education"].map((data) => {
+                                data["candidateId"] = _body.candidateId;;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
+                            });
+
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("education done");
+
+
+                            extractedData["certifications"].map((data) => {
+                                data["candidateId"] = _body.candidateId;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
+                            });
+
+
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("certifications done");
+
+                            extractedData["publications"].map((data) => {
+                                data["candidateId"] = _body.candidateId;;
+                                data["employeeId"] = _body.employeeId;
+                                promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
+                            });
+                            
+                            await Promise.all(promises);
+                            promises = [];
+                            console.log("publications done");
+                            extractedData["socialProfile"].map((data) => {
+                                data["candidateId"] = _body.candidateId;;
+                                data["employeeId"] = _body.employeeId;
+                                if(data.title=='Github')
+                                {
+                                    _body.githubId=data.link
+                                }
+                                else if (data.title=='Linkedin')
+                                {
+                                    _body.linkedinId=data.link
+                                }
+                                else if(data.title=='Stackoverflow')
+                                {
+                                    _body.stackoverflowId=data.link
+                                }
+                            });
+                            await client.query(queryService.insertCandidateSocialProfile(_body));
+                            console.log("Social Profile's  done");
+                            await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
+                            console.log("language done");
                     resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
                 }
                 else {
@@ -795,7 +877,6 @@ export const modifyResumeData = (_body) => {
 
                     await client.query('COMMIT');
                     try {
-
                         if (![null, undefined, ''].includes(candidateResult) && candidateResult.rows[0]) {
                             let promises = [], candidateId = candidateResult.rows[0].candidate_id;
 

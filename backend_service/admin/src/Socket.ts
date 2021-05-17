@@ -50,7 +50,7 @@ export const  connect =(app) =>{
             socket.on("disconnect", () => {
                 console.log("Client disconnected");
                 client.end(err => {
-                    console.log('client has disconnected from db')
+                    console.log('client has disconnected from db',err)
                     if (err) {
                         console.log('error during disconnection', err.stack)
                     }

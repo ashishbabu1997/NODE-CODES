@@ -970,6 +970,13 @@ export const insertCandidatePublicationQuery = (_body) => {
             values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, resume:data.resume, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData,companyid:data.freelancerCompanyId,detailresume:data.detailResume,htmlresume:data.htmlResume}
         }
     }
+    export const updateExtractedCandidateDetails = (data) => {
+        return {
+            name: 'update-extracted-candidate-details',
+            text: candidateQuery.updateExtractedCandidateDetails,
+            values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, resume:data.resume, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData,detailresume:data.detailResume,htmlresume:data.htmlResume}
+        }
+    }
     export const insertDetailResume = (_body) => {
         return {
             name: 'insert-detail-resume',
