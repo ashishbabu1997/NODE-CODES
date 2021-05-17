@@ -1,4 +1,4 @@
-import {getAllJobReceived, getJobReceivedByJobReceivedId,submitCandidateProfile, updateIsRejectForJobReceived, getProfileByCompanyId, saveCandidateProfile,editSkills} from './jobreceived.manager';
+import {getAllJobReceived,resumeBuilderProfile, getJobReceivedByJobReceivedId,submitCandidateProfile, updateIsRejectForJobReceived, getProfileByCompanyId, saveCandidateProfile,editSkills} from './jobreceived.manager';
 import sendResponse from '../common/response/response';
 
 export const getJobReceived = (req, res) => {
@@ -58,5 +58,11 @@ export const getProfile = (req, res) => {
 export const skillEdits = (req, res) => {
     const body = req.body;
     editSkills(body).then((response: any) => sendResponse(res, response.code, 1,202, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0,402, error.message, error.data))
+}
+
+export const addAResumeBuliderProfile = (req, res) => {
+    const body = req.body;
+    resumeBuilderProfile(body).then((response: any) => sendResponse(res, response.code, 1,202, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0,402, error.message, error.data))
 }

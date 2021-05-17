@@ -127,7 +127,21 @@ export const createEmployee = (_body) => {
                     let number = ![null,undefined].includes(_body.body.telephoneNumber)?_body.body.telephoneNumber:""
                     let adminPath = 'src/emailTemplates/applicationText.html';
                     let adminReplacements = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number };
-                    emailClient.emailManager(config.adminEmail,config.text.subject,adminPath,adminReplacements);
+                    const  getEllowAdmins = {
+                        name: 'get-ellow-admin',
+                        text: employeeQuery.getellowAdmins,
+                        values: []
+                        
+                        
+                    }
+                    var ellowAdmins=await client.query(getEllowAdmins)
+                    if(Array.isArray(ellowAdmins.rows))
+                    {
+        
+                        ellowAdmins.rows.forEach(element => {
+                            emailClient.emailManager(element.email,config.text.subject,adminPath,adminReplacements);
+                        })
+                    }
                 }
                 else{
                     console.log("Waiting for admin approval")
@@ -235,8 +249,25 @@ export const createEmployeeByAdmin = (_body) => {
                 let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:"";
                 path = 'src/emailTemplates/applicationText.html';
                 let adminReplacements = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number };
-                
-                emailClient.emailManager(config.adminEmail,config.text.subject,path,adminReplacements);
+                const  getEllowAdmins = {
+                    name: 'get-ellow-admin',
+                    text: employeeQuery.getellowAdmins,
+                    values: []
+            
+
+            }
+            var ellowAdmins=await client.query(getEllowAdmins)
+            if(Array.isArray(ellowAdmins.rows))
+            {
+                ellowAdmins.rows.forEach(element => {
+                    emailClient.emailManager(element.email,config.text.subject,path,adminReplacements);
+                            
+                    })
+                        
+            }
+            else{
+                console.log("Error in fetch admin query")
+            }
                 
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
@@ -264,27 +295,36 @@ export const checkCompanyByWorkMail = (_body) => {
         
         var email = _body.emailId;
         var workMailExtension = email.substring(email.lastIndexOf('@') + 1);
-        const query = {
-            name: 'add-employee',
-            text: employeeQuery.checkEmailForCompany,
-            values: ['%@' + workMailExtension],
+        if (workMailExtension=='gmail.com')
+        {
+            resolve({ code: 200, message: "Please enter your work mail", data:null});
+
         }
-        database().query(query, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                return;
+        else
+        {
+           const query = {
+                name: 'add-employee',
+                text: employeeQuery.checkEmailForCompany,
+               values: ['%@' + workMailExtension],
             }
-            var companyDetails = null;
-            if (Array.isArray(results.rows) && results.rows.length) {
-                companyDetails = {
-                    companyId:parseInt(results.rows[0].company_id),
-                    companyName:results.rows[0].company_name,
-                    adminApproveStatus:results.rows[0].admin_approve_status,
-                    accountType:results.rows[0].account_type
+           database().query(query, (error, results) => {
+                if (error) {
+                      reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    return;
                 }
-            }
-            resolve({ code: 200, message: "Company Details", data: companyDetails });
-        })
+                var companyDetails = null;
+                if (Array.isArray(results.rows) && results.rows.length) {
+                  companyDetails = {
+                      companyId:parseInt(results.rows[0].company_id),
+                      companyName:results.rows[0].company_name,
+                      adminApproveStatus:results.rows[0].admin_approve_status,
+                      accountType:results.rows[0].account_type
+                   }
+                }
+                resolve({ code: 200, message: "Company Details", data: companyDetails });
+           })
+      }
+
     })
 }
 
@@ -343,7 +383,27 @@ export const createFreelancer = (_body) => {
                 let path = 'src/emailTemplates/applicationText.html';
                 const message = `A new employee ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer`
                 createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:4,employeeId:null,firstName:_body.firstName,lastName:_body.lastName})
-                emailClient.emailManager(config.adminEmail,config.text.subject,path,adminReplacement);
+                const  getEllowAdmins = {
+                    name: 'get-ellow-admin',
+                    text: employeeQuery.getellowAdmins,
+                    values: []
+            
+
+            }
+            var ellowAdmins=await client.query(getEllowAdmins)
+            if(Array.isArray(ellowAdmins.rows))
+            {
+                
+                ellowAdmins.rows.forEach(element => {
+                    emailClient.emailManager(element.email,config.text.subject,path,adminReplacement);
+                            
+                    })
+                        
+            }
+            else{
+                console.log("Error in fetch admin query")
+            }
+             
                 let freelancerReplacements = {
                     applicantName:Name,
                     link:verificationLink,
@@ -401,7 +461,7 @@ export const resetFreelancerToken = (_body) => {
                     emailClient.emailManager(emailAddress,config.text.resetConfirmSubject,path,replacements);
                     createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId,employeeId:_body.employeeId,firstName:firstName,lastName:lastName})
                     
-                    resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {} });
+                    resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {email:emailAddress} });
                 }
                 else
                 reject({ code: 400, message: "Invalid token id or token expired", data: {} });

@@ -186,73 +186,139 @@ export const clearance = (_body) => {
                     
                 }
                 var companyName=await client.query(getCompanyName)
-                
+                const userRejectQuery = {
+                    name: 'admin-rejection',
+                    text: adminQuery.clearanceQuery,
+                    values: [_body.selectedEmployeeId, false, 0,currentTime]
+                }
+                const adminApprovalQuery = {
+                    name: 'admin-panel',
+                    text: adminQuery.approveEmployeeQuery,
+                    values: [_body.selectedEmployeeId,hashedPassword,currentTime]
+                }
                 // Approving a user
                 if (_body.decisionValue == 1) {
-                    
-                    const password = passwordGenerator.generate({
-                        length: 10,
-                        numbers: true
-                    });
-                    var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                    const adminApprovalQuery = {
-                        name: 'admin-panel',
-                        text: adminQuery.approveEmployeeQuery,
-                        values: [_body.selectedEmployeeId,hashedPassword,currentTime]
-                    }
-                    var approveResult = await client.query(adminApprovalQuery);
-                    var email = approveResult.rows[0].email;
-                    const subject = " ellow.io LOGIN PASSWORD "
-                    
-                    // Sending an email with login credentials
-                    let path = 'src/emailTemplates/adminApproveText.html';
-                    let replacements = {
-                        loginPassword: password
-                    };
-                    emailClient.emailManager(email,subject,path,replacements);
-                    await client.query('COMMIT');
-                    if(Array.isArray(ellowAdmins.rows))
+                    if(_body.repeatValue==true)
                     {
-                        let recruitersSubject='User Registration Notification'
-                        let recruitersPath = 'src/emailTemplates/userApprovalMailText.html';
-                        let recruitersReplacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
-                        ellowAdmins.rows.forEach(element => {
-                            emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);         
-                        })
-                        resolve({ code: 200, message: "User Approval Successfull", data: {} });                            
+                        const password = passwordGenerator.generate({
+                            length: 10,
+                            numbers: true
+                        });
+                        var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                        var approveResult = await client.query(adminApprovalQuery);
+                        var email = approveResult.rows[0].email;
+                        const subject = " ellow.io LOGIN PASSWORD "
+                        
+                        // Sending an email with login credentials
+                        let path = 'src/emailTemplates/adminReApproveText.html';
+                        let replacements = {
+                            loginPassword: password
+                        };
+                        emailClient.emailManager(email,subject,path,replacements);
+                        await client.query('COMMIT');
+                        if(Array.isArray(ellowAdmins.rows))
+                        {
+                            let recruitersSubject='Company Re-Approval Notification'
+                            let recruitersPath = 'src/emailTemplates/userReApprovalMailText.html';
+                            let recruitersReplacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
+                            ellowAdmins.rows.forEach(element => {
+                                emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);         
+                            })
+                            resolve({ code: 200, message: "User Approval Successfull", data: {} });                            
+                        }
+
+                    }
+                    else
+                    {
+                                const password = passwordGenerator.generate({
+                                    length: 10,
+                                    numbers: true
+                                });
+                                var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                                var approveResult = await client.query(adminApprovalQuery);
+                                var email = approveResult.rows[0].email;
+                                const subject = " ellow.io LOGIN PASSWORD "
+                                
+                                // Sending an email with login credentials
+                                let path = 'src/emailTemplates/adminApproveText.html';
+                                let replacements = {
+                                    loginPassword: password
+                                };
+                                emailClient.emailManager(email,subject,path,replacements);
+                                await client.query('COMMIT');
+                                if(Array.isArray(ellowAdmins.rows))
+                                {
+                                    let recruitersSubject='Company Approval Mail'
+                                    let recruitersPath = 'src/emailTemplates/userApprovalMailText.html';
+                                    let recruitersReplacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
+                                    ellowAdmins.rows.forEach(element => {
+                                        emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);         
+                                    })
+                                    resolve({ code: 200, message: "User Approval Successfull", data: {} });                            
+                                }
                     }
                 }
                 else {
+                                    if (_body.repeatValue==true)
+                                    {
+                                                var rejectResultSet= await client.query(userRejectQuery);
+                                                var userCompanyId=rejectResultSet.rows[0].company_id
+                                                const subUserRejectQuery = {
+                                                    name: 'admin-subuser-rejection',
+                                                    text: adminQuery.subUserClearanceQuery,
+                                                    values: [userCompanyId, false, 0,currentTime]
+                                                }
+                                                await client.query(subUserRejectQuery);
+                                                var employeeMail=rejectResultSet.rows[0].email
+                                                var desc = _body.description
+                                                var reRejectionSubject = "ellow.io ACCOUNT REJECTION MAIL "
+                                                
+                                                // Rejection mail to the user
+                                                let reRejectionpath = 'src/emailTemplates/adminReRejectText.html';
+                                                var reRejectionReplacements = {
+                                                    description: desc
+                                                };
+                                                emailClient.emailManager(employeeMail,reRejectionSubject,reRejectionpath,reRejectionReplacements);
+                                                await client.query('COMMIT'); 
+                                                if(Array.isArray(ellowAdmins.rows))
+                                                {
+                                                    let subject='Company Rejection Mail'
+                                                    let path = 'src/emailTemplates/userReRejectionMailText.html';
+                                                    let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyName.rows[0].company_name};
+                                                    ellowAdmins.rows.forEach(element => {
+                                                        console.log(element.email)
+                                                        emailClient.emailManager(element.email,subject,path,replacements);         
+                                                    })
+                                                    resolve({ code: 200, message: "User Rejection Successfull", data: {} });
+                                                }
+                                    }
+                                    else{
+                                                    // Rejecting a user
+                                                var rejectResultSet= await client.query(userRejectQuery);
+                                                var employeeMail=rejectResultSet.rows[0].email
+                                                var desc = _body.description
+                                                var subject = "ellow.io ACCOUNT REJECTION MAIL "
+                                                
+                                                // Rejection mail to the user
+                                                let path = 'src/emailTemplates/adminRejectText.html';
+                                                var userReplacements = {
+                                                    description: desc
+                                                };
+                                                emailClient.emailManager(employeeMail,subject,path,userReplacements);
+                                                await client.query('COMMIT'); 
+                                                if(Array.isArray(ellowAdmins.rows))
+                                                {
+                                                    let subject='Company Rejection Mail'
+                                                    let path = 'src/emailTemplates/userRejectionMailText.html';
+                                                    let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyName.rows[0].company_name};
+                                                    ellowAdmins.rows.forEach(element => {
+                                                        console.log(element.email)
+                                                        emailClient.emailManager(element.email,subject,path,replacements);         
+                                                    })
+                                                    resolve({ code: 200, message: "User Rejection Successfull", data: {} });
+                                                }
+                                    }
                     
-                    // Rejecting a user
-                    const adminRejectQuery = {
-                        name: 'admin-panel',
-                        text: adminQuery.clearanceQuery,
-                        values: [_body.selectedEmployeeId, false, 0,currentTime]
-                    }
-                    var rejectResultSet= await client.query(adminRejectQuery);
-                    var employeeMail=rejectResultSet.rows[0].email
-                    var desc = _body.description
-                    var subject = "ellow.io ACCOUNT REJECTION MAIL "
-                    
-                    // Rejection mail to the user
-                    let path = 'src/emailTemplates/adminRejectText.html';
-                    var userReplacements = {
-                        description: desc
-                    };
-                    emailClient.emailManager(employeeMail,subject,path,userReplacements);
-                    await client.query('COMMIT'); 
-                    if(Array.isArray(ellowAdmins.rows))
-                    {
-                        let subject='User Rejection Notification'
-                        let path = 'src/emailTemplates/userRejectionMailText.html';
-                        let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyName.rows[0].company_name};
-                        ellowAdmins.rows.forEach(element => {
-                            console.log(element.email)
-                            emailClient.emailManager(element.email,subject,path,replacements);         
-                        })
-                        resolve({ code: 200, message: "User Rejection Successfull", data: {} });
-                    }
                 }
             } catch (e) {
                 await client.query('ROLLBACK')
@@ -444,3 +510,39 @@ export const extractSkillsFromExcel = (_body) => {
             })
         })
     }
+
+    //>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new skills
+export const allSkills = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now());
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                
+                if(_body.userRoleId==1)
+                {
+                    console.log(_body.userRoleId)
+                    const allSkills = {
+                        name: 'get-all-skills',
+                        text: adminQuery.allSkills
+                    }
+                    let result = await client.query(allSkills);
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Skills fetched", data: result['rows'] });
+                
+                }
+                else{
+                    reject({ code: 400, message: "Unauthorized User", data:{} });
+                }
+
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } 
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}

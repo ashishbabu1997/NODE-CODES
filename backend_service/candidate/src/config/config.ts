@@ -9,9 +9,9 @@ export default {
         "submitProfileSubject":"Profile Submission Notification",
         "shareEmailSubject":"ellow Resume Share Notification",
         "newUserTextSubject":"ellow LOGIN PASSWORD",
-        "newUserAdminTextSubject":"New Employee Notification",
-        "addCandidatesTextSubject":"Added Candidates List",
-        "addCandidatesUsersTextSubject":"Profile Selection Notification",
+        "newUserAdminTextSubject":"Customer Registration through Link",
+        "addCandidatesTextSubject":"Applied Candidates List",
+        "addCandidatesUsersTextSubject":"Profile is Shortlisted",
         "sharePdfTextSubject":"ellow resume"
     },
     "db": {

@@ -38,7 +38,7 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
         }
         if(![undefined,null,''].includes(skills) && Array.isArray(skills) && skills.length)
         {
-            filterQuery=filterQuery+' AND skills @> $skill::varchar[] '                
+            filterQuery=filterQuery+' AND skills && $skill::varchar[] '                
             queryValues =  Object.assign({skill:objectToArray(skills,'skillName')},queryValues)
         }
         if(![undefined,null,''].includes(otherSkills) && Array.isArray(otherSkills) && otherSkills.length)
@@ -156,7 +156,7 @@ export const resourceSearch = (body,queryValues) =>{
     if(![undefined,null,''].includes(body.searchKey))
     {            
         searchKey='%' + body.searchKey + '%';        
-        searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
+        searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."candidatePositionName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
         queryValues=Object.assign({searchkey:searchKey},queryValues)
     }
     
@@ -169,16 +169,19 @@ export const resourceTab = (body) =>{
     switch (body.tabValue) {
         
         case '0':
-        vettedQuery='  and chsv."candidateStatus"=3 '
+        vettedQuery='  and chsv."candidateStatus"=3 and chsv."blacklisted"=false '
         break;
         case '1':
-        vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6'
+        vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
         break;
         case '2':
-        vettedQuery='  and chsv."candidateStatus"=3 and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
+        vettedQuery='  and chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
         break;
         case '3':
-        vettedQuery='  and chsv."candidateStatus"=4'
+        vettedQuery='  and chsv."candidateStatus"=4 and chsv."blacklisted"=false'
+        break; 
+        case '4':
+        vettedQuery='  and chsv."blacklisted"=true'
         break; 
         
         default:
@@ -204,6 +207,22 @@ export const resourceHirerTab = (body) =>{
     return vettedQuery;
 }
 
+export const emptyStringCheck = (_body) =>{
+    console.log(_body)
+    _body=_body===''||undefined?null:_body
+    return _body;
+
+}
+export const JsonStringParse=(_body)=> {
+    let parsedString = "";
+    try {
+        parsedString = JSON.parse(_body);
+    } catch (e) {
+        console.log("Unable to parse : ",_body);
+        return parsedString;
+    }
+    return parsedString;
+}
 export const resourceRoleBased = (reqBody,queryValues) =>{
     let roleBasedQuery = '';
     if (reqBody.userRoleId != 1) {
