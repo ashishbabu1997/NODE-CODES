@@ -13,7 +13,7 @@ import setProfileAuth from '../middlewares/setProfileAuth';
 const router = express.Router();
 router
 .get('/listCandidates', jwtAuth, setData(), setProfileAuth([1,2,3,4]), candidateController.listCandidates)
-.post('/listFreeCandidates', jwtAuth, setData(), setProfileAuth([1,2,3,4]), candidateController.listFreeCandidates)
+.post('/listFreeCandidates', jwtAuth, setData(), candidateController.listFreeCandidates)
 .post('/listForAddFromListCandidates', jwtAuth, setData(), setProfileAuth([1,2]), candidateController.listForAddFromListCandidates)
 .post('/candidateApproveReject', jwtAuth, setData(), setProfileAuth([1]), validate(approveRejectSchema), candidateController.approveRejectCandidates)
 .post('/requestForInterview', jwtAuth, setData(), setProfileAuth([1,2]), validate(interviewRequestSchema), candidateController.interviewRequest)
