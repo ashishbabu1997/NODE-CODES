@@ -2255,6 +2255,7 @@ export const resumeParser = (_body) => {
             const client = await database()
             try {
                 let responseData = null;
+                console.log("Start")
                 console.log("URI : ", _body.publicUrl + encodeURIComponent(_body.fileName));
                 console.log(_body.fileName)
                 let jsonObject = JSON.stringify({
