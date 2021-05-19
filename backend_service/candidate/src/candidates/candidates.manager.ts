@@ -2320,7 +2320,6 @@ export const resumeParser = (_body) => {
                             responseData["resume"] = _body.fileName;
                             responseData["candidateId"]=_body.candidateId
                             responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
-
                             let resp = await modifyResumeData(responseData).catch((e) => {
                                 reject({ code: 400, message: "Failed Please try again, parser error ", data: e.message });
                             });

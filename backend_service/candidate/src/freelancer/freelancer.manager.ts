@@ -195,3 +195,28 @@ export const getPositionDetails = (_body) => {
         })
     })
 }
+
+
+
+
+
+export const listFreelancers = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                
+                await client.query('COMMIT'); 
+                
+                resolve({ code: 200, message: "Freelancer other info updated and finished successfully", data: {} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } 
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
