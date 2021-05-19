@@ -14,7 +14,7 @@ const router = express.Router();
 router
 .get('/listCandidates', jwtAuth, setData(), setProfileAuth([1,2,3,4]), candidateController.listCandidates)
 .post('/listFreeCandidates', jwtAuth, setData(), candidateController.listFreeCandidates)
-.post('/listForAddFromListCandidates', jwtAuth, setData(), setProfileAuth([1,2]), candidateController.listForAddFromListCandidates)
+.post('/listForAddFromListCandidates', jwtAuth, setData(), candidateController.listForAddFromListCandidates)
 .post('/candidateApproveReject', jwtAuth, setData(), setProfileAuth([1]), validate(approveRejectSchema), candidateController.approveRejectCandidates)
 .post('/requestForInterview', jwtAuth, setData(), setProfileAuth([1,2]), validate(interviewRequestSchema), candidateController.interviewRequest)
 .post('/review', jwtAuth, setData(), setProfileAuth([1,2]), candidateController.candidateReview)
@@ -50,6 +50,7 @@ router
 .put('/rejectCandidateEllowStage',jwtAuth, setData(),setProfileAuth([1]),candidateController.rejectFromCandidateEllowRecruitment)
 .get('/getAllAuditLogs',candidateController.getAuditLogs)
 .post('/listFreeCandidatesOfHirer', jwtAuth, setData(),setProfileAuth([2]), candidateController.listResourcesOfHirer)
+.post('/listFreeCandidatesOfHirer', jwtAuth, setData(), candidateController.listResourcesOfProvider)
 .post('/updateCandidateAvailability', jwtAuth, setData(), setProfileAuth([1,2,3,4]), candidateController.changeCandidateAvailability)
 .post('/resumeParser',jwtAuth, setData(), setProfileAuth([1,2,3,4]),candidateController.resumeParser)
 .post('/userSignup', candidateController.newUserSignup)

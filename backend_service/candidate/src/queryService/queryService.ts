@@ -702,6 +702,20 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: queryValues
         }
     }
+    export const listCandidatesOfProvider = (queryText,queryValues) => {
+        return {
+            name: 'get-free-candidates-of-provider',
+            text: queryText,
+            values: queryValues
+        }
+    }
+    export const listCandidatesOfProviderCount = (queryText,queryValues) => {
+        return{
+            name: 'get-free-candidates-of-provider-count',
+            text: queryText,
+            values: queryValues
+        }
+    }
     export const listCandidatesOfHirerCount = (queryText,queryValues) => {
         return{
             name: 'get-free-candidates-of-hirer-count',

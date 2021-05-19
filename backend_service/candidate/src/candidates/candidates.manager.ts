@@ -1522,6 +1522,7 @@ export const getResume = (_body) => {
                     email: allProfileDetails.rows[0].email,
                     candidateVetted: allProfileDetails.rows[0].candidateVetted,
                     blacklisted: allProfileDetails.rows[0].blacklisted,
+                    resumeFileName:allProfileDetails.rows[0].resumeFileName
                 }
 
                 let overallWorkExperience = {
@@ -2541,6 +2542,49 @@ export const getHtmlResume = (_body) => {
             }
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
+        })
+    })
+}
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>Listing all the free candidates from the candidates list of provider.
+export const listProviderResources = (_body) => {
+    return new Promise((resolve, reject) => {
+        var selectQuery = candidateQuery.listFreeCandidatesOfProviderFromView, totalQuery = candidateQuery.listFreeCandidatesofProviderTotalCount, vettedQuery = '';
+        var queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
+            body = _body.query;
+
+        // Search for filters in the body        
+        let filterResult = utils.resourceFilter(filter, filterQuery, queryValues);
+        filterQuery = filterResult.filterQuery;
+        queryValues = filterResult.queryValues;
+
+        // Search for company name / candidate name
+        let searchResult = utils.resourceSearch(body, queryValues);
+        searchQuery = searchResult.searchQuery;
+        queryValues = searchResult.queryValues;
+
+        (async () => {
+            const client = await database()
+            try {
+                queryText = selectQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
+                var queryCountText = totalQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery
+                queryValues = Object.assign({ providerCompanyId: _body.body.companyId }, queryValues)
+
+                const candidatesResult = await client.query(queryService.listCandidatesOfProvider(queryText, queryValues));
+                const totalCount = await client.query(queryService.listCandidatesOfProviderCount(queryCountText, queryValues))
+                resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates: candidatesResult.rows, totalCount: totalCount.rows[0].totalCount } });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })
 }
