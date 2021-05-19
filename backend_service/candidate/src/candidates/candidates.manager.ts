@@ -779,10 +779,12 @@ export const modifyResumeData = (_body) => {
             const client = await database()
             try {
                 if (_body.candidateId) {
+                    console.log("START")
                     await client.query(queryService.updateResumeFile(_body));
                     let extractedData = rchilliExtractor.rchilliExtractor(_body);
                     extractedData["employeeId"] = _body.employeeId;
                     extractedData["resume"] = _body.resume;
+                    console.log("RESUMEFILENAME",extractedData["resumeFileName"] )
                     await client.query(queryService.updateExtractedCandidateDetails(extractedData));
                     let promises = []
                             extractedData["candidateId"] = _body.candidateId;
