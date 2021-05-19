@@ -1522,7 +1522,6 @@ export const getResume = (_body) => {
                     email: allProfileDetails.rows[0].email,
                     candidateVetted: allProfileDetails.rows[0].candidateVetted,
                     blacklisted: allProfileDetails.rows[0].blacklisted,
-                    resumeFileName:allProfileDetails.rows[0].resumeFileName
                 }
 
                 let overallWorkExperience = {
@@ -1548,7 +1547,7 @@ export const getResume = (_body) => {
                         profile: profileDetails,
                         detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
                         htmlResume: allProfileDetails.rows[0].htmlResume,
-                        resume: allProfileDetails.rows[0].resume,
+                        resume: allProfileDetails.rows[0].resumeFileName,
                         overallWorkExperience,
                         availability,
                         socialPresence: socialProfileDetails.rows[0],
