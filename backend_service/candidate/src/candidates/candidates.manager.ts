@@ -777,6 +777,7 @@ export const modifyResumeData = (_body) => {
             // console.log("_body  from resumeData : ",_body);
 
             const client = await database()
+            console.log("CANDIDATE ID ",_body.candidateId)
             try {
                 if (_body.candidateId) {
                     console.log("START")
@@ -784,10 +785,10 @@ export const modifyResumeData = (_body) => {
                     let extractedData = rchilliExtractor.rchilliExtractor(_body);
                     extractedData["employeeId"] = _body.employeeId;
                     extractedData["resume"] = _body.resume;
+                    extractedData["candidateId"] = _body.candidateId;
                     console.log("RESUMEFILENAME",extractedData["resumeFileName"] )
                     await client.query(queryService.updateExtractedCandidateDetails(extractedData));
                     let promises = []
-                            extractedData["candidateId"] = _body.candidateId;
                             await client.query(queryService.insertExtractedCandidateSkills(extractedData));
                             console.log("skillArray done");
 

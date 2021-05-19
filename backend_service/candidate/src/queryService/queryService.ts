@@ -988,7 +988,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'update-extracted-candidate-details',
             text: candidateQuery.updateExtractedCandidateDetails,
-            values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, resume:data.resume, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData,detailresume:data.detailResume,htmlresume:data.htmlResume}
+            values:{candidateid:data.candidateId,firstname:data.firstName, lastname:data.lastName, summary:data.summary, resume:data.resume, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData,detailresume:data.detailResume,htmlresume:data.htmlResume}
         }
     }
     export const insertDetailResume = (_body) => {
