@@ -777,11 +777,12 @@ export const modifyResumeData = (_body) => {
             // console.log("_body  from resumeData : ",_body);
 
             const client = await database()
-            console.log("CANDIDATE ID ",_body.candidateId)
             try {
                 if (_body.candidateId) {
+                    console.log(_body.candidateId)
                     console.log("START")
                     await client.query(queryService.updateResumeFile(_body));
+                    console.log("STOP")
                     let extractedData = rchilliExtractor.rchilliExtractor(_body);
                     extractedData["employeeId"] = _body.employeeId;
                     extractedData["resume"] = _body.resume;
@@ -789,6 +790,8 @@ export const modifyResumeData = (_body) => {
                     console.log("RESUMEFILENAME",extractedData["resumeFileName"] )
                     await client.query(queryService.updateExtractedCandidateDetails(extractedData));
                     let promises = []
+                    console.log("CANDIDATE ID ",extractedData["candidateId"])
+                    try {
                             await client.query(queryService.insertExtractedCandidateSkills(extractedData));
                             console.log("skillArray done");
 
@@ -866,7 +869,13 @@ export const modifyResumeData = (_body) => {
                             await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
                             console.log("language done");
                     resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
+                } catch (error) {
+                    console.log("error : ", error);
+    
+                    reject({ code: 400, message: "Error occured during extraction ", data: error.message });
                 }
+                }
+            
                 else {
                     await client.query('BEGIN');
                     let freelancer = await client.query(queryService.getFreelancerCompany(_body))
@@ -2309,7 +2318,7 @@ export const resumeParser = (_body) => {
                         else {
                             responseData["employeeId"] = _body.employeeId;
                             responseData["resume"] = _body.fileName;
-                            responseData["candidateId"]=_body.candidateId===null?null:_body.candidateId
+                            responseData["candidateId"]=_body.candidateId
                             responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
 
                             let resp = await modifyResumeData(responseData).catch((e) => {
