@@ -1489,6 +1489,8 @@ export const getResume = (_body) => {
                 var publications = await client.query(queryService.fetchPublications(candidateId));
                 var awards = await client.query(queryService.fetchAwards(candidateId));
                 var languages = await client.query(queryService.fetchLanguages(candidateId));
+                var designations = await client.query(queryService.fetchDesignations());
+
                 let workedCompanyList = workExperiences.rows.map(element => ({ "id": element.candidateWorkExperienceId, "companyName": element.companyName }))
                 workedCompanyList = [...workedCompanyList, { "id": 0, "companyName": "On personal capacity" }];
                 let companyJson = {};
@@ -1572,7 +1574,8 @@ export const getResume = (_body) => {
                         publications: publications.rows,
                         awards: awards.rows,
                         languages: languages.rows,
-                        workedCompanyList
+                        workedCompanyList,
+                        designationList : designations.rows[0].designations
                     }
                 });
 
@@ -2599,3 +2602,5 @@ export const listProviderResources = (_body) => {
         })
     })
 }
+
+
