@@ -263,3 +263,126 @@
 *       500:
 *         description: Server down
 */
+
+
+
+
+
+/**
+* @swagger
+* /freelancer/getDraftFreelancers:
+*   post:
+*     tags:
+*       - Candidates
+*     name: List draft freelancers
+*     summary: list available draft freelancers
+*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ] 
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: sortBy
+*         schema:
+*         type: string
+*         enum: [candidateId,candidateFirstName,candidatelastName,companyName,updatedOn]
+*       - in: query
+*         name: sortType
+*         schema:
+*         type: string
+*         enum: [asc,desc]
+*         example: asc
+*       - in: query
+*         name: filter
+*         schema:
+*         type: string
+*       - in: query
+*         name: pageSize
+*         schema:
+*         type: integer
+*         enum: [10,20,50,100]
+*       - in: query
+*         name: pageNumber
+*         schema:
+*         type: integer
+*         enum: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             filter:
+*               type: object
+*               properties:
+*                 resourcesType:
+*                   type: array
+*                   items:
+*                     type: string
+*                 skills:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       skillId:
+*                         type: integer
+*                       skillName:
+*                         type: string
+*                 otherSkills:
+*                   type: array
+*                   items:
+*                     type: object
+*                     properties:
+*                       skillId:
+*                         type: integer
+*                       skillName:
+*                         type: string
+*                 experience:
+*                   type: object
+*                   properties:
+*                     min:
+*                       type: integer
+*                     max:
+*                       type: integer
+*                 locations:
+*                   type: array
+*                   items:
+*                     type: string        
+*                 fromDate:
+*                   type: integer
+*                 toDate:
+*                   type: integer
+*                 minCost:
+*                   type: integer
+*                 maxCost:
+*                   type: integer
+*                 billingTypeId:
+*                   type: integer
+*                 currencyType:
+*                   type: integer
+*                 availability:
+*                   type: integer
+*                 allocatedTo:
+*                   type: integer
+*                 positionStatus:
+*                   type: array
+*                   items:
+*                     type: string  
+*                 candidateStatus:
+*                   type: array
+*                   items:
+*                     type: string              
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

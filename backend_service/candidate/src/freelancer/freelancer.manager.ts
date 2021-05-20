@@ -4,6 +4,7 @@ import * as emailClient from '../emailService/emailService';
 import config from '../config/config'
 import { createNotification } from '../common/notifications/notifications';
 import freelancerQuery from './query/freelancer.query';
+import * as utils from '../utils/utils';
 
 
 
@@ -217,6 +218,52 @@ export const listFreelancers = (_body) => {
             } 
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>Listing all the draft freelancers from the candidates list.
+export const listDraftFreelancersDetails = (_body) => {
+    return new Promise((resolve, reject) => {
+
+        var selectQuery = freelancerQuery.listDraftFreelancersFromView;
+        let totalQuery = freelancerQuery.listDraftFreelancersTotalCount;
+        var  queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
+            body = _body.query;
+
+        // Search for filters in the body        
+        let filterResult = utils.resourceFilter(filter, filterQuery, queryValues);
+        filterQuery = filterResult.filterQuery;
+        queryValues = filterResult.queryValues;
+
+        // Search for company name / candidate name
+        let searchResult = utils.resourceSearch(body, queryValues);
+        searchQuery = searchResult.searchQuery;
+        queryValues = searchResult.queryValues;
+
+        (async () => {
+            const client = await database()
+            try {
+                queryText = selectQuery  + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
+                queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId }, queryValues)
+                let candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
+
+                var queryCountText = totalQuery  + utils.resourceTab(body) + filterQuery + searchQuery;
+                let candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
+
+                let candidates = candidateList.rows;
+                let totalCount = candidateTotal.rows[0].totalCount;
+
+                resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates, totalCount } });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
 }

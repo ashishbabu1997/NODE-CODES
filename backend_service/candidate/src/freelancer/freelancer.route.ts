@@ -12,4 +12,5 @@ router
 .get('/getCandidateStatuses',jwtAuth, setData(),validate(freelancerSchema.candidateIdSchema), freelancerController.candidateStatus)
 .put('/submitFreelancerProfile',jwtAuth, setData(), freelancerController.submitProfile)
 .get('/getCandidatePositionDetails',jwtAuth, setData(), freelancerController.getCandidatePositionDetails)
+.post('/getDraftFreelancers',jwtAuth, setData(), freelancerController.listDraftFreelancers)
 export default router;
