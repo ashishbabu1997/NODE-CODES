@@ -1575,7 +1575,7 @@ export const getResume = (_body) => {
                         awards: awards.rows,
                         languages: languages.rows,
                         workedCompanyList,
-                        designationList : designations.rows
+                        designationList : designations.rows[0].designations
                     }
                 });
 
