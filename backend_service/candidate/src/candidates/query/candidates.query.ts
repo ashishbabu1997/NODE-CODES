@@ -76,6 +76,7 @@ export default {
     fetchPublicationDetails:'select candidate_publication_id as "candidatePublicationId", candidate_id as "candidateId", title, published_year as "publishedYear", link from candidate_publication where candidate_id = $1 and status = true order by published_year desc nulls last',
     fetchAwardDetails:'select candidate_certification_id as "candidateAwardId", candidate_id as "candidateId", certification_id as "certificationId", certified_year as "certifiedYear" from candidate_certifications where candidate_id = $1 and status = true order by certified_year desc nulls last',
     fetchLanguageDetails:'select candidate_language_id as "candidateLanguageId", candidate_id as "candidateId", language_id as "languageId", l.language as "languageName", proficiency from candidate_language cl join languages l on cl.language_id = l."languageId" where cl.candidate_id = $1 and cl.status = true  order by proficiency desc',
+    fetchDesignations:'select distinct candidate_position_name from candidate where candidate_position_name is not null and candidate_position_name != \'\' order by candidate_position_name',
     addExperience:'update candidate set work_experience=$2, remote_work_experience=$3,rate=$4, billing_type=$5, currency_type_id=$6, updated_on=$7, updated_by=$8 where candidate_id = $1',
     
     codeTestStatusUpdate:'UPDATE candidate SET code_test_status=$2, updated_by = $3, updated_on = $4 WHERE candidate_id = $1',

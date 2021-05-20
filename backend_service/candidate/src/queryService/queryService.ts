@@ -342,6 +342,15 @@ export const insertCandidatePublicationQuery = (_body) => {
             values: [candidateId],
         }
     }
+
+    export const fetchDesignations =()=> {
+        return {
+            name: 'fetch-designation-list',
+            text: candidateQuery.fetchDesignations,
+        }
+    }
+
+    
     
     // *******************************************************************************************************************************//
     // -------------------------------------------Resume share queries-------------------------------------------------//
