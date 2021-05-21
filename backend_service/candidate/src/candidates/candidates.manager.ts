@@ -666,7 +666,7 @@ export const linkCandidateWithPosition = (_body) => {
                     await client.query(queryService.addCandidateHiringSteps(_body));
                     firstName = imageResults.rows[0].candidate_first_name
                     lastName = imageResults.rows[0].candidate_last_name
-                    names = names + firstName + " " + lastName + "|"
+                    names = names + firstName + " " + lastName + "<br>"
                     var email = imageResults.rows[0].email_address
                     let replacements = {
                         name: firstName,
@@ -746,7 +746,8 @@ export const modifyResumeFile = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                if (_body.candidateId) {
+                _body.resume=_body.resume.substring(36);
+                if (_body.candidateId!=null) {
                     await client.query(queryService.updateResumeFile(_body));
                     resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
                 }
@@ -1442,7 +1443,7 @@ export const getResume = (_body) => {
                         detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
                         htmlResume: allProfileDetails.rows[0].htmlResume,
                         bagOfWords : allProfileDetails.rows[0].bagOfWords,
-                        resume: allProfileDetails.rows[0].resumeFileName,
+                        resume: allProfileDetails.rows[0].resume,
                         overallWorkExperience,
                         availability,
                         socialPresence: socialProfileDetails.rows[0],
@@ -2204,7 +2205,6 @@ export const resumeParser = (_body) => {
                             responseData["resume"] = _body.fileName;
                             responseData["candidateId"] = _body.candidateId
                             responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
-
                             let resp = await modifyResumeData(responseData).catch((e) => {
                                 reject({ code: 400, message: "Failed Please try again, parser error ", data: e.message });
                             });

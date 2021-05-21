@@ -10,6 +10,7 @@ import * as passwordGenerator from 'generate-password'
 import * as crypto from 'crypto';
 import { ImportsNotUsedAsValues } from 'typescript';
 import * as queryService from '../queryService/queryService';
+import * as utils from '../utils/utils';
 
 // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Get all job received details of a company
@@ -75,7 +76,7 @@ export const getAllJobReceived = (_body) => {
                 {
                     sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
                 }
-                _body.queryText = selectQuery + filterQuery + searchQuery + sort;
+                _body.queryText = selectQuery + filterQuery + searchQuery + sort + utils.jobsPagination(body);;
                 _body.queryValues =  Object.assign({companyid:body.companyId,employeeid:body.employeeId},queryValues)
                 let results = await client.query(queryService.getJobRecievedQuery(_body))  
                 let Jobs = results.rows;
