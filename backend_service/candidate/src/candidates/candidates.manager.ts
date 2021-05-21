@@ -773,223 +773,103 @@ export const modifyResumeFile = (_body) => {
 export const modifyResumeData = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
-
-            // console.log("_body  from resumeData : ",_body);
-
             const client = await database()
             try {
+                await client.query('BEGIN');
+                let extractedData = rchilliExtractor.rchilliExtractor(_body), candidateId = null;
+                extractedData["employeeId"] = _body.employeeId;
+                extractedData["resume"] = _body.resume;
                 if (_body.candidateId) {
-                    console.log(_body.candidateId)
-                    console.log("START")
-                    await client.query(queryService.updateResumeFile(_body));
-                    console.log("STOP")
-                    let extractedData = rchilliExtractor.rchilliExtractor(_body);
-                    extractedData["employeeId"] = _body.employeeId;
-                    extractedData["resume"] = _body.resume;
-                    extractedData["candidateId"] = _body.candidateId;
-                    console.log("RESUMEFILENAME",extractedData["resumeFileName"] )
                     await client.query(queryService.updateExtractedCandidateDetails(extractedData));
-                    let promises = []
-                    console.log("CANDIDATE ID ",extractedData["candidateId"])
-                    try {
-                            await client.query(queryService.insertExtractedCandidateSkills(extractedData));
-                            console.log("skillArray done");
-
-
-                            extractedData["workHistory"].map((data) => {
-                                data["candidateId"] = _body.candidateId;;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
-                            });
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("workHisory done");
-
-                            extractedData["projects"].map((data) => {
-                                data["candidateId"] = _body.candidateId;;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
-                            });
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("projects done");
-
-
-                            extractedData["education"].map((data) => {
-                                data["candidateId"] = _body.candidateId;;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
-                            });
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("education done");
-
-
-                            extractedData["certifications"].map((data) => {
-                                data["candidateId"] = _body.candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
-                            });
-
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("certifications done");
-
-                            extractedData["publications"].map((data) => {
-                                data["candidateId"] = _body.candidateId;;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
-                            });
-                            
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("publications done");
-                            extractedData["socialProfile"].map((data) => {
-                                data["candidateId"] = _body.candidateId;;
-                                data["employeeId"] = _body.employeeId;
-                                if(data.title=='Github')
-                                {
-                                    _body.githubId=data.link
-                                }
-                                else if (data.title=='Linkedin')
-                                {
-                                    _body.linkedinId=data.link
-                                }
-                                else if(data.title=='Stackoverflow')
-                                {
-                                    _body.stackoverflowId=data.link
-                                }
-                            });
-                            await client.query(queryService.insertCandidateSocialProfile(_body));
-                            console.log("Social Profile's  done");
-                            await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
-                            console.log("language done");
-                    resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
-                } catch (error) {
-                    console.log("error : ", error);
-    
-                    reject({ code: 400, message: "Error occured during extraction ", data: error.message });
+                    candidateId = _body.candidateId;
                 }
-                }
-            
+
                 else {
-                    await client.query('BEGIN');
                     let freelancer = await client.query(queryService.getFreelancerCompany(_body))
-                    console.log("FREELANCER", freelancer)
-                    let extractedData = rchilliExtractor.rchilliExtractor(_body);
                     extractedData["freelancerCompanyId"] = freelancer.rows[0].company_id
-                    extractedData["employeeId"] = _body.employeeId;
-                    extractedData["resume"] = _body.resume;
 
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
-
-                    await client.query('COMMIT');
-                    try {
-                        if (![null, undefined, ''].includes(candidateResult) && candidateResult.rows[0]) {
-                            let promises = [], candidateId = candidateResult.rows[0].candidate_id;
-
-                            extractedData["candidateId"] = candidateId;
-
-                            await client.query(queryService.insertExtractedCandidateSkills(extractedData));
-                            console.log("skillArray done");
-
-
-                            extractedData["workHistory"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
-                            });
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("workHisory done");
-
-                            extractedData["projects"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
-                            });
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("projects done");
-
-
-                            extractedData["education"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
-                            });
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("education done");
-
-
-                            extractedData["certifications"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
-                            });
-
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("certifications done");
-
-                            extractedData["publications"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
-                            });
-                            
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("publications done");
-                            extractedData["socialProfile"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                if(data.title=='Github')
-                                {
-                                    _body.githubId=data.link
-                                }
-                                else if (data.title=='Linkedin')
-                                {
-                                    _body.linkedinId=data.link
-                                }
-                                else if(data.title=='Stackoverflow')
-                                {
-                                    _body.stackoverflowId=data.link
-                                }
-                            });
-                            _body.candidateId=candidateId
-                            await client.query(queryService.insertCandidateSocialProfile(_body));
-                            console.log("Social Profile's  done");
-                            await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
-                            console.log("language done");
-
-
-                            await client.query('COMMIT');
-
-                            return resolve({ code: 200, message: "Candidate resume file updated successfully", data: candidateId });
-
-
-                        }
-
-                        else {
-                            console.log("error resume already uploaded");
-                            return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
-                        }
-                    } catch (error) {
-                        console.log("error : ", error.message);
-
-                        reject({ code: 400, message: "Error occured during extraction ", data: error.message });
+                    if ([null, undefined, ''].includes(candidateResult) || [null, undefined, ''].includes(candidateResult.rows[0])) {
+                        console.log("error resume already uploaded");
+                        return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
                     }
+
+                    candidateId = candidateResult.rows[0].candidate_id;
+
                 }
+
+                await client.query('COMMIT');
+                try {
+                    let promises = [];
+
+                    extractedData["candidateId"] = candidateId;
+                    await client.query(queryService.insertExtractedCandidateSkills(extractedData));
+
+
+                    extractedData["workHistory"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
+                    });
+
+                    await Promise.all(promises);
+
+                    promises = [];
+                    extractedData["projects"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
+                    });
+
+                    await Promise.all(promises);
+
+                    promises = [];
+                    extractedData["education"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
+                    });
+
+                    await Promise.all(promises);
+
+                    promises = [];
+                    extractedData["certifications"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
+                    });
+
+                    await Promise.all(promises);
+
+                    promises = [];
+                    extractedData["publications"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
+                    });
+
+                    await Promise.all(promises);
+
+                    promises = [];
+                    extractedData["socialProfile"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        utils.stringEquals(data.title, 'github') ? _body.githubId = data.link :
+                            utils.stringEquals(data.title, 'Linkedin') ? _body.linkedinId = data.link :
+                                utils.stringEquals(data.title, 'Stackoverflow') ? _body.stackoverflowId = data.link : '';
+                    });
+                    _body.candidateId = candidateId
+                    await client.query(queryService.insertCandidateSocialProfile(_body));
+                    await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
+                    await client.query('COMMIT');
+
+                    return resolve({ code: 200, message: "Candidate resume file updated successfully", data: candidateId });
+
+                } catch (error) {
+                    console.log("error : ", error.message);
+                    reject({ code: 400, message: "Error occured during extraction ", data: error.message });
+                }
+
 
             } catch (e) {
                 console.log(e)
@@ -1561,6 +1441,7 @@ export const getResume = (_body) => {
                         profile: profileDetails,
                         detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
                         htmlResume: allProfileDetails.rows[0].htmlResume,
+                        bagOfWords : allProfileDetails.rows[0].bagOfWords,
                         resume: allProfileDetails.rows[0].resumeFileName,
                         overallWorkExperience,
                         availability,
@@ -1575,7 +1456,7 @@ export const getResume = (_body) => {
                         awards: awards.rows,
                         languages: languages.rows,
                         workedCompanyList,
-                        designationList : designations.rows[0].designations
+                        designationList: designations.rows[0].designations
                     }
                 });
 
@@ -2321,7 +2202,7 @@ export const resumeParser = (_body) => {
                         else {
                             responseData["employeeId"] = _body.employeeId;
                             responseData["resume"] = _body.fileName;
-                            responseData["candidateId"]=_body.candidateId
+                            responseData["candidateId"] = _body.candidateId
                             responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
 
                             let resp = await modifyResumeData(responseData).catch((e) => {
@@ -2524,31 +2405,37 @@ export const getHtmlResume = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                let htmlData =[],promises =[];
+                let bow = [], promises = [];
                 // Inserting the integer representing the vetting status value.
                 const getQuery = {
-                    name: 'get-html-details',
-                    text: candidateQuery.getHtmlResume,
+                    name: 'get-resume-data',
+                    text: candidateQuery.getResumeData,
                     values: [],
                 }
                 var results = await client.query(getQuery);
                 const data = results.rows
+
                 data.forEach(element => {
 
                     let d = JSON.parse(element['resume_data']);
-                    let htmlres = d["ResumeParserData"]["HtmlResume"];
+                    let res = d["ResumeParserData"]["DetailResume"];    
+                    res = res.replace(/[^a-zA-Z\n@. ]/g, '');
+                    res = res.split(/[\s\n]+/);
+                    let uniqueChars = [...Array.from(new Set(res.sort()))];
+
+                    uniqueChars = uniqueChars.filter((ele:String)=> ele.match(/^[^a-zA-Z0-9]+$/))
 
                     let updateQuery = {
-                        name: 'update-html-details',
+                        name: 'update-bagofwords-details',
                         text: candidateQuery.updateHtmlResume,
-                        values: [htmlres,element.candidate_id]
+                        values: [uniqueChars,element.candidate_id]
                     }
 
                     promises.push(client.query(updateQuery));
                 });
 
                 await Promise.all(promises);
-                resolve({ code: 200, message: "resume data fetched", data:htmlData })
+                resolve({ code: 200, message: "resume data fetched", data: 'done' })
 
             } catch (e) {
                 console.log(e)
@@ -2556,7 +2443,7 @@ export const getHtmlResume = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             }
         })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })
 }
