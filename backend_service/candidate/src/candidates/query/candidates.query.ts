@@ -125,6 +125,8 @@ export default {
     getFreelancerCompanyId:"SELECT company_id FROM company WHERE company_type=2",
 
 
+
+    
     
     // Linkedin Queries
     employeeLogin: `SELECT employee_id,password,linkedin_token from employee where email = $1`,
