@@ -747,7 +747,7 @@ export const modifyResumeFile = (_body) => {
             const client = await database().connect()
             try {
                 _body.resume=_body.resume.substring(36);
-                if (_body.candidateId==null) {
+                if (_body.candidateId!=null) {
                     await client.query(queryService.updateResumeFile(_body));
                     resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
                 }
