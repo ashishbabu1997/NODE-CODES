@@ -739,6 +739,8 @@ export const removeCandidate = (_body) => {
     })
 }
 
+
+
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> Update resume file name
 export const modifyResumeFile = (_body) => {
