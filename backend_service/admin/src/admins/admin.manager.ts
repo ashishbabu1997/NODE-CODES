@@ -182,7 +182,17 @@ export const clearance = (_body) => {
                     
                     
                 }
-                var companyName=await client.query(getCompanyName)
+                var companyResults=await client.query(getCompanyName)
+                var companyName=companyResults.rows[0].company_name
+                var companyId=companyResults.rows[0].company_id
+                const  saveRecruiter = {
+                    name: 'save-recruiter-id',
+                    text: adminQuery.saveRecruiterQuery,
+                    values: [_body.employeeId,companyId]
+                    
+                    
+                }
+                await client.query(saveRecruiter)
                 const userRejectQuery = {
                     name: 'admin-rejection',
                     text: adminQuery.clearanceQuery,
