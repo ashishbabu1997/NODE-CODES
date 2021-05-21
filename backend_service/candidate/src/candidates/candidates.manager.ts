@@ -780,6 +780,7 @@ export const modifyResumeData = (_body) => {
                 let extractedData = rchilliExtractor.rchilliExtractor(_body), candidateId = null;
                 extractedData["employeeId"] = _body.employeeId;
                 extractedData["resume"] = _body.resume;
+                extractedData["candidateId"]=_body.candidateId;
                 if (_body.candidateId) {
                     await client.query(queryService.updateExtractedCandidateDetails(extractedData));
                     candidateId = _body.candidateId;
@@ -790,6 +791,7 @@ export const modifyResumeData = (_body) => {
                     extractedData["freelancerCompanyId"] = freelancer.rows[0].company_id
 
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
+                    console.log(candidateResult)
                     if ([null, undefined, ''].includes(candidateResult) || [null, undefined, ''].includes(candidateResult.rows[0])) {
                         console.log("error resume already uploaded");
                         return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
