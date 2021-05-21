@@ -1562,7 +1562,7 @@ export const getResume = (_body) => {
                         profile: profileDetails,
                         detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
                         htmlResume: allProfileDetails.rows[0].htmlResume,
-                        resume: allProfileDetails.rows[0].resumeFileName,
+                        resume: allProfileDetails.rows[0].resume,
                         overallWorkExperience,
                         availability,
                         socialPresence: socialProfileDetails.rows[0],
