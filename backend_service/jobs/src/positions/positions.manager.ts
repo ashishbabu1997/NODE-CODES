@@ -138,7 +138,14 @@ export const createCompanyPositions =  async (_body) => {
                         if(Array.isArray(ellowAdmins.rows))
                         {
                             ellowAdmins.rows.forEach(element => {
-                                emailClient.emailManager(element.email,subject,path,userReplacements);
+                                if(element.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(element.email,subject,path,userReplacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                                 
                             })                            
                         }
@@ -317,7 +324,14 @@ export const fetchPositionDetails = (_body) => {
                                 if(Array.isArray(ellowAdmins.rows))
                                 {
                                     ellowAdmins.rows.forEach(element => {
-                                        emailClient.emailManager(element.email,subject,path,userReplacements);
+                                        if(element.email!=null || '' || undefined)
+                                        {
+                                            emailClient.emailManager(element.email,subject,path,userReplacements);
+                                        }
+                                        else
+                                        {
+                                            console.log("Email Recipient is empty")
+                                        } 
                                         
                                     })                            
                                 }
@@ -384,7 +398,14 @@ export const fetchPositionDetails = (_body) => {
                         if(Array.isArray(ellowAdmins.rows))
                         {
                             ellowAdmins.rows.forEach(element => {
-                                emailClient.emailManager(element.email,subject,path,userReplacements);
+                                if(element.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(element.email,subject,path,userReplacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                                 
                             })
                             resolve({ code: 200, message: "Position published successfully", data: {} });
@@ -437,8 +458,14 @@ export const fetchPositionDetails = (_body) => {
                             var userReplacements = {
                                 position:positionName
                             };
-                            emailClient.emailManager(emailAddress,subj,path,userReplacements);
-                            
+                            if(emailAddress!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(emailAddress,subj,path,userReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                         }
                         
                         // If job status is 8,then the position is closed.
@@ -458,7 +485,14 @@ export const fetchPositionDetails = (_body) => {
                                 var userReplacements ={
                                     position:positionName
                                 };
-                                emailClient.emailManager(emailId,subj,path,userReplacements);
+                                if(emailId!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(emailId,subj,path,userReplacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                             }
                             else
                             {
@@ -472,7 +506,14 @@ export const fetchPositionDetails = (_body) => {
                                 if(Array.isArray(ellowAdmins.rows))
                                 {
                                     ellowAdmins.rows.forEach(element => {
-                                        emailClient.emailManager(element.email,subj,path,userReplacements);
+                                        if(element.email!=null || '' || undefined)
+                                        {
+                                            emailClient.emailManager(element.email,subj,path,userReplacements);
+                                        }
+                                        else
+                                        {
+                                            console.log("Email Recipient is empty")
+                                        } 
                                         
                                     })
                                     
@@ -559,14 +600,26 @@ export const fetchPositionDetails = (_body) => {
 
                         }
                         else{
-                            emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);
+                            if(emailAddress!=null || '' || undefined)
+                                        {
+                                            emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);
+                                        }
+                                        else
+                                        {
+                                            console.log("Email Recipient is empty")
+                                        } 
                             var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
                             if(Array.isArray(ellowAdmins.rows))
                             {
                                 ellowAdmins.rows.forEach(element => {
-                                    console.log(element.email)
-                                    emailClient.emailManager(element.email,config.PositionText.subject,adminPath,userReplacements);
-                                    
+                                    if(element.email!=null || '' || undefined)
+                                    {
+                                        emailClient.emailManager(element.email,config.PositionText.subject,adminPath,userReplacements);
+                                    }
+                                    else
+                                    {
+                                        console.log("Email Recipient is empty")
+                                    }                                     
                                 })
                                 const message=`The position, ${positionName}  has been removed .`
                                 await createHirerNotifications({ positionId, jobReceivedId:null, companyId:hirerCompanyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
