@@ -84,7 +84,7 @@ export const createEmployee = (_body) => {
                 var ellowAdmins=await client.query(getEllowAdmins)
                 if(Array.isArray(ellowAdmins.rows))
                 {
-                    let recruitersSubject='User Signup Notification'
+                    let recruitersSubject='Company Signup Notification'
                     let recruitersPath = 'src/emailTemplates/userSignupText.html';
                     let recruitersReplacements = { fName:_body.body.firstName,lName:_body.body.lastName,email:loweremailId,company:_body.body.companyName };
                     ellowAdmins.rows.forEach(element => {
@@ -415,8 +415,16 @@ export const createFreelancer = (_body) => {
                 let verificationLink=_body.host+'/create-password/'+uniqueId;
                 
                 let adminReplacement = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number};
-                let path = 'src/emailTemplates/applicationText.html';
+                let path = 'src/emailTemplates/freelancerApplicationText.html';
                 const message = `A new employee ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer`
+               const freelancer= {
+                    name: 'get-freelancer-companyid',
+                    text: employeeQuery.getFreelancerCompanyId,
+                    values:[]
+                
+                }
+                var freelancerService=await client.query(freelancer)
+                var companyId=freelancerService.rows[0].company_id
                 createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:4,employeeId:null,firstName:_body.firstName,lastName:_body.lastName})
                 const  getEllowAdmins = {
                     name: 'get-ellow-admin',
@@ -432,7 +440,7 @@ export const createFreelancer = (_body) => {
                 ellowAdmins.rows.forEach(element => {
                     if(element.email!=null || '' || undefined)
                     {
-                        emailClient.emailManager(element.email,config.text.subject,path,adminReplacement);
+                        emailClient.emailManager(element.email,config.text.freelancerSubject,path,adminReplacement);
                     }
                     else
                     {
@@ -449,7 +457,7 @@ export const createFreelancer = (_body) => {
                     applicantName:Name,
                     link:verificationLink,
                 };
-                var companyId=22
+        
                 path ='src/emailTemplates/sendLinkText.html';
                 if(loweremailId!=null || '' || undefined)
                 {
