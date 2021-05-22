@@ -135,7 +135,7 @@ export const createEmployee = (_body) => {
                             {
                                 console.log("Email Recipient is empty")
                             } 
-                    let Name = _body.body.firstName + " " + _body.body.lastName
+                    let Name = _body.body.firstName.toUpperCase() + " " + _body.body.lastName.toUpperCase()
                     let companyName = _body.body.companyName
                     let emailAddress = _body.body.email
                     let number = ![null,undefined].includes(_body.body.telephoneNumber)?_body.body.telephoneNumber:""
@@ -271,7 +271,7 @@ export const createEmployeeByAdmin = (_body) => {
                                 console.log("Email Recipient is empty")
                             } 
                 
-                let Name = _body.firstName + " " + _body.lastName
+                let Name = _body.firstName.toUpperCase() + " " + _body.lastName.toUpperCase()
                 let companyName = _body.companyName
                 let emailAddress = _body.email
                 let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:"";
@@ -408,7 +408,7 @@ export const createFreelancer = (_body) => {
                     values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.telephoneNumber,createdtime:currentTime,token:uniqueId},
                 }
                 await client.query(createFreelancerQuery);
-                let Name = _body.firstName + " " + _body.lastName
+                let Name = _body.firstName.toUpperCase() + " " + _body.lastName.toUpperCase()
                 let companyName = "Freelancer"
                 let emailAddress = _body.email
                 let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
