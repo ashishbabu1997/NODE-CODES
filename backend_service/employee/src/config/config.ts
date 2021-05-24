@@ -26,6 +26,7 @@ export default {
     "text": {
     
         "subject":"Company Registration Notification",
+        "freelancerSubject":"Candidate Registration Notification",
         "userSubject":"Candidate Verification Link",
         "resetConfirmSubject":" ellow Confirmation Mail"
     },

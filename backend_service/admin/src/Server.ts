@@ -7,8 +7,11 @@ import {swaggerSpec} from './swagger';
 import * as swaggerUi from 'swagger-ui-express';
 import * as fileUpload  from 'express-fileupload';  
 import * as socket from './Socket';
+import AppConfig from './config/config';
 
-  let app = express();
+let app = express();
+  socket.connect(app);
+
   app.use(cors());
   app.use(bodyParser.json({ limit: '150mb' }));
   app.use(bodyParser.urlencoded({
@@ -28,4 +31,4 @@ import * as socket from './Socket';
 //   console.log('Listening on port ' + AppConfig.http.port);
 // });
 
-socket.connect(app);
+// socket.connect(app);

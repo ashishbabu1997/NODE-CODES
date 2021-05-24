@@ -15,6 +15,7 @@ import * as https from 'http';
 const myCache = new nodeCache();
 import fetch from 'node-fetch'
 import * as jwt from 'jsonwebtoken';
+import { getHeapSpaceStatistics } from 'v8';
 
 
 // >>>>>>> FUNC. >>>>>>>
@@ -260,7 +261,14 @@ export const candidateClearance = (_body) => {
                         var ellowAdmins = await client.query(getEllowAdmins)
                         if (Array.isArray(ellowAdmins.rows)) {
                             ellowAdmins.rows.forEach(element => {
-                                emailClient.emailManager(element.email, subj, path, adminReplacements);
+                                if(element.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(element.email, subj, path, adminReplacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                             })
                         }
                     }
@@ -297,7 +305,14 @@ export const candidateClearance = (_body) => {
                         if (Array.isArray(ellowAdmins.rows)) {
 
                             ellowAdmins.rows.forEach(element => {
-                                emailClient.emailManager(element.email, subj, path, adminReplacements);
+                                if(element.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(element.email, subj, path, adminReplacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                             })
                         }
                     }
@@ -400,7 +415,14 @@ export const interviewRequestFunction = (_body) => {
                 if (Array.isArray(ellowAdmins.rows)) {
 
                     ellowAdmins.rows.forEach(element => {
-                        emailClient.emailManager(element.email, subject, path, adminReplacements);
+                        if(element.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(element.email, subject, path, adminReplacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                     })
                 }
                 resolve({ code: 200, message: "Interview request has been sent successfully", data: {} });
@@ -442,7 +464,14 @@ export const addCandidateReview = (_body) => {
                         let replacements = {
                             name: candidateDetailResults.rows[0].name
                         };
-                        emailClient.emailManager(candidateDetailResults.rows[0].email, subject, path, replacements);
+                        if(candidateDetailResults.rows[0].email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(candidateDetailResults.rows[0].email, subject, path, replacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
 
                     }
                     await client.query('COMMIT')
@@ -560,12 +589,32 @@ export const removeCandidateFromPosition = (_body) => {
                     name1: candidateFirstName,
                     name2: candidateLastName
                 };
-                emailClient.emailManager(sellerMail, subject, path, replacements);
+                if(sellerMail!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(sellerMail, subject, path, replacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                 let resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
                 var positions = await client.query(queryService.getPositionName(_body));
-                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email, subject, path, replacements);
-                emailClient.emailManager(positions.rows[0].email, subject, path, replacements);
-
+                if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
+                {
+                    emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email, subject, path, replacements);
+                }
+                else
+                {
+                    console.log("Email Recipient is empty")
+                } 
+                if(positions.rows[0].email!=null || '' || undefined)
+                {
+                    emailClient.emailManager(positions.rows[0].email, subject, path, replacements);
+                }
+                else
+                {
+                    console.log("Email Recipient is empty")
+                } 
                 await client.query('COMMIT')
                 await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name })
                 resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });
@@ -604,6 +653,7 @@ export const linkCandidateWithPosition = (_body) => {
                 var names = '';
                 var firstName;
                 var lastName
+                var index;
                 const currentTime = Math.floor(Date.now());
                 const getEllowAdmins = {
                     name: 'get-ellow-admin',
@@ -664,9 +714,10 @@ export const linkCandidateWithPosition = (_body) => {
                     // Adding client based hiring steps with respect to poition being linked
                     _body.candidateId = element.candidateId;
                     await client.query(queryService.addCandidateHiringSteps(_body));
-                    firstName = imageResults.rows[0].candidate_first_name
-                    lastName = imageResults.rows[0].candidate_last_name
-                    names = names + firstName + " " + lastName + "|"
+                    firstName = imageResults.rows[0].candidate_first_name.toUpperCase()
+                    lastName = imageResults.rows[0].candidate_last_name.toUpperCase()
+                    index=candidateList.indexOf(element)+1
+                    names = names+ `       ${index}`+"."+firstName+" "+lastName+"      "
                     var email = imageResults.rows[0].email_address
                     let replacements = {
                         name: firstName,
@@ -674,7 +725,14 @@ export const linkCandidateWithPosition = (_body) => {
                         companyName: hirerName
                     };
                     let path = 'src/emailTemplates/addCandidatesUsersText.html';
-                    emailClient.emailManager(email, config.text.addCandidatesUsersTextSubject, path, replacements);
+                    if(email!=null || '' || undefined)
+                    {
+                        emailClient.emailManager(email, config.text.addCandidatesUsersTextSubject, path, replacements);
+                    }
+                    else
+                    {
+                        console.log("Email Recipient is empty")
+                    } 
                 }
                 // });                     
                 await client.query('COMMIT')
@@ -682,6 +740,7 @@ export const linkCandidateWithPosition = (_body) => {
                 createHirerNotifications({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: positionCompanyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
                 createNotification({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
 
+                
                 if (Array.isArray(ellowAdmins.rows)) {
                     let replacements = {
                         positionName: positionName,
@@ -689,7 +748,14 @@ export const linkCandidateWithPosition = (_body) => {
                     };
                     let path = 'src/emailTemplates/addCandidatesText.html';
                     ellowAdmins.rows.forEach(element => {
-                        emailClient.emailManager(element.email, config.text.addCandidatesTextSubject, path, replacements);
+                        if(element.email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(element.email, config.text.addCandidatesTextSubject, path, replacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                     })
                 }
 
@@ -739,6 +805,8 @@ export const removeCandidate = (_body) => {
     })
 }
 
+
+
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> Update resume file name
 export const modifyResumeFile = (_body) => {
@@ -746,7 +814,7 @@ export const modifyResumeFile = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                if (_body.candidateId) {
+                if (_body.candidateId!=null) {
                     await client.query(queryService.updateResumeFile(_body));
                     resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
                 }
@@ -773,130 +841,105 @@ export const modifyResumeFile = (_body) => {
 export const modifyResumeData = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
-
-            // console.log("_body  from resumeData : ",_body);
-
             const client = await database()
             try {
+                await client.query('BEGIN');
+                let extractedData = rchilliExtractor.rchilliExtractor(_body), candidateId = null;
+                extractedData["employeeId"] = _body.employeeId;
+                extractedData["resume"] = _body.resume;
+                extractedData["candidateId"]=_body.candidateId;
                 if (_body.candidateId) {
-                    await client.query(queryService.updateResumeFile(_body));
-                    resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
+                    await client.query(queryService.updateExtractedCandidateDetails(extractedData));
+                    candidateId = _body.candidateId;
                 }
+
                 else {
-                    await client.query('BEGIN');
                     let freelancer = await client.query(queryService.getFreelancerCompany(_body))
-                    console.log("FREELANCER", freelancer)
-                    let extractedData = rchilliExtractor.rchilliExtractor(_body);
                     extractedData["freelancerCompanyId"] = freelancer.rows[0].company_id
-                    extractedData["employeeId"] = _body.employeeId;
-                    extractedData["resume"] = _body.resume;
 
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
-
-                    await client.query('COMMIT');
-                    try {
-
-                        if (![null, undefined, ''].includes(candidateResult) && candidateResult.rows[0]) {
-                            let promises = [], candidateId = candidateResult.rows[0].candidate_id;
-
-                            extractedData["candidateId"] = candidateId;
-
-                            await client.query(queryService.insertExtractedCandidateSkills(extractedData));
-                            console.log("skillArray done");
-
-
-                            extractedData["workHistory"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
-                            });
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("workHisory done");
-
-                            extractedData["projects"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
-                            });
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("projects done");
-
-
-                            extractedData["education"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
-                            });
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("education done");
-
-
-                            extractedData["certifications"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
-                            });
-
-
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("certifications done");
-
-                            extractedData["publications"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
-                            });
-                            
-                            await Promise.all(promises);
-                            promises = [];
-                            console.log("publications done");
-                            extractedData["socialProfile"].map((data) => {
-                                data["candidateId"] = candidateId;
-                                data["employeeId"] = _body.employeeId;
-                                if(data.title=='Github')
-                                {
-                                    _body.githubId=data.link
-                                }
-                                else if (data.title=='Linkedin')
-                                {
-                                    _body.linkedinId=data.link
-                                }
-                                else if(data.title=='Stackoverflow')
-                                {
-                                    _body.stackoverflowId=data.link
-                                }
-                            });
-                            _body.candidateId=candidateId
-                            await client.query(queryService.insertCandidateSocialProfile(_body));
-                            console.log("Social Profile's  done");
-                            await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
-                            console.log("language done");
-
-
-                            await client.query('COMMIT');
-
-                            return resolve({ code: 200, message: "Candidate resume file updated successfully", data: candidateId });
-
-
-                        }
-
-                        else {
-                            console.log("error resume already uploaded");
-                            return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
-                        }
-                    } catch (error) {
-                        console.log("error : ", error.message);
-
-                        reject({ code: 400, message: "Error occured during extraction ", data: error.message });
+                    console.log(candidateResult)
+                    if ([null, undefined, ''].includes(candidateResult) || [null, undefined, ''].includes(candidateResult.rows[0])) {
+                        console.log("error resume already uploaded");
+                        return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
                     }
+
+                    candidateId = candidateResult.rows[0].candidate_id;
+
                 }
+
+                await client.query('COMMIT');
+                try {
+                    let promises = [];
+
+                    extractedData["candidateId"] = candidateId;
+                    await client.query(queryService.insertExtractedCandidateSkills(extractedData));
+
+
+                    extractedData["workHistory"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
+                    });
+
+                    await Promise.all(promises);
+
+                    promises = [];
+                    extractedData["projects"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
+                    });
+
+                    await Promise.all(promises);
+
+                    promises = [];
+                    extractedData["education"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
+                    });
+
+                    await Promise.all(promises);
+
+                    promises = [];
+                    extractedData["certifications"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
+                    });
+
+                    await Promise.all(promises);
+
+                    promises = [];
+                    extractedData["publications"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
+                    });
+
+                    await Promise.all(promises);
+
+                    promises = [];
+                    extractedData["socialProfile"].map((data) => {
+                        data["candidateId"] = candidateId;
+                        data["employeeId"] = _body.employeeId;
+                        utils.stringEquals(data.title, 'github') ? _body.githubId = data.link :
+                            utils.stringEquals(data.title, 'Linkedin') ? _body.linkedinId = data.link :
+                                utils.stringEquals(data.title, 'Stackoverflow') ? _body.stackoverflowId = data.link : '';
+                    });
+                    _body.candidateId = candidateId
+                    await client.query(queryService.insertCandidateSocialProfile(_body));
+                    await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
+                    await client.query('COMMIT');
+
+                    return resolve({ code: 200, message: "Candidate resume file updated successfully", data: candidateId });
+
+                } catch (error) {
+                    console.log("error : ", error.message);
+                    reject({ code: 400, message: "Error occured during extraction ", data: error.message });
+                }
+
 
             } catch (e) {
                 console.log(e)
@@ -1396,6 +1439,8 @@ export const getResume = (_body) => {
                 var publications = await client.query(queryService.fetchPublications(candidateId));
                 var awards = await client.query(queryService.fetchAwards(candidateId));
                 var languages = await client.query(queryService.fetchLanguages(candidateId));
+                var designations = await client.query(queryService.fetchDesignations());
+
                 let workedCompanyList = workExperiences.rows.map(element => ({ "id": element.candidateWorkExperienceId, "companyName": element.companyName }))
                 workedCompanyList = [...workedCompanyList, { "id": 0, "companyName": "On personal capacity" }];
                 let companyJson = {};
@@ -1466,6 +1511,7 @@ export const getResume = (_body) => {
                         profile: profileDetails,
                         detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
                         htmlResume: allProfileDetails.rows[0].htmlResume,
+                        bagOfWords : allProfileDetails.rows[0].bagOfWords,
                         resume: allProfileDetails.rows[0].resume,
                         overallWorkExperience,
                         availability,
@@ -1479,7 +1525,8 @@ export const getResume = (_body) => {
                         publications: publications.rows,
                         awards: awards.rows,
                         languages: languages.rows,
-                        workedCompanyList
+                        workedCompanyList,
+                        designationList: designations.rows[0].designations
                     }
                 });
 
@@ -1534,7 +1581,14 @@ export const addResumeShareLink = (_body) => {
                                     link: link
                                 };
                                 let path = 'src/emailTemplates/resumeShareText.html';
-                                emailClient.emailManagerForNoReply(element, config.text.shareEmailSubject, path, replacements);
+                                if(element!=null || '' || undefined)
+                                {
+                                    emailClient.emailManagerForNoReply(element, config.text.shareEmailSubject, path, replacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
 
                             });
                         }
@@ -1623,7 +1677,14 @@ export const shareResumeSignup = (_body) => {
                             password: password
                         };
                         let path = 'src/emailTemplates/newUserText.html';
-                        emailClient.emailManager(_body.email, config.text.newUserTextSubject, path, replacements);
+                        if(_body.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(_body.email, config.text.newUserTextSubject, path, replacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                         let adminReplacements = {
                             firstName: _body.firstName,
                             lastName: _body.lastName,
@@ -1642,7 +1703,14 @@ export const shareResumeSignup = (_body) => {
                         var ellowAdmins = await client.query(getEllowAdmins)
                         if (Array.isArray(ellowAdmins.rows)) {
                             ellowAdmins.rows.forEach(element => {
-                                emailClient.emailManager(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
+                                if(element.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                             })
                         }
                         await client.query('COMMIT')
@@ -1819,7 +1887,14 @@ export const createPdfFromHtml = (_body) => {
 
                             };
                             let path = 'src/emailTemplates/sharePdfText.html';
-                            emailClient.emailManagerWithAttachments(element, config.text.sharePdfTextSubject, path, replacements, pdfBuffer);
+                            if(element!=null || '' || undefined)
+                            {
+                                emailClient.emailManagerWithAttachments(element, config.text.sharePdfTextSubject, path, replacements, pdfBuffer);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                         })
                     }
                 });
@@ -1946,7 +2021,14 @@ export const changeAssignee = (_body) => {
                     cName: _body.candidateName
                 };
                 let path = 'src/emailTemplates/changeAssigneeText.html';
-                emailClient.emailManager(assigneeMail, subject, path, replacements);
+                if(assigneeMail!=null || '' || undefined)
+                {
+                    emailClient.emailManager(assigneeMail, subject, path, replacements);
+                }
+                else
+                {
+                    console.log("Email Recipient is empty")
+                } 
                 await client.query(queryService.insertAuditLog(_body));
                 resolve({ code: 200, message: "Assignee changed successfully", data: result.rows });
             } catch (e) {
@@ -2146,8 +2228,14 @@ export const changeBlacklisted = (_body) => {
                 }
                 if (Array.isArray(ellowAdmins.rows)) {
                     ellowAdmins.rows.forEach(element => {
-                        console.log(element.email)
-                        emailClient.emailManager(element.email, _body.subject, _body.path, _body.adminReplacements);
+                        if(element.email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(element.email, _body.subject, _body.path, _body.adminReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                     })
                 }
 
@@ -2174,6 +2262,7 @@ export const resumeParser = (_body) => {
             const client = await database()
             try {
                 let responseData = null;
+                console.log("Start")
                 console.log("URI : ", _body.publicUrl + encodeURIComponent(_body.fileName));
                 console.log(_body.fileName)
                 let jsonObject = JSON.stringify({
@@ -2224,8 +2313,8 @@ export const resumeParser = (_body) => {
                         else {
                             responseData["employeeId"] = _body.employeeId;
                             responseData["resume"] = _body.fileName;
+                            responseData["candidateId"] = _body.candidateId
                             responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
-
                             let resp = await modifyResumeData(responseData).catch((e) => {
                                 reject({ code: 400, message: "Failed Please try again, parser error ", data: e.message });
                             });
@@ -2426,31 +2515,50 @@ export const getHtmlResume = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                let htmlData =[],promises =[];
+                let bow = [], promises = [];
                 // Inserting the integer representing the vetting status value.
                 const getQuery = {
-                    name: 'get-html-details',
-                    text: candidateQuery.getHtmlResume,
+                    name: 'get-resume-data',
+                    text: candidateQuery.getResumeData,
                     values: [],
                 }
                 var results = await client.query(getQuery);
                 const data = results.rows
-                data.forEach(element => {
 
-                    let d = JSON.parse(element['resume_data']);
-                    let htmlres = d["ResumeParserData"]["HtmlResume"];
 
-                    let updateQuery = {
-                        name: 'update-html-details',
-                        text: candidateQuery.updateHtmlResume,
-                        values: [htmlres,element.candidate_id]
+                const regex = /^[^a-zA-Z0-9]+$/;
+
+
+                data.forEach(async element => {
+                    try {
+                        
+                        let d = JSON.parse(element['resume_data']);
+                        let res = d["ResumeParserData"]["DetailResume"];    
+                        res = res.replace(/[^a-zA-Z\n@. ]/g, '');
+                        res = res.split(/[\s\n]+/);
+                        let uniqueChars = [...Array.from(new Set(res.sort()))];
+                        
+                        let filterUniqueChars = uniqueChars.filter((ele:string)=> !regex.test(ele))
+        
+                        let updateQuery = {
+                            name: 'update-bagofwords-details',
+                            text: candidateQuery.updateHtmlResume,
+                            values: [filterUniqueChars,element.candidate_id]
+                        }
+        
+                        await client.query(updateQuery);
+                        await client.query('COMMIT');
+
+                    } catch (error) {
+                        console.log("unable to parse : ",error.message);
+                        
                     }
-
-                    promises.push(client.query(updateQuery));
+                   
                 });
+                console.log("Done ");
 
-                await Promise.all(promises);
-                resolve({ code: 200, message: "resume data fetched", data:htmlData })
+                // await Promise.all(promises);
+                resolve({ code: 200, message: "resume data fetched", data: 'done' })
 
             } catch (e) {
                 console.log(e)
@@ -2458,7 +2566,50 @@ export const getHtmlResume = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             }
         })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>Listing all the free candidates from the candidates list of provider.
+export const listProviderResources = (_body) => {
+    return new Promise((resolve, reject) => {
+        var selectQuery = candidateQuery.listFreeCandidatesOfProviderFromView, totalQuery = candidateQuery.listFreeCandidatesofProviderTotalCount, vettedQuery = '';
+        var queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
+            body = _body.query;
+
+        // Search for filters in the body        
+        let filterResult = utils.resourceFilter(filter, filterQuery, queryValues);
+        filterQuery = filterResult.filterQuery;
+        queryValues = filterResult.queryValues;
+
+        // Search for company name / candidate name
+        let searchResult = utils.resourceSearch(body, queryValues);
+        searchQuery = searchResult.searchQuery;
+        queryValues = searchResult.queryValues;
+
+        (async () => {
+            const client = await database()
+            try {
+                queryText = selectQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
+                var queryCountText = totalQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery
+                queryValues = Object.assign({ providerCompanyId: _body.body.companyId }, queryValues)
+
+                const candidatesResult = await client.query(queryService.listCandidatesOfProvider(queryText, queryValues));
+                const totalCount = await client.query(queryService.listCandidatesOfProviderCount(queryCountText, queryValues))
+                resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates: candidatesResult.rows, totalCount: totalCount.rows[0].totalCount } });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })
 }

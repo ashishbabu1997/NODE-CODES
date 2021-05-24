@@ -40,7 +40,9 @@ export const rchilliExtractor = (data) => {
 
         extractedData["detailResume"] = extractDetailResume(resumeData['DetailResume'])
 
-        extractedData["htmlResume"] = extractDetailResume(resumeData['HtmlResume'])
+        extractedData["htmlResume"] = resumeData['HtmlResume']
+
+        extractedData["bagOfWords"] = extractBagOfWords(resumeData['DetailResume'])
 
         // console.log("extractedData[citizenship] : ",extractedData["citizenship"]);
     }
@@ -184,11 +186,24 @@ const extractLanguages = (data) => {
 
 const extractDetailResume = (data) => {
     let resumeList = {}
-    var splitByLine = data.replace('\t', ' ').split('\n')
+    var splitByLine = data.replace(/[\t]/g, '').split('\n')
     splitByLine.forEach(element => {
         resumeList[splitByLine.indexOf(element)] = element.trim(" ")
     });
     return JSON.stringify(resumeList);
+}
+
+const extractBagOfWords = (data) => {
+    let bow =[];
+    const replaceRegex =/[^a-zA-Z\n@. ]/g
+    const splitRegex = /[\s\n]+/
+    const filterRegex = /^[^a-zA-Z0-9]+$/;
+    data = data.replace(replaceRegex, '');
+    bow = data.split(splitRegex);
+    let uniqueChars = [...Array.from(new Set(bow.sort()))];
+    let filterUniqueChars = uniqueChars.filter((ele:string)=> !filterRegex.test(ele))
+    
+    return filterUniqueChars;
 }
 
 

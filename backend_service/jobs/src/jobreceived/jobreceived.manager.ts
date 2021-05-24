@@ -10,6 +10,7 @@ import * as passwordGenerator from 'generate-password'
 import * as crypto from 'crypto';
 import { ImportsNotUsedAsValues } from 'typescript';
 import * as queryService from '../queryService/queryService';
+import * as utils from '../utils/utils';
 
 // >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Get all job received details of a company
@@ -75,7 +76,7 @@ export const getAllJobReceived = (_body) => {
                 {
                     sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
                 }
-                _body.queryText = selectQuery + filterQuery + searchQuery + sort;
+                _body.queryText = selectQuery + filterQuery + searchQuery + sort + utils.jobsPagination(body);;
                 _body.queryValues =  Object.assign({companyid:body.companyId,employeeid:body.employeeId},queryValues)
                 let results = await client.query(queryService.getJobRecievedQuery(_body))  
                 let Jobs = results.rows;
@@ -362,7 +363,14 @@ export const submitCandidateProfile = (_body) => {
                             user:_body.emailAddress,
                             password:password    
                         };
-                        emailClient.emailManager(_body.emailAddress,userSubject,userPath,userCredentialReplacements);
+                        if(_body.emailAddress!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(_body.emailAddress,userSubject,userPath,userCredentialReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                     }   
                 }
                 await client.query('COMMIT');
@@ -391,7 +399,14 @@ export const submitCandidateProfile = (_body) => {
                 {
                     
                     ellowAdmins.rows.forEach(element => {
-                        emailClient.emailManager(element.email,subject,path,userReplacements);
+                        if(element.email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(element.email,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                                 
                         })
                             
@@ -403,16 +418,50 @@ export const submitCandidateProfile = (_body) => {
                     var resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
                     if (_body.userRoleId==1)
                     {
-                        emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
-                        emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
+                        if(_body.emailAddress!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
+                        if(positions.rows[0].email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                         
                         
                     }
                     else{
-                        
-                        emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
-                        emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
-                        emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,path,userReplacements);
+                        if(_body.emailAddress!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
+                        if(positions.rows[0].email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
+                        if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                         
                         
                     }
@@ -440,7 +489,14 @@ export const submitCandidateProfile = (_body) => {
                 {
                     
                     ellowAdmins.rows.forEach(element => {
-                        emailClient.emailManager(element.email,subject,path,replacements); 
+                        if(element.email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(element.email,subject,path,replacements); 
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                                 
                         })
                             
