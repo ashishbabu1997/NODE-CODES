@@ -316,13 +316,13 @@ export const updateBlacklisted = (req, res) => {
 export const sigOn = (req, res) => {
     const body = req.query;
     candidateManager.singleSignOn(body).then((response: any) => {
-            res.writeHead(301,{Location: 'https://stage.ellow.io/candidate-login?token='+response.data.token});
+            res.writeHead(301,{Location: 'https://apps.ellow.io/candidate-login?token='+response.data.token});
             res.end();
         
       
        
     })
-    .catch((error: any) => { res.writeHead(301,{Location: 'https://stage.ellow.io/redirect-notification'})
+    .catch((error: any) => { res.writeHead(301,{Location: 'https://apps.ellow.io/redirect-notification'})
     res.end()
     })
 }
