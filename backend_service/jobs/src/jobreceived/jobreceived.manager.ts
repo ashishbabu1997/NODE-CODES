@@ -356,7 +356,7 @@ export const submitCandidateProfile = (_body) => {
                         });
                         _body.hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
                         await client.query(queryService.updatePasswordToEmployee(_body))
-                        var userSubject="ellow.io Freelancer Login Credentials"
+                        var userSubject="ellow.io  Login Credentials"
                         let userPath = 'src/emailTemplates/freelancerLoginText.html';
                         var userCredentialReplacements =  {
                             name:candidateFirstName,
@@ -377,7 +377,7 @@ export const submitCandidateProfile = (_body) => {
                 var subject='Candidate Addition Notification'
                 if(![null,undefined,""].includes(_body.positionId))
                 {
-                    
+                 
                     const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for the position ${positionName} `
                     await createHirerNotifications({ positionId:_body.positionId, jobReceivedId,companyId:_body.sellerCompanyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     await createNotification({ positionId:_body.positionId, jobReceivedId,companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
@@ -385,7 +385,7 @@ export const submitCandidateProfile = (_body) => {
                     var userReplacements =  {
                         first:candidateFirstName,
                         last:candidateLastName,
-                        position:positionName,     
+                        position:positionName,
                     };
                     const  getEllowAdmins = {
                         name: 'get-ellow-admin',

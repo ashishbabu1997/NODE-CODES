@@ -120,6 +120,15 @@ export const  updateCandidateStatus = (_body) =>{
 
     }
 }
+
+export const  getPositionCompany = (_body) =>{
+    return {
+        name: 'get-position-company',
+        text: jobReceivedQuery.getPositionCompanyName,
+        values: [_body.positionId],
+
+    }
+}
 export const addWorkExperiences = (_body) => {
     return {
         name: 'add-work-experiences',

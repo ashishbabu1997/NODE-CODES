@@ -26,9 +26,10 @@ export default {
     "text": {
     
         "subject":"Company Registration Notification",
+        "newCompanySubject":"New Company Registration Notification",
         "freelancerSubject":"Candidate Registration Notification",
         "userSubject":"Candidate Verification Link",
-        "resetConfirmSubject":" ellow Confirmation Mail"
+        "resetConfirmSubject":" ellow Password Confirmation Mail"
     },
     "defaultHiringStep": {
         "hiringStepName": "ellow hiring step",

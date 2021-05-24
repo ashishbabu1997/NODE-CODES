@@ -15,6 +15,7 @@ export default {
     deleteCandidateSkills : 'delete from candidate_skill WHERE candidate_id = $1 AND status = true AND skill_id <> ALL ($2)',
     addDefaultAssessmentTraits: 'insert into candidate_assesement (candidate_id, assesement_name, assesment_type, stage_name, created_on, updated_on, created_by, updated_by) values ($candidateid, unnest(array(select r.assessment_name from review_steps r where status = true)), unnest(array(select r.review_type from review_steps r where status = true)), unnest(array(select r.stage_name from review_steps r where status = true)), $currenttime, $currenttime, $employeeid, $employeeid)',
     getPositionName:'SELECT position_name as "position" FROM positions WHERE position_id=$1',
+    getPositionCompanyName:'select c.company_name as "companyName" from company c left join positions p on p.company_id=c.company_id where p.position_id=$1',
     checkEMail:'SELECT * from employee WHERE email like $1',
     getellowAdmins:"select concat(firstname,' ',lastname) as name ,employee_id as employeeId,email as email from employee where status=true and user_role_id=1",
     fetchCompanyName:'select company_name from company where company_id=$1',

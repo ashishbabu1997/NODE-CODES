@@ -480,13 +480,18 @@ export const updateDefaultAssignee = (_body) => {
                 }
                 else{
                     var positions=await client.query(queryService. getPositionName(_body));
-                    console.log("Positions",_body.positionId)
+                    console.log("Positions",positions)
                     var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
+                    console.log("Companies",companies)
+
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getAssigneeName(_body));
+                    console.log("names",names)
                     let assigneeName=names.rows[0].firstname
                     let resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
+                    console.log("recruiters",resourceAllocatedRecruiter)
+
                     _body.auditLogComment=`${assigneeName} (${companyName}) is the assignee for the  position ${positionName}`
                     
                     let subject='Client Screening Assignee Notification'
@@ -495,39 +500,27 @@ export const updateDefaultAssignee = (_body) => {
                     let recruiterReplacements ={
                         aName:names.rows[0].firstname,
                         cName:_body.candidateName,
-                        pName:positionName
+                        pName:positionName,
+                        cpName:companyName
                     };
                     let replacements ={
                         aName:names.rows[0].firstname,
                         cName:_body.candidateName
                     };
-                    if(names.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(names.rows[0].email,subject,path,replacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
-                            if(positions.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(positions.rows[0].email,subject,recruitersPath,recruiterReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
-                            if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,recruitersPath,recruiterReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
-                    await client.query(queryService.insertAuditLogForHiring(_body));
-                    await client.query(queryService.updateDefaultAssigneeQuery(_body));
-                    resolve({ code: 200, message: "Updated assignee succesfully", data: {} });
+                  console.log("MAILS",names.rows[0].email,positions.rows[0].email,resourceAllocatedRecruiter.rows[0].email)
+                emailClient.emailManager(names.rows[0].email,subject,path,replacements);
+                emailClient.emailManager(positions.rows[0].email,subject,recruitersPath,recruiterReplacements);
+                await client.query(queryService.insertAuditLogForHiring(_body));
+                await client.query(queryService.updateDefaultAssigneeQuery(_body));
+                if(positions.rows[0].email!=null)
+                {
+                    emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,recruitersPath,recruiterReplacements);
+
+                }
+                else{
+                    console.log("No ellow recruiters assigned to this candidate")
+                }
+                resolve({ code: 200, message: "Updated assignee succesfully", data: {} });
                 }
             } catch (e) {
                 console.log("Error raised from try : ",e)
