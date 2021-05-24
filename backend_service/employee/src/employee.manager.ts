@@ -84,11 +84,18 @@ export const createEmployee = (_body) => {
                 var ellowAdmins=await client.query(getEllowAdmins)
                 if(Array.isArray(ellowAdmins.rows))
                 {
-                    let recruitersSubject='User Signup Notification'
+                    let recruitersSubject='Company Signup Notification'
                     let recruitersPath = 'src/emailTemplates/userSignupText.html';
                     let recruitersReplacements = { fName:_body.body.firstName,lName:_body.body.lastName,email:loweremailId,company:_body.body.companyName };
                     ellowAdmins.rows.forEach(element => {
-                        emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);
+                            if(element.email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                                 
                         })
                             
@@ -120,8 +127,15 @@ export const createEmployee = (_body) => {
 
                     let path = 'src/emailTemplates/newUserText.html';
                     let userReplacements = { loginPassword:password };
-                    emailClient.emailManager(loweremailId,subject,path,userReplacements);
-                    let Name = _body.body.firstName + " " + _body.body.lastName
+                    if(loweremailId!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(loweremailId,subject,path,userReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
+                    let Name = _body.body.firstName.toUpperCase() + " " + _body.body.lastName.toUpperCase()
                     let companyName = _body.body.companyName
                     let emailAddress = _body.body.email
                     let number = ![null,undefined].includes(_body.body.telephoneNumber)?_body.body.telephoneNumber:""
@@ -139,7 +153,14 @@ export const createEmployee = (_body) => {
                     {
         
                         ellowAdmins.rows.forEach(element => {
-                            emailClient.emailManager(element.email,config.text.subject,adminPath,adminReplacements);
+                            if(element.email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(element.email,config.text.subject,adminPath,adminReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                         })
                     }
                 }
@@ -241,9 +262,16 @@ export const createEmployeeByAdmin = (_body) => {
                 var userReplacements = {
                     loginPassword:password
                 };
-                emailClient.emailManager(loweremailId,subject,path,userReplacements);
+                 if(loweremailId!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(loweremailId,subject,path,userReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                 
-                let Name = _body.firstName + " " + _body.lastName
+                let Name = _body.firstName.toUpperCase() + " " + _body.lastName.toUpperCase()
                 let companyName = _body.companyName
                 let emailAddress = _body.email
                 let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:"";
@@ -260,7 +288,14 @@ export const createEmployeeByAdmin = (_body) => {
             if(Array.isArray(ellowAdmins.rows))
             {
                 ellowAdmins.rows.forEach(element => {
-                    emailClient.emailManager(element.email,config.text.subject,path,adminReplacements);
+                    if(element.email!=null || '' || undefined)
+                    {
+                        emailClient.emailManager(element.email,config.text.subject,path,adminReplacements);
+                    }
+                    else
+                    {
+                        console.log("Email Recipient is empty")
+                    } 
                             
                     })
                         
@@ -373,15 +408,23 @@ export const createFreelancer = (_body) => {
                     values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.telephoneNumber,createdtime:currentTime,token:uniqueId},
                 }
                 await client.query(createFreelancerQuery);
-                let Name = _body.firstName + " " + _body.lastName
+                let Name = _body.firstName.toUpperCase() + " " + _body.lastName.toUpperCase()
                 let companyName = "Freelancer"
                 let emailAddress = _body.email
                 let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""
                 let verificationLink=_body.host+'/create-password/'+uniqueId;
                 
                 let adminReplacement = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number};
-                let path = 'src/emailTemplates/applicationText.html';
+                let path = 'src/emailTemplates/freelancerApplicationText.html';
                 const message = `A new employee ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer`
+               const freelancer= {
+                    name: 'get-freelancer-companyid',
+                    text: employeeQuery.getFreelancerCompanyId,
+                    values:[]
+                
+                }
+                var freelancerService=await client.query(freelancer)
+                var companyId=freelancerService.rows[0].company_id
                 createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:4,employeeId:null,firstName:_body.firstName,lastName:_body.lastName})
                 const  getEllowAdmins = {
                     name: 'get-ellow-admin',
@@ -395,8 +438,14 @@ export const createFreelancer = (_body) => {
             {
                 
                 ellowAdmins.rows.forEach(element => {
-                    emailClient.emailManager(element.email,config.text.subject,path,adminReplacement);
-                            
+                    if(element.email!=null || '' || undefined)
+                    {
+                        emailClient.emailManager(element.email,config.text.freelancerSubject,path,adminReplacement);
+                    }
+                    else
+                    {
+                        console.log("Email Recipient is empty")
+                    }                             
                     })
                         
             }
@@ -408,9 +457,16 @@ export const createFreelancer = (_body) => {
                     applicantName:Name,
                     link:verificationLink,
                 };
-                var companyId=22
+        
                 path ='src/emailTemplates/sendLinkText.html';
-                emailClient.emailManagerForNoReply(loweremailId,config.text.userSubject,path,freelancerReplacements);
+                if(loweremailId!=null || '' || undefined)
+                {
+                    emailClient.emailManagerForNoReply(loweremailId,config.text.userSubject,path,freelancerReplacements);
+                }
+                else
+                {
+                    console.log("Email Recipient is empty")
+                }     
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
@@ -457,8 +513,14 @@ export const resetFreelancerToken = (_body) => {
                     };
                     let path = 'src/emailTemplates/resetConfirmationText.html';
                     const message = `A new employee, ${firstName + ' ' + lastName}  has been registered with us as a freelancer.`
-                    
-                    emailClient.emailManager(emailAddress,config.text.resetConfirmSubject,path,replacements);
+                    if(emailAddress!=null || '' || undefined)
+                    {
+                        emailClient.emailManager(emailAddress,config.text.resetConfirmSubject,path,replacements);
+                    }
+                    else
+                    {
+                        console.log("Email Recipient is empty")
+                    }    
                     createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId,employeeId:_body.employeeId,firstName:firstName,lastName:lastName})
                     
                     resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {email:emailAddress} });

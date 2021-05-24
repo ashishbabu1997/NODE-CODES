@@ -15,6 +15,7 @@ import * as https from 'http';
 const myCache = new nodeCache();
 import fetch from 'node-fetch'
 import * as jwt from 'jsonwebtoken';
+import { getHeapSpaceStatistics } from 'v8';
 
 
 // >>>>>>> FUNC. >>>>>>>
@@ -260,7 +261,14 @@ export const candidateClearance = (_body) => {
                         var ellowAdmins = await client.query(getEllowAdmins)
                         if (Array.isArray(ellowAdmins.rows)) {
                             ellowAdmins.rows.forEach(element => {
-                                emailClient.emailManager(element.email, subj, path, adminReplacements);
+                                if(element.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(element.email, subj, path, adminReplacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                             })
                         }
                     }
@@ -297,7 +305,14 @@ export const candidateClearance = (_body) => {
                         if (Array.isArray(ellowAdmins.rows)) {
 
                             ellowAdmins.rows.forEach(element => {
-                                emailClient.emailManager(element.email, subj, path, adminReplacements);
+                                if(element.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(element.email, subj, path, adminReplacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                             })
                         }
                     }
@@ -400,7 +415,14 @@ export const interviewRequestFunction = (_body) => {
                 if (Array.isArray(ellowAdmins.rows)) {
 
                     ellowAdmins.rows.forEach(element => {
-                        emailClient.emailManager(element.email, subject, path, adminReplacements);
+                        if(element.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(element.email, subject, path, adminReplacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                     })
                 }
                 resolve({ code: 200, message: "Interview request has been sent successfully", data: {} });
@@ -442,7 +464,14 @@ export const addCandidateReview = (_body) => {
                         let replacements = {
                             name: candidateDetailResults.rows[0].name
                         };
-                        emailClient.emailManager(candidateDetailResults.rows[0].email, subject, path, replacements);
+                        if(candidateDetailResults.rows[0].email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(candidateDetailResults.rows[0].email, subject, path, replacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
 
                     }
                     await client.query('COMMIT')
@@ -560,12 +589,32 @@ export const removeCandidateFromPosition = (_body) => {
                     name1: candidateFirstName,
                     name2: candidateLastName
                 };
-                emailClient.emailManager(sellerMail, subject, path, replacements);
+                if(sellerMail!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(sellerMail, subject, path, replacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                 let resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
                 var positions = await client.query(queryService.getPositionName(_body));
-                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email, subject, path, replacements);
-                emailClient.emailManager(positions.rows[0].email, subject, path, replacements);
-
+                if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
+                {
+                    emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email, subject, path, replacements);
+                }
+                else
+                {
+                    console.log("Email Recipient is empty")
+                } 
+                if(positions.rows[0].email!=null || '' || undefined)
+                {
+                    emailClient.emailManager(positions.rows[0].email, subject, path, replacements);
+                }
+                else
+                {
+                    console.log("Email Recipient is empty")
+                } 
                 await client.query('COMMIT')
                 await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name })
                 resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });
@@ -604,6 +653,7 @@ export const linkCandidateWithPosition = (_body) => {
                 var names = '';
                 var firstName;
                 var lastName
+                var index;
                 const currentTime = Math.floor(Date.now());
                 const getEllowAdmins = {
                     name: 'get-ellow-admin',
@@ -664,9 +714,10 @@ export const linkCandidateWithPosition = (_body) => {
                     // Adding client based hiring steps with respect to poition being linked
                     _body.candidateId = element.candidateId;
                     await client.query(queryService.addCandidateHiringSteps(_body));
-                    firstName = imageResults.rows[0].candidate_first_name
-                    lastName = imageResults.rows[0].candidate_last_name
-                    names = names + firstName + " " + lastName + "<br>"
+                    firstName = imageResults.rows[0].candidate_first_name.toUpperCase()
+                    lastName = imageResults.rows[0].candidate_last_name.toUpperCase()
+                    index=candidateList.indexOf(element)+1
+                    names = names+ `       ${index}`+"."+firstName+" "+lastName+"      "
                     var email = imageResults.rows[0].email_address
                     let replacements = {
                         name: firstName,
@@ -674,7 +725,14 @@ export const linkCandidateWithPosition = (_body) => {
                         companyName: hirerName
                     };
                     let path = 'src/emailTemplates/addCandidatesUsersText.html';
-                    emailClient.emailManager(email, config.text.addCandidatesUsersTextSubject, path, replacements);
+                    if(email!=null || '' || undefined)
+                    {
+                        emailClient.emailManager(email, config.text.addCandidatesUsersTextSubject, path, replacements);
+                    }
+                    else
+                    {
+                        console.log("Email Recipient is empty")
+                    } 
                 }
                 // });                     
                 await client.query('COMMIT')
@@ -682,6 +740,7 @@ export const linkCandidateWithPosition = (_body) => {
                 createHirerNotifications({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: positionCompanyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
                 createNotification({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
 
+                
                 if (Array.isArray(ellowAdmins.rows)) {
                     let replacements = {
                         positionName: positionName,
@@ -689,7 +748,14 @@ export const linkCandidateWithPosition = (_body) => {
                     };
                     let path = 'src/emailTemplates/addCandidatesText.html';
                     ellowAdmins.rows.forEach(element => {
-                        emailClient.emailManager(element.email, config.text.addCandidatesTextSubject, path, replacements);
+                        if(element.email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(element.email, config.text.addCandidatesTextSubject, path, replacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                     })
                 }
 
@@ -739,6 +805,8 @@ export const removeCandidate = (_body) => {
     })
 }
 
+
+
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> Update resume file name
 export const modifyResumeFile = (_body) => {
@@ -746,7 +814,6 @@ export const modifyResumeFile = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                _body.resume=_body.resume.substring(36);
                 if (_body.candidateId!=null) {
                     await client.query(queryService.updateResumeFile(_body));
                     resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
@@ -780,6 +847,7 @@ export const modifyResumeData = (_body) => {
                 let extractedData = rchilliExtractor.rchilliExtractor(_body), candidateId = null;
                 extractedData["employeeId"] = _body.employeeId;
                 extractedData["resume"] = _body.resume;
+                extractedData["candidateId"]=_body.candidateId;
                 if (_body.candidateId) {
                     await client.query(queryService.updateExtractedCandidateDetails(extractedData));
                     candidateId = _body.candidateId;
@@ -790,6 +858,7 @@ export const modifyResumeData = (_body) => {
                     extractedData["freelancerCompanyId"] = freelancer.rows[0].company_id
 
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
+                    console.log(candidateResult)
                     if ([null, undefined, ''].includes(candidateResult) || [null, undefined, ''].includes(candidateResult.rows[0])) {
                         console.log("error resume already uploaded");
                         return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
@@ -1512,7 +1581,14 @@ export const addResumeShareLink = (_body) => {
                                     link: link
                                 };
                                 let path = 'src/emailTemplates/resumeShareText.html';
-                                emailClient.emailManagerForNoReply(element, config.text.shareEmailSubject, path, replacements);
+                                if(element!=null || '' || undefined)
+                                {
+                                    emailClient.emailManagerForNoReply(element, config.text.shareEmailSubject, path, replacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
 
                             });
                         }
@@ -1601,7 +1677,14 @@ export const shareResumeSignup = (_body) => {
                             password: password
                         };
                         let path = 'src/emailTemplates/newUserText.html';
-                        emailClient.emailManager(_body.email, config.text.newUserTextSubject, path, replacements);
+                        if(_body.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(_body.email, config.text.newUserTextSubject, path, replacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                         let adminReplacements = {
                             firstName: _body.firstName,
                             lastName: _body.lastName,
@@ -1620,7 +1703,14 @@ export const shareResumeSignup = (_body) => {
                         var ellowAdmins = await client.query(getEllowAdmins)
                         if (Array.isArray(ellowAdmins.rows)) {
                             ellowAdmins.rows.forEach(element => {
-                                emailClient.emailManager(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
+                                if(element.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                             })
                         }
                         await client.query('COMMIT')
@@ -1797,7 +1887,14 @@ export const createPdfFromHtml = (_body) => {
 
                             };
                             let path = 'src/emailTemplates/sharePdfText.html';
-                            emailClient.emailManagerWithAttachments(element, config.text.sharePdfTextSubject, path, replacements, pdfBuffer);
+                            if(element!=null || '' || undefined)
+                            {
+                                emailClient.emailManagerWithAttachments(element, config.text.sharePdfTextSubject, path, replacements, pdfBuffer);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                         })
                     }
                 });
@@ -1924,7 +2021,14 @@ export const changeAssignee = (_body) => {
                     cName: _body.candidateName
                 };
                 let path = 'src/emailTemplates/changeAssigneeText.html';
-                emailClient.emailManager(assigneeMail, subject, path, replacements);
+                if(assigneeMail!=null || '' || undefined)
+                {
+                    emailClient.emailManager(assigneeMail, subject, path, replacements);
+                }
+                else
+                {
+                    console.log("Email Recipient is empty")
+                } 
                 await client.query(queryService.insertAuditLog(_body));
                 resolve({ code: 200, message: "Assignee changed successfully", data: result.rows });
             } catch (e) {
@@ -2124,8 +2228,14 @@ export const changeBlacklisted = (_body) => {
                 }
                 if (Array.isArray(ellowAdmins.rows)) {
                     ellowAdmins.rows.forEach(element => {
-                        console.log(element.email)
-                        emailClient.emailManager(element.email, _body.subject, _body.path, _body.adminReplacements);
+                        if(element.email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(element.email, _body.subject, _body.path, _body.adminReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                     })
                 }
 
@@ -2251,7 +2361,7 @@ export const singleSignOn = (_body) => {
             try {
                 console.log("body code : ", _body.code);
 
-                const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=86w0o74tpcdwl2&client_secret=SnYaChuW5W3yho2s&code=' + _body.code, {
+                const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=867umqszmeupfh&client_secret=n7oVJe6kbinpdPqu&code=' + _body.code, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',

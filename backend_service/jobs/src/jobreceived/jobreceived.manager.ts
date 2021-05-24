@@ -363,7 +363,14 @@ export const submitCandidateProfile = (_body) => {
                             user:_body.emailAddress,
                             password:password    
                         };
-                        emailClient.emailManager(_body.emailAddress,userSubject,userPath,userCredentialReplacements);
+                        if(_body.emailAddress!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(_body.emailAddress,userSubject,userPath,userCredentialReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                     }   
                 }
                 await client.query('COMMIT');
@@ -392,7 +399,14 @@ export const submitCandidateProfile = (_body) => {
                 {
                     
                     ellowAdmins.rows.forEach(element => {
-                        emailClient.emailManager(element.email,subject,path,userReplacements);
+                        if(element.email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(element.email,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                                 
                         })
                             
@@ -404,16 +418,50 @@ export const submitCandidateProfile = (_body) => {
                     var resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
                     if (_body.userRoleId==1)
                     {
-                        emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
-                        emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
+                        if(_body.emailAddress!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
+                        if(positions.rows[0].email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                         
                         
                     }
                     else{
-                        
-                        emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
-                        emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
-                        emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,path,userReplacements);
+                        if(_body.emailAddress!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(_body.emailAddress,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
+                        if(positions.rows[0].email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(positions.rows[0].email,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
+                        if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,path,userReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                         
                         
                     }
@@ -441,7 +489,14 @@ export const submitCandidateProfile = (_body) => {
                 {
                     
                     ellowAdmins.rows.forEach(element => {
-                        emailClient.emailManager(element.email,subject,path,replacements); 
+                        if(element.email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(element.email,subject,path,replacements); 
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                                 
                         })
                             

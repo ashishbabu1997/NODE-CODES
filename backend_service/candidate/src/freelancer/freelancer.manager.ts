@@ -133,7 +133,14 @@ export const submitFreelancerProfile = (_body) => {
                                 {
                                    
                                     ellowAdmins.rows.forEach(element => {
-                                        emailClient.emailManager(element.email,config.text.submitProfileSubject,path,replacements);
+                                        if(element.email!=null || '' || undefined)
+                                        {
+                                            emailClient.emailManager(element.email,config.text.submitProfileSubject,path,replacements);
+                                        }
+                                        else
+                                        {
+                                            console.log("Email Recipient is empty")
+                                        } 
 
                                     })
                                 }

@@ -221,7 +221,14 @@ export const clearance = (_body) => {
                         let replacements = {
                             loginPassword: password
                         };
-                        emailClient.emailManager(email,subject,path,replacements);
+                        if(email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(email,subject,path,replacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        } 
                         await client.query('COMMIT');
                         if(Array.isArray(ellowAdmins.rows))
                         {
@@ -229,7 +236,14 @@ export const clearance = (_body) => {
                             let recruitersPath = 'src/emailTemplates/userReApprovalMailText.html';
                             let recruitersReplacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
                             ellowAdmins.rows.forEach(element => {
-                                emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);         
+                                if(element.email!=null || '' || undefined)
+                                {
+                                    emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);         
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                } 
                             })
                             resolve({ code: 200, message: "User Approval Successfull", data: {} });                            
                         }
@@ -251,7 +265,14 @@ export const clearance = (_body) => {
                                 let replacements = {
                                     loginPassword: password
                                 };
-                                emailClient.emailManager(email,subject,path,replacements);
+                                if(email!=null || '')
+                                {
+                                    emailClient.emailManager(email,subject,path,replacements);
+                                }
+                                else
+                                {
+                                    console.log("Email Recipient is empty")
+                                }
                                 await client.query('COMMIT');
                                 if(Array.isArray(ellowAdmins.rows))
                                 {
@@ -259,7 +280,14 @@ export const clearance = (_body) => {
                                     let recruitersPath = 'src/emailTemplates/userApprovalMailText.html';
                                     let recruitersReplacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
                                     ellowAdmins.rows.forEach(element => {
-                                        emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);         
+                                        if(element.email!=null || '' || undefined)
+                                        {
+                                            emailClient.emailManager(element.email,recruitersSubject,recruitersPath,recruitersReplacements);         
+                                        }
+                                        else
+                                        {
+                                            console.log("Email Recipient is empty")
+                                        }
                                     })
                                     resolve({ code: 200, message: "User Approval Successfull", data: {} });                            
                                 }
@@ -285,7 +313,14 @@ export const clearance = (_body) => {
                                                 var reRejectionReplacements = {
                                                     description: desc
                                                 };
-                                                emailClient.emailManager(employeeMail,reRejectionSubject,reRejectionpath,reRejectionReplacements);
+                                                if(employeeMail!=null || '' || undefined)
+                                                {
+                                                    emailClient.emailManager(employeeMail,reRejectionSubject,reRejectionpath,reRejectionReplacements);
+                                                }
+                                                else
+                                                {
+                                                    console.log("Email Recipient is empty")
+                                                }
                                                 await client.query('COMMIT'); 
                                                 if(Array.isArray(ellowAdmins.rows))
                                                 {
@@ -293,8 +328,15 @@ export const clearance = (_body) => {
                                                     let path = 'src/emailTemplates/userReRejectionMailText.html';
                                                     let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyName.rows[0].company_name};
                                                     ellowAdmins.rows.forEach(element => {
-                                                        console.log(element.email)
-                                                        emailClient.emailManager(element.email,subject,path,replacements);         
+                                                        if(element.email!=null || '' || undefined)
+                                                        {
+                                                            emailClient.emailManager(element.email,subject,path,replacements);         
+
+                                                        }
+                                                        else
+                                                        {
+                                                            console.log("Email Recipient is empty")
+                                                        }
                                                     })
                                                     resolve({ code: 200, message: "User Rejection Successfull", data: {} });
                                                 }
@@ -311,7 +353,15 @@ export const clearance = (_body) => {
                                                 var userReplacements = {
                                                     description: desc
                                                 };
-                                                emailClient.emailManager(employeeMail,subject,path,userReplacements);
+                                                if(employeeMail!=null || '' || undefined)
+                                                {
+                                                    emailClient.emailManager(employeeMail,subject,path,userReplacements);
+
+                                                }
+                                                else
+                                                {
+                                                    console.log("Email Recipient is empty")
+                                                }
                                                 await client.query('COMMIT'); 
                                                 if(Array.isArray(ellowAdmins.rows))
                                                 {
@@ -319,8 +369,15 @@ export const clearance = (_body) => {
                                                     let path = 'src/emailTemplates/userRejectionMailText.html';
                                                     let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyName.rows[0].company_name};
                                                     ellowAdmins.rows.forEach(element => {
-                                                        console.log(element.email)
-                                                        emailClient.emailManager(element.email,subject,path,replacements);         
+                                                        if(element.email!=null || '' || undefined)
+                                                        {
+                                                            emailClient.emailManager(element.email,subject,path,replacements);         
+
+                                                        }
+                                                        else
+                                                        {
+                                                            console.log("Email Recipient is empty")
+                                                        }
                                                     })
                                                     resolve({ code: 200, message: "User Rejection Successfull", data: {} });
                                                 }

@@ -990,7 +990,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'insert-extracted-candidate-details',
             text: candidateQuery.insertExtractedCandidateDetails,
-            values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData,companyid:data.freelancerCompanyId,detailresume:data.detailResume,htmlresume:data.htmlResume,bagofwords:data.bagOfWords}
+            values:{firstname:data.firstName, lastname:data.lastName, summary:data.summary, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName,resume:data.resume, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData,companyid:data.freelancerCompanyId,detailresume:data.detailResume,htmlresume:data.htmlResume,bagofwords:data.bagOfWords}
         }
     }
     
@@ -998,7 +998,7 @@ export const insertCandidatePublicationQuery = (_body) => {
         return {
             name: 'update-extracted-candidate-details',
             text: candidateQuery.updateExtractedCandidateDetails,
-            values:{candidateid:data.candidateId,firstname:data.firstName, lastname:data.lastName, summary:data.summary, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData,detailresume:data.detailResume,htmlresume:data.htmlResume,bagofwords:data.bagOfWords}
+            values:{candidateid:data.candidateId,firstname:data.firstName, lastname:data.lastName, summary:data.summary, phone:data.phone, email:data.email, workexperience:data.overallWorkExperience, citizenship:data.citizenship, residence:data.city,positionname:data.designation,resumefilename:data.resumeFileName,resume:data.resume, candidatestatus:4, currenttime:currentTime(), employeeid:data.employeeId,resumedata:data.resumeData,detailresume:data.detailResume,htmlresume:data.htmlResume,bagofwords:data.bagOfWords}
         }
     }
     export const insertDetailResume = (_body) => {
