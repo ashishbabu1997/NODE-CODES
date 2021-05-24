@@ -3,7 +3,9 @@ import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
 import config from '../config/config';
 import { createNotification, createHirerNotifications } from '../common/notifications/notifications';
-import * as emailClient from '../emailService/emailService';
+import * as emailClient from '../emailManager/emailManager';
+import * as emailService from '../emailService/candidatesEmail';
+
 import { nanoid } from 'nanoid';
 import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
@@ -199,155 +201,151 @@ export const listAddFromListCandidates = (_body) => {
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> Function for approving or rejecting a candidate.
-export const candidateClearance = (_body) => {
-    return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());
-        (async () => {
-            const client = await database().connect()
-            try {
-                await client.query('BEGIN');
-                var adminApproveStatus;
-                var comment;
-                var subj;
-                var candidateQueries;
-                var makeOffer;
-                var value;
-                let message = ``
+// export const candidateClearance = (_body) => {
+//     return new Promise((resolve, reject) => {
+//         const currentTime = Math.floor(Date.now());
+//         (async () => {
+//             const client = await database().connect()
+//             try {
+//                 await client.query('BEGIN');
+//                 var adminApproveStatus;
+//                 var comment;
+//                 var subj;
+//                 var candidateQueries;
+//                 var makeOffer;
+//                 var value;
+//                 let message = ``
 
-                // Get the details of a candidate.
-                const getCandidateName = {
-                    name: 'get-candidate-names',
-                    text: candidateQuery.getCandidateNames,
-                    values: [_body.candidateId, _body.positionId]
-                }
-                const results = await client.query(getCandidateName);
-                const candidateDetails = results.rows[0];
-                const { firstName, lastName, jobReceivedId, companyName, positionName } = candidateDetails;
+//                 // Get the details of a candidate.
+//                 const getCandidateName = {
+//                     name: 'get-candidate-names',
+//                     text: candidateQuery.getCandidateNames,
+//                     values: [_body.candidateId, _body.positionId]
+//                 }
+//                 const results = await client.query(getCandidateName);
+//                 const candidateDetails = results.rows[0];
+//                 const { firstName, lastName, jobReceivedId, companyName, positionName } = candidateDetails;
 
-                // Checking :
-                //          a)If the decision is approve or reject (decisionValue 1 or 2)
-                //          b)If the login user is a ellow recruiter or hirer.    ( 1-ellow recruiter,2-admin)
-                if (_body.decisionValue == 1) {
-                    if (_body.userRoleId == 1) {
-                        adminApproveStatus = 1
-                        comment = _body.comment
-                        value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, _body.ellowRate, _body.employeeId, currentTime]
-                        candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
-                    }
-                    else if (_body.userRoleId == 2) {
-                        message = `${companyName} has selected ${firstName + ' ' + lastName}   for their position ${positionName}`;
-                        makeOffer = 1
-                        adminApproveStatus = 1;
-                        comment = _body.comment;
-                        value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, makeOffer, _body.employeeId, currentTime]
-                        candidateQueries = candidateQuery.candidateAdminApprovalQuery
+//                 // Checking :
+//                 //          a)If the decision is approve or reject (decisionValue 1 or 2)
+//                 //          b)If the login user is a ellow recruiter or hirer.    ( 1-ellow recruiter,2-admin)
+//                 if (_body.decisionValue == 1) {
+//                     if (_body.userRoleId == 1) {
+//                         adminApproveStatus = 1
+//                         comment = _body.comment
+//                         value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, _body.ellowRate, _body.employeeId, currentTime]
+//                         candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
+//                     }
+//                     else if (_body.userRoleId == 2) {
+//                         message = `${companyName} has selected ${firstName + ' ' + lastName}   for their position ${positionName}`;
+//                         makeOffer = 1
+//                         adminApproveStatus = 1;
+//                         comment = _body.comment;
+//                         value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, makeOffer, _body.employeeId, currentTime]
+//                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
 
-                        // Sending a approval mail to the admin , with candidates details
-                        subj = "Candidate Selection Mail";
-                        let path = 'src/emailTemplates/selectionMailText.html';
-                        let adminReplacements = {
-                            fName: firstName,
-                            lName: lastName,
-                            cName: companyName,
-                            pName: positionName
-                        };
-                        const getEllowAdmins = {
-                            name: 'get-ellow-admin',
-                            text: candidateQuery.getellowAdmins,
-                            values: []
-
-
-                        }
-                        var ellowAdmins = await client.query(getEllowAdmins)
-                        if (Array.isArray(ellowAdmins.rows)) {
-                            ellowAdmins.rows.forEach(element => {
-                                if(element.email!=null || '' || undefined)
-                                {
-                                    emailClient.emailManager(element.email, subj, path, adminReplacements);
-                                }
-                                else
-                                {
-                                    console.log("Email Recipient is empty")
-                                } 
-                            })
-                        }
-                    }
-                } else {
-                    if (_body.userRoleId == 1) {
-                        adminApproveStatus = 0
-                        comment = _body.comment
-                        value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, _body.employeeId, currentTime]
-                        candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
-                    } else if (_body.userRoleId != 1) {
-                        message = `${companyName} has rejected ${firstName + ' ' + lastName}    for the position ${positionName}`;
-                        makeOffer = 0
-                        adminApproveStatus = 1;
-                        comment = _body.comment;
-                        value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, makeOffer, _body.employeeId, currentTime]
-                        candidateQueries = candidateQuery.candidateAdminApprovalQuery
-                        subj = "Candidate Rejection Mail";
-                        let path = 'src/emailTemplates/rejectionMailText.html';
-                        let adminReplacements = {
-                            fName: firstName,
-                            lName: lastName,
-                            cName: companyName,
-                            pName: positionName
-                        };
-                        const getEllowAdmins = {
-                            name: 'get-ellow-admin',
-                            text: candidateQuery.getellowAdmins,
-                            values: []
+//                         // Sending a approval mail to the admin , with candidates details
+//                         subj = "Candidate Selection Mail";
+//                         let path = 'src/emailTemplates/selectionMailText.html';
+//                         let adminReplacements = {
+//                             fName: firstName,
+//                             lName: lastName,
+//                             cName: companyName,
+//                             pName: positionName
+//                         };
+//                         const getEllowAdmins = {
+//                             name: 'get-ellow-admin',
+//                             text: candidateQuery.getellowAdmins,
+//                             values: []
 
 
-                        }
-                        var ellowAdmins = await client.query(getEllowAdmins)
-                        if (Array.isArray(ellowAdmins.rows)) {
+//                         }
+//                         var ellowAdmins = await client.query(getEllowAdmins)
+//                         if (Array.isArray(ellowAdmins.rows)) {
+//                             ellowAdmins.rows.forEach(element => {
+//                                 if (element.email != null || '' || undefined) {
+//                                     emailClient.emailManager(element.email, subj, path, adminReplacements);
+//                                 }
+//                                 else {
+//                                     console.log("Email Recipient is empty")
+//                                 }
+//                             })
+//                         }
+//                     }
+//                 } else {
+//                     if (_body.userRoleId == 1) {
+//                         adminApproveStatus = 0
+//                         comment = _body.comment
+//                         value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, _body.employeeId, currentTime]
+//                         candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
+//                     } else if (_body.userRoleId != 1) {
+//                         message = `${companyName} has rejected ${firstName + ' ' + lastName}    for the position ${positionName}`;
+//                         makeOffer = 0
+//                         adminApproveStatus = 1;
+//                         comment = _body.comment;
+//                         value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, makeOffer, _body.employeeId, currentTime]
+//                         candidateQueries = candidateQuery.candidateAdminApprovalQuery
+//                         subj = "Candidate Rejection Mail";
+//                         let path = 'src/emailTemplates/rejectionMailText.html';
+//                         let adminReplacements = {
+//                             fName: firstName,
+//                             lName: lastName,
+//                             cName: companyName,
+//                             pName: positionName
+//                         };
+//                         const getEllowAdmins = {
+//                             name: 'get-ellow-admin',
+//                             text: candidateQuery.getellowAdmins,
+//                             values: []
 
-                            ellowAdmins.rows.forEach(element => {
-                                if(element.email!=null || '' || undefined)
-                                {
-                                    emailClient.emailManager(element.email, subj, path, adminReplacements);
-                                }
-                                else
-                                {
-                                    console.log("Email Recipient is empty")
-                                } 
-                            })
-                        }
-                    }
-                }
-                const candidateApprovalQuery = {
-                    name: 'admin',
-                    text: candidateQueries,
-                    values: value
-                }
-                await client.query(candidateApprovalQuery);
-                const updateQuery = {
-                    name: 'update-candidate-vetting',
-                    text: candidateQuery.updateCandidateVetting,
-                    values: [_body.candidateId, 1, _body.employeeId, currentTime],
-                }
-                await client.query(updateQuery);
-                await client.query('COMMIT');
+
+//                         }
+//                         var ellowAdmins = await client.query(getEllowAdmins)
+//                         if (Array.isArray(ellowAdmins.rows)) {
+
+//                             ellowAdmins.rows.forEach(element => {
+//                                 if (element.email != null || '' || undefined) {
+//                                     emailClient.emailManager(element.email, subj, path, adminReplacements);
+//                                 }
+//                                 else {
+//                                     console.log("Email Recipient is empty")
+//                                 }
+//                             })
+//                         }
+//                     }
+//                 }
+//                 const candidateApprovalQuery = {
+//                     name: 'admin',
+//                     text: candidateQueries,
+//                     values: value
+//                 }
+//                 await client.query(candidateApprovalQuery);
+//                 const updateQuery = {
+//                     name: 'update-candidate-vetting',
+//                     text: candidateQuery.updateCandidateVetting,
+//                     values: [_body.candidateId, 1, _body.employeeId, currentTime],
+//                 }
+//                 await client.query(updateQuery);
+//                 await client.query('COMMIT');
 
 
-                // Function for notification to the  admin
-                let imageResults = await client.query(queryService.getImageDetails(_body))
-                _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name });
-                resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
+//                 // Function for notification to the  admin
+//                 let imageResults = await client.query(queryService.getImageDetails(_body))
+//                 _body.userRoleId != 1 && await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name });
+//                 resolve({ code: 200, message: "Candidate Clearance Successsfull", data: {} });
 
-            } catch (e) {
-                console.log(e)
-                await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
-                client.release();
-            }
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
-        })
-    })
-}
+//             } catch (e) {
+//                 console.log(e)
+//                 await client.query('ROLLBACK')
+//                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
+//             } finally {
+//                 client.release();
+//             }
+//         })().catch(e => {
+//             reject({ code: 400, message: "Failed. Please try again.", data: {} })
+//         })
+//     })
+// }
 
 
 
@@ -355,93 +353,93 @@ export const candidateClearance = (_body) => {
 // >>>>>>> Function for requesting interview to a candidate
 // The hirer views a ellow shortlisted candidate and request for an interview him/her.
 // A notification and a mail will be sent to the admin about the interview request.
-export const interviewRequestFunction = (_body) => {
-    return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());
-        (async () => {
-            const client = await database().connect()
-            try {
-                await client.query('BEGIN');
+// export const interviewRequestFunction = (_body) => {
+//     return new Promise((resolve, reject) => {
+//         const currentTime = Math.floor(Date.now());
+//         (async () => {
+//             const client = await database().connect()
+//             try {
+//                 await client.query('BEGIN');
 
-                // Insert make offer status of a candidate.
-                const insertQuery = {
-                    name: 'insert-make-offer-status',
-                    text: candidateQuery.insertMakeOfferStatus,
-                    values: [_body.candidateId, _body.positionId, _body.employeeId, currentTime],
-                }
-                await client.query(insertQuery);
+//                 // Insert make offer status of a candidate.
+//                 const insertQuery = {
+//                     name: 'insert-make-offer-status',
+//                     text: candidateQuery.insertMakeOfferStatus,
+//                     values: [_body.candidateId, _body.positionId, _body.employeeId, currentTime],
+//                 }
+//                 await client.query(insertQuery);
 
-                // Retrieving the candidate's basic details.
-                const candidateDetails = {
-                    name: 'get-interview-details',
-                    text: candidateQuery.getInterviewDetails,
-                    values: [_body.candidateId, _body.companyId, _body.positionId],
-                }
-                const result = await client.query(candidateDetails);
-                await client.query('COMMIT');
-                var interviewDetails = result.rows
+//                 // Retrieving the candidate's basic details.
+//                 const candidateDetails = {
+//                     name: 'get-interview-details',
+//                     text: candidateQuery.getInterviewDetails,
+//                     values: [_body.candidateId, _body.companyId, _body.positionId],
+//                 }
+//                 const result = await client.query(candidateDetails);
+//                 await client.query('COMMIT');
+//                 var interviewDetails = result.rows
 
-                let { jobReceivedId, candidateFirstName, candidateLastName } = interviewDetails[0];
+//                 let { jobReceivedId, candidateFirstName, candidateLastName } = interviewDetails[0];
 
-                const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}`
-                let imageResults = await client.query(queryService.getImageDetails(_body))
-                await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name })
+//                 const message = `An interview request has been received for the candidate ${candidateFirstName + ' ' + candidateLastName}`
+//                 let imageResults = await client.query(queryService.getImageDetails(_body))
+//                 await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name })
 
-                var hirer = interviewDetails[0].hirerCompanyName
-                var hirerCompanyName=hirer.charAt(0).toUpperCase() + hirer.slice(1)
-                candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName
-                candidateLastName = interviewDetails[0].candidateLastName === null ? '' : interviewDetails[0].candidateLastName
-                var positionName = interviewDetails[0].positionName === null ? '' : interviewDetails[0].positionName
-                var email = interviewDetails[0].emailAddress === null ? '' : interviewDetails[0].emailAddress
-                var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber
-                var subject = "Interview Requested from " + hirerCompanyName;
-                let path = 'src/emailTemplates/interviewRequestMailText.html';
-                let adminReplacements = {
-                    hirerName: hirerCompanyName,
-                    firstName: candidateFirstName,
-                    lastName: candidateLastName,
-                    position: positionName,
-                    emailId: email,
-                    telephoneNumber: phoneNumber
-                };
-                const getEllowAdmins = {
-                    name: 'get-ellow-admin',
-                    text: candidateQuery.getellowAdmins,
-                    values: []
+//                 var hirer = interviewDetails[0].hirerCompanyName
+//                 var hirerCompanyName = hirer.charAt(0).toUpperCase() + hirer.slice(1)
+//                 candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName
+//                 candidateLastName = interviewDetails[0].candidateLastName === null ? '' : interviewDetails[0].candidateLastName
+//                 var positionName = interviewDetails[0].positionName === null ? '' : interviewDetails[0].positionName
+//                 var email = interviewDetails[0].emailAddress === null ? '' : interviewDetails[0].emailAddress
+//                 var phoneNumber = interviewDetails[0].phoneNumber === null ? '' : interviewDetails[0].phoneNumber
+//                 var subject = "Interview Requested from " + hirerCompanyName;
+//                 let path = 'src/emailTemplates/interviewRequestMailText.html';
+//                 let adminReplacements = {
+//                     hirerName: hirerCompanyName,
+//                     firstName: candidateFirstName,
+//                     lastName: candidateLastName,
+//                     position: positionName,
+//                     emailId: email,
+//                     telephoneNumber: phoneNumber
+//                 };
+//                 const getEllowAdmins = {
+//                     name: 'get-ellow-admin',
+//                     text: candidateQuery.getellowAdmins,
+//                     values: []
 
 
-                }
-                var ellowAdmins = await client.query(getEllowAdmins)
-                if (Array.isArray(ellowAdmins.rows)) {
+//                 }
+//                 var ellowAdmins = await client.query(getEllowAdmins)
+//                 if (Array.isArray(ellowAdmins.rows)) {
 
-                    ellowAdmins.rows.forEach(element => {
-                        if(element.email!=null || '' || undefined)
-                                {
-                                    emailClient.emailManager(element.email, subject, path, adminReplacements);
-                                }
-                                else
-                                {
-                                    console.log("Email Recipient is empty")
-                                } 
-                    })
-                }
-                resolve({ code: 200, message: "Interview request has been sent successfully", data: {} });
-            } catch (e) {
-                console.log(e)
-                await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-            } finally {
-                client.release();
-            }
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
-        })
-    })
-}
+//                     ellowAdmins.rows.forEach(element => {
+//                         if (element.email != null || '' || undefined) {
+//                             emailClient.emailManager(element.email, subject, path, adminReplacements);
+//                         }
+//                         else {
+//                             console.log("Email Recipient is empty")
+//                         }
+//                     })
+//                 }
+//                 resolve({ code: 200, message: "Interview request has been sent successfully", data: {} });
+//             } catch (e) {
+//                 console.log(e)
+//                 await client.query('ROLLBACK')
+//                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
+//             } finally {
+//                 client.release();
+//             }
+//         })().catch(e => {
+//             reject({ code: 400, message: "Failed. Please try again.", data: {} })
+//         })
+//     })
+// }
 
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>> Function for admin to add reviews,assesment comments about the candidate
+
+
 export const addCandidateReview = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -458,33 +456,19 @@ export const addCandidateReview = (_body) => {
                     if (_body.stageName == 'ellow Onboarding') {
                         _body.candidateId = result.rows[0].candidate_id;
                         await client.query(queryService.setVettedStatus(_body));
-                        let candidateDetailResults = await client.query(queryService.getCandidateProfileName(_body));
-                        let subject = "Congrats! You have successfully completed ellow Certification!"
-                        let path = 'src/emailTemplates/ellowVettedText.html';
-                        let replacements = {
-                            name: candidateDetailResults.rows[0].name
-                        };
-                        if(candidateDetailResults.rows[0].email!=null || '' || undefined)
-                        {
-                            emailClient.emailManager(candidateDetailResults.rows[0].email, subject, path, replacements);
-                        }
-                        else
-                        {
-                            console.log("Email Recipient is empty")
-                        } 
+                        emailService.addCandidateReviewEmail(_body, client);
 
                     }
                     await client.query('COMMIT')
-                    resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} });
-                    await client.query('COMMIT')
+                    resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} })
                 }
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             }
         })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })
 }
@@ -533,100 +517,32 @@ export const editVettingStatus = (_body) => {
 // >>>>>>>>>>> Function to remove a candidate from a position by admin and sending a notification email to the provider who added this candidate.
 export const removeCandidateFromPosition = (_body) => {
     return new Promise((resolve, reject) => {
-        var jobReceivedId;
-        var candidateFirstName;
-        var candidateLastName;
-        var message;
-        var positionName;
-        var hirerName;
         (async () => {
             const client = await database().connect()
             try {
                 var candidateId = _body.candidateId;
                 var positionId = _body.positionId;
                 await client.query('BEGIN');
-                // Query to change the status of a candidate to false.
-                const removeCandidateQuery = {
-                    name: 'delete-candidate-from-position',
-                    text: candidateQuery.deleteCandidateFromPosition,
-                    values: [candidateId, positionId],
-                }
-                await client.query(removeCandidateQuery);
-                const removeFromCandidateClientHiringStep = {
-                    name: 'delete-candidate-from-clienthiringstep',
-                    text: candidateQuery.deleteCandidateFromCandidateClientHiringStep,
-                    values: [candidateId, positionId],
-                }
-                await client.query(removeFromCandidateClientHiringStep);
-                // Retreving the details of the candidate to add to the mail
-                const getPositionDetails = {
-                    name: 'delete-position-details',
-                    text: candidateQuery.getPositionDetails,
-                    values: [positionId],
-                }
-                var positionDetail = await client.query(getPositionDetails);
-                positionName = positionDetail.rows[0].positionName
-                hirerName = positionDetail.rows[0].hirerName
+                // Query to remove candidate from a position
+                await client.query(queryService.removeCandidateFromPositionQuery(_body));
 
+                // Query to to remove hiring steps of candidate
+                await client.query(queryService.removeFromCandidateClientHiringStep(_body));
+                
+                emailService.removeCandidateFromPositionEmail(_body,client);
 
-                // query to retrieve the provider's(seller's) email address.
-                const getSellerEmailQuery = {
-                    name: 'get-email-details',
-                    text: candidateQuery.getSellerMail,
-                    values: [candidateId],
-                }
-                var emailResults = await client.query(getSellerEmailQuery);
-                candidateFirstName = emailResults.rows[0].cFirstName
-                candidateLastName = emailResults.rows[0].cLastName
-                var sellerMail = emailResults.rows[0].email
-                var subject = "Candidate Removal Notification";
-                let imageResults = await client.query(queryService.getImageDetails(_body))
-                message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position ${positionName} has been removed `
-                let path = 'src/emailTemplates/candidateDeletionMailText.html';
-                let replacements = {
-                    position: positionName,
-                    name1: candidateFirstName,
-                    name2: candidateLastName
-                };
-                if(sellerMail!=null || '' || undefined)
-                        {
-                            emailClient.emailManager(sellerMail, subject, path, replacements);
-                        }
-                        else
-                        {
-                            console.log("Email Recipient is empty")
-                        } 
-                let resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
-                var positions = await client.query(queryService.getPositionName(_body));
-                if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
-                {
-                    emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email, subject, path, replacements);
-                }
-                else
-                {
-                    console.log("Email Recipient is empty")
-                } 
-                if(positions.rows[0].email!=null || '' || undefined)
-                {
-                    emailClient.emailManager(positions.rows[0].email, subject, path, replacements);
-                }
-                else
-                {
-                    console.log("Email Recipient is empty")
-                } 
                 await client.query('COMMIT')
-                await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name })
                 resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });
 
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             } finally {
                 client.release();
             }
         })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: {} })
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })
 }
@@ -646,125 +562,49 @@ export const linkCandidateWithPosition = (_body) => {
                 let promise = [];
                 const candidateList = _body.candidates;
                 const positionId = _body.positionId;
-                let positionName = '';
-                let hirerName = '';
                 let count = 0
-                var names = '';
-                var n=[]
-                var firstName;
-                var lastName
-                var index;
+                
                 const currentTime = Math.floor(Date.now());
-                const getEllowAdmins = {
-                    name: 'get-ellow-admin',
-                    text: candidateQuery.getellowAdmins,
-                    values: []
-
-
-                }
-                var ellowAdmins = await client.query(getEllowAdmins)
-                // Get position realted details
-                const getPositionNames = {
-                    name: 'get-position-details',
-                    text: candidateQuery.getPositionDetails,
-                    values: [_body.positionId],
-                }
-                var positionResult = await client.query(getPositionNames);
-                positionName = positionResult.rows[0].positionName
-                hirerName = positionResult.rows[0].hirerName
-                var positionCompanyId = positionResult.rows[0].companyId
-                var jobReceivedId = positionResult.rows[0].jobReceivedId
 
                 // Inserting candidates to candidate_positions table
                 if (_body.userRoleId == 1) {
                     candidateList.forEach(element => {
-                        const linkCandidateByAdminQuery = {
-                            name: 'link-candidate-with-position',
-                            text: candidateQuery.linkCandidateWithPositionByAdmin,
-                            values: [positionId, element.candidateId, _body.employeeId, currentTime, element.ellowRate, element.currencyTypeId, element.billingTypeId, element.adminComment, 1],
-                        }
-                        count = count + 1
-                        promise.push(client.query(linkCandidateByAdminQuery));
+                        element.employeeId = _body.employeeId;
+                        element.positionId = positionId;
+                        count = count + 1;
+                        promise.push(client.query(queryService.linkCandidateByAdminQuery(element)));
                     });
                     await Promise.all(promise);
                 }
                 else {
                     candidateList.forEach(element => {
-                        const linkCandidateQuery = {
-                            name: 'link-candidate-with-position',
-                            text: candidateQuery.linkCandidateWithPosition,
-                            values: [positionId, element.candidateId, _body.employeeId, currentTime],
-                        }
+                        element.employeeId = _body.employeeId;
+                        element.positionId = positionId;
                         count = count + 1
-                        promise.push(client.query(linkCandidateQuery));
+                        promise.push(client.query(queryService.linkCandidateQuery(element)));
 
                     });
                     await Promise.all(promise);
                 }
-
-
-
-
-                // Sending notification to ellow recuiter for each candidate linked to a position
-
-                // candidateList.forEach(async element => {
+                
+                // Adding client based hiring steps with respect to poition being linked
                 for (const element of candidateList) {
-
-                    let imageResults = await client.query(queryService.getImageDetails(element))
-                    // Adding client based hiring steps with respect to poition being linked
                     _body.candidateId = element.candidateId;
                     await client.query(queryService.addCandidateHiringSteps(_body));
-                    firstName = imageResults.rows[0].candidate_first_name.charAt(0).toUpperCase() + imageResults.rows[0].candidate_first_name.slice(1)
-                    lastName = imageResults.rows[0].candidate_last_name.charAt(0).toUpperCase() + imageResults.rows[0].candidate_last_name.slice(1)
-                    names = names = names+ `${firstName} ${lastName} \n`
-                    var email = imageResults.rows[0].email_address
-                    let replacements = {
-                        name: firstName,
-                        positionName: positionName
-                    };
-                    let path = 'src/emailTemplates/addCandidatesUsersText.html';
-                    if(email!=null || '' || undefined)
-                    {
-                        emailClient.emailManager(email, config.text.addCandidatesUsersTextSubject, path, replacements);
-                    }
-                    else
-                    {
-                        console.log("Email Recipient is empty")
-                    } 
                 }
-                // });                     
+                emailService.linkCandidateWithPositionEMail(_body,client);
                 await client.query('COMMIT')
-                let message = `${count} candidates has been added for the position ${positionName}`
-                createHirerNotifications({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: positionCompanyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
-                createNotification({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
-              
-                if (Array.isArray(ellowAdmins.rows)) {
-                    let replacements = {
-                        positionName: positionName,
-                        candidateNames: names
-                    };
-                    let path = 'src/emailTemplates/addCandidatesText.html';
-                    ellowAdmins.rows.forEach(element => {
-                        if(element.email!=null || '' || undefined)
-                        {
-                            emailClient.emailManager(element.email, config.text.addCandidatesTextSubject, path, replacements);
-                        }
-                        else
-                        {
-                            console.log("Email Recipient is empty")
-                        } 
-                    })
-                }
-
+                
                 resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
             } catch (e) {
-                console.log(e)
+                console.log("error : ",e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             } finally {
                 client.release();
             }
         })().catch(e => {
+            console.log("error : ",e)
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })
@@ -811,7 +651,7 @@ export const modifyResumeFile = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                if (_body.candidateId!=null) {
+                if (_body.candidateId != null) {
                     await client.query(queryService.updateResumeFile(_body));
                     resolve({ code: 200, message: "Candidate resume file updated successfully", data: {} });
                 }
@@ -844,7 +684,7 @@ export const modifyResumeData = (_body) => {
                 let extractedData = rchilliExtractor.rchilliExtractor(_body), candidateId = null;
                 extractedData["employeeId"] = _body.employeeId;
                 extractedData["resume"] = _body.resume;
-                extractedData["candidateId"]=_body.candidateId;
+                extractedData["candidateId"] = _body.candidateId;
                 if (_body.candidateId) {
                     await client.query(queryService.updateExtractedCandidateDetails(extractedData));
                     candidateId = _body.candidateId;
@@ -1508,7 +1348,7 @@ export const getResume = (_body) => {
                         profile: profileDetails,
                         detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
                         htmlResume: allProfileDetails.rows[0].htmlResume,
-                        bagOfWords : allProfileDetails.rows[0].bagOfWords,
+                        bagOfWords: allProfileDetails.rows[0].bagOfWords,
                         resume: allProfileDetails.rows[0].resume,
                         overallWorkExperience,
                         availability,
@@ -1578,14 +1418,12 @@ export const addResumeShareLink = (_body) => {
                                     link: link
                                 };
                                 let path = 'src/emailTemplates/resumeShareText.html';
-                                if(element!=null || '' || undefined)
-                                {
+                                if (element != null || '' || undefined) {
                                     emailClient.emailManagerForNoReply(element, config.text.shareEmailSubject, path, replacements);
                                 }
-                                else
-                                {
+                                else {
                                     console.log("Email Recipient is empty")
-                                } 
+                                }
 
                             });
                         }
@@ -1674,14 +1512,12 @@ export const shareResumeSignup = (_body) => {
                             password: password
                         };
                         let path = 'src/emailTemplates/newUserText.html';
-                        if(_body.email!=null || '' || undefined)
-                                {
-                                    emailClient.emailManager(_body.email, config.text.newUserTextSubject, path, replacements);
-                                }
-                                else
-                                {
-                                    console.log("Email Recipient is empty")
-                                } 
+                        if (_body.email != null || '' || undefined) {
+                            emailClient.emailManager(_body.email, config.text.newUserTextSubject, path, replacements);
+                        }
+                        else {
+                            console.log("Email Recipient is empty")
+                        }
                         let adminReplacements = {
                             firstName: _body.firstName,
                             lastName: _body.lastName,
@@ -1700,14 +1536,12 @@ export const shareResumeSignup = (_body) => {
                         var ellowAdmins = await client.query(getEllowAdmins)
                         if (Array.isArray(ellowAdmins.rows)) {
                             ellowAdmins.rows.forEach(element => {
-                                if(element.email!=null || '' || undefined)
-                                {
+                                if (element.email != null || '' || undefined) {
                                     emailClient.emailManager(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
                                 }
-                                else
-                                {
+                                else {
                                     console.log("Email Recipient is empty")
-                                } 
+                                }
                             })
                         }
                         await client.query('COMMIT')
@@ -1884,14 +1718,12 @@ export const createPdfFromHtml = (_body) => {
 
                             };
                             let path = 'src/emailTemplates/sharePdfText.html';
-                            if(element!=null || '' || undefined)
-                            {
+                            if (element != null || '' || undefined) {
                                 emailClient.emailManagerWithAttachments(element, config.text.sharePdfTextSubject, path, replacements, pdfBuffer);
                             }
-                            else
-                            {
+                            else {
                                 console.log("Email Recipient is empty")
-                            } 
+                            }
                         })
                     }
                 });
@@ -1979,7 +1811,7 @@ export const getCandidateAssesmentDetails = (_body) => {
 
                 let query1 = await client.query(queryService.getAssesmentDetails(_body));
                 let query2 = await client.query(queryService.getAllocatedVettedStatus(_body));
-                let query3 = await client.query(queryService.adminSignup(_body));
+                let query3 = await client.query(queryService.getEllowAdmins());
                 let reviews = query1.rows,
                     candidateVetted = query2.rows[0].candidate_vetted,
                     currentEllowStage = query2.rows[0].current_ellow_stage,
@@ -2018,14 +1850,12 @@ export const changeAssignee = (_body) => {
                     cName: _body.candidateName
                 };
                 let path = 'src/emailTemplates/changeAssigneeText.html';
-                if(assigneeMail!=null || '' || undefined)
-                {
+                if (assigneeMail != null || '' || undefined) {
                     emailClient.emailManager(assigneeMail, subject, path, replacements);
                 }
-                else
-                {
+                else {
                     console.log("Email Recipient is empty")
-                } 
+                }
                 await client.query(queryService.insertAuditLog(_body));
                 resolve({ code: 200, message: "Assignee changed successfully", data: result.rows });
             } catch (e) {
@@ -2225,14 +2055,12 @@ export const changeBlacklisted = (_body) => {
                 }
                 if (Array.isArray(ellowAdmins.rows)) {
                     ellowAdmins.rows.forEach(element => {
-                        if(element.email!=null || '' || undefined)
-                        {
+                        if (element.email != null || '' || undefined) {
                             emailClient.emailManager(element.email, _body.subject, _body.path, _body.adminReplacements);
                         }
-                        else
-                        {
+                        else {
                             console.log("Email Recipient is empty")
-                        } 
+                        }
                     })
                 }
 
@@ -2528,29 +2356,29 @@ export const getHtmlResume = (_body) => {
 
                 data.forEach(async element => {
                     try {
-                        
+
                         let d = JSON.parse(element['resume_data']);
-                        let res = d["ResumeParserData"]["DetailResume"];    
+                        let res = d["ResumeParserData"]["DetailResume"];
                         res = res.replace(/[^a-zA-Z\n@. ]/g, '');
                         res = res.split(/[\s\n]+/);
                         let uniqueChars = [...Array.from(new Set(res.sort()))];
-                        
-                        let filterUniqueChars = uniqueChars.filter((ele:string)=> !regex.test(ele))
-        
+
+                        let filterUniqueChars = uniqueChars.filter((ele: string) => !regex.test(ele))
+
                         let updateQuery = {
                             name: 'update-bagofwords-details',
                             text: candidateQuery.updateHtmlResume,
-                            values: [filterUniqueChars,element.candidate_id]
+                            values: [filterUniqueChars, element.candidate_id]
                         }
-        
+
                         await client.query(updateQuery);
                         await client.query('COMMIT');
 
                     } catch (error) {
-                        console.log("unable to parse : ",error.message);
-                        
+                        console.log("unable to parse : ", error.message);
+
                     }
-                   
+
                 });
                 console.log("Done ");
 

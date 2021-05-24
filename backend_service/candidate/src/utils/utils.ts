@@ -255,3 +255,12 @@ export const stringEquals = (a, b)=> {
         ? a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0
         : a === b;
 }
+
+export const notNull = (val)=> {
+    return [undefined,null,''].includes(val)?false:true;
+}
+
+export const capitalize = (s) => {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
+  }
