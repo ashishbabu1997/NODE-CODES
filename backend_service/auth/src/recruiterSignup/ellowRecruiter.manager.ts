@@ -16,25 +16,11 @@ export const recruiterPostSignup = (_body) => {
             const currentTime = Math.floor(Date.now());
             const mailId = _body.email;
             const loweremailId = mailId.toLowerCase();
-<<<<<<< HEAD
-=======
-            
-<<<<<<< HEAD
->>>>>>> staging
-            (async () => {
-                const client = await database()
-                try {
-                    await client.query('BEGIN');
-
-<<<<<<< HEAD
-=======
-=======
             (async () => {                
                 const client = await database()
                 try {     
                     await client.query('BEGIN');
->>>>>>> develop
->>>>>>> staging
+
                     const getEmailQuery = {
                         name: 'get-email',
                         text: recruiterSignupQuery.getEmail,
