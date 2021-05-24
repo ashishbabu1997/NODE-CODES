@@ -148,15 +148,36 @@ export const updateHiringStepDetails = (_body) => {
                                     cName: positions.rows[0].company_name,
                                     pName:positions.rows[0].position_name
                             }; 
-                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subj,path,adminReplacements);
-                            emailClient.emailManager(positions.rows[0].email,subj,path,adminReplacements);
+                            if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subj,path,adminReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
+                            if(positions.rows[0].email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(positions.rows[0].email,subj,path,adminReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                             let assigneePath = 'src/emailTemplates/resourceAcceptionAssigneeMailText.html';
                             let assigneeReplacements = {
                                     fName: imageResults.rows[0].candidate_first_name,
                                     lName: imageResults.rows[0].candidate_last_name,
                                     pName:positions.rows[0].position_name
                             }; 
-                            emailClient.emailManager(assignee.rows[0].email,subj,assigneePath,assigneeReplacements);
+                            if(assignee.rows[0].email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(assignee.rows[0].email,subj,assigneePath,assigneeReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                             await client.query(queryService.updateAvailabilityOfCandidate(_body));
                             let updatedResourceCounts=await client.query(queryService.updateClosedCount(_body))
                             if(updatedResourceCounts.rows[0].developer_count>=updatedResourceCounts.rows[0].close_count)
@@ -175,8 +196,22 @@ export const updateHiringStepDetails = (_body) => {
                                     cName: positions.rows[0].company_name,
                                     pName:positions.rows[0].position_name
                             }; 
-                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
-                            emailClient.emailManager(positions.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
+                            if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
+                            if(positions.rows[0].email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(positions.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                         }
                         else
                         {
@@ -187,9 +222,30 @@ export const updateHiringStepDetails = (_body) => {
                                     lName: imageResults.rows[0].candidate_last_name,
                                     pName:positions.rows[0].position_name
                             }; 
-                            emailClient.emailManager(assignee.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
-                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
-                            emailClient.emailManager(positions.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
+                            if(assignee.rows[0].email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(assignee.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
+                            if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
+                            if(positions.rows[0].email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(positions.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                         }
                     }
                     else if (candidateClientHiringStepName=='Discussion with resource')
@@ -203,8 +259,22 @@ export const updateHiringStepDetails = (_body) => {
                                 cName: positions.rows[0].company_name,
                                 pName:positions.rows[0].position_name
                         }; 
-                        emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
-                        emailClient.emailManager(positions.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
+                        if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
+                            if(positions.rows[0].email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(positions.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                         let assigneesReplacements = {
                             fName: imageResults.rows[0].candidate_first_name,
                             lName:imageResults.rows[0].candidate_last_name,
@@ -212,14 +282,28 @@ export const updateHiringStepDetails = (_body) => {
                             pName:positions.rows[0].position_name,
                             pcName:positions.rows[0].company_name
                         }; 
-                        emailClient.emailManager(assignee.rows[0].email,discussionWithResourceSubject,assigneesPath,assigneesReplacements);
+                        if(assignee.rows[0].email!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(assignee.rows[0].email,discussionWithResourceSubject,assigneesPath,assigneesReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                         let resourcesReplacements = {
                             fName: imageResults.rows[0].candidate_first_name,
                             cName: positions.rows[0].company_name,
                             aName: assignee.rows[0].firstname,
                             pName:positions.rows[0].position_name
                     }; 
-                    emailClient.emailManager(imageResults.rows[0].email_address,discussionWithResourceSubject,ressourcesPath,resourcesReplacements);
+                    if(imageResults.rows[0].email_address!=null || '' || undefined)
+                            {
+                                emailClient.emailManager(imageResults.rows[0].email_address,discussionWithResourceSubject,ressourcesPath,resourcesReplacements);
+                            }
+                            else
+                            {
+                                console.log("Email Recipient is empty")
+                            } 
                     }
                     else
                     {
@@ -231,8 +315,22 @@ export const updateHiringStepDetails = (_body) => {
                                 pName:positions.rows[0].position_name,
                                 cName:positions.rows[0].company_name
                         }; 
-                        emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,makeOfferSubject,recruiterOfferPath,recruiterOfferReplacements);
-                        emailClient.emailManager(positions.rows[0].email,makeOfferSubject,recruiterOfferPath,recruiterOfferReplacements);
+                        if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,makeOfferSubject,recruiterOfferPath,recruiterOfferReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        }
+                        if(positions.rows[0].email!=null || '' || undefined)
+                        {
+                            emailClient.emailManager(positions.rows[0].email,makeOfferSubject,recruiterOfferPath,recruiterOfferReplacements);
+                        }
+                        else
+                        {
+                            console.log("Email Recipient is empty")
+                        }
                     }
                     resolve({ code: 200, message: "Hiring step details updated successfully", data: {} });
                 }
@@ -382,13 +480,18 @@ export const updateDefaultAssignee = (_body) => {
                 }
                 else{
                     var positions=await client.query(queryService. getPositionName(_body));
-                    console.log("Positions",_body.positionId)
+                    console.log("Positions",positions)
                     var positionName=positions.rows[0].position_name
                     var companies=await client.query(queryService.getCompanyName(_body));
+                    console.log("Companies",companies)
+
                     var companyName=companies.rows[0].companyName
                     let names = await client.query(queryService.getAssigneeName(_body));
+                    console.log("names",names)
                     let assigneeName=names.rows[0].firstname
                     let resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
+                    console.log("recruiters",resourceAllocatedRecruiter)
+
                     _body.auditLogComment=`${assigneeName} (${companyName}) is the assignee for the  position ${positionName}`
                     
                     let subject='Client Screening Assignee Notification'
@@ -397,18 +500,27 @@ export const updateDefaultAssignee = (_body) => {
                     let recruiterReplacements ={
                         aName:names.rows[0].firstname,
                         cName:_body.candidateName,
-                        pName:positionName
+                        pName:positionName,
+                        cpName:companyName
                     };
                     let replacements ={
                         aName:names.rows[0].firstname,
                         cName:_body.candidateName
                     };
-                    emailClient.emailManager(names.rows[0].email,subject,path,replacements);
-                    emailClient.emailManager(positions.rows[0].email,subject,recruitersPath,recruiterReplacements);
+                  console.log("MAILS",names.rows[0].email,positions.rows[0].email,resourceAllocatedRecruiter.rows[0].email)
+                emailClient.emailManager(names.rows[0].email,subject,path,replacements);
+                emailClient.emailManager(positions.rows[0].email,subject,recruitersPath,recruiterReplacements);
+                await client.query(queryService.insertAuditLogForHiring(_body));
+                await client.query(queryService.updateDefaultAssigneeQuery(_body));
+                if(positions.rows[0].email!=null)
+                {
                     emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,recruitersPath,recruiterReplacements);
-                    await client.query(queryService.insertAuditLogForHiring(_body));
-                    await client.query(queryService.updateDefaultAssigneeQuery(_body));
-                    resolve({ code: 200, message: "Updated assignee succesfully", data: {} });
+
+                }
+                else{
+                    console.log("No ellow recruiters assigned to this candidate")
+                }
+                resolve({ code: 200, message: "Updated assignee succesfully", data: {} });
                 }
             } catch (e) {
                 console.log("Error raised from try : ",e)
