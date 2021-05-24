@@ -324,7 +324,7 @@ export const clearance = (_body) => {
                                                 await client.query('COMMIT'); 
                                                 if(Array.isArray(ellowAdmins.rows))
                                                 {
-                                                    let subject='Company Rejection Mail'
+                                                    let subject='Company Rejection Notification'
                                                     let path = 'src/emailTemplates/userReRejectionMailText.html';
                                                     let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyName.rows[0].company_name};
                                                     ellowAdmins.rows.forEach(element => {
@@ -365,7 +365,7 @@ export const clearance = (_body) => {
                                                 await client.query('COMMIT'); 
                                                 if(Array.isArray(ellowAdmins.rows))
                                                 {
-                                                    let subject='Company Rejection Mail'
+                                                    let subject='Company Rejection Notification'
                                                     let path = 'src/emailTemplates/userRejectionMailText.html';
                                                     let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyName.rows[0].company_name};
                                                     ellowAdmins.rows.forEach(element => {

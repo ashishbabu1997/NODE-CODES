@@ -235,7 +235,7 @@ export const candidateClearance = (_body) => {
                         candidateQueries = candidateQuery.candidateSuperAdminApprovalQuery
                     }
                     else if (_body.userRoleId == 2) {
-                        message = `${firstName + ' ' + lastName} from ${companyName} has been selected for the position:${positionName}`;
+                        message = `${companyName} has selected ${firstName + ' ' + lastName}   for their position ${positionName}`;
                         makeOffer = 1
                         adminApproveStatus = 1;
                         comment = _body.comment;
@@ -279,8 +279,7 @@ export const candidateClearance = (_body) => {
                         value = [_body.candidateId, _body.positionId, adminApproveStatus, comment, _body.employeeId, currentTime]
                         candidateQueries = candidateQuery.candidateSuperAdminRejectQuery
                     } else if (_body.userRoleId != 1) {
-                        var rejectMessage = firstName.fontsize(3).bold() + '   ' + lastName.fontsize(3).bold() + '   ' + 'from' + '   ' + companyName.fontsize(3).bold() + '   ' + 'has been rejected for the position' + '   ' + positionName.fontsize(3).bold()
-                        message = `${firstName + ' ' + lastName} from ${companyName} has been rejected for the position ${positionName}`;
+                        message = `${companyName} has rejected ${firstName + ' ' + lastName}    for the position ${positionName}`;
                         makeOffer = 0
                         adminApproveStatus = 1;
                         comment = _body.comment;
@@ -388,7 +387,8 @@ export const interviewRequestFunction = (_body) => {
                 let imageResults = await client.query(queryService.getImageDetails(_body))
                 await createNotification({ positionId: _body.positionId, jobReceivedId, companyId: _body.companyId, message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name })
 
-                var hirerCompanyName = interviewDetails[0].hirerCompanyName.toUpperCase()
+                var hirer = interviewDetails[0].hirerCompanyName
+                var hirerCompanyName=hirer.charAt(0).toUpperCase() + hirer.slice(1)
                 candidateFirstName = interviewDetails[0].candidateFirstName === null ? '' : interviewDetails[0].candidateFirstName
                 candidateLastName = interviewDetails[0].candidateLastName === null ? '' : interviewDetails[0].candidateLastName
                 var positionName = interviewDetails[0].positionName === null ? '' : interviewDetails[0].positionName
@@ -459,7 +459,7 @@ export const addCandidateReview = (_body) => {
                         _body.candidateId = result.rows[0].candidate_id;
                         await client.query(queryService.setVettedStatus(_body));
                         let candidateDetailResults = await client.query(queryService.getCandidateProfileName(_body));
-                        let subject = "ellow Certification Completion"
+                        let subject = "Congrats! You have successfully completed ellow Certification!"
                         let path = 'src/emailTemplates/ellowVettedText.html';
                         let replacements = {
                             name: candidateDetailResults.rows[0].name
@@ -584,7 +584,6 @@ export const removeCandidateFromPosition = (_body) => {
                 message = `${candidateFirstName + ' ' + candidateLastName} who had applied for the position ${positionName} has been removed `
                 let path = 'src/emailTemplates/candidateDeletionMailText.html';
                 let replacements = {
-                    hirer: hirerName,
                     position: positionName,
                     name1: candidateFirstName,
                     name2: candidateLastName
@@ -651,6 +650,7 @@ export const linkCandidateWithPosition = (_body) => {
                 let hirerName = '';
                 let count = 0
                 var names = '';
+                var n=[]
                 var firstName;
                 var lastName
                 var index;
@@ -714,15 +714,13 @@ export const linkCandidateWithPosition = (_body) => {
                     // Adding client based hiring steps with respect to poition being linked
                     _body.candidateId = element.candidateId;
                     await client.query(queryService.addCandidateHiringSteps(_body));
-                    firstName = imageResults.rows[0].candidate_first_name.toUpperCase()
-                    lastName = imageResults.rows[0].candidate_last_name.toUpperCase()
-                    index=candidateList.indexOf(element)+1
-                    names = names+ `       ${index}`+"."+firstName+" "+lastName+"      "
+                    firstName = imageResults.rows[0].candidate_first_name.charAt(0).toUpperCase() + imageResults.rows[0].candidate_first_name.slice(1)
+                    lastName = imageResults.rows[0].candidate_last_name.charAt(0).toUpperCase() + imageResults.rows[0].candidate_last_name.slice(1)
+                    names = names = names+ `${firstName} ${lastName} \n`
                     var email = imageResults.rows[0].email_address
                     let replacements = {
                         name: firstName,
-                        positionName: positionName,
-                        companyName: hirerName
+                        positionName: positionName
                     };
                     let path = 'src/emailTemplates/addCandidatesUsersText.html';
                     if(email!=null || '' || undefined)
@@ -739,8 +737,7 @@ export const linkCandidateWithPosition = (_body) => {
                 let message = `${count} candidates has been added for the position ${positionName}`
                 createHirerNotifications({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: positionCompanyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
                 createNotification({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
-
-                
+              
                 if (Array.isArray(ellowAdmins.rows)) {
                     let replacements = {
                         positionName: positionName,

@@ -135,7 +135,7 @@ export const createEmployee = (_body) => {
                             {
                                 console.log("Email Recipient is empty")
                             } 
-                    let Name = _body.body.firstName.toUpperCase() + " " + _body.body.lastName.toUpperCase()
+                    let Name = _body.body.firstName.charAt(0).toUpperCase() + _body.body.firstName.slice(1) + " " + _body.body.lastName.charAt(0).toUpperCase() + _body.body.lastName.slice(1)
                     let companyName = _body.body.companyName
                     let emailAddress = _body.body.email
                     let number = ![null,undefined].includes(_body.body.telephoneNumber)?_body.body.telephoneNumber:""
@@ -271,11 +271,11 @@ export const createEmployeeByAdmin = (_body) => {
                                 console.log("Email Recipient is empty")
                             } 
                 
-                let Name = _body.firstName.toUpperCase() + " " + _body.lastName.toUpperCase()
+                let Name = _body.firstName.charAt(0).toUpperCase() + _body.firstName.slice(1) + " " + _body.lastName.charAt(0).toUpperCase() + _body.lastName.slice(1)
                 let companyName = _body.companyName
                 let emailAddress = _body.email
                 let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:"";
-                path = 'src/emailTemplates/applicationText.html';
+                path = 'src/emailTemplates/newApplicationText.html';
                 let adminReplacements = { applicantName:Name,company:companyName,email:emailAddress,phoneNumber:number };
                 const  getEllowAdmins = {
                     name: 'get-ellow-admin',
@@ -290,7 +290,7 @@ export const createEmployeeByAdmin = (_body) => {
                 ellowAdmins.rows.forEach(element => {
                     if(element.email!=null || '' || undefined)
                     {
-                        emailClient.emailManager(element.email,config.text.subject,path,adminReplacements);
+                        emailClient.emailManager(element.email,config.text.newCompanySubject,path,adminReplacements);
                     }
                     else
                     {
@@ -408,7 +408,7 @@ export const createFreelancer = (_body) => {
                     values: {firstname:_body.firstName,lastname:_body.lastName,email:loweremailId,yoe:_body.yoe,phone:_body.telephoneNumber,createdtime:currentTime,token:uniqueId},
                 }
                 await client.query(createFreelancerQuery);
-                let Name = _body.firstName.toUpperCase() + " " + _body.lastName.toUpperCase()
+                let Name = _body.firstName.charAt(0).toUpperCase() + _body.firstName.slice(1) + " " + _body.lastName.charAt(0).toUpperCase() + _body.lastName.slice(1)
                 let companyName = "Freelancer"
                 let emailAddress = _body.email
                 let number = ![null,undefined].includes(_body.telephoneNumber)?_body.telephoneNumber:""

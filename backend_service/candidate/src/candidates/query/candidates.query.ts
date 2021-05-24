@@ -3,7 +3,7 @@ import { changeAssignee } from "../candidates.manager";
 export default {
     getCandidateDetails: `select p.position_id as "positionId", ca.company_id as "companyId", cp.make_offer as "makeOffer", cp.admin_approve_status as "adminApproveStatus", ca.billing_type as "billingTypeId", ca.currency_type_id as "currencyTypeId", ca.work_experience as "workExperience", ca.ellow_rate as "defaultEllowRate", cp.ellow_rate as "ellowRate", c.company_name as "companyName", ca.candidate_id, ca.candidate_first_name as "firstName", ca.candidate_last_name as "lastName", p.position_name as "positionName", ca.description as "description", ca.cover_note as "coverNote", ca.resume as "resume", ca.rate as "rate", ca.phone_number as "phoneNumber", ca.label as "label", ca.email_address as "email", ca.candidate_status as "candidateStatus", ca.assessment_comment as "assessmentComment" from candidate ca left join candidate_position cp on cp.candidate_id = ca.candidate_id left join positions p on p.position_id = cp.position_id left join company c on c.company_id = ca.company_id where ca.candidate_id = $1 order by cp.created_on desc`,
     getJobReceivedId: 'SELECT job_received_id from job_received where position_id=$1',
-    getCandidateNames: 'SELECT p.position_name as "positionName", c.job_received_id as "jobReceivedId", c.candidate_first_name as "firstName", c.candidate_last_name as "lastName", co.company_name as "companyName" FROM positions p,candidate c left JOIN company co ON co.company_id = c.company_id WHERE c.candidate_id = $1 and p.position_id=$2',
+    getCandidateNames: 'SELECT p.position_name as "positionName", c.job_received_id as "jobReceivedId", c.candidate_first_name as "firstName", c.candidate_last_name as "lastName", co.company_name as "companyName" FROM positions p,candidate c left JOIN company co ON p.company_id = c.company_id WHERE c.candidate_id = $1 and p.position_id=$2',
     candidateSuperAdminApprovalQuery: 'UPDATE candidate_position SET admin_approve_status=$3, admin_comment=$4, ellow_rate=$5, updated_by=$6, updated_on=$7 WHERE candidate_id = $1 AND position_id = $2',
     candidateSuperAdminRejectQuery: 'UPDATE candidate_position SET admin_approve_status=$3, admin_comment=$4, updated_by=$5, updated_on=$6 WHERE candidate_id = $1 and position_id=$2',
     candidateAdminApprovalQuery: 'UPDATE candidate_position SET admin_approve_status=$3, hirer_comment=$4, make_offer=$5, updated_by=$6, updated_on=$7 WHERE candidate_id = $1 AND position_id=$2',
@@ -112,7 +112,7 @@ export default {
     getellowAdmins:"select concat(firstname,' ',lastname) as name ,email as email,employee_id as employeeId from employee where status=true and user_role_id=1",
     getAuditLogs:'select audit_log_id as "auditLogId",audit_name as "auditName",audit_type as "auditType",audit_log_comment as "auditLogComment",created_on as "createdOn",created_by as "createdBy" from audit_log',
     getCandidateProfileDetails:"select concat(candidate_first_name,' ',candidate_last_name) as name,email_address as email from candidate where candidate_id=$1",
-    fetchResourceAllocatedRecruiterDetails:'select e.email from employee e inner join candidate c on c.allocated_to=e.employee_id where c.candidate_id=$1',
+    fetchResourceAllocatedRecruiterDetails:'select e.email from candidate c left join employee e  on e.employee_id=c.allocated_to where c.candidate_id=$1',
 
 
     // Resume parser related queries

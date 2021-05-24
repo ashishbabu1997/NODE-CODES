@@ -439,89 +439,90 @@ export const fetchPositionDetails = (_body) => {
                         var jobReceivedId;
                         var message;
                         let positionName;
+                        let subj;
+                        let userPath;
+                        let userReplacements;
+                        let adminPath;
+                        let adminReplacements
+                        let positionCompanyName;
+                        let userMailAddress
+                        var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
                         await client.query(queryService.positionQuery(_body))
                         await client.query(queryService.changeJobReceivedStatusQuery(_body))
-                        
+                        var results=await client.query(queryService.mailAddress(_body))  
+                        jobReceivedId=results.rows[0].job_received_id    
+                        positionName=results.rows[0].position_name
+                        positionCompanyName=results.rows[0].company_name
+                        userMailAddress=results.rows[0].email
                         // If job status is 6, it means admin is reopening a position
                         if (_body.jobStatus==6)
                         {
-                            var results=await client.query(queryService.getMailAddress(_body))
-                            
-                            jobReceivedId=results.rows[0].job_received_id    
-                            positionName=results.rows[0].position_name
-                            var emailAddress=results.rows[0].email
+        
                             message=`A position,${positionName} has been reopened.`
                             createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
                             // A notification is sent to the hirer about his/her reopened position
-                            let subj="Position Reopen Notification"
-                            let path = 'src/emailTemplates/positionReopenText.html';
-                            var userReplacements = {
-                                position:positionName
-                            };
-                            if(emailAddress!=null || '' || undefined)
+                            if(_body.userRoleId==1)
                             {
-                                emailClient.emailManager(emailAddress,subj,path,userReplacements);
+                                subj="Position Reopen Notification"
+                                userPath = 'src/emailTemplates/adminToUserPositionReopen.html';
+                                userReplacements = {
+                                    position:positionName
+                                }
+                                adminPath='src/emailTemplates/adminToAdminPositionReopen.html';
+                                adminReplacements = {
+                                    position:positionName,
+                                    company:positionCompanyName
+                                }
                             }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
+                            else{
+                                subj="Position Reopen Notification"
+                                userPath = 'src/emailTemplates/userToUserPositionReopen.html';
+                                userReplacements = {
+                                    position:positionName
+                                }
+                                adminPath='src/emailTemplates/userToAdminPositionReopen.html';
+                                adminReplacements = {
+                                    position:positionName,
+                                    company:positionCompanyName
+                                }
+                            }
                         }
                         
                         // If job status is 8,then the position is closed.
                         else if(_body.jobStatus==8)
                         {
                             
-                            var results=await client.query(queryService.mailAddress(_body))  
-                            jobReceivedId=results.rows[0].job_received_id    
-                            positionName=results.rows[0].position_name
-                            var emailId=results.rows[0].email
-                            message=`A position,${positionName} has been closed.`
+                             message=`A position,${positionName} has been closed.`
                             createNotification({ positionId:_body.positionId, jobReceivedId:jobReceivedId, companyId:_body.companyId, message:message, candidateId: null, notificationType: 'position',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
-                            if(_body.userRoleId==1)
-                            {
-                                let subj="Close Position Notification"
-                                let path = 'src/emailTemplates/positionCloseText.html';
-                                var userReplacements ={
-                                    position:positionName
-                                };
-                                if(emailId!=null || '' || undefined)
-                                {
-                                    emailClient.emailManager(emailId,subj,path,userReplacements);
-                                }
-                                else
-                                {
-                                    console.log("Email Recipient is empty")
-                                } 
-                            }
-                            else
-                            {
-                                let 
+                           
                                 subj="Close Position Notification"
-                                let path = 'src/emailTemplates/positionCloseText.html';
-                                var userReplacements = {
+                                userPath = 'src/emailTemplates/adminToUserClosePosition.html';
+                                userReplacements = {
                                     position:positionName
-                                };
-                                var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
-                                if(Array.isArray(ellowAdmins.rows))
-                                {
-                                    ellowAdmins.rows.forEach(element => {
-                                        if(element.email!=null || '' || undefined)
-                                        {
-                                            emailClient.emailManager(element.email,subj,path,userReplacements);
-                                        }
-                                        else
-                                        {
-                                            console.log("Email Recipient is empty")
-                                        } 
-                                        
-                                    })
-                                    
                                 }
-                            }
-                        }   
-                        await client.query('COMMIT');
+                                adminPath='src/emailTemplates/adminToAdminClosePosition.html';
+                                adminReplacements = {
+                                    position:positionName,
+                                    company:positionCompanyName
+                                }
+                             
+                            
+                        }  
+                        else{
+                            console.log("Job Status out of bound")
+                        }
+                        emailClient.emailManager(userMailAddress,subj,userPath,userReplacements);
+                        if(Array.isArray(ellowAdmins.rows))
+                            {
+                                ellowAdmins.rows.forEach(element => {
 
+                                        emailClient.emailManager(element.email,subj,adminPath,adminReplacements);
+            
+                                    
+                                })
+                                
+                            } 
+                        await client.query('COMMIT');
                         resolve({ code: 200, message: "Job status changed", data: {} });
                         
                     } catch (e) {
@@ -578,6 +579,7 @@ export const fetchPositionDetails = (_body) => {
                         var positionName=employeeData.rows[0].position_name
                         var emailAddress=employeeData.rows[0].email
                         var jobStatus=employeeData.rows[0].job_status
+                        var positionCompanyName=employeeData.rows[0].company_name
                         var hirerCompanyId=employeeData.rows[0].company_id
                         await client.query('COMMIT');
                         adminPath = 'src/emailTemplates/positionDeletionAdminText.html';
@@ -590,36 +592,26 @@ export const fetchPositionDetails = (_body) => {
                             path = 'src/emailTemplates/selfPositionDeletionText.html';
                             adminPath = 'src/emailTemplates/positionDeletionAdminSelfText.html';
                         }
-                        console.log(path,adminPath)
                         var userReplacements = {
                             position:positionName
+                        };
+                        var adminReplacements={
+                            position:positionName,
+                            company:positionCompanyName
                         };
                         if(jobStatus==5)
                         {
                             resolve({ code: 200, message: "Position deletion successfull", data: {} });
 
                         }
-                        else{
-                            if(emailAddress!=null || '' || undefined)
-                                        {
-                                            emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);
-                                        }
-                                        else
-                                        {
-                                            console.log("Email Recipient is empty")
-                                        } 
+                        else{         
+                            emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);            
                             var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
                             if(Array.isArray(ellowAdmins.rows))
                             {
                                 ellowAdmins.rows.forEach(element => {
-                                    if(element.email!=null || '' || undefined)
-                                    {
-                                        emailClient.emailManager(element.email,config.PositionText.subject,adminPath,userReplacements);
-                                    }
-                                    else
-                                    {
-                                        console.log("Email Recipient is empty")
-                                    }                                     
+                                    emailClient.emailManager(element.email,config.PositionText.subject,adminPath,adminReplacements);
+                                                                       
                                 })
                                 const message=`The position, ${positionName}  has been removed .`
                                 await createHirerNotifications({ positionId, jobReceivedId:null, companyId:hirerCompanyId, message, candidateId: null, notificationType: 'positionList',userRoleId:_body.userRoleId,employeeId:_body.employeeId })
