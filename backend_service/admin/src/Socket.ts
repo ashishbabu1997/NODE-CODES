@@ -4,10 +4,10 @@ import {notify} from './common/database/database';
 import * as queryService from './queryService/queryService';
 import config from './config/config';
 import AppConfig from './config/config';
+import * as express from 'express';
 
 
 const jwt = require('jsonwebtoken');
-
 
 export const  connect =(app) =>{
     let server = require('http').createServer();    
@@ -76,10 +76,10 @@ export const  connect =(app) =>{
                         console.error({ code: 400, message: "Database Error", data: {} });
                         return;
                     }
-                    socket.emit("recruiter", { code: 200, message: "Recruiter Notification listed", data: results.rows });
+                    socket.emit("recruiter",{ code: 200, message: "User Notification listed", data: results.rows });
                 })
             }
-            else
+            else if(userRoleId == 2)
             {
                 database().query(queryService.listHirerNotifications(companyId), (error, results) => {
                     if (error) {
