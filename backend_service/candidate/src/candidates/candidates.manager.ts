@@ -15,6 +15,7 @@ import * as https from 'http';
 const myCache = new nodeCache();
 import fetch from 'node-fetch'
 import * as jwt from 'jsonwebtoken';
+import { getHeapSpaceStatistics } from 'v8';
 
 
 // >>>>>>> FUNC. >>>>>>>
@@ -652,6 +653,7 @@ export const linkCandidateWithPosition = (_body) => {
                 var names = '';
                 var firstName;
                 var lastName
+                var index;
                 const currentTime = Math.floor(Date.now());
                 const getEllowAdmins = {
                     name: 'get-ellow-admin',
@@ -712,9 +714,10 @@ export const linkCandidateWithPosition = (_body) => {
                     // Adding client based hiring steps with respect to poition being linked
                     _body.candidateId = element.candidateId;
                     await client.query(queryService.addCandidateHiringSteps(_body));
-                    firstName = imageResults.rows[0].candidate_first_name
-                    lastName = imageResults.rows[0].candidate_last_name
-                    names = names + firstName + " " + lastName + "<br>"
+                    firstName = imageResults.rows[0].candidate_first_name.toUpperCase()
+                    lastName = imageResults.rows[0].candidate_last_name.toUpperCase()
+                    index=candidateList.indexOf(element)+1
+                    names = names+ `       ${index}`+"."+firstName+" "+lastName+"      "
                     var email = imageResults.rows[0].email_address
                     let replacements = {
                         name: firstName,
@@ -2358,7 +2361,7 @@ export const singleSignOn = (_body) => {
             try {
                 console.log("body code : ", _body.code);
 
-                const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=86w0o74tpcdwl2&client_secret=SnYaChuW5W3yho2s&code=' + _body.code, {
+                const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=867umqszmeupfh&client_secret=n7oVJe6kbinpdPqu&code=' + _body.code, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',
