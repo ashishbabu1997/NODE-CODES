@@ -195,12 +195,15 @@ const extractDetailResume = (data) => {
 
 const extractBagOfWords = (data) => {
     let bow =[];
-    data = data.replace(/[^a-zA-Z\n@. ]/g, '');
-    bow = data.split(/[\s\n]+/);
+    const replaceRegex =/[^a-zA-Z\n@. ]/g
+    const splitRegex = /[\s\n]+/
+    const filterRegex = /^[^a-zA-Z0-9]+$/;
+    data = data.replace(replaceRegex, '');
+    bow = data.split(splitRegex);
     let uniqueChars = [...Array.from(new Set(bow.sort()))];
-    uniqueChars = uniqueChars.filter((ele:String)=> ele.match(/^[^a-zA-Z0-9]+$/))
+    let filterUniqueChars = uniqueChars.filter((ele:string)=> !filterRegex.test(ele))
     
-    return uniqueChars;
+    return filterUniqueChars;
 }
 
 

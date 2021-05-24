@@ -2522,26 +2522,39 @@ export const getHtmlResume = (_body) => {
                 var results = await client.query(getQuery);
                 const data = results.rows
 
-                data.forEach(element => {
 
-                    let d = JSON.parse(element['resume_data']);
-                    let res = d["ResumeParserData"]["DetailResume"];    
-                    res = res.replace(/[^a-zA-Z\n@. ]/g, '');
-                    res = res.split(/[\s\n]+/);
-                    let uniqueChars = [...Array.from(new Set(res.sort()))];
+                const regex = /^[^a-zA-Z0-9]+$/;
 
-                    uniqueChars = uniqueChars.filter((ele:String)=> ele.match(/^[^a-zA-Z0-9]+$/))
 
-                    let updateQuery = {
-                        name: 'update-bagofwords-details',
-                        text: candidateQuery.updateHtmlResume,
-                        values: [uniqueChars,element.candidate_id]
+                data.forEach(async element => {
+                    try {
+                        
+                        let d = JSON.parse(element['resume_data']);
+                        let res = d["ResumeParserData"]["DetailResume"];    
+                        res = res.replace(/[^a-zA-Z\n@. ]/g, '');
+                        res = res.split(/[\s\n]+/);
+                        let uniqueChars = [...Array.from(new Set(res.sort()))];
+                        
+                        let filterUniqueChars = uniqueChars.filter((ele:string)=> !regex.test(ele))
+        
+                        let updateQuery = {
+                            name: 'update-bagofwords-details',
+                            text: candidateQuery.updateHtmlResume,
+                            values: [filterUniqueChars,element.candidate_id]
+                        }
+        
+                        await client.query(updateQuery);
+                        await client.query('COMMIT');
+
+                    } catch (error) {
+                        console.log("unable to parse : ",error.message);
+                        
                     }
-
-                    promises.push(client.query(updateQuery));
+                   
                 });
+                console.log("Done ");
 
-                await Promise.all(promises);
+                // await Promise.all(promises);
                 resolve({ code: 200, message: "resume data fetched", data: 'done' })
 
             } catch (e) {
@@ -2597,5 +2610,3 @@ export const listProviderResources = (_body) => {
         })
     })
 }
-
-
