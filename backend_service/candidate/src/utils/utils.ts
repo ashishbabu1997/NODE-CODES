@@ -183,6 +183,9 @@ export const resourceTab = (body) =>{
         case '4':
         vettedQuery='  and chsv."blacklisted"=true'
         break; 
+        case '5':
+        vettedQuery='  and chsv."companyId"= (select company_id from company where company_type=2) and  chsv."candidateStatus"=4'
+        break; 
         
         default:
         break;
