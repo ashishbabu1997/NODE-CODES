@@ -920,3 +920,80 @@ export const listProviderResources = (_body) => {
         })
     })
 }
+
+
+
+
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>> Update resume share link
+export const addResumeShareLink = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                if (!isNaN(_body.candidateId)) {
+                    _body.uniqueId = nanoid();
+                    let sharedEmails = [], domain = '', flag = 0, filteredEmails = [];
+
+                    let domainResult = await client.query(queryService.getDomainFromEmployeeId(_body));
+                    domain = domainResult.rows[0].domain;
+                    if (_body.userRoleId == 1) {
+                        filteredEmails = _body.sharedEmails
+                    }
+                    else {
+                        filteredEmails = _body.sharedEmails.filter((element) => element.endsWith('@' + domain));
+                        _body.sharedEmails.length != filteredEmails.length ? flag = 1 : '';
+                    }
+                    _body.sharedEmails = filteredEmails;
+                    let result = await client.query(queryService.addResumeShare(_body));
+                    let results = await client.query(queryService.getNames(_body));
+                    if (![null, undefined].includes(result.rows) && result.rows.length > 0) {
+                        _body.uniqueId = result.rows[0].unique_key;
+                        sharedEmails = _body.sharedEmails;
+                        var link = _body.host + '/shareResume/' + _body.uniqueId
+                        if (Array.isArray(sharedEmails)) {
+                            sharedEmails.forEach(element => {
+                                var firstName = results.rows[0].firstname
+                                var lastName = results.rows[0].lastname
+                                let replacements = {
+                                    fName: firstName,
+                                    lName: lastName,
+                                    link: link
+                                };
+                                let path = 'src/emailTemplates/resumeShareText.html';
+                                if (element != null || '' || undefined) {
+                                    emailClient.emailManagerForNoReply(element, config.text.shareEmailSubject, path, replacements);
+                                }
+                                else {
+                                    console.log("Email Recipient is empty")
+                                }
+
+                            });
+                        }
+                    }
+
+                    if (flag == 0)
+                        resolve({ code: 200, message: "Candidate resume share link updated", data: sharedEmails });
+                    else
+                        resolve({ code: 201, message: "The entered email does not belong to your company domain", data: sharedEmails });
+
+                }
+                else {
+                    reject({ code: 400, message: "Invalid candidateId", data: {} });
+                }
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
