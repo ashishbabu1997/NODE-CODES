@@ -1472,6 +1472,8 @@ export const getResume = (_body) => {
                     firstName: allProfileDetails.rows[0].firstName,
                     lastName: allProfileDetails.rows[0].lastName,
                     candidatePositionName: allProfileDetails.rows[0].candidatePositionName,
+                    jobCategoryId:allProfileDetails.rows[0].jobCategoryId,
+                    jobCategoryName:allProfileDetails.rows[0].jobCategoryName,
                     description: allProfileDetails.rows[0].description,
                     candidateStatus: allProfileDetails.rows[0].candidateStatus,
                     sellerCompanyId: allProfileDetails.rows[0].sellerCompanyId,
