@@ -265,9 +265,6 @@
 */
 
 
-
-
-
 /**
 * @swagger
 * /freelancer/getDraftFreelancers:
