@@ -234,7 +234,7 @@ export const clearance = (_body) => {
                         {
                             let recruitersSubject='Company Re-Approval Notification'
                             let recruitersPath = 'src/emailTemplates/userReApprovalMailText.html';
-                            let recruitersReplacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
+                            let recruitersReplacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyResults.rows[0].company_name};
                             ellowAdmins.rows.forEach(element => {
                                 if(element.email!=null || '' || undefined)
                                 {
