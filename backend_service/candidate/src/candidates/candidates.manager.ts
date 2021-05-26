@@ -109,16 +109,13 @@ export const listFreeCandidatesDetails = (_body) => {
         let totalQuery = candidateQuery.listFreeCandidatesTotalCount;
         var roleBasedQuery = '', queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
             body = _body.query, reqBody = _body.body;
+            body.employeeId=reqBody.employeeId
 
         // Search for filters in the body        
         let filterResult = utils.resourceFilter(filter, filterQuery, queryValues);
         filterQuery = filterResult.filterQuery;
         queryValues = filterResult.queryValues;
 
-        // Apply query based on userRoleId      
-        let roleBasedQueryResult = utils.listFreResourceRoleBased(reqBody, queryValues);
-        roleBasedQuery = roleBasedQueryResult.roleBasedQuery;
-        queryValues = roleBasedQueryResult.queryValues;
 
         // Search for company name / candidate name
         let searchResult = utils.resourceSearch(body, queryValues);
@@ -128,16 +125,16 @@ export const listFreeCandidatesDetails = (_body) => {
         (async () => {
             const client = await database()
             try {
-                queryText = selectQuery + roleBasedQuery + utils.resourceTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
+                queryText = selectQuery  + utils.resourceTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
                 queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId }, queryValues)
                 let candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
 
-                var queryCountText = totalQuery + roleBasedQuery + utils.resourceTab(body) + filterQuery + searchQuery;
+                var queryCountText = totalQuery  + utils.resourceTab(body) + filterQuery + searchQuery;
                 let candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
 
                 let candidates = candidateList.rows;
                 let totalCount = candidateTotal.rows[0].totalCount;
-
+                console.log(candidates)
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates, totalCount } });
             } catch (e) {
                 console.log(e)
@@ -158,7 +155,6 @@ export const listAddFromListCandidates = (_body) => {
         var totaltQuery = candidateQuery.addFromListTotalCount;
         var roleBasedQuery = '', queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
             body = _body.query, reqBody = _body.body;
-
         // Search for filters in the body        
         let filterResult = utils.resourceFilter(filter, filterQuery, queryValues);
         filterQuery = filterResult.filterQuery;
