@@ -520,9 +520,7 @@ export const resetFreelancerToken = (_body) => {
                     else
                     {
                         console.log("Email Recipient is empty")
-                    }    
-                    createNotification({companyId:companyId,message:message, notificationType: 'employee',userRoleId:_body.userRoleId,employeeId:_body.employeeId,firstName:firstName,lastName:lastName})
-                    
+                    }                        
                     resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {email:emailAddress} });
                 }
                 else
