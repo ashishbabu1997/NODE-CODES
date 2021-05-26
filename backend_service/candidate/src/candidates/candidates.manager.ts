@@ -109,16 +109,13 @@ export const listFreeCandidatesDetails = (_body) => {
         let totalQuery = candidateQuery.listFreeCandidatesTotalCount;
         var roleBasedQuery = '', queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
             body = _body.query, reqBody = _body.body;
+            body.employeeId=reqBody.employeeId
 
         // Search for filters in the body        
         let filterResult = utils.resourceFilter(filter, filterQuery, queryValues);
         filterQuery = filterResult.filterQuery;
         queryValues = filterResult.queryValues;
 
-        // Apply query based on userRoleId      
-        let roleBasedQueryResult = utils.listFreResourceRoleBased(reqBody, queryValues);
-        roleBasedQuery = roleBasedQueryResult.roleBasedQuery;
-        queryValues = roleBasedQueryResult.queryValues;
 
         // Search for company name / candidate name
         let searchResult = utils.resourceSearch(body, queryValues);
@@ -128,16 +125,16 @@ export const listFreeCandidatesDetails = (_body) => {
         (async () => {
             const client = await database()
             try {
-                queryText = selectQuery + roleBasedQuery + utils.resourceTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
+                queryText = selectQuery  + utils.resourceTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
                 queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId }, queryValues)
                 let candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
 
-                var queryCountText = totalQuery + roleBasedQuery + utils.resourceTab(body) + filterQuery + searchQuery;
+                var queryCountText = totalQuery  + utils.resourceTab(body) + filterQuery + searchQuery;
                 let candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
 
                 let candidates = candidateList.rows;
                 let totalCount = candidateTotal.rows[0].totalCount;
-
+                console.log(candidates)
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates, totalCount } });
             } catch (e) {
                 console.log(e)
@@ -158,7 +155,6 @@ export const listAddFromListCandidates = (_body) => {
         var totaltQuery = candidateQuery.addFromListTotalCount;
         var roleBasedQuery = '', queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
             body = _body.query, reqBody = _body.body;
-
         // Search for filters in the body        
         let filterResult = utils.resourceFilter(filter, filterQuery, queryValues);
         filterQuery = filterResult.filterQuery;
@@ -840,6 +836,7 @@ export const modifyResumeData = (_body) => {
         (async () => {
             const client = await database()
             try {
+                console.log("...........................UPLOADER...........................")
                 await client.query('BEGIN');
                 let extractedData = rchilliExtractor.rchilliExtractor(_body), candidateId = null;
                 extractedData["employeeId"] = _body.employeeId;
@@ -1472,6 +1469,8 @@ export const getResume = (_body) => {
                     firstName: allProfileDetails.rows[0].firstName,
                     lastName: allProfileDetails.rows[0].lastName,
                     candidatePositionName: allProfileDetails.rows[0].candidatePositionName,
+                    jobCategoryId:allProfileDetails.rows[0].jobCategoryId,
+                    jobCategoryName:allProfileDetails.rows[0].jobCategoryName,
                     description: allProfileDetails.rows[0].description,
                     candidateStatus: allProfileDetails.rows[0].candidateStatus,
                     sellerCompanyId: allProfileDetails.rows[0].sellerCompanyId,
@@ -1592,7 +1591,7 @@ export const addResumeShareLink = (_body) => {
                     }
 
                     if (flag == 0)
-                        resolve({ code: 200, message: "Candidate resume share link updated", data: sharedEmails });
+                        resolve({ code: 200, message: "Resume link shared successfully", data: sharedEmails });
                     else
                         resolve({ code: 201, message: "The entered email does not belong to your company domain", data: sharedEmails });
 
@@ -1897,7 +1896,7 @@ export const createPdfFromHtml = (_body) => {
                 });
                 await client.query('COMMIT')
 
-                resolve({ code: 200, message: "Resume in PDF format has been shared", data: {} });
+                resolve({ code: 200, message: "Resume in PDF format has been shared successfully", data: {} });
 
             } catch (e) {
                 console.log(e)
@@ -2300,10 +2299,8 @@ export const resumeParser = (_body) => {
                     });
 
                     res.on('end', async () => {
-
                         // process.stdout.write(data);
                         responseData = JSON.parse(data);
-
                         if (responseData["error"] !== undefined)
                             reject({ code: 400, message: "Failed Please try again, parser error ", data: responseData["error"] });
 
@@ -2312,6 +2309,7 @@ export const resumeParser = (_body) => {
                             responseData["resume"] = _body.fileName;
                             responseData["candidateId"] = _body.candidateId
                             responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
+                            
                             let resp = await modifyResumeData(responseData).catch((e) => {
                                 reject({ code: 400, message: "Failed Please try again, parser error ", data: e.message });
                             });

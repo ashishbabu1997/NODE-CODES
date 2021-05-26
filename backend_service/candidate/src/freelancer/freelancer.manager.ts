@@ -182,6 +182,9 @@ export const getFreelancerStatus = (_body) => {
     })
 }
 
+
+
+
 export const getPositionDetails = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
