@@ -836,6 +836,7 @@ export const modifyResumeData = (_body) => {
         (async () => {
             const client = await database()
             try {
+                console.log("...........................UPLOADER...........................")
                 await client.query('BEGIN');
                 let extractedData = rchilliExtractor.rchilliExtractor(_body), candidateId = null;
                 extractedData["employeeId"] = _body.employeeId;
@@ -1590,7 +1591,7 @@ export const addResumeShareLink = (_body) => {
                     }
 
                     if (flag == 0)
-                        resolve({ code: 200, message: "Candidate resume share link updated", data: sharedEmails });
+                        resolve({ code: 200, message: "Resume link shared successfully", data: sharedEmails });
                     else
                         resolve({ code: 201, message: "The entered email does not belong to your company domain", data: sharedEmails });
 
@@ -1895,7 +1896,7 @@ export const createPdfFromHtml = (_body) => {
                 });
                 await client.query('COMMIT')
 
-                resolve({ code: 200, message: "Resume in PDF format has been shared", data: {} });
+                resolve({ code: 200, message: "Resume in PDF format has been shared successfully", data: {} });
 
             } catch (e) {
                 console.log(e)
@@ -2298,10 +2299,8 @@ export const resumeParser = (_body) => {
                     });
 
                     res.on('end', async () => {
-
                         // process.stdout.write(data);
                         responseData = JSON.parse(data);
-
                         if (responseData["error"] !== undefined)
                             reject({ code: 400, message: "Failed Please try again, parser error ", data: responseData["error"] });
 
@@ -2310,6 +2309,7 @@ export const resumeParser = (_body) => {
                             responseData["resume"] = _body.fileName;
                             responseData["candidateId"] = _body.candidateId
                             responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
+                            
                             let resp = await modifyResumeData(responseData).catch((e) => {
                                 reject({ code: 400, message: "Failed Please try again, parser error ", data: e.message });
                             });
