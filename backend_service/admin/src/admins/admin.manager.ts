@@ -298,6 +298,7 @@ export const clearance = (_body) => {
                                     {
                                                 var rejectResultSet= await client.query(userRejectQuery);
                                                 var userCompanyId=rejectResultSet.rows[0].company_id
+                                                console.log("CompanyID",rejectResultSet.rows[0].company_id)
                                                 const subUserRejectQuery = {
                                                     name: 'admin-subuser-rejection',
                                                     text: adminQuery.subUserClearanceQuery,
@@ -313,30 +314,15 @@ export const clearance = (_body) => {
                                                 var reRejectionReplacements = {
                                                     description: desc
                                                 };
-                                                if(employeeMail!=null || '' || undefined)
-                                                {
-                                                    emailClient.emailManager(employeeMail,reRejectionSubject,reRejectionpath,reRejectionReplacements);
-                                                }
-                                                else
-                                                {
-                                                    console.log("Email Recipient is empty")
-                                                }
-                                                await client.query('COMMIT'); 
+                                                emailClient.emailManager(employeeMail,reRejectionSubject,reRejectionpath,reRejectionReplacements);
+                         
                                                 if(Array.isArray(ellowAdmins.rows))
                                                 {
                                                     let subject='Company Rejection Notification'
                                                     let path = 'src/emailTemplates/userReRejectionMailText.html';
-                                                    let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyName.rows[0].company_name};
+                                                    let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyResults.rows[0].company_name};
                                                     ellowAdmins.rows.forEach(element => {
-                                                        if(element.email!=null || '' || undefined)
-                                                        {
-                                                            emailClient.emailManager(element.email,subject,path,replacements);         
-
-                                                        }
-                                                        else
-                                                        {
-                                                            console.log("Email Recipient is empty")
-                                                        }
+                                                    emailClient.emailManager(element.email,subject,path,replacements);         
                                                     })
                                                     resolve({ code: 200, message: "User Rejection Successfull", data: {} });
                                                 }
@@ -382,6 +368,8 @@ export const clearance = (_body) => {
                                                     resolve({ code: 200, message: "User Rejection Successfull", data: {} });
                                                 }
                                     }
+                                    await client.query('COMMIT'); 
+
                     
                 }
             } catch (e) {
