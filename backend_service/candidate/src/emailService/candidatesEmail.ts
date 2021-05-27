@@ -1,22 +1,8 @@
-import candidateQuery from '../candidates/query/candidates.query';
 import * as queryService from '../queryService/queryService';
-import database from '../common/database/database';
 import config from '../config/config';
 import { createNotification, createHirerNotifications } from '../common/notifications/notifications';
 import * as emailClient from '../emailManager/emailManager';
-import { nanoid } from 'nanoid';
-import * as passwordGenerator from 'generate-password'
-import * as crypto from "crypto";
-import * as htmlToPdf from "html-pdf-node";
-import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
-import * as rchilliExtractor from '../utils/RchilliExtractor';
-import * as https from 'http';
-const myCache = new nodeCache();
-import fetch from 'node-fetch'
-import * as jwt from 'jsonwebtoken';
-
-
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>>Email Function for admin to add reviews,assesment comments about the candidate
@@ -222,7 +208,7 @@ export const shareResumeSignupEmail = (_body, client) => {
 }
 
 // create pdf
-export const createPdfFromHtmlEmail = (_body,pdfBuffer) => {
+export const createPdfFromHtmlEmail = (_body, pdfBuffer) => {
     try {
         if (Array.isArray(_body.emailList)) {
             _body.emailList.forEach(element => {
@@ -235,7 +221,7 @@ export const createPdfFromHtmlEmail = (_body,pdfBuffer) => {
         }
 
     } catch (e) {
-        console.log("error : ",e.message);
+        console.log("error : ", e.message);
         throw new Error('Failed to send mail');
     }
 }
@@ -245,99 +231,102 @@ export const createPdfFromHtmlEmail = (_body,pdfBuffer) => {
 // Change assignee of a particular candidate
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> set assignee id to a candidate table 
-export const changeAssignee = (_body) => {
-    return new Promise((resolve, reject) => {
+export const changeAssigneeEmail = (_body, client) => {
+    (async () => {
+        try {
+            _body.auditType = 1
+            let names = await client.query(queryService.getAssigneeName(_body));
+            let assigneeName = names.rows[0].firstname
+            let assigneeMail = names.rows[0].email
+            _body.auditLogComment = `Assignee for the candidate ${_body.candidateName} has been changed to ${assigneeName}`
+            let subject = "ellow Screening Assignee Notification"
+
+            let replacements = { aName: assigneeName, cName: _body.candidateName };
+            let path = 'src/emailTemplates/changeAssigneeText.html';
+
+            if (utils.notNull(assigneeMail))
+                emailClient.emailManager(assigneeMail, subject, path, replacements);
+
+            await client.query(queryService.insertAuditLog(_body));
+        } catch (e) {
+            console.log("errors : ", e.message)
+            throw new Error('Failed to send mail');
+        }
+    })
+}
+
+// Change stage of ellow recuitment
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>> set corresponding stage values and flags in candidate related db
+export const changeEllowRecruitmentStageEmail = (_body, client) => {
+    (async () => {
+        try {
+            _body.auditType = 1
+            let names = await client.query(queryService.getAssigneeName(_body));
+            let assigneeName = names.rows[0].firstname
+            _body.auditLogComment = `Candidate ${_body.candidateName} have been moved to ${_body.stageName} by ${assigneeName}`
+            await client.query(queryService.insertAuditLog(_body));
+            _body.assigneeComment = `${assigneeName} scheduled ${_body.stageName}`
+            await client.query(queryService.updateAssigneeComment(_body));
+
+        } catch (e) {
+            console.log("errors : ", e.message)
+            throw new Error('Failed to send mail');
+        }
+    })
+}
+
+
+// Reject at a stage of ellow recruitment
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>> set corresponding stage values and flags in candidate_assesment and candidate db
+export const rejectFromCandidateEllowRecruitmentEmail = (_body,client) => {
         (async () => {
-            const client = await database()
             try {
-                let result = await client.query(queryService.changeCandidateAssignee(_body));
                 _body.auditType = 1
                 let names = await client.query(queryService.getAssigneeName(_body));
                 let assigneeName = names.rows[0].firstname
-                let assigneeMail = names.rows[0].email
-                _body.auditLogComment = `Assignee for the candidate ${_body.candidateName} has been changed to ${assigneeName}`
-                let subject = "ellow Screening Assignee Notification"
-                let replacements = {
-                    aName: assigneeName,
-                    cName: _body.candidateName
-                };
-                let path = 'src/emailTemplates/changeAssigneeText.html';
-                if (assigneeMail != null || '' || undefined) {
-                    emailClient.emailManager(assigneeMail, subject, path, replacements);
-                }
-                else {
-                    console.log("Email Recipient is empty")
-                }
+                _body.auditLogComment = `Candidate ${_body.candidateName} has been rejected at ${_body.stageName} by ${assigneeName}`
                 await client.query(queryService.insertAuditLog(_body));
-                resolve({ code: 200, message: "Assignee changed successfully", data: result.rows });
             } catch (e) {
-                console.log(e)
-                await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                console.log("errors : ", e.message)
+                throw new Error('Failed to send mail');
             }
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
-    })
 }
-
 
 
 // >>>>>>> FUNC. >>>>>>>
-// blacklist or revert blacklist candidate    
-export const changeBlacklisted = (_body) => {
-    return new Promise((resolve, reject) => {
-        (async () => {
-            const client = await database().connect()
-            try {
+// Email blacklist or revert blacklist candidate    
+export const changeBlacklistedEmail = (_body, client) => {
+    (async () => {
+        try {
+            var ellowAdmins = await client.query(queryService.getEllowAdmins())
 
-                await client.query(queryService.changeBlacklistedOfCandidate(_body));
-                const getEllowAdmins = {
-                    name: 'get-ellow-admin',
-                    text: candidateQuery.getellowAdmins,
-                    values: []
+            var candidateDetails = await client.query(queryService.getCandidateProfileName(_body))
+            _body.name = candidateDetails.rows[0].name
 
-                }
-                var ellowAdmins = await client.query(getEllowAdmins)
-                var candidateDetails = await client.query(queryService.getCandidateProfileName(_body))
-                _body.name = candidateDetails.rows[0].name
-                if (_body.blacklisted == true) {
-                    _body.subject = "Candidate Blacklist Notification";
-                    _body.path = 'src/emailTemplates/addToBlacklistMail.html';
-                    _body.adminReplacements = {
-                        fName: _body.name
-                    }
-                }
-                else {
-                    _body.subject = "Candidate Unblock Notification";
-                    _body.path = 'src/emailTemplates/removeFromBlacklistMail.html';
-                    _body.adminReplacements = {
-                        fName: _body.name
-                    }
-                }
-                if (Array.isArray(ellowAdmins.rows)) {
-                    ellowAdmins.rows.forEach(element => {
-                        if (element.email != null || '' || undefined) {
-                            emailClient.emailManager(element.email, _body.subject, _body.path, _body.adminReplacements);
-                        }
-                        else {
-                            console.log("Email Recipient is empty")
-                        }
-                    })
-                }
-
-                resolve({ code: 200, message: "Blacklisted toggled successfully", data: {} });
-
-            } catch (e) {
-                console.log(e)
-                await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            } finally {
-                client.release();
+            if (_body.blacklisted) {
+                _body.subject = "Candidate Blacklist Notification";
+                _body.path = 'src/emailTemplates/addToBlacklistMail.html';
             }
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
-        })
+            else {
+                _body.subject = "Candidate Unblock Notification";
+                _body.path = 'src/emailTemplates/removeFromBlacklistMail.html';
+            }
+
+            _body.adminReplacements = { fName: _body.name }
+
+            if (Array.isArray(ellowAdmins.rows)) {
+
+                ellowAdmins.rows.forEach(element => {
+                    if (utils.notNull(element.email))
+                        emailClient.emailManager(element.email, _body.subject, _body.path, _body.adminReplacements);
+                })
+            }
+        } catch (e) {
+            console.log("error : ", e.message);
+            throw new Error('Failed to send mail');
+        }
     })
 }
-

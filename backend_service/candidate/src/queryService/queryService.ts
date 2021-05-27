@@ -377,7 +377,7 @@ export const insertUserData = (_body) => {
     return {
         name: 'insert-values',
         text: candidateQuery.insertUserDetails,
-        values: [_body.firstName, _body.lastName, _body.email, _body.telephoneNumber, _body.cmpId, _body.password, currentTime(), true, 2],    
+        values: [_body.firstName, _body.lastName, _body.email, _body.telephoneNumber, _body.cmpId, _body.password, currentTime(), true, 2],
     }
 }
 
@@ -613,6 +613,13 @@ export const setVettedStatus = (_body) => {
     }
 }
 
+export const updateCandidateVetting = (_body) => {
+    return {
+        name: 'update-candidate-vetting',
+        text: candidateQuery.updateCandidateVetting,
+        values: [_body.candidateId, _body.candidateVetted, _body.employeeId, currentTime()],
+    }
+}
 
 export const getDetailsPosition = (_body) => {
     return {
