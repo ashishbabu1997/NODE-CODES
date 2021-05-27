@@ -365,6 +365,22 @@ export const getSharedEmails = (_body) => {
     }
 }
 
+export const getCompanyIdFromEmployeeId = (_body) => {
+    return {
+        name: 'get-company-id',
+        text: candidateQuery.getCompanyId,
+        values: [_body.updatedBy],
+    }
+}
+
+export const insertUserData = (_body) => {
+    return {
+        name: 'insert-values',
+        text: candidateQuery.insertUserDetails,
+        values: [_body.firstName, _body.lastName, _body.email, _body.telephoneNumber, _body.cmpId, _body.password, currentTime(), true, 2],    
+    }
+}
+
 export const addResumeShare = (_body) => {
     return {
         name: 'add-resume-share',

@@ -1478,25 +1478,18 @@ export const shareResumeSignup = (_body) => {
                 if (result.rows[0]['sharedEmails'].includes(_body.email)) {
                     let emailCheck = await client.query(queryService.getEmail(_body));
                     if (emailCheck.rowCount == 0) {
-                        const getId = {
-                            name: 'get-company-id',
-                            text: candidateQuery.getCompanyId,
-                            values: [result.rows[0].updatedBy],
-                        }
-                        var getcompanyId = await client.query(getId)
-                        var cmpId = getcompanyId.rows[0].company_id
-                        const password = passwordGenerator.generate({
-                            length: 10,
-                            numbers: true
-                        });
+                       
+                        _body.updatedBy = result.rows[0].updatedBy;
+                        var getcompanyId = await client.query(queryService.getCompanyIdFromEmployeeId(_body))
+                        _body.cmpId = getcompanyId.rows[0].company_id
+
+                        const password = passwordGenerator.generate({length: 10,numbers: true});
                         var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+
                         _body.password = hashedPassword;
-                        const insertData = {
-                            name: 'insert-values',
-                            text: candidateQuery.insertUserDetails,
-                            values: [_body.firstName, _body.lastName, _body.email, _body.telephoneNumber, cmpId, hashedPassword, currentTime, true, 2],
-                        }
-                        await client.query(insertData)
+
+                        await client.query(queryService.insertUserData(_body))
+
                         emailService.shareResumeSignupEmail(_body, client);
 
                         await client.query('COMMIT')

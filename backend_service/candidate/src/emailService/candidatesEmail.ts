@@ -194,30 +194,18 @@ export const shareResumeSignupEmail = (_body, client) => {
     (async () => {
         try {
 
-            let replacements = {
-                fName: _body.firstName,
-                password: _body.password
-            };
-
+            let replacements = { fName: _body.firstName,password: _body.password };
             let path = 'src/emailTemplates/newUserText.html';
-            
-            if (_body.email != null || '' || undefined) {
+            if (utils.notNull(_body.email))
                 emailClient.emailManager(_body.email, config.text.newUserTextSubject, path, replacements);
-            }
-            
-            else {
-                console.log("Email Recipient is empty")
-            }
 
-            let adminReplacements = {
-                firstName: _body.firstName,
-                lastName: _body.lastName,
-                email: _body.email,
+            let adminReplacements =
+            {
+                firstName: _body.firstName, lastName: _body.lastName, email: _body.email,
                 phone: _body.telephoneNumber
-
             };
-            let adminPath = 'src/emailTemplates/newUserAdminText.html';
 
+            let adminPath = 'src/emailTemplates/newUserAdminText.html';
             var ellowAdmins = await client.query(queryService.getEllowAdmins())
             if (Array.isArray(ellowAdmins.rows)) {
                 ellowAdmins.rows.forEach(element => {
@@ -232,10 +220,6 @@ export const shareResumeSignupEmail = (_body, client) => {
         }
     })
 }
-
-
-
-
 
 // create pdf
 export const createPdfFromHtml = (_body) => {
