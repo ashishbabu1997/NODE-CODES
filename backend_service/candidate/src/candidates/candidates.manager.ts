@@ -528,8 +528,8 @@ export const removeCandidateFromPosition = (_body) => {
 
                 // Query to to remove hiring steps of candidate
                 await client.query(queryService.removeFromCandidateClientHiringStep(_body));
-                
-                emailService.removeCandidateFromPositionEmail(_body,client);
+
+                emailService.removeCandidateFromPositionEmail(_body, client);
 
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });
@@ -563,7 +563,7 @@ export const linkCandidateWithPosition = (_body) => {
                 const candidateList = _body.candidates;
                 const positionId = _body.positionId;
                 let count = 0
-                
+
                 const currentTime = Math.floor(Date.now());
 
                 // Inserting candidates to candidate_positions table
@@ -586,25 +586,25 @@ export const linkCandidateWithPosition = (_body) => {
                     });
                     await Promise.all(promise);
                 }
-                
+
                 // Adding client based hiring steps with respect to poition being linked
                 for (const element of candidateList) {
                     _body.candidateId = element.candidateId;
                     await client.query(queryService.addCandidateHiringSteps(_body));
                 }
-                emailService.linkCandidateWithPositionEMail(_body,client);
+                emailService.linkCandidateWithPositionEMail(_body, client);
                 await client.query('COMMIT')
-                
+
                 resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
             } catch (e) {
-                console.log("error : ",e)
+                console.log("error : ", e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             } finally {
                 client.release();
             }
         })().catch(e => {
-            console.log("error : ",e)
+            console.log("error : ", e)
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })
@@ -1389,50 +1389,38 @@ export const addResumeShareLink = (_body) => {
             const client = await database().connect()
             try {
                 if (!isNaN(_body.candidateId)) {
+
                     _body.uniqueId = nanoid();
                     let sharedEmails = [], domain = '', flag = 0, filteredEmails = [];
 
                     let domainResult = await client.query(queryService.getDomainFromEmployeeId(_body));
+
                     domain = domainResult.rows[0].domain;
-                    if (_body.userRoleId == 1) {
+                    if (_body.userRoleId == 1)
                         filteredEmails = _body.sharedEmails
-                    }
+
                     else {
                         filteredEmails = _body.sharedEmails.filter((element) => element.endsWith('@' + domain));
                         _body.sharedEmails.length != filteredEmails.length ? flag = 1 : '';
                     }
+
                     _body.sharedEmails = filteredEmails;
                     let result = await client.query(queryService.addResumeShare(_body));
                     let results = await client.query(queryService.getNames(_body));
-                    if (![null, undefined].includes(result.rows) && result.rows.length > 0) {
-                        _body.uniqueId = result.rows[0].unique_key;
-                        sharedEmails = _body.sharedEmails;
-                        var link = _body.host + '/shareResume/' + _body.uniqueId
-                        if (Array.isArray(sharedEmails)) {
-                            sharedEmails.forEach(element => {
-                                var firstName = results.rows[0].firstname
-                                var lastName = results.rows[0].lastname
-                                let replacements = {
-                                    fName: firstName,
-                                    lName: lastName,
-                                    link: link
-                                };
-                                let path = 'src/emailTemplates/resumeShareText.html';
-                                if (element != null || '' || undefined) {
-                                    emailClient.emailManagerForNoReply(element, config.text.shareEmailSubject, path, replacements);
-                                }
-                                else {
-                                    console.log("Email Recipient is empty")
-                                }
 
-                            });
-                        }
+                    if (utils.notNull(result.rows) && result.rows.length > 0) {
+
+                        _body.uniqueId = result.rows[0].unique_key;
+                        _body.firstname = results.rows[0].firstname
+                        _body.lastname = results.rows[0].lastname
+
+                        emailService.addResumeShareLinkEmail(_body);
                     }
 
                     if (flag == 0)
                         resolve({ code: 200, message: "Candidate resume share link updated", data: sharedEmails });
                     else
-                        resolve({ code: 201, message: "The entered email does not belong to your company domain", data: sharedEmails });
+                        reject({ code: 201, message: "The entered email does not belong to your company domain", data: "Unauthorised domain access" });
 
                 }
                 else {
@@ -1486,6 +1474,7 @@ export const shareResumeSignup = (_body) => {
             try {
 
                 let result = await client.query(queryService.getSharedEmailsWithToken(_body));
+                
                 if (result.rows[0]['sharedEmails'].includes(_body.email)) {
                     let emailCheck = await client.query(queryService.getEmail(_body));
                     if (emailCheck.rowCount == 0) {
@@ -1501,49 +1490,15 @@ export const shareResumeSignup = (_body) => {
                             numbers: true
                         });
                         var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                        _body.password = hashedPassword;
                         const insertData = {
                             name: 'insert-values',
                             text: candidateQuery.insertUserDetails,
                             values: [_body.firstName, _body.lastName, _body.email, _body.telephoneNumber, cmpId, hashedPassword, currentTime, true, 2],
                         }
                         await client.query(insertData)
-                        let replacements = {
-                            fName: _body.firstName,
-                            password: password
-                        };
-                        let path = 'src/emailTemplates/newUserText.html';
-                        if (_body.email != null || '' || undefined) {
-                            emailClient.emailManager(_body.email, config.text.newUserTextSubject, path, replacements);
-                        }
-                        else {
-                            console.log("Email Recipient is empty")
-                        }
-                        let adminReplacements = {
-                            firstName: _body.firstName,
-                            lastName: _body.lastName,
-                            email: _body.email,
-                            phone: _body.telephoneNumber
+                        emailService.shareResumeSignupEmail(_body, client);
 
-                        };
-                        let adminPath = 'src/emailTemplates/newUserAdminText.html';
-                        const getEllowAdmins = {
-                            name: 'get-ellow-admin',
-                            text: candidateQuery.getellowAdmins,
-                            values: []
-
-
-                        }
-                        var ellowAdmins = await client.query(getEllowAdmins)
-                        if (Array.isArray(ellowAdmins.rows)) {
-                            ellowAdmins.rows.forEach(element => {
-                                if (element.email != null || '' || undefined) {
-                                    emailClient.emailManager(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
-                                }
-                                else {
-                                    console.log("Email Recipient is empty")
-                                }
-                            })
-                        }
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Employee Added Successfully", data: {} })
                     }
