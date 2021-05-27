@@ -194,7 +194,7 @@ export const shareResumeSignupEmail = (_body, client) => {
     (async () => {
         try {
 
-            let replacements = { fName: _body.firstName,password: _body.password };
+            let replacements = { fName: _body.firstName, password: _body.password };
             let path = 'src/emailTemplates/newUserText.html';
             if (utils.notNull(_body.email))
                 emailClient.emailManager(_body.email, config.text.newUserTextSubject, path, replacements);
@@ -222,55 +222,22 @@ export const shareResumeSignupEmail = (_body, client) => {
 }
 
 // create pdf
-export const createPdfFromHtml = (_body) => {
-    return new Promise((resolve, reject) => {
-        (async () => {
-            const client = await database()
-            try {
-                var candidateId = _body.candidateId
-                let uniqueId = nanoid();
-                myCache.set(uniqueId, candidateId);
-                let oldEmailResult = await client.query(queryService.saveSharedEmailsForpdf(_body));
-                _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
+export const createPdfFromHtmlEmail = (_body,pdfBuffer) => {
+    try {
+        if (Array.isArray(_body.emailList)) {
+            _body.emailList.forEach(element => {
+                let replacements = {};
 
-                let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-                // Example of options with args //
-                // let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-                // console.log(`Current directory: ${process.cwd()}`);
-                //  let file = {content: fs.readFileSync('./resume.html', 'utf8')};
-                let file = { url: _body.host + "/sharePdf/" + uniqueId };
+                let path = 'src/emailTemplates/sharePdfText.html';
+                if (utils.notNull(element))
+                    emailClient.emailManagerWithAttachments(element, config.text.sharePdfTextSubject, path, replacements, pdfBuffer);
+            })
+        }
 
-                await htmlToPdf.generatePdf(file, options).then(pdfBuffer => {
-
-
-                    if (Array.isArray(_body.emailList)) {
-                        _body.emailList.forEach(element => {
-                            let replacements = {
-
-                            };
-                            let path = 'src/emailTemplates/sharePdfText.html';
-                            if (element != null || '' || undefined) {
-                                emailClient.emailManagerWithAttachments(element, config.text.sharePdfTextSubject, path, replacements, pdfBuffer);
-                            }
-                            else {
-                                console.log("Email Recipient is empty")
-                            }
-                        })
-                    }
-                });
-                await client.query('COMMIT')
-
-                resolve({ code: 200, message: "Resume in PDF format has been shared", data: {} });
-
-            } catch (e) {
-                console.log(e)
-                await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            }
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
-        })
-    })
+    } catch (e) {
+        console.log("error : ",e.message);
+        throw new Error('Failed to send mail');
+    }
 }
 
 

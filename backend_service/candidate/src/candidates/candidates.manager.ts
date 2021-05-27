@@ -1485,9 +1485,7 @@ export const shareResumeSignup = (_body) => {
 
                         const password = passwordGenerator.generate({length: 10,numbers: true});
                         var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-
                         _body.password = hashedPassword;
-
                         await client.query(queryService.insertUserData(_body))
 
                         emailService.shareResumeSignupEmail(_body, client);
@@ -1514,7 +1512,7 @@ export const shareResumeSignup = (_body) => {
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
-    })
+    }) 
 }
 
 // >>>>>>> FUNC. >>>>>>>
@@ -1638,7 +1636,6 @@ export const initialSharedResumeData = (_body) => {
 }
 
 // create pdf
-
 export const createPdfFromHtml = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -1647,33 +1644,13 @@ export const createPdfFromHtml = (_body) => {
                 var candidateId = _body.candidateId
                 let uniqueId = nanoid();
                 myCache.set(uniqueId, candidateId);
-                let oldEmailResult = await client.query(queryService.saveSharedEmailsForpdf(_body));
                 _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
 
                 let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-                // Example of options with args //
-                // let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-                // console.log(`Current directory: ${process.cwd()}`);
-                //  let file = {content: fs.readFileSync('./resume.html', 'utf8')};
-                let file = { url: _body.host + "/sharePdf/" + uniqueId };
+                let file = { url: _body.host + "/sharePdf/" + uniqueId , name: _body.name+".pdf" };
 
                 await htmlToPdf.generatePdf(file, options).then(pdfBuffer => {
-
-
-                    if (Array.isArray(_body.emailList)) {
-                        _body.emailList.forEach(element => {
-                            let replacements = {
-
-                            };
-                            let path = 'src/emailTemplates/sharePdfText.html';
-                            if (element != null || '' || undefined) {
-                                emailClient.emailManagerWithAttachments(element, config.text.sharePdfTextSubject, path, replacements, pdfBuffer);
-                            }
-                            else {
-                                console.log("Email Recipient is empty")
-                            }
-                        })
-                    }
+                    emailService.createPdfFromHtmlEmail(_body,pdfBuffer);
                 });
                 await client.query('COMMIT')
 
