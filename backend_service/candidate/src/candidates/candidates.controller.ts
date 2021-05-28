@@ -24,18 +24,6 @@ export const listForAddFromListCandidates = (req, res) => {
     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
-export const approveRejectCandidates = (req, res) => {
-    const body = req.body;
-    candidateManager.candidateClearance(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
-}
-
-export const interviewRequest = (req, res) => {
-    const body = req.body;
-    candidateManager.interviewRequestFunction(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
-}
-
 export const candidateReview = (req, res) => {
     const body = req.body;
     candidateManager.addCandidateReview(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
@@ -332,11 +320,11 @@ export const getEmployeeDetailsFromLinkedin = (req, res) => {
     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
-export const getHtmlResume = (req, res) => {
-    const body = req.query;
-    candidateManager.getHtmlResume(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
-}
+// export const getHtmlResume = (req, res) => {
+//     const body = req.query;
+//     candidateManager.getHtmlResume(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+//     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+// }
 export const listResourcesOfProvider = (req, res) => {
     const body = req;
     candidateManager.listProviderResources(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
