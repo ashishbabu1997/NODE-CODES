@@ -17,6 +17,7 @@ export const emailManager = (mailId,subject,path,replacements) =>
         });
     })
 }
+
 export const emailManagerWithAttachments = (mailId,subject,path,replacements,attach) =>
 {
     readHTMLFile(path, function(err, html) {
@@ -32,6 +33,7 @@ export const emailManagerWithAttachments = (mailId,subject,path,replacements,att
         });
     })
 }
+
 export const emailManagerWithDocs = (mailId,subject,path,replacements,attach) =>
 {
     readHTMLFile(path, function(err, html) {

@@ -6,8 +6,7 @@ import * as utils from '../utils/utils';
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>>Email Function for admin to add reviews,assesment comments about the candidate
-export const addCandidateReviewEmail = (_body, client) => {
-    (async () => {
+export const addCandidateReviewEmail =async (_body, client) => {
         try {
             let candidateDetailResults = await client.query(queryService.getCandidateProfileName(_body));
 
@@ -20,20 +19,16 @@ export const addCandidateReviewEmail = (_body, client) => {
             if (utils.notNull(candidateDetailResults.rows[0].email))
                 emailClient.emailManager(candidateDetailResults.rows[0].email, subject, path, replacements);
         } catch (e) {
-            console.log(e.message)
-            await client.query('ROLLBACK')
+            console.log("error : ",e.message)
             throw new Error('Failed to send mail');
         }
-    })
 }
 
 
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>Email Function to remove a candidate from a position by admin and sending a notification email to the provider who added this candidate.
-export const removeCandidateFromPositionEmail = (_body, client) => {
+export const removeCandidateFromPositionEmail = async (_body, client) => {
     var jobReceivedId, candidateFirstName, candidateLastName, message, positionName, hirerName;
-
-    (async () => {
         try {
             var candidateId = _body.candidateId;
             var positionId = _body.positionId;
@@ -80,15 +75,13 @@ export const removeCandidateFromPositionEmail = (_body, client) => {
             console.log(e.message)
             throw new Error('Failed to send mail');
         }
-    })
 }
 
 
 
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>Emails for Link the candidates to a particular position .
-export const linkCandidateWithPositionEMail = (_body, client) => {
-    (async () => {
+export const linkCandidateWithPositionEMail = async (_body, client) => {
         try {
             const candidateList = _body.candidates;
             let positionName = '', hirerName = '', count = 0, names = '', firstName, lastName;
@@ -126,7 +119,7 @@ export const linkCandidateWithPositionEMail = (_body, client) => {
                 let path = 'src/emailTemplates/addCandidatesText.html';
 
                 ellowAdmins['rows'].forEach(element => {
-                    if (utils.notNull(element.mail))
+                    if (utils.notNull(element.email))
                         emailClient.emailManager(element.email, config.text.addCandidatesTextSubject, path, replacements);
                 })
             }
@@ -141,12 +134,11 @@ export const linkCandidateWithPositionEMail = (_body, client) => {
             throw new Error('Failed to send mail');
 
         }
-    })
 }
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> Update resume share link
-export const addResumeShareLinkEmail = (_body) => {
+export const addResumeShareLinkEmail =async (_body) => {
     try {
         let sharedEmails = [];
         sharedEmails = _body.sharedEmails;
@@ -174,8 +166,7 @@ export const addResumeShareLinkEmail = (_body) => {
 }
 
 
-export const shareResumeSignupEmail = (_body, client) => {
-    (async () => {
+export const shareResumeSignupEmail = async (_body, client) => {
         try {
 
             let replacements = { fName: _body.firstName, password: _body.password };
@@ -202,15 +193,15 @@ export const shareResumeSignupEmail = (_body, client) => {
             console.log("error : ", e.message);
             throw new Error('Failed to send mail');
         }
-    })
 }
 
 // create pdf
-export const createPdfFromHtmlEmail = (_body, pdfBuffer) => {
+export const createPdfFromHtmlEmail =async (_body, pdfBuffer) => {
     try {
+        let name =  _body.name + ".pdf";
         if (Array.isArray(_body.emailList)) {
             _body.emailList.forEach(element => {
-                let replacements = {};
+                let replacements = {name:name};
 
                 let path = 'src/emailTemplates/sharePdfText.html';
                 if (utils.notNull(element))
@@ -229,11 +220,11 @@ export const createPdfFromHtmlEmail = (_body, pdfBuffer) => {
 // Change assignee of a particular candidate
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> set assignee id to a candidate table 
-export const changeAssigneeEmail = (_body, client) => {
-    (async () => {
+export const changeAssigneeEmail  = async (_body, client) => {
         try {
+
             _body.auditType = 1
-            let names = await client.query(queryService.getAssigneeName(_body));
+            let names = await client.query(queryService.getAssigneeName(_body));            
             let assigneeName = names.rows[0].firstname
             let assigneeMail = names.rows[0].email
             _body.auditLogComment = `Assignee for the candidate ${_body.candidateName} has been changed to ${assigneeName}`
@@ -250,14 +241,12 @@ export const changeAssigneeEmail = (_body, client) => {
             console.log("errors : ", e.message)
             throw new Error('Failed to send mail');
         }
-    })
 }
 
 // Change stage of ellow recuitment
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> set corresponding stage values and flags in candidate related db
-export const changeEllowRecruitmentStageEmail = (_body, client) => {
-    (async () => {
+export const changeEllowRecruitmentStageEmail = async (_body, client) => {
         try {
             _body.auditType = 1
             let names = await client.query(queryService.getAssigneeName(_body));
@@ -271,15 +260,13 @@ export const changeEllowRecruitmentStageEmail = (_body, client) => {
             console.log("errors : ", e.message)
             throw new Error('Failed to send mail');
         }
-    })
 }
 
 
 // Reject at a stage of ellow recruitment
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> set corresponding stage values and flags in candidate_assesment and candidate db
-export const rejectFromCandidateEllowRecruitmentEmail = (_body,client) => {
-        (async () => {
+export const rejectFromCandidateEllowRecruitmentEmail = async (_body,client) => {
             try {
                 _body.auditType = 1
                 let names = await client.query(queryService.getAssigneeName(_body));
@@ -290,14 +277,12 @@ export const rejectFromCandidateEllowRecruitmentEmail = (_body,client) => {
                 console.log("errors : ", e.message)
                 throw new Error('Failed to send mail');
             }
-        })
 }
 
 
 // >>>>>>> FUNC. >>>>>>>
 // Email blacklist or revert blacklist candidate    
-export const changeBlacklistedEmail = (_body, client) => {
-    (async () => {
+export const changeBlacklistedEmail = async (_body, client) => {
         try {
             var ellowAdmins = await client.query(queryService.getEllowAdmins())
 
@@ -326,5 +311,4 @@ export const changeBlacklistedEmail = (_body, client) => {
             console.log("error : ", e.message);
             throw new Error('Failed to send mail');
         }
-    })
 }

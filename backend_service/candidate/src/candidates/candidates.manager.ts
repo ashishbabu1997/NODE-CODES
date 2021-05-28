@@ -131,7 +131,6 @@ export const listFreeCandidatesDetails = (_body) => {
 
                 let candidates = candidateList.rows;
                 let totalCount = candidateTotal.rows[0].totalCount;
-                console.log(candidates)
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates, totalCount } });
             } catch (e) {
                 console.log(e)
@@ -196,19 +195,18 @@ export const addCandidateReview = (_body) => {
         (async () => {
             const client = await database()
             try {
-                if (utils.notNull(_body.assignedTo)) {
+                if (!utils.notNull(_body.assignedTo)) {
                     reject({ code: 400, message: "Candidate must be assigned to an assignee", data: {} });
                 }
                 else {
                     await client.query('BEGIN');
                     // Update assesment ratings about the candidate.
                     let result = await client.query(queryService.updateEllowRecuiterReview(_body));
-
-                    if (_body.stageName == 'ellow Onboarding') {
+ 
+                    if (utils.stringEquals(_body.stageName,'ellow Onboarding')) {
                         _body.candidateId = result.rows[0].candidate_id;
                         await client.query(queryService.setVettedStatus(_body));
-                        emailService.addCandidateReviewEmail(_body, client);
-
+                        await emailService.addCandidateReviewEmail(_body, client);
                     }
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Candidate Assesment Updated successfully", data: {} })
@@ -223,9 +221,6 @@ export const addCandidateReview = (_body) => {
         })
     })
 }
-
-
-
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>>>Function to edit the vetting status of the candidate.
@@ -263,7 +258,7 @@ export const removeCandidateFromPosition = (_body) => {
                 await client.query(queryService.removeCandidateFromPositionQuery(_body));
                 // Query to to remove hiring steps of candidate
                 await client.query(queryService.removeFromCandidateClientHiringStep(_body));
-                emailService.removeCandidateFromPositionEmail(_body, client);
+                await emailService.removeCandidateFromPositionEmail(_body, client);
 
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate deleted successfully", data: { positionId: positionId } });
@@ -320,7 +315,7 @@ export const linkCandidateWithPosition = (_body) => {
                     _body.candidateId = element.candidateId;
                     await client.query(queryService.addCandidateHiringSteps(_body));
                 }
-                emailService.linkCandidateWithPositionEMail(_body, client);
+                await emailService.linkCandidateWithPositionEMail(_body, client);
                 await client.query('COMMIT')
 
                 resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
@@ -420,7 +415,6 @@ export const modifyResumeData = (_body) => {
                     extractedData["freelancerCompanyId"] = freelancer.rows[0].company_id
 
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
-                    console.log(candidateResult)
                     if ([null, undefined, ''].includes(candidateResult) || [null, undefined, ''].includes(candidateResult.rows[0])) {
                         console.log("error resume already uploaded");
                         return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
@@ -1114,7 +1108,7 @@ export const addResumeShareLink = (_body) => {
                         _body.firstname = results.rows[0].firstname
                         _body.lastname = results.rows[0].lastname
 
-                        emailService.addResumeShareLinkEmail(_body);
+                        await emailService.addResumeShareLinkEmail(_body);
                     }
                     if (flag == 0)
                         resolve({ code: 200, message: "Resume link shared successfully", data: sharedEmails });
@@ -1189,7 +1183,7 @@ export const shareResumeSignup = (_body) => {
                         _body.password = hashedPassword;
                         await client.query(queryService.insertUserData(_body))
 
-                        emailService.shareResumeSignupEmail(_body, client);
+                        await emailService.shareResumeSignupEmail(_body, client);
 
                         await client.query('COMMIT')
                         resolve({ code: 200, message: "Employee Added Successfully", data: {} })
@@ -1348,7 +1342,7 @@ export const createPdfFromHtml = (_body) => {
                 _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
 
                 let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-                let file = { url: _body.host + "/sharePdf/" + uniqueId, name: _body.name + ".pdf" };
+                let file = { url: _body.host + "/sharePdf/" + uniqueId };
 
                 await htmlToPdf.generatePdf(file, options).then(pdfBuffer => {
                     emailService.createPdfFromHtmlEmail(_body, pdfBuffer);
@@ -1465,7 +1459,7 @@ export const changeAssignee = (_body) => {
             const client = await database()
             try {
                 let result = await client.query(queryService.changeCandidateAssignee(_body));
-                emailService.changeAssigneeEmail(_body, client);
+                await emailService.changeAssigneeEmail(_body, client);
 
                 resolve({ code: 200, message: "Assignee changed successfully", data: result.rows });
             } catch (e) {
@@ -1493,7 +1487,7 @@ export const changeEllowRecruitmentStage = (_body) => {
                 else {
                     await client.query(queryService.changeEllowRecruitmentStage(_body));
                     await client.query(queryService.updateEllowStageStatus(_body));
-                    emailService.changeEllowRecruitmentStageEmail(_body, client);
+                    await emailService.changeEllowRecruitmentStageEmail(_body, client);
 
                     await client.query('COMMIT')
                     resolve({ code: 200, message: "Moved to stage successfully", data: {} });
@@ -1520,7 +1514,7 @@ export const rejectFromCandidateEllowRecruitment = (_body) => {
 
                 if (utils.notNull(_body.assignedTo)) {
                     await client.query(queryService.rejectFromCandidateEllowRecruitment(_body));
-                    emailService.rejectFromCandidateEllowRecruitmentEmail(_body, client)
+                    await emailService.rejectFromCandidateEllowRecruitmentEmail(_body, client)
                     resolve({ code: 200, message: "Rejected candiate successfully", data: {} });
                 }
                 else
@@ -1632,7 +1626,7 @@ export const changeBlacklisted = (_body) => {
             try {
 
                 await client.query(queryService.changeBlacklistedOfCandidate(_body));
-                emailService.changeBlacklistedEmail(_body,client);
+                await emailService.changeBlacklistedEmail(_body,client);
                 resolve({ code: 200, message: "Blacklisted toggled successfully", data: {} });
 
             } catch (e) {
@@ -1768,7 +1762,6 @@ export const singleSignOn = (_body) => {
                     },
                 });
                 const profileResult = await profile.json();
-                console.log("profileResult : ", profileResult);
                 _body.firstName = profileResult['firstName']['localized']['en_US']
                 _body.lastName = profileResult['lastName']['localized']['en_US']
                 console.log(_body.firstName, _body.lastName)
