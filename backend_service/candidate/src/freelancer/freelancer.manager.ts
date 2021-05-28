@@ -1,6 +1,6 @@
 import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
-import * as emailClient from '../emailService/emailService';
+import * as emailClient from '../emailManager/emailManager';
 import config from '../config/config'
 import { createNotification } from '../common/notifications/notifications';
 import freelancerQuery from './query/freelancer.query';

@@ -31,7 +31,7 @@ export const sendMailWithAttachments = (email, subject, html,attach, callback) =
         subject:subject,
         html:html,
         attachments:{
-            filename: 'resume.pdf',
+            filename: attach.name,
             content:attach
         }
     };

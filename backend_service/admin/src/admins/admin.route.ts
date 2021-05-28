@@ -10,7 +10,7 @@ router
     .get('/listUsers', jwtAuth, adminController.listUsers)
     .get('/userDetails', jwtAuth, adminController.userDetails)
     .post('/extractSkills',jwtAuth,  adminController.extractSkillsFromExcel)
-    .post('/userStatus', jwtAuth,adminController.adminPanel)
+    .post('/userStatus', jwtAuth,setData(),adminController.adminPanel)
     .post('/registeredUserList', jwtAuth, adminController.registeredUserList)
     .post('/addJobCategory', jwtAuth, adminController.addJobCategory)
     .post('/addSkills', jwtAuth, adminController.addSkills)
