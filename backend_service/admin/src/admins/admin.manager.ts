@@ -277,7 +277,7 @@ export const clearance = (_body) => {
                                 {
                                     let recruitersSubject='Company Approval Mail'
                                     let recruitersPath = 'src/emailTemplates/userApprovalMailText.html';
-                                    let recruitersReplacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyName.rows[0].company_name};
+                                    let recruitersReplacements = { fName:approveResult.rows[0].firstname,lName:approveResult.rows[0].lastname,email:approveResult.rows[0].email,cName:companyResults.rows[0].company_name};
                                     ellowAdmins.rows.forEach(element => {
                                         if(element.email!=null || '' || undefined)
                                         {
@@ -352,7 +352,7 @@ export const clearance = (_body) => {
                                                 {
                                                     let subject='Company Rejection Notification'
                                                     let path = 'src/emailTemplates/userRejectionMailText.html';
-                                                    let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyName.rows[0].company_name};
+                                                    let replacements = { fName:rejectResultSet.rows[0].firstname,lName:rejectResultSet.rows[0].lastname,email:rejectResultSet.rows[0].email,cName:companyResults.rows[0].company_name};
                                                     ellowAdmins.rows.forEach(element => {
                                                         if(element.email!=null || '' || undefined)
                                                         {
