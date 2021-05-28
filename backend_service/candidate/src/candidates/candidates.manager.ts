@@ -196,7 +196,7 @@ export const addCandidateReview = (_body) => {
         (async () => {
             const client = await database()
             try {
-                if ([undefined, null, ''].includes(_body.assignedTo)) {
+                if (utils.notNull(_body.assignedTo)) {
                     reject({ code: 400, message: "Candidate must be assigned to an assignee", data: {} });
                 }
                 else {

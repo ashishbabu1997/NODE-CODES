@@ -78,9 +78,7 @@ export const removeCandidateFromPositionEmail = (_body, client) => {
 
         } catch (e) {
             console.log(e.message)
-            await client.query('ROLLBACK')
             throw new Error('Failed to send mail');
-
         }
     })
 }
