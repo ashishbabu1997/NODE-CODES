@@ -175,14 +175,12 @@ export const fetchPositionDetails = (_body) => {
         (async () => {
             const client = await database()
             try {
-                console.log("PositionId",_body.positionId)
                 let results= await client.query(queryService.fetchPositionDetails(_body))
                 const queryResult = results.rows;
-                let skills = [];
                 let result = {};
-                let topRatedSkill=[],otherSkill=[];
                 queryResult.forEach(step => {
                     result = {
+                        positionId:_body.positionId,
                         maxBudget: step.max_budget,
                         minBudget: step.min_budget,
                         billingTypeId: step.billing_type,
@@ -207,34 +205,17 @@ export const fetchPositionDetails = (_body) => {
                         companyLogo : step.company_logo,
                         createdBy : step.createdBy,
                         fullName : step.fullName,
+                        coreSkills:step.coreSkills,
+                        otherSkills:step.otherSkills,
                         email : step.email,
                         positionStatus:step.job_status,
                         phoneNumber : step.phoneNumber,
                         companyLinkedinId: step.company_linkedin_id,
                         skills: []
                     }
-                    
-                    if (step.skill_id != null && skills.findIndex(({ skillId }) => skillId === step.skill_id) === -1)
-                    {
-                        step.top_rated_skill?
-                        topRatedSkill.push(
-                            {
-                                skillId: step.skill_id,
-                                skillName: step.skill_name
-                            }
-                            ):
-                            otherSkill.push(
-                                {
-                                    skillId: step.skill_id,
-                                    skillName: step.skill_name
-                                }
-                                );
-                            }
-                            
-                            result['positionId'] = _body.positionId;
-                        })
-                        result['skills'] = {topRatedSkill,otherSkill};
-                        resolve({ code: 200, message: "Fetched position details successfully", data: result });
+          
+                })
+                    resolve({ code: 200, message: "Fetched position details successfully", data: result });
                     } catch (e) {
                         await client.query('ROLLBACK')
                         console.log(e)
