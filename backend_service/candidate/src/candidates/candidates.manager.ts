@@ -1868,20 +1868,15 @@ export const createPdfFromHtml = (_body) => {
                 _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
 
                 let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-                // Example of options with args //
-                // let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-                // console.log(`Current directory: ${process.cwd()}`);
-                //  let file = {content: fs.readFileSync('./resume.html', 'utf8')};
-                let file = { url: _body.host + "/sharePdf/" + uniqueId };
+                let file = { url: (_body.host + "/sharePdf/" + uniqueId) };
 
+                
                 await htmlToPdf.generatePdf(file, options).then(pdfBuffer => {
 
 
                     if (Array.isArray(_body.emailList)) {
                         _body.emailList.forEach(element => {
-                            let replacements = {
-
-                            };
+                            let replacements = { name : (_body.name + ".pdf") };
                             let path = 'src/emailTemplates/sharePdfText.html';
                             if(element!=null || '' || undefined)
                             {

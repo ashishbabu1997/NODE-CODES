@@ -22,6 +22,7 @@ export const emailManagerWithAttachments = (mailId,subject,path,replacements,att
     readHTMLFile(path, function(err, html) {
         var template = handlebars.compile(html);
         var htmlToSend = template(replacements);
+        attach.name = replacements.name;
         sendMailWithAttachments(mailId, subject, htmlToSend,attach, function (err, data) {
             if (err) {
                 console.log('Error raised in mail : ',err)
