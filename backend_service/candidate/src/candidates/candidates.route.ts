@@ -48,7 +48,7 @@ router
 .put('/rejectCandidateEllowStage',jwtAuth, setData(),setProfileAuth([1]),candidateController.rejectFromCandidateEllowRecruitment)
 .get('/getAllAuditLogs',candidateController.getAuditLogs)
 .post('/listFreeCandidatesOfHirer', jwtAuth, setData(),setProfileAuth([2]), candidateController.listResourcesOfHirer)
-.post('/listFreeCandidatesOfHirer', jwtAuth, setData(), candidateController.listResourcesOfProvider)
+.post('/listFreeCandidatesOfProvider', jwtAuth, setData(), candidateController.listResourcesOfProvider)
 .post('/updateCandidateAvailability', jwtAuth, setData(), setProfileAuth([1,2,3,4]), candidateController.changeCandidateAvailability)
 .post('/resumeParser',jwtAuth, setData(), setProfileAuth([1,2,3,4]),candidateController.resumeParser)
 .post('/userSignup', candidateController.newUserSignup)
