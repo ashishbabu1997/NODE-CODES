@@ -14,6 +14,13 @@ export default {
         "addCandidatesUsersTextSubject":"Profile is Shortlisted",
         "sharePdfTextSubject":"ellow resume"
     },
+    "integerReferences":{
+        "profileSubmissionStatusValue":3,
+        "draftCandidateStatusValue":9
+    },
+    "textReferences":{
+            "listJobsFilterQuery":'HAVING $skillid = ANY(ARRAY_AGG(s.skill_id))'
+    },
     "db": {
         "user": "devdb_user",
         "host": "52.66.51.51",
