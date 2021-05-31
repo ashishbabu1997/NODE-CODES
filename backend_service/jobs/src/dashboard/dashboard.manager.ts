@@ -14,7 +14,7 @@ export const getCounts = (_body) => {
                 let data = {};
 
                 switch (_body.userRoleId) {
-                    case 1:
+                    case '1':
                         const adminPositionCounts = await client.query(queryService.adminPositionCounts(_body))
                         const clientHiringCountsAdmin = await client.query(queryService.clientHiringCountsAdmin(_body))
                         const candidateVetted_NonVettedCount = await client.query(queryService.candidateVetted_NonVettedCount(_body))
@@ -29,7 +29,7 @@ export const getCounts = (_body) => {
                             ellowScreening: ellowScreeningCount.rows
                         }
                         break;
-                    case 2:
+                    case '2':
                         const hirerPositionCounts = await client.query(queryService.hirerPositionCounts(_body))
                         const clientHiringCountsHirer = await client.query(queryService.clientHiringCountsHirer(_body))
                         const clientHiringSideCountsHirer = await client.query(queryService.clientHiringSideCountsHirer(_body))
@@ -40,7 +40,7 @@ export const getCounts = (_body) => {
                             clientScreeningSideCount: clientHiringSideCountsHirer.rows[0]
                         }
                         break;
-                    case 3:
+                    case '3':
                         const clientHiringCountsProvider = await client.query(queryService.clientHiringCountsProvider(_body))
                         const clientHiringSideCountsProvider = await client.query(queryService.clientHiringSideCountsProvider(_body))
                         const ellowScreeningProviderCount = await client.query(queryService.ellowScreeningCountProvider(_body))
@@ -77,23 +77,23 @@ export const getUpcomingInterviews = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                let interviewLists = {};
+                let interviewLists = null;
 
                 switch (_body.userRoleId) {
-                    case 1:
+                    case '1':
                         interviewLists = await client.query(queryService.upcomingInterviewsForEllowRecruiter(_body, utils.upcomingInterviewSort(_body)));
                         break;
-                    case 2:
+                    case '2':
                         interviewLists = await client.query(queryService.upcomingInterviewsForHirer(_body, utils.upcomingInterviewSort(_body)));
                         break;
-                    case 3:
+                    case '3':
                         interviewLists = await client.query(queryService.upcomingInterviewsForProvider(_body, utils.upcomingInterviewSort(_body)));
                         break;
                     default:
                         interviewLists['rows'] = null;
                         break;
                 }
-
+                
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Dashboard listed succesfully", data: interviewLists['rows'] });
             } catch (e) {
