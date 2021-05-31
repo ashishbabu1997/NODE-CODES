@@ -1904,8 +1904,8 @@ export const listProviderResources = (_body) => {
         (async () => {
             const client = await database()
             try {
-                queryText = selectQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
-                var queryCountText = totalQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery
+                queryText = selectQuery + utils.resourceProviderTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
+                var queryCountText = totalQuery + utils.resourceProviderTab(body) + filterQuery + searchQuery
                 queryValues = Object.assign({ providerCompanyId: _body.body.companyId }, queryValues)
 
                 const candidatesResult = await client.query(queryService.listCandidatesOfProvider(queryText, queryValues));

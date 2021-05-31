@@ -206,7 +206,21 @@ export const resourceHirerTab = (body) =>{
         default:
         break;
     }
-    
+    return vettedQuery;
+}
+    export const resourceProviderTab = (body) =>{
+        let vettedQuery = '';
+        switch (body.tabValue) {
+            case '1':
+            vettedQuery=' and chsv."candidateStatus"=3 and chsv."blacklisted"=false'
+
+            break;
+            case '2':
+            vettedQuery=' and chsv."candidateStatus"=4 and chsv."blacklisted"=false '
+            break;
+            default:
+            break;
+        }
     return vettedQuery;
 }
 
