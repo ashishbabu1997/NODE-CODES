@@ -56,6 +56,10 @@ router
 .post('/userSignup', candidateController.newUserSignup)
 .get('/singleSignOn', candidateController.sigOn)
 .post('/getEmployeeDetailsFromLinkedinToken', candidateController.getEmployeeDetailsFromLinkedin)
+.put('/updateProviderCandidateDetails',jwtAuth, setData(), candidateController.modifyProviderCandidateDetails)
+.get('/providerCandidateResume',jwtAuth, setData(),candidateController.providerCandidateDetails)
+
+
 
 // .get('/htmlResume',candidateController.getHtmlResume)
 

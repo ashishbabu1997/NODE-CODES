@@ -2088,3 +2088,103 @@
 *       500:
 *         description: Server down
 */
+
+
+
+
+/**
+* @swagger
+* /candidates/providerCandidateResume:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Fetch provider resume data
+*     summary: Fetch all the datas required for displaying resume
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*         type: integer
+*         required: [candidateId]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+
+
+/**
+* @swagger
+* /candidates/updateProviderCandidateDetails:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Modify general info
+*     summary: Edit general info of a candidate
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer
+*             firstName:
+*               type: string
+*             lastName:
+*               type: string
+*             phoneNumber:
+*               type: integer
+*             email:
+*               type: string
+*             availability:
+*               type: integer
+*             typeOfAvailability:
+*               type: integer
+*             readyToStart:
+*               type: boolean
+*             workExperience:
+*               type: number
+*             candidatePositionName:
+*               type: string
+*             cost:
+*               type: number
+*             billingTypeId:
+*               type: integer
+*             currencyTypeId:
+*               type: integer
+*           required:
+*             - candidateId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

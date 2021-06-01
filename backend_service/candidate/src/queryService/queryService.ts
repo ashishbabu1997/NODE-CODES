@@ -17,6 +17,14 @@ export const modifyCandidateProfileDetailsQuery = (_body) => {
         values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.sellerCompanyId,_body.jobCategoryId],
     }
 }
+
+export const updateProviderCandidateDetails = (_body) => {
+    return {
+        name: 'update-provider-candidateDetails',
+        text: candidateQuery.updateProviderCandidateProfileDetails,
+        values:[_body.candidateId,_body.firstName,_body.lastName,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.companyId,_body.jobCategoryId,4],
+    }
+}
 export const getFreelancerCompany = (_body) => {
     return {
         name: 'get-freelancer-companyid',
@@ -33,6 +41,14 @@ export const modifyCandidateAvailabilityQuery = (_body) => {
     }
 }
 
+export const updateProviderCandidateAvailability = (_body) => {
+    return {
+        name: 'update-provider-candidate-availability',
+        text: candidateQuery.updateProviderCandidateAvailability,
+        values: [_body.candidateId, true, _body.typeOfAvailability, _body.readyToStart, currentTime(), _body.employeeId],
+    }
+}
+
 
 export const addWorkExperiences = (_body) => {
     return {
@@ -41,7 +57,13 @@ export const addWorkExperiences = (_body) => {
         values: [_body.candidateId, _body.workExperience, _body.remoteWorkExperience, _body.cost, _body.billingTypeId, _body.currencyTypeId, currentTime(), _body.employeeId],
     }
 }
-
+export const addProviderCandidateWorkExperience = (_body) => {
+    return {
+        name: 'add-provider-candidate-work-experiences',
+        text: candidateQuery.updateProviderCandidateWorkExperience,
+        values: [_body.candidateId, _body.workExperience,_body.cost, _body.billingTypeId, _body.currencyTypeId, currentTime(), _body.employeeId],
+    }
+}
 export const insertLanguageProficiencyQuery = (_body) => {
     return {
         name: 'insert-candidate-language',
@@ -264,7 +286,13 @@ export const fetchProfile = (candidateId) => {
         values: [candidateId],
     }
 }
-
+export const fetchProviderCandidateProfile = (candidateId) => {
+    return {
+        name: 'fetch-provider-candidate-profile-details',
+        text: candidateQuery.getProviderCandidateDetails,
+        values: [candidateId],
+    }
+}
 export const fetchSkills = (candidateId) => {
     return {
         name: 'fetch-skill-details',
@@ -1070,7 +1098,7 @@ export const insertExtractedCandidateDetails = (data) => {
     return {
         name: 'insert-extracted-candidate-details',
         text: candidateQuery.insertExtractedCandidateDetails,
-        values: { firstname: data.firstName, lastname: data.lastName, summary: data.summary, phone: data.phone, email: data.email, workexperience: data.overallWorkExperience, citizenship: data.citizenship, residence: data.city, positionname: data.designation, resumefilename: data.resumeFileName, resume: data.resume, candidatestatus: 4, currenttime: currentTime(), employeeid: data.employeeId, resumedata: data.resumeData, companyid: data.freelancerCompanyId, detailresume: data.detailResume, htmlresume: data.htmlResume, bagofwords: data.bagOfWords }
+        values: { firstname: data.firstName, lastname: data.lastName, summary: data.summary, phone: data.phone, email: data.email, workexperience: data.overallWorkExperience, citizenship: data.citizenship, residence: data.city, positionname: data.designation, resumefilename: data.resumeFileName, resume: data.resume, candidatestatus: 4, currenttime: currentTime(), employeeid: data.employeeId, resumedata: data.resumeData, companyid: data.companyId, detailresume: data.detailResume, htmlresume: data.htmlResume, bagofwords: data.bagOfWords }
     }
 }
 

@@ -411,18 +411,24 @@ export const modifyResumeData = (_body) => {
                     candidateId = _body.candidateId;
                 }
                 else {
-                    let freelancer = await client.query(queryService.getFreelancerCompany(_body))
-                    extractedData["freelancerCompanyId"] = freelancer.rows[0].company_id
+                                if (_body.userRoleId==3)
+                                {
+                                    extractedData["companyId"] = _body.companyId
+                                }
+                                else
+                                {
+                                    let freelancer = await client.query(queryService.getFreelancerCompany(_body))
+                                    extractedData["companyId"] = freelancer.rows[0].company_id
+                                }
+                        
+                                let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
+                                if ([null, undefined, ''].includes(candidateResult) || [null, undefined, ''].includes(candidateResult.rows[0])) {
+                                    console.log("error resume already uploaded");
+                                    return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
+                                }
 
-                    let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
-                    if ([null, undefined, ''].includes(candidateResult) || [null, undefined, ''].includes(candidateResult.rows[0])) {
-                        console.log("error resume already uploaded");
-                        return reject({ code: 400, message: "This resume is already uploaded/extracted use another resume", data: {} });
+                                candidateId = candidateResult.rows[0].candidate_id;
                     }
-
-                    candidateId = candidateResult.rows[0].candidate_id;
-                }
-
                 await client.query('COMMIT');
                 try {
                     let promises = [];
@@ -1978,6 +1984,85 @@ export const listProviderResources = (_body) => {
 // }
 
 
+export const updateProviderCandidateInfo = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query(queryService.updateProviderCandidateDetails(_body));
+                await client.query(queryService.updateProviderCandidateAvailability(_body));
+                await client.query(queryService.addProviderCandidateWorkExperience(_body));
+                
+                resolve({ code: 200, message: "Candidate informations updated successfully", data: {} });
+            } catch (e) {
+                console.log("Error raised from try : ",e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            console.log("Error raised from async : ",e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
 
 
 
+
+
+export const getProviderCandidateResume = (_body) => {
+    return new Promise((resolve, reject) => {
+        const candidateId = _body.candidateId;
+        var projectArray = [];
+        var assesmentArray = [];
+
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                var allProfileDetails = await client.query(queryService.fetchProviderCandidateProfile(candidateId))
+
+               
+                let profileDetails = {
+                    firstName: allProfileDetails.rows[0].firstName,
+                    lastName: allProfileDetails.rows[0].lastName,
+                    candidatePositionName: allProfileDetails.rows[0].candidatePositionName,
+                    jobCategoryId: allProfileDetails.rows[0].jobCategoryId,
+                    jobCategoryName: allProfileDetails.rows[0].jobCategoryName,
+                    sellerCompanyId: allProfileDetails.rows[0].sellerCompanyId,
+                    phoneNumber: allProfileDetails.rows[0].phoneNumber,
+                    email: allProfileDetails.rows[0].email,                   
+                    blacklisted: allProfileDetails.rows[0].blacklisted,
+                }
+                let availability = {
+                    availability: allProfileDetails.rows[0].availability,
+                    typeOfAvailability: allProfileDetails.rows[0].typeOfAvailability,
+                    readyToStart: allProfileDetails.rows[0].readyToStart
+                }
+                await client.query('COMMIT')
+                resolve({
+                    code: 200, message: "Resume listed successfully",
+                    data:
+                    {
+                        candidateId: Number(_body.candidateId),
+                        profile: profileDetails,
+                        resume: allProfileDetails.rows[0].resume,
+                        availability,
+                    }
+                });
+
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
