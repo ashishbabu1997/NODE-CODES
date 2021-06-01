@@ -394,6 +394,10 @@ export const modifyResumeFile = (_body) => {
     })
 }
 
+
+
+
+
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>> Update resume file name
 export const modifyResumeData = (_body) => {
@@ -411,6 +415,7 @@ export const modifyResumeData = (_body) => {
                     candidateId = _body.candidateId;
                 }
                 else {
+
                                 if (_body.userRoleId==3)
                                 {
                                     extractedData["companyId"] = _body.companyId
