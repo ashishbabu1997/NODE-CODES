@@ -78,6 +78,10 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
             {
                 filterQuery=filterQuery+' and chsv."availability"=false '
             }
+            else if(availability == -2)
+            {
+                filterQuery=filterQuery+' and chsv."availability"=true'
+            }
             else
             {
                 filterQuery=filterQuery+' and chsv."readyToStart" = $availability and chsv."availability"=true '
@@ -206,7 +210,21 @@ export const resourceHirerTab = (body) =>{
         default:
         break;
     }
-    
+    return vettedQuery;
+}
+    export const resourceProviderTab = (body) =>{
+        let vettedQuery = '';
+        switch (body.tabValue) {
+            case '1':
+            vettedQuery=' and chsv."candidateStatus"=3 and chsv."blacklisted"=false'
+
+            break;
+            case '2':
+            vettedQuery=' and chsv."candidateStatus"=4 and chsv."blacklisted"=false '
+            break;
+            default:
+            break;
+        }
     return vettedQuery;
 }
 
