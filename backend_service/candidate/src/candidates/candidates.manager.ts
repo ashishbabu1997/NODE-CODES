@@ -2048,6 +2048,11 @@ export const getProviderCandidateResume = (_body) => {
                     typeOfAvailability: allProfileDetails.rows[0].typeOfAvailability,
                     readyToStart: allProfileDetails.rows[0].readyToStart,
                     resume: allProfileDetails.rows[0].resume,
+                    workExperience: allProfileDetails.rows[0].workExperience,
+                    currencyTypeId:allProfileDetails.rows[0].currencyTypeId,
+                    billingTypeId:allProfileDetails.rows[0].billingTypeId,
+                    cost:allProfileDetails.rows[0].rate,
+                    location:allProfileDetails.rows[0].residence,
                 }
                 await client.query('COMMIT')
                 resolve({
