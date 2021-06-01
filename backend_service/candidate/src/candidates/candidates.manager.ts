@@ -1710,6 +1710,8 @@ export const resumeParser = (_body) => {
                             responseData["employeeId"] = _body.employeeId;
                             responseData["resume"] = _body.fileName;
                             responseData["candidateId"] = _body.candidateId
+                            responseData["userRoleId"] = _body.userRoleId
+                            responseData["companyId"] = _body.companyId
                             responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
 
                             let resp = await modifyResumeData(responseData).catch((e) => {
