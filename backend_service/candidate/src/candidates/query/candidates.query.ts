@@ -80,7 +80,7 @@ export default {
     fetchLanguageDetails:'select candidate_language_id as "candidateLanguageId", candidate_id as "candidateId", language_id as "languageId", l.language as "languageName", proficiency from candidate_language cl join languages l on cl.language_id = l."languageId" where cl.candidate_id = $1 and cl.status = true  order by proficiency desc',
     fetchDesignations:'select json_agg(a.candidate_position_name)  as designations from (select distinct candidate_position_name from candidate where candidate_position_name is not null and candidate_position_name != \'\' order by candidate_position_name) as a',
     addExperience:'update candidate set work_experience=$2, remote_work_experience=$3,rate=$4, billing_type=$5, currency_type_id=$6, updated_on=$7, updated_by=$8 where candidate_id = $1',
-    updateProviderCandidateWorkExperience:'update candidate set work_experience=$2,,rate=$3, billing_type=$4, currency_type_id=$5, updated_on=$6, updated_by=$7 where candidate_id = $1',
+    updateProviderCandidateWorkExperience:'update candidate set work_experience=$2,rate=$3, billing_type=$4, currency_type_id=$5, updated_on=$6, updated_by=$7 where candidate_id = $1',
     codeTestStatusUpdate:'UPDATE candidate SET code_test_status=$2, updated_by = $3, updated_on = $4 WHERE candidate_id = $1',
     interviewTestStatusUpdate:'UPDATE candidate SET interview_test_status=$2, updated_by = $3, updated_on = $4 WHERE candidate_id = $1', 
 

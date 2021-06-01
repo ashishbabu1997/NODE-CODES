@@ -2037,13 +2037,10 @@ export const getProviderCandidateResume = (_body) => {
                     candidateId: Number(_body.candidateId),
                     firstName: allProfileDetails.rows[0].firstName,
                     lastName: allProfileDetails.rows[0].lastName,
-                    candidatePositionName: allProfileDetails.rows[0].candidatePositionName,
+                    designation: allProfileDetails.rows[0].candidatePositionName,
                     jobCategoryId: allProfileDetails.rows[0].jobCategoryId,
-                    jobCategoryName: allProfileDetails.rows[0].jobCategoryName,
-                    sellerCompanyId: allProfileDetails.rows[0].sellerCompanyId,
                     phoneNumber: allProfileDetails.rows[0].phoneNumber,
                     email: allProfileDetails.rows[0].email,                   
-                    blacklisted: allProfileDetails.rows[0].blacklisted,
                     availability: allProfileDetails.rows[0].availability,
                     typeOfAvailability: allProfileDetails.rows[0].typeOfAvailability,
                     readyToStart: allProfileDetails.rows[0].readyToStart,
@@ -2052,7 +2049,7 @@ export const getProviderCandidateResume = (_body) => {
                     currencyTypeId:allProfileDetails.rows[0].currencyTypeId,
                     billingTypeId:allProfileDetails.rows[0].billingTypeId,
                     cost:allProfileDetails.rows[0].rate,
-                    location:allProfileDetails.rows[0].residence,
+                    locationName:allProfileDetails.rows[0].residence,
                 }
                 await client.query('COMMIT')
                 resolve({
