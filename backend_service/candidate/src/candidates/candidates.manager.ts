@@ -14,6 +14,7 @@ import * as https from 'http';
 import fetch from 'node-fetch'
 import * as jwt from 'jsonwebtoken';
 
+
 const myCache = new nodeCache();
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for listing all the candidates with his/her basic details.
@@ -409,7 +410,6 @@ export const modifyResumeData = (_body) => {
                     await client.query(queryService.updateExtractedCandidateDetails(extractedData));
                     candidateId = _body.candidateId;
                 }
-
                 else {
                     let freelancer = await client.query(queryService.getFreelancerCompany(_body))
                     extractedData["freelancerCompanyId"] = freelancer.rows[0].company_id
@@ -1976,3 +1976,8 @@ export const listProviderResources = (_body) => {
 //         })
 //     })
 // }
+
+
+
+
+

@@ -78,6 +78,10 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
             {
                 filterQuery=filterQuery+' and chsv."availability"=false '
             }
+            else if(availability == -2)
+            {
+                filterQuery=filterQuery+' and chsv."availability"=true'
+            }
             else
             {
                 filterQuery=filterQuery+' and chsv."readyToStart" = $availability and chsv."availability"=true '
