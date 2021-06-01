@@ -2172,6 +2172,8 @@
 *               type: number
 *             billingTypeId:
 *               type: integer
+*             jobCategoryId:
+*               type: integer
 *             currencyTypeId:
 *               type: integer
 *           required:
