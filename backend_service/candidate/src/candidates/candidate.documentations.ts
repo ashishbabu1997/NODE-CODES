@@ -2176,6 +2176,8 @@
 *               type: integer
 *             currencyTypeId:
 *               type: integer
+*             locationName:
+*               type: string
 *           required:
 *             - candidateId
 *     responses:
