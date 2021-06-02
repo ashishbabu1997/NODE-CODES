@@ -125,10 +125,6 @@ export default {
     insertExtractedCandidateProject:'insert into candidate_project (candidate_id, project_name, company_name, project_description, skills, role, created_by, updated_by, created_on, updated_on) values ($candidateid, $projectname, $clientname, $description, (SELECT json_agg(a) from (select skill_id as "skillId", skill_name as "skillName" from skills where skill_name ilike any ($extractedskill::varchar[])) as a), $role, $employeeid, $employeeid, $currenttime, $currenttime)',
     insertExtractedLanguagesQuery:'insert into candidate_language (candidate_id, language_id, created_by, updated_by, created_on, updated_on) values ($1, unnest((select ARRAY((select "languageId" from languages where language ilike any (($2)::varchar[]))))), $3, $3, $4, $4)',
     getFreelancerCompanyId:"SELECT company_id FROM company WHERE company_type=2",
-
-
-
-    
     
     // Linkedin Queries
     employeeLogin: `SELECT employee_id,password,linkedin_token from employee where email = $1`,
