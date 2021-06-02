@@ -215,13 +215,18 @@ export const resourceHirerTab = (body) =>{
     export const resourceProviderTab = (body) =>{
         let vettedQuery = '';
         switch (body.tabValue) {
+            case '0':
+                vettedQuery='  where chsv."candidateStatus"=3 and chsv."blacklisted"=false '
+                break;
             case '1':
-            vettedQuery=' and chsv."candidateStatus"=3 and chsv."blacklisted"=false'
-
-            break;
+                vettedQuery='  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
+                break;
             case '2':
-            vettedQuery=' and chsv."candidateStatus"=4 and chsv."blacklisted"=false '
-            break;
+                vettedQuery='  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
+                break;
+            case '3':
+                vettedQuery=' and chsv."candidateStatus"=4 and chsv."blacklisted"=false '
+                break;
             default:
             break;
         }

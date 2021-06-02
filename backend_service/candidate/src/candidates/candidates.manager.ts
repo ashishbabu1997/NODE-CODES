@@ -1996,6 +1996,13 @@ export const updateProviderCandidateInfo = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
+                if(_body.decisionValue==1)
+                {
+                    _body.candidateStatus=4
+                }
+                else{
+                    _body.candidateStatus=3
+                }
                 await client.query(queryService.updateProviderCandidateDetails(_body));
                 await client.query(queryService.updateProviderCandidateAvailability(_body));
                 await client.query(queryService.addProviderCandidateWorkExperience(_body));
