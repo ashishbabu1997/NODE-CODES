@@ -58,6 +58,6 @@ router
 .post('/getEmployeeDetailsFromLinkedinToken', candidateController.getEmployeeDetailsFromLinkedin)
 .put('/updateProviderCandidateDetails',jwtAuth, setData(), candidateController.modifyProviderCandidateDetails)
 .get('/providerCandidateResume',jwtAuth, setData(),candidateController.providerCandidateDetails)
-// .get('/htmlResume',candidateController.getHtmlResume)
+.get('/htmlResume',candidateController.getHtmlResume)
 
 export default router;

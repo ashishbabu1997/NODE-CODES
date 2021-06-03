@@ -1938,57 +1938,22 @@ export const listProviderResources = (_body) => {
 }
 
 
-// export const getHtmlResume = (_body) => {
-//     return new Promise((resolve, reject) => {
-//         (async () => {
-//             const client = await database()
-//             try {
-//                 await client.query('BEGIN');
-//                 let bow = [], promises = [];
-//                 const getQuery = {
-//                     name: 'get-resume-data',
-//                     text: candidateQuery.getResumeData,
-//                     values: [],
-//                 }
-//                 var results = await client.query(getQuery);
-//                 const data = results.rows
-//                 const regex = /^[^a-zA-Z0-9]+$/;
-//                 data.forEach(async element => {
-//                     try {
+export const getHtmlResume = (_body) => {
+    return new Promise((resolve, reject) => {
+        var HtmlDocx = require('html-docx-js');
+        var fs = require('fs');
+        var html = __dirname+'/res3.html';
+        var docFile = __dirname+'/helloworld3.docx';
 
-//                         let d = JSON.parse(element['resume_data']);
-//                         let res = d["ResumeParserData"]["DetailResume"];
-//                         res = res.replace(/[^a-zA-Z\n@. ]/g, '');
-//                         res = res.split(/[\s\n]+/);
-//                         let uniqueChars = [...Array.from(new Set(res.sort()))];
+        var docx = HtmlDocx.asBlob(html);
+        fs.writeFile(docFile,docx, function (err){
+           if (err) return console.log(err);
+           console.log('done');
+        });
+        resolve({ code: 200, message: "Converted to docx"});
 
-//                         let filterUniqueChars = uniqueChars.filter((ele: string) => !regex.test(ele))
-
-//                         let updateQuery = {
-//                             name: 'update-bagofwords-details',
-//                             text: candidateQuery.updateHtmlResume,
-//                             values: [filterUniqueChars, element.candidate_id]
-//                         }
-
-//                         await client.query(updateQuery);
-//                         await client.query('COMMIT');
-
-//                     } catch (error) {
-//                         console.log("unable to parse : ", error.message);
-//                     }
-//                 });
-//                 resolve({ code: 200, message: "resume data fetched", data: 'done' })
-
-//             } catch (e) {
-//                 console.log(e)
-//                 await client.query('ROLLBACK')
-//                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
-//             }
-//         })().catch(e => {
-//             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
-//         })
-//     })
-// }
+    })
+}
 
 
 export const updateProviderCandidateInfo = (_body) => {
