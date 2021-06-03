@@ -1,4 +1,5 @@
 import notificationsQuery from '../notifications/query/notifications.query';
+import adminQuery from '../admins/query/admin.query';
 
 
 export const  listquery = (_body) =>{
@@ -30,5 +31,26 @@ export const  listHirerNotifications = (companyId) =>{
         name: 'list-hirer-notifications',
         text: notificationsQuery.listHirerNotifications,
         values : [companyId]
+    }
+}
+
+export const  fetchCandidatePositionReports = (dateRange,groupBy) =>{
+    return {
+        name: 'get-candidate-position-reports',
+        text: adminQuery.candidatePositionReports+dateRange+groupBy
+    }
+}
+
+export const  fetchPositionReports = (dateRange,groupBy) =>{
+    return {
+        name: 'get-position-reports',
+        text: adminQuery.positionReports+dateRange+groupBy
+    }
+}
+
+export const  fetchCandidateReports = (dateRange,groupBy) =>{
+    return {
+        name: 'get-candidate-reports',
+        text: adminQuery.candidateReports+dateRange+groupBy
     }
 }

@@ -394,10 +394,26 @@ export const  clientHiringCountsHirer = (_body) =>{
     }
 }
 
+export const  clientHiringCountsProvider = (_body) =>{
+    return {
+        name: 'client-hiring-counts-provider',
+        text:dashboardQuery.clientHiringCountsProvider,
+        values : [_body.companyId]
+    }
+}
+
 export const  clientHiringSideCountsHirer = (_body) =>{
     return {
         name: 'client-hiring-side-counts-hirer',
         text:dashboardQuery.clientHiringSideCountHirer,
+        values : [_body.companyId]
+    }
+}
+
+export const  clientHiringSideCountsProvider = (_body) =>{
+    return {
+        name: 'client-hiring-side-counts-provider',
+        text:dashboardQuery.clientHiringSideCountProvider,
         values : [_body.companyId]
     }
 }
@@ -435,6 +451,15 @@ export const  ellowScreeningCount = (_body) =>{
         text:dashboardQuery.ellowScreeningCount
     }
 }
+
+export const  ellowScreeningCountProvider = (_body) =>{
+    return {
+        name: 'ellow-screening-count-provider',
+        text:dashboardQuery.ellowScreeningCountProvider,
+        values : [_body.companyId]
+    }
+}
+
 export const  upcomingInterviewsForEllowRecruiter = (_body,sort) =>{
     return {
         name: 'recruiter-interview-list',
@@ -442,6 +467,15 @@ export const  upcomingInterviewsForEllowRecruiter = (_body,sort) =>{
         values : []
     }
 }
+
+export const  upcomingInterviewsForProvider = (_body,sort) =>{
+    return {
+        name: 'provider-interview-list',
+        text:dashboardQuery.fetchProviderInterviewList + sort,
+        values : [_body.companyId]
+    }
+}
+
 export const  getActivePositions = (_body,sort) =>{
     return {
         name: 'recruiter-active-positions',

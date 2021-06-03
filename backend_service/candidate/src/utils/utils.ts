@@ -78,6 +78,10 @@ export  const resourceFilter = (filter,filterQuery,queryValues) =>{
             {
                 filterQuery=filterQuery+' and chsv."availability"=false '
             }
+            else if(availability == -2)
+            {
+                filterQuery=filterQuery+' and chsv."availability"=true'
+            }
             else
             {
                 filterQuery=filterQuery+' and chsv."readyToStart" = $availability and chsv."availability"=true '
@@ -181,7 +185,7 @@ export const resourceTab = (body) =>{
         vettedQuery='  where chsv."blacklisted"=true'
         break; 
         case '4':
-        vettedQuery=`  where chsv."companyId"= (select company_id from company where company_type=2) and  chsv."candidateStatus" in (4,9) and chsv."blacklisted"=false  and chsv."createdBy" != ${body.employeeId}`
+        vettedQuery=`  where chsv."companyId"= (select company_id from company where company_type=2) and  chsv."candidateStatus" in (4,9) and chsv."blacklisted"=false  and chsv."createdBy" not in (select employee_id from employee where user_role_id=1)`
         break; 
         case '5':
         vettedQuery=` where (chsv."candidateStatus" = 4 and chsv."createdBy" = ${body.employeeId}) and chsv."blacklisted"=false`
@@ -206,7 +210,26 @@ export const resourceHirerTab = (body) =>{
         default:
         break;
     }
-    
+    return vettedQuery;
+}
+    export const resourceProviderTab = (body) =>{
+        let vettedQuery = '';
+        switch (body.tabValue) {
+            case '0':
+                vettedQuery='  and chsv."candidateStatus"=3 and chsv."blacklisted"=false '
+                break;
+            case '1':
+                vettedQuery='  and chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
+                break;
+            case '2':
+                vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
+                break;
+            case '3':
+                vettedQuery=' and chsv."candidateStatus"=4 and chsv."blacklisted"=false '
+                break;
+            default:
+            break;
+        }
     return vettedQuery;
 }
 

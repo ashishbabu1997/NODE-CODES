@@ -56,3 +56,7 @@ export const usersPagination = (body) => {
     }
     return pagination;
 }
+
+export const notNull = (val)=> {
+    return [undefined,null,''].includes(val)?false:true;
+}
