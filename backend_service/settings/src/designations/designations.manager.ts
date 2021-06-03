@@ -15,7 +15,7 @@ export const listDesignations = () => {
             reject ({ code: 400, message: "Failed. Please try again.", data: {} });
         }
    
-                        resolve({ code: 200, message: "Designations listed succesfully", data: {designations:results.rows}});   
+                        resolve({ code: 200, message: "Designations listed succesfully", data: {designations:results.rows[0].designations}});   
 
     })
 })
