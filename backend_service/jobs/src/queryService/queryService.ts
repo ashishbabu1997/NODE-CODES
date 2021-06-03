@@ -17,6 +17,14 @@ export const getJobRecievedQuery = (_body) => {
         values: _body.queryValues,
     }
 }
+
+export const getJobRecievedCountQuery = (_body) => {
+    return {
+        name: 'get-all-positions-provider-count',
+        text: _body.queryCountText,
+        values: _body.queryValues,
+    }
+}
 export const  getJobReceivedByIdQuery = (_body) =>{
     return {
         name: 'get-JobReceivedByJobReceivedId',
