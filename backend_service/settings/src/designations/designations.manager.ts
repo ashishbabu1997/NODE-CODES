@@ -14,7 +14,7 @@ export const listDesignations = () => {
     
     database().query(fetchDesignations).then((results,error) => {
         if (error) {
-            resolve ({ code: 400, message: "Failed. Please try again.", data: {} });
+            reject ({ code: 400, message: "Failed. Please try again.", data: {} });
         }
         resolve({ code: 200, message: "Designations listed succesfully", data:  results.rows  });   
     })
