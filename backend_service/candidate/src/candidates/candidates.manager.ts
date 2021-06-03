@@ -1994,7 +1994,7 @@ export const listProviderResources = (_body) => {
 export const updateProviderCandidateInfo = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
-            const client = await database().connect()
+            const client = await database()
             try {
                 if(_body.decisionValue==1)
                 {
@@ -2002,19 +2002,20 @@ export const updateProviderCandidateInfo = (_body) => {
                 }
                 else{
                     _body.candidateStatus=3
+                    console.log(_body)
+                    var r=await client.query(queryService.addDefaultTraits(_body));
+                    console.log(r)
                 }
                 await client.query(queryService.updateProviderCandidateDetails(_body));
                 await client.query(queryService.updateProviderCandidateAvailability(_body));
                 await client.query(queryService.addProviderCandidateWorkExperience(_body));
-                
+
                 resolve({ code: 200, message: "Candidate informations updated successfully", data: {} });
             } catch (e) {
                 console.log("Error raised from try : ",e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            } finally {
-                client.release();
-            }
+            } 
         })().catch(e => {
             console.log("Error raised from async : ",e)
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
@@ -2044,7 +2045,7 @@ export const getProviderCandidateResume = (_body) => {
                     candidateId: Number(_body.candidateId),
                     firstName: allProfileDetails.rows[0].firstName,
                     lastName: allProfileDetails.rows[0].lastName,
-                    designation: allProfileDetails.rows[0].candidatePositionName,
+                    candidatePositionName: allProfileDetails.rows[0].candidatePositionName,
                     jobCategoryId: allProfileDetails.rows[0].jobCategoryId,
                     phoneNumber: allProfileDetails.rows[0].phoneNumber,
                     email: allProfileDetails.rows[0].email,                   

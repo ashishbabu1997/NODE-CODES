@@ -54,3 +54,10 @@ export const  fetchCandidateReports = (dateRange,groupBy) =>{
         text: adminQuery.candidateReports+dateRange+groupBy
     }
 }
+
+export const  fetchCompanyRegReports = (dateRange,groupBy) =>{
+    return {
+        name: 'get-company-registration-reports',
+        text: adminQuery.registrationReports+dateRange+groupBy
+    }
+}
