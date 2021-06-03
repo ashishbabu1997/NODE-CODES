@@ -4,45 +4,44 @@ export const adminPagination = (body) => {
     let pagination = '';
     // Pagination
     if (body.pageSize && body.pageNumber) {
-        pagination= `   limit ${body.pageSize} offset ((${body.pageNumber}-1)*${body.pageSize}) `
+        pagination = `   limit ${body.pageSize} offset ((${body.pageNumber}-1)*${body.pageSize}) `
     }
     return pagination;
 }
 
-export  const usersFilter = (filter,filterQuery,queryValues) =>{
-    if(filter)
-    {               
-        let approveStatus=filter.approveStatus
-        ; 
-        
-        if(![null,undefined,''].includes(approveStatus) && approveStatus=='active')
-        {
-            filterQuery=filterQuery+' and  e.admin_approve_status=$active'
-            queryValues = Object.assign({active:1},queryValues)
-        }  
-        if(![null,undefined,''].includes(approveStatus) && approveStatus=='closed')
-        {
-            filterQuery=filterQuery+' and e.admin_approve_status=$closed'
-            queryValues = Object.assign({closed:0},queryValues)
-        }  
-       
+export const usersFilter = (filter, filterQuery) => {
+    if (filter) {
+        let approveStatus = filter.approveStatus;
+
+        if (notNull(approveStatus)) {
+            if (approveStatus == 'active') {
+                filterQuery = filterQuery + ' and  "adminApproveStatus"=1'
+            }
+            else if (approveStatus == 'closed') {
+                filterQuery = filterQuery + ' and "adminApproveStatus"=0'
+            }
+
+        }
     }
-    return {filterQuery,queryValues};
-} 
+    return { filterQuery };
+}
+
 export const userSort = (body) => {
     let sort = '';
     // Sorting keys with values
     const orderBy = {
-        "updatedOn": 'e.updated_on',
-        "firstName":'e.firstname',
-        "lastName":'e.lastname',
-        "email":'e.email',
-        "accountType":'e.account_type',
-        "phoneNumber":'e.telephone_number',
-        "companyName":'c.company_name'
+        "updatedOn": 'src."updatedDate"',
+        "firstName": 'src."firstName"',
+        "lastName": 'src."lastName"',
+        "email": 'src.email',
+        "accountType": 'src."accountType"',
+        "phoneNumber": 'src."phoneNumber"',
+        "companyName": 'src."companyName"',
+        "assesedBy":'src."assesedBy"',
+        "type":'src."accountType"'
 
     }
-    
+
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
         sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}  nulls last `;
     }
@@ -52,11 +51,11 @@ export const usersPagination = (body) => {
     let pagination = '';
     // Pagination
     if (body.pageSize && body.pageNumber) {
-        pagination= `  limit ${body.pageSize} offset ((${body.pageNumber}-1)*${body.pageSize}) `
+        pagination = `  limit ${body.pageSize} offset ((${body.pageNumber}-1)*${body.pageSize}) `
     }
     return pagination;
 }
 
-export const notNull = (val)=> {
-    return [undefined,null,''].includes(val)?false:true;
+export const notNull = (val) => {
+    return [undefined, null, ''].includes(val) ? false : true;
 }
