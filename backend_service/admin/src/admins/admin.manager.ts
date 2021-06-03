@@ -43,7 +43,6 @@ export const listUsersDetails = (_body) => {
                     selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType
                 }
                 selectQuery = selectQuery + utils.adminPagination(_body)
-                console.log(selectQuery)
                 const listquery = {
                     name: 'list-candidates',
                     text: selectQuery
@@ -78,28 +77,20 @@ export const allUsersList = (_body) => {
             const client = await database()
             try {
                 _body.queryValues = {};
-                var filterQuery = '', filter = _body.body.filter,
-                    body = _body.query, searchKey = '%%';
+                var filterQuery = '', filter = _body.body.filter,body = _body.query, searchKey = '%%';
                 // Search for filters in the body        
-                let filterResult = utils.usersFilter(filter, filterQuery, _body.queryValues);
+                
+                let filterResult = utils.usersFilter(filter, filterQuery);
                 filterQuery = filterResult.filterQuery;
-                _body.queryValues = filterResult.queryValues;
-                var selectQuery = adminQuery.registeredUsersList;
-                if (![undefined, null].includes(body.searchKey)) {
-                    searchKey = body.searchKey + '%';
-                }
-                if (body.usersType) {
-                    _body.queryText = selectQuery + filterQuery + utils.userSort(body) + utils.usersPagination(body)
-                    _body.queryCountText = adminQuery.registeredUsersListCount + filterQuery
-                    _body.queryValues = Object.assign({ searchkey: searchKey, userstype: body.usersType }, _body.queryValues)
+                
+                if (utils.notNull(body.searchKey))
+                    searchKey = body.searchKey + '%';                
 
-                }
-                else {
-                    _body.queryValues = Object.assign({ searchkey: searchKey }, _body.queryValues)
-                    _body.queryCountText = adminQuery.allRegisteredUsersListCount + filterQuery,
-                        _body.queryText = adminQuery.allRegisteredUsersList + filterQuery + utils.userSort(body) + utils.usersPagination(body)
+                _body.queryValues = Object.assign({ searchkey: searchKey }, _body.queryValues)
+                _body.queryCountText = adminQuery.allRegisteredUsersListCount + filterQuery;
+                _body.queryText = adminQuery.allRegisteredUsersList + filterQuery + utils.userSort(body) + utils.usersPagination(body)
 
-                }
+
                 var results = await client.query(queryService.listquery(_body))
                 var counts = await client.query(queryService.listQueryCount(_body))
                 await client.query('COMMIT');
@@ -583,7 +574,7 @@ export const reports = (_body) => {
                 let groupByCandidate = ` group by ("RecruiterName", "CandidateStatus") `,
                     groupByPosition = ` group by ("RecruiterName", "PositionStatus") `,
                     groupByCandidatePosition = ` group by ("RecruiterName") `;
-                
+
                 if (utils.notNull(_body.fromDate) && utils.notNull(_body.toDate)) {
                     dateRangeCandidate = ` and ca.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangePosition = ` and p.created_on between ${_body.fromDate} and ${_body.toDate} `
