@@ -1,8 +1,6 @@
 import designationQuery from './query/designationsQuery.ts';
 import database from '../common/database/database';
 
-
-
 export const listDesignations = () => {    
     return new Promise((resolve, reject) => {
      const fetchDesignations ={
@@ -11,7 +9,6 @@ export const listDesignations = () => {
             text: designationQuery.fetchDesignations,
     
     }
-    
     database().query(fetchDesignations).then((results,error) => {
         if (error) {
             reject ({ code: 400, message: "Failed. Please try again.", data: {} });
