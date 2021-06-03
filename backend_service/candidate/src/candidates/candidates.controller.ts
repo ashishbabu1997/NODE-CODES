@@ -339,7 +339,10 @@ export const providerCandidateDetails = (req, res) => {
 }
 
 export const getHtmlResume = (req, res) => {
+    res.sendFile(__dirname+'/UploadHtml.html')
+}
+
+export const postHtmlResume = (req, res) => {
     const body = req.query;
-    candidateManager.getHtmlResume(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+    candidateManager.getHtmlResume(req,res);
 }
