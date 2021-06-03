@@ -22,6 +22,7 @@ export const getAllJobReceived = (_body) => {
             const client = await database()
             try {
                 var selectQuery = jobReceivedQuery.getAllJobReceived;
+                var totalQuery=jobReceivedQuery.getAllJobReceivedCount;
                 var queryText='', queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',searchQuery='',body=_body.query, sort = '', searchKey = '';
                 
                 const orderBy = {
@@ -76,13 +77,16 @@ export const getAllJobReceived = (_body) => {
                 {
                     sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
                 }
-                _body.queryText = selectQuery + filterQuery + searchQuery + sort + utils.jobsPagination(body);;
+                _body.queryText = selectQuery + filterQuery + searchQuery + sort + utils.jobsPagination(body);
+                _body.queryCountText = totalQuery + filterQuery + searchQuery ;
                 _body.queryValues =  Object.assign({companyid:body.companyId,employeeid:body.employeeId},queryValues)
-                let results = await client.query(queryService.getJobRecievedQuery(_body))  
+                let results = await client.query(queryService.getJobRecievedQuery(_body))
+                let count = await client.query(queryService.getJobRecievedCountQuery(_body))  
+                let totalCount=count.rows[0].totalCount
                 let Jobs = results.rows;
                 if(Array.isArray(Jobs))
                 Jobs = results.rows.filter(element => element.jobStatus != 8 || element.totalCount != 0)
-                resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs} });   
+                resolve({ code: 200, message: "Job Received listed successfully", data: { Jobs,totalCount:totalCount} });   
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
