@@ -5,6 +5,7 @@ import config from '../config/config'
 import { createNotification } from '../common/notifications/notifications';
 import freelancerQuery from './query/freelancer.query';
 import * as utils from '../utils/utils';
+import * as emailService from '../emailService/freelancerEmail';
 
 
 
@@ -18,7 +19,7 @@ export const listJobs = (_body) => {
                 
                 if(![null,undefined,''].includes(_body.filterSkillId))
                 {
-                    filterQuery='HAVING $skillid = ANY(ARRAY_AGG(s.skill_id))'
+                    filterQuery=config.textReferences.listJobsFilterQuery
                     queryValues = Object.assign({skillid:_body.filterSkillId},queryValues)
                 }
 
@@ -73,7 +74,7 @@ export const modifyOtherInfoAndSubmit = (_body) => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                _body.candidateStatus = 9; 
+                _body.candidateStatus = config.integerReferences.draftCandidateStatusValue; 
                 
                 _body.idSet = Array.isArray(_body.cloudProficiency)?_body.cloudProficiency.map(a => a.cloudProficiencyId).filter(Number):false;
                 if(_body.idSet)
@@ -100,50 +101,74 @@ export const modifyOtherInfoAndSubmit = (_body) => {
     })
 }
 
+// export const submitFreelancerProfile = (_body) => {
+//     return new Promise((resolve, reject) => {
+//         (async () => {
+//             const client = await database()
+//             try {
+//                 await client.query('BEGIN');
+//                 const  getEllowAdmins = {
+//                     name: 'get-ellow-admin',
+//                     text: freelancerQuery.getellowAdmins,
+//                     values: []
+                    
+                    
+//                 }
+//                 var ellowAdmins=await client.query(getEllowAdmins)
+//                 _body.candidateStatus = 3; 
+//                 await client.query(queryService.addDefaultTraits(_body));
+//                 var result=await client.query(queryService.candidateStatusUpdate(_body));
+//                 await client.query('COMMIT');
+//                 var firstName=result.rows[0].candidate_first_name
+//                 var lastName=result.rows[0].candidate_last_name
+//                 let replacements = {
+//                     fName:firstName,
+//                     lName:lastName
+//                 };
+//                 let path = 'src/emailTemplates/freelancerSubmitText.html';
+//                 let imageResults=await client.query(queryService.getImageDetails(_body))
+//                 await client.query('COMMIT');
+//                 let message=`${firstName + ' ' + lastName} has submitted his profile for review`
+//                 await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'freelancer',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
+//                 if(Array.isArray(ellowAdmins.rows))
+//                                 {
+                                   
+//                                     ellowAdmins.rows.forEach(element => {
+//                                         if(element.email!=null || '' || undefined)
+//                                         {
+//                                             emailClient.emailManager(element.email,config.text.submitProfileSubject,path,replacements);
+//                                         }
+//                                         else
+//                                         {
+//                                             console.log("Email Recipient is empty")
+//                                         } 
+
+//                                     })
+//                                 }
+//                 resolve({ code: 200, message: "Freelancer submitted successfully", data: {} });
+//             } catch (e) {
+//                 console.log(e)
+//                 await client.query('ROLLBACK')
+//                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+//             } finally {
+//                 client.release();
+//             }
+//         })().catch(e => {
+//             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+//         })
+//     })
+// }
+
+
 export const submitFreelancerProfile = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                const  getEllowAdmins = {
-                    name: 'get-ellow-admin',
-                    text: freelancerQuery.getellowAdmins,
-                    values: []
-                    
-                    
-                }
-                var ellowAdmins=await client.query(getEllowAdmins)
-                _body.candidateStatus = 3; 
+                _body.candidateStatus = config.integerReferences.profileSubmissionStatusValue; 
                 await client.query(queryService.addDefaultTraits(_body));
-                var result=await client.query(queryService.candidateStatusUpdate(_body));
-                await client.query('COMMIT');
-                var firstName=result.rows[0].candidate_first_name
-                var lastName=result.rows[0].candidate_last_name
-                let replacements = {
-                    fName:firstName,
-                    lName:lastName
-                };
-                let path = 'src/emailTemplates/freelancerSubmitText.html';
-                let imageResults=await client.query(queryService.getImageDetails(_body))
-                await client.query('COMMIT');
-                let message=`${firstName + ' ' + lastName} has submitted his profile for review`
-                await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'freelancer',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
-                if(Array.isArray(ellowAdmins.rows))
-                                {
-                                   
-                                    ellowAdmins.rows.forEach(element => {
-                                        if(element.email!=null || '' || undefined)
-                                        {
-                                            emailClient.emailManager(element.email,config.text.submitProfileSubject,path,replacements);
-                                        }
-                                        else
-                                        {
-                                            console.log("Email Recipient is empty")
-                                        } 
-
-                                    })
-                                }
+                await emailService.submitFreelancerProfileEmail(_body, client);
                 resolve({ code: 200, message: "Freelancer submitted successfully", data: {} });
             } catch (e) {
                 console.log(e)
@@ -157,8 +182,6 @@ export const submitFreelancerProfile = (_body) => {
         })
     })
 }
-
-
 
 export const getFreelancerStatus = (_body) => {
     return new Promise((resolve, reject) => {
