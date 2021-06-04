@@ -227,7 +227,7 @@ export const resourceHirerTab = (body) =>{
                 vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
                 break;
             case '3':
-                vettedQuery=' and chsv."candidateStatus"=4 and chsv."blacklisted"=false '
+                vettedQuery=' and ( chsv."candidateStatus"= 9 or chsv."candidateStatus"= 4 ) and chsv."blacklisted"=false '
                 break;
             default:
             break;
