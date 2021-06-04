@@ -136,11 +136,14 @@ export const listAddFromListCandidates = (_body) => {
         (async () => {
             const client = await database()
             try {
-                queryText = selectQuery + roleBasedQuery + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
+                queryText = selectQuery + roleBasedQuery + filterQuery + searchQuery + utils.resourceSort(body), utils.resourcePagination(body);
                 queryValues = Object.assign({ positionid: body.positionId }, queryValues)
+
                 const candidatesResult = await client.query(queryService.listAddFromList(queryText, queryValues));
 
                 queryText = totaltQuery + roleBasedQuery + filterQuery + searchQuery;
+                
+                
                 const totalCountResult = await client.query(queryService.listAddFromListTotal(queryText, queryValues));
 
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates: candidatesResult.rows, totalCount: totalCountResult.rows[0].totalCount } });
