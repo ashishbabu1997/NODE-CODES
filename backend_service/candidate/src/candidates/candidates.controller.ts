@@ -352,3 +352,8 @@ export const updateProviderCandidateEllowRateController = (req, res) => {
     candidateManager.addProviderCandidateEllowRate(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
     .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
 }
+export const approveProviderCandidates = (req, res) => {
+    const body = req.body;
+    candidateManager.approveProvidersCandidates(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
+}
