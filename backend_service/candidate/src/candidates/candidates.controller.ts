@@ -320,11 +320,7 @@ export const getEmployeeDetailsFromLinkedin = (req, res) => {
     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
-// export const getHtmlResume = (req, res) => {
-//     const body = req.query;
-//     candidateManager.getHtmlResume(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
-//     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
-// }
+
 export const listResourcesOfProvider = (req, res) => {
     const body = req;
     candidateManager.listProviderResources(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
@@ -340,4 +336,13 @@ export const providerCandidateDetails = (req, res) => {
     const body = req.query;
     candidateManager.getProviderCandidateResume(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
     .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
+}
+
+export const getHtmlResume = (req, res) => {
+    res.sendFile(__dirname+'/UploadHtml.html')
+}
+
+export const postHtmlResume = (req, res) => {
+    const body = req.query;
+    candidateManager.getHtmlResume(req,res);
 }

@@ -11,6 +11,8 @@ import jobCategoryRouter from './jobCategory/jobCategory.route'
 import assessmentTraitRouter from './assessmentTraits/assessmentTraitsRoute';
 import languageRouter from './languages/languageApi.route';
 import cloudRouter from './cloudproficiency/CloudProficiencyRoute';
+import designationsRouter from './designations/designations.route';
+
 
 
 import * as express from 'express';
@@ -29,6 +31,8 @@ router
     .use(`/api/${AppConfig.version}/settings/assessmentTraits`, assessmentTraitRouter)
     .use(`/api/${AppConfig.version}/settings/languages`, languageRouter)
     .use(`/api/${AppConfig.version}/settings/cloudproficiency`, cloudRouter)
+    .use(`/api/${AppConfig.version}/settings/designations`, designationsRouter)
+
 export default router;
 
 

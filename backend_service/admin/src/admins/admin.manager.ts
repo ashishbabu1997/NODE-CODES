@@ -570,25 +570,29 @@ export const reports = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                let dateRangeCandidate = "", dateRangePosition = "", dateRangeCandidatePosition = "";
+                let dateRangeCandidate = "", dateRangePosition = "", dateRangeCandidatePosition = "",dateRangeCompanyReg ='';
                 let groupByCandidate = ` group by ("RecruiterName", "CandidateStatus") `,
                     groupByPosition = ` group by ("RecruiterName", "PositionStatus") `,
-                    groupByCandidatePosition = ` group by ("RecruiterName") `;
+                    groupByCandidatePosition = ` group by ("RecruiterName") `,
+                    groupByCompanyReg = `group by "assesedBy", "adminApproveStatus" order by "assesedBy","status"`
 
                 if (utils.notNull(_body.fromDate) && utils.notNull(_body.toDate)) {
                     dateRangeCandidate = ` and ca.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangePosition = ` and p.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangeCandidatePosition = ` and cp.created_on between ${_body.fromDate} and ${_body.toDate} `
+                    dateRangeCompanyReg = `where "updatedDate" between ${_body.fromDate} and ${_body.toDate}`
                 }
 
                 let cpResults = await client.query(queryService.fetchCandidatePositionReports(dateRangeCandidatePosition, groupByCandidatePosition));
                 let pResults = await client.query(queryService.fetchPositionReports(dateRangePosition, groupByPosition));
                 let cResults = await client.query(queryService.fetchCandidateReports(dateRangeCandidate, groupByCandidate));
+                let crResults = await client.query(queryService.fetchCompanyRegReports(dateRangeCompanyReg, groupByCompanyReg));
 
                 let data = {
                     'CandidatePositionReports': cpResults.rows,
                     'PositionReports': pResults.rows,
-                    'CandidateReports': cResults.rows
+                    'CandidateReports': cResults.rows,
+                    'CompanyRegistrationReports': crResults.rows
                 }
                 await client.query('COMMIT');
                 resolve({ code: 200, message: "Reports fetched successfully", data });
