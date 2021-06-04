@@ -2062,42 +2062,30 @@ export const getProviderCandidateResume = (_body) => {
 
 
 
-// // >>>>>>> FUNC. >>>>>>>
-// // >>>>>>>>>> Link the candidates to a particular position .
-// export const addProviderCandidateEllowRate = (_body) => {
-//     return new Promise((resolve, reject) => {
-//         (async () => {
-
-//             const client = await database().connect()
-//             try {
-//                 await client.query('BEGIN');
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>> Link the providers candidate to a particular position .
+export const addProviderCandidateEllowRate = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
     
-//                 if (_body.userRoleId == 1) {
+                if (_body.userRoleId == 1) {
                    
-//                      await  client.query(queryService.linkCandidateByAdminQuery(_body))
+                     await  client.query(queryService.updateProviderCandidateEllowRate(_body))
+                     resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
                 
-//                 }
-//                 else {
-                  
-//                 }
-//                 // // Adding client based hiring steps with respect to poition being linked
-//                 // for (const element of candidateList) {
-//                 //     _body.candidateId = element.candidateId;
-//                 //     await client.query(queryService.addCandidateHiringSteps(_body));
-//                 // }
-  
+                }
 
-//                 resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
-//             } catch (e) {
-//                 console.log("error : ", e)
-//                 await client.query('ROLLBACK')
-//                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-//             } finally {
-//                 client.release();
-//             }
-//         })().catch(e => {
-//             console.log("error : ", e)
-//             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
-//         })
-//     })
-// }
+            } catch (e) {
+                console.log("error : ", e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("error : ", e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}

@@ -962,6 +962,13 @@ export const linkCandidateByAdminQuery = (element) => {
         values: [element.positionId, element.candidateId, element.employeeId, currentTime(), element.ellowRate, element.currencyTypeId, element.billingTypeId, element.adminComment, 1],
     }
 }
+export const updateProviderCandidateEllowRate = (_body) => {
+    return {
+        name: 'link-provider-candidate-with-position',
+        text: candidateQuery.updateEllowRate,
+        values: [_body.positionId, _body.candidateId,_body.ellowRate, _body.currencyTypeId,_body.billingTypeId,_body.adminComment, _body.employeeId, currentTime(),1],
+    }
+}
 export const linkCandidateQuery = (element) => {
     return {
         name: 'link-candidate-with-position',

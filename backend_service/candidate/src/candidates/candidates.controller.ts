@@ -346,3 +346,9 @@ export const postHtmlResume = (req, res) => {
     const body = req.query;
     candidateManager.getHtmlResume(req,res);
 }
+
+export const updateProviderCandidateEllowRateController = (req, res) => {
+    const body = req.body;
+    candidateManager.addProviderCandidateEllowRate(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
+}
