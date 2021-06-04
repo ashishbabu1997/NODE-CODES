@@ -2018,3 +2018,40 @@ export const getProviderCandidateResume = (_body) => {
         })
     })
 }
+
+
+
+
+
+
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>> Link the providers candidate to a particular position .
+export const addProviderCandidateEllowRate = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+    
+                if (_body.userRoleId == 1) {
+                   
+                     await  client.query(queryService.updateProviderCandidateEllowRate(_body))
+                     resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
+                
+                }
+
+            } catch (e) {
+                console.log("error : ", e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("error : ", e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
