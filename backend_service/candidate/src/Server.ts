@@ -11,6 +11,7 @@ import router from './candidate.router';
 import configurePassport from './config/passportJwtConfig';
 import {swaggerSpec} from './swagger';
 import * as swaggerUi from 'swagger-ui-express';
+import * as fileUpload  from 'express-fileupload';  
 
 const app = express();
 
@@ -21,7 +22,7 @@ app.use(cors({
 app.use(compression());
 app.use(helmet());
 app.use(morgan('tiny'));
-
+app.use(fileUpload());
 
 app.use(bodyParser.json({ limit: '150mb' }));
 app.use(bodyParser.urlencoded({
