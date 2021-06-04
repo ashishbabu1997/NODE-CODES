@@ -339,7 +339,7 @@ export const providerCandidateDetails = (req, res) => {
 }
 
 export const getHtmlResume = (req, res) => {
-    res.sendFile(__dirname+'/UploadHtml.html')
+    res.sendFile('./UploadHtml.html')
 }
 
 export const postHtmlResume = (req, res) => {

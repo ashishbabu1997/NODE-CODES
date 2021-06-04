@@ -22,48 +22,14 @@ export const listCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.listCandidates;
 
-        var adminApproveQuery = '', queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
-            body = _body.query, sort = '', searchKey = '%%';
+        var adminApproveQuery = '', queryText = '', queryValues = {},
+            body = _body.query, sort = '';
 
         // Sorting keys to add with the query
-        const orderBy = {
-            "updatedOn": 'ca.updated_on',
-            "candidateFirstName": 'ca.candidate_first_name',
-            "candidateLastName": 'ca.candidate_last_name',
-            "rate": 'ca.rate',
-            "ellowRate": 'cp.ellow_rate',
-            "companyName": 'c.company_name'
-        }
+        const orderBy = { "updatedOn": `chsv."updatedOn"` }
 
-        // Search for filters to add with the query
-        if (filter) {
-            if (filter.name) {
-                filterQuery = filterQuery + ' AND (ca.candidate_first_name ILIKE $name OR ca.candidate_last_name ILIKE $name) '
-                queryValues = Object.assign({ name: filter.candidateName })
-            }
-            if (filter.email) {
-                filterQuery = filterQuery + ' AND email ILIKE $email'
-                queryValues = Object.assign({ email: filter.email }, queryValues)
-            }
-            if (filter.minCost && filter.maxCost) {
-                filterQuery = filterQuery + ' AND (ca.rate BETWEEN $mincost AND $maxcost)'
-                queryValues = Object.assign({ mincost: filter.minCost, maxcost: filter.maxCost }, queryValues)
-            }
-            if (filter.minRate && filter.maxRate) {
-                filterQuery = filterQuery + ' AND (cp.ellow_rate BETWEEN $minrate AND $maxrate)'
-                queryValues = Object.assign({ minrate: filter.minRate, maxrate: filter.maxRate }, queryValues)
-            }
-
-        }
-
-        if (![undefined, null, ''].includes(body.filter)) {
-            searchKey = '%' + body.filter + '%';
-            searchQuery = " AND (ca.candidate_first_name ILIKE $searchkey OR ca.candidate_last_name ILIKE $searchkey OR c.company_name ILIKE $searchkey) "
-            queryValues = Object.assign({ searchkey: searchKey }, queryValues)
-        }
-
-        if (body.userRoleId != 1) {
-            adminApproveQuery = " AND cp.admin_approve_status = 1"
+        if (body.userRoleId != '1') {
+            adminApproveQuery = ` AND chsv."adminApproveStatus" = 1`
         }
 
         if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
@@ -74,8 +40,8 @@ export const listCandidatesDetails = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                queryText = selectQuery + adminApproveQuery + filterQuery + searchQuery + sort;
-                queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId }, queryValues)
+                queryText = selectQuery + adminApproveQuery + sort;
+                queryValues = Object.assign({ positionid: body.positionId}, queryValues)
 
                 const candidatesResult = await client.query(queryService.listCandidates(queryText, queryValues));
                 const jobReceivedIdResult = await client.query(queryService.getJobReceivedId(body));
@@ -1943,8 +1909,8 @@ export const getHtmlResume = (req, res) => {
     var inputFile = req.files.htmlres.data;
     var filename = req.files.htmlres.name.split('.').slice(0, -1).join('.')
     
-    var temp = __dirname + '/sample.html'; 
-    var outputFile = __dirname + `/${filename}.docx`;
+    var temp = './sample.html';
+    var outputFile = `./${filename}.docx`;
 
     fs.writeFile(temp, inputFile, function (err) {
             if (err) throw err;
