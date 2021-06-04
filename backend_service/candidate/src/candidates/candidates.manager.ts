@@ -1942,15 +1942,12 @@ export const updateProviderCandidateInfo = (_body) => {
                     _body.candidateStatus = 4
                 }
                 else {
-                    _body.candidateStatus = 3
-                    console.log(_body)
-                    var r = await client.query(queryService.addDefaultTraits(_body));
-                    console.log(r)
+                    _body.candidateStatus = 9
                 }
                 await client.query(queryService.updateProviderCandidateDetails(_body));
                 await client.query(queryService.updateProviderCandidateAvailability(_body));
                 await client.query(queryService.addProviderCandidateWorkExperience(_body));
-
+                await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate informations updated successfully", data: {} });
             } catch (e) {
                 console.log("Error raised from try : ", e)
@@ -2025,6 +2022,26 @@ export const getProviderCandidateResume = (_body) => {
 
 
 
+export const approveProvidersCandidates = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                 await client.query(queryService.updateCandidateStatus(_body));
+                 await client.query(queryService.addDefaultTraits(_body));
+                 await client.query('COMMIT')
+                resolve({ code: 200, message: "Candidate informations updated successfully", data: {} });
+            } catch (e) {
+                console.log("Error raised from try : ", e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error raised from async : ", e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
 
 
 
