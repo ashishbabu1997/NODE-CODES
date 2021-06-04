@@ -32,7 +32,6 @@ export default {
     linkCandidateWithPositionByAdmin:`INSERT INTO candidate_position(position_id, candidate_id, job_receievd_id,created_by, updated_by, created_on, updated_on,ellow_rate,currency_type_id,billing_type,admin_comment,admin_approve_status ) select position_id, $2, job_category_id,$3, $3, $4, $4,$5,$6,$7,$8,$9 from positions where position_id = $1 on conflict on constraint candidate_position_candidate_id_position_id_unique_key do update set updated_on=$4, updated_by=$3,ellow_rate=$5,currency_type_id=$6,billing_type=$7,admin_comment=$8,admin_approve_status=$9, status= true`,
     updateEllowRate:'update candidate_position set ellow_rate=$3,currency_type_id=$4,billing_type=$5,admin_comment=$6,updated_by=$7,updated_on=$8,admin_approve_status=$9 where position_id=$1 and candidate_id=$2',
     deleteCandidate: `update candidate set status = false, updated_on=$2, updated_by = $3 where candidate_id = $1`,
-    
     modifyLanguageProficiency: `update candidate_language set candidate_id = $2, language_id = $3, proficiency = $4, updated_on = $5, updated_by = $6 where candidate_language_id = $1`,
     insertLanguageProficiency:'insert into candidate_language (candidate_id, language_id, proficiency, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$4,$5,$5) returning candidate_language_id',
     deleteLanguageProficiency:'update candidate_language set status = false, updated_on = $2, updated_by = $3 where candidate_language_id = $1',
