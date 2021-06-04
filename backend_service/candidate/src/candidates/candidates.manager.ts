@@ -1942,7 +1942,8 @@ export const updateProviderCandidateInfo = (_body) => {
                     _body.candidateStatus = 4
                 }
                 else {
-                    _body.candidateStatus = 9
+                    _body.candidateStatus = 3
+                    await client.query(queryService.addDefaultTraits(_body));
                 }
                 await client.query(queryService.updateProviderCandidateDetails(_body));
                 await client.query(queryService.updateProviderCandidateAvailability(_body));
