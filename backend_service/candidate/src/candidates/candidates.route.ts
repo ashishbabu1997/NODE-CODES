@@ -61,6 +61,4 @@ router
 .post('/htmlResume',candidateController.postHtmlResume)
 .get('/htmlResume',candidateController.getHtmlResume)
 .put('/updateProviderCandidateEllowRate', jwtAuth, setData(), candidateController.updateProviderCandidateEllowRateController)
-
-
 export default router;

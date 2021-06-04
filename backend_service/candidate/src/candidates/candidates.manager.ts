@@ -13,6 +13,7 @@ import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
 import fetch from 'node-fetch'
 import * as jwt from 'jsonwebtoken';
+import * as HtmlDocx from 'html-docx-js';
 
 
 const myCache = new nodeCache();
@@ -1906,7 +1907,6 @@ export const listProviderResources = (_body) => {
 
 
 export const getHtmlResume = (req, res) => {
-    var HtmlDocx = require('html-docx-js');
     var fs = require('fs');
     
     var inputFile = req.files.htmlres.data;
