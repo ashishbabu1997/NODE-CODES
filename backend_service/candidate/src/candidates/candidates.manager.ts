@@ -2071,11 +2071,16 @@ export const addProviderCandidateEllowRate = (_body) => {
             try {
                 await client.query('BEGIN');
     
-                if (_body.userRoleId == 1) {
-                   
+                if (_body.userRoleId == '1') {
+                    console.log(_body)
                      await  client.query(queryService.updateProviderCandidateEllowRate(_body))
+                     await client.query('COMMIT')
                      resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
                 
+                }
+                else{
+                    reject({ code: 400, message: "Unauthorized Access", data: {} });
+
                 }
 
             } catch (e) {
