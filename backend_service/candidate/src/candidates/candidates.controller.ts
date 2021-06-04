@@ -306,9 +306,6 @@ export const sigOn = (req, res) => {
     candidateManager.singleSignOn(body).then((response: any) => {
             res.writeHead(301,{Location: 'https://stage.ellow.io/candidate-login?token='+response.data.token});
             res.end();
-        
-      
-       
     })
     .catch((error: any) => { res.writeHead(301,{Location: 'https://stage.ellow.io/redirect-notification'})
     res.end()
@@ -319,7 +316,6 @@ export const getEmployeeDetailsFromLinkedin = (req, res) => {
     candidateManager.getLinkedinEmployeeLoginDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
-
 
 export const listResourcesOfProvider = (req, res) => {
     const body = req;
@@ -339,10 +335,26 @@ export const providerCandidateDetails = (req, res) => {
 }
 
 export const getHtmlResume = (req, res) => {
-    res.sendFile(__dirname+'/UploadHtml.html')
+    var fs = require('fs');
+
+    fs.readFile('./src/candidates/UploadHtml.html', function(err, data) {
+        if (err) { 
+            res.writeHead(404, {'Content-Type': 'text/html'});
+            return res.end("404 Not Found");
+        }
+        res.writeHead(200, {"Content-Type": "text/html"});
+        res.write(data);
+        return res.end();
+    });
 }
 
 export const postHtmlResume = (req, res) => {
     const body = req.query;
     candidateManager.getHtmlResume(req,res);
+}
+
+export const updateProviderCandidateEllowRateController = (req, res) => {
+    const body = req.body;
+    candidateManager.addProviderCandidateEllowRate(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
 }

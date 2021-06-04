@@ -2192,3 +2192,57 @@
 *       500:
 *         description: Server down
 */
+
+
+
+
+
+
+/**
+* @swagger
+* /candidates/updateProviderCandidateEllowRate:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Link to position
+*     summary: Add a candidate to a given open position
+*     description: For ellow recruiter,candidates array consists of candidateId,ellowrate,billingtypeid,currencytypeid,admincomment. For other users, candidates rray consists of only candidateId
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             positionId:
+*               type: integer
+*             candidateId:
+*               type: integer
+*             ellowRate:
+*               type: integer
+*             currencyTypeId:
+*               type: integer
+*             billingTypeId:
+*               type: integer
+*             adminComment:
+*               type: integer
+*           required:
+*             - positionId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+

@@ -13,6 +13,7 @@ import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
 import fetch from 'node-fetch'
 import * as jwt from 'jsonwebtoken';
+import * as HtmlDocx from 'html-docx-js';
 
 
 const myCache = new nodeCache();
@@ -22,48 +23,14 @@ export const listCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.listCandidates;
 
-        var adminApproveQuery = '', queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
-            body = _body.query, sort = '', searchKey = '%%';
+        var adminApproveQuery = '', queryText = '', queryValues = {},
+            body = _body.query, sort = '';
 
         // Sorting keys to add with the query
-        const orderBy = {
-            "updatedOn": 'ca.updated_on',
-            "candidateFirstName": 'ca.candidate_first_name',
-            "candidateLastName": 'ca.candidate_last_name',
-            "rate": 'ca.rate',
-            "ellowRate": 'cp.ellow_rate',
-            "companyName": 'c.company_name'
-        }
+        const orderBy = { "updatedOn": `chsv."updatedOn"` }
 
-        // Search for filters to add with the query
-        if (filter) {
-            if (filter.name) {
-                filterQuery = filterQuery + ' AND (ca.candidate_first_name ILIKE $name OR ca.candidate_last_name ILIKE $name) '
-                queryValues = Object.assign({ name: filter.candidateName })
-            }
-            if (filter.email) {
-                filterQuery = filterQuery + ' AND email ILIKE $email'
-                queryValues = Object.assign({ email: filter.email }, queryValues)
-            }
-            if (filter.minCost && filter.maxCost) {
-                filterQuery = filterQuery + ' AND (ca.rate BETWEEN $mincost AND $maxcost)'
-                queryValues = Object.assign({ mincost: filter.minCost, maxcost: filter.maxCost }, queryValues)
-            }
-            if (filter.minRate && filter.maxRate) {
-                filterQuery = filterQuery + ' AND (cp.ellow_rate BETWEEN $minrate AND $maxrate)'
-                queryValues = Object.assign({ minrate: filter.minRate, maxrate: filter.maxRate }, queryValues)
-            }
-
-        }
-
-        if (![undefined, null, ''].includes(body.filter)) {
-            searchKey = '%' + body.filter + '%';
-            searchQuery = " AND (ca.candidate_first_name ILIKE $searchkey OR ca.candidate_last_name ILIKE $searchkey OR c.company_name ILIKE $searchkey) "
-            queryValues = Object.assign({ searchkey: searchKey }, queryValues)
-        }
-
-        if (body.userRoleId != 1) {
-            adminApproveQuery = " AND cp.admin_approve_status = 1"
+        if (body.userRoleId != '1') {
+            adminApproveQuery = ` AND chsv."adminApproveStatus" = 1`
         }
 
         if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
@@ -74,8 +41,8 @@ export const listCandidatesDetails = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                queryText = selectQuery + adminApproveQuery + filterQuery + searchQuery + sort;
-                queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId }, queryValues)
+                queryText = selectQuery + adminApproveQuery + sort;
+                queryValues = Object.assign({ positionid: body.positionId}, queryValues)
 
                 const candidatesResult = await client.query(queryService.listCandidates(queryText, queryValues));
                 const jobReceivedIdResult = await client.query(queryService.getJobReceivedId(body));
@@ -170,11 +137,14 @@ export const listAddFromListCandidates = (_body) => {
         (async () => {
             const client = await database()
             try {
-                queryText = selectQuery + roleBasedQuery + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
+                queryText = selectQuery + roleBasedQuery + filterQuery + searchQuery + utils.resourceSort(body), utils.resourcePagination(body);
                 queryValues = Object.assign({ positionid: body.positionId }, queryValues)
+
                 const candidatesResult = await client.query(queryService.listAddFromList(queryText, queryValues));
 
                 queryText = totaltQuery + roleBasedQuery + filterQuery + searchQuery;
+                
+                
                 const totalCountResult = await client.query(queryService.listAddFromListTotal(queryText, queryValues));
 
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates: candidatesResult.rows, totalCount: totalCountResult.rows[0].totalCount } });
@@ -1937,14 +1907,13 @@ export const listProviderResources = (_body) => {
 
 
 export const getHtmlResume = (req, res) => {
-    var HtmlDocx = require('html-docx-js');
     var fs = require('fs');
     
     var inputFile = req.files.htmlres.data;
     var filename = req.files.htmlres.name.split('.').slice(0, -1).join('.')
     
-    var temp = __dirname + '/sample.html'; 
-    var outputFile = __dirname + `/${filename}.docx`;
+    var temp = './sample.html';
+    var outputFile = `./${filename}.docx`;
 
     fs.writeFile(temp, inputFile, function (err) {
             if (err) throw err;
@@ -2062,42 +2031,35 @@ export const getProviderCandidateResume = (_body) => {
 
 
 
-// // >>>>>>> FUNC. >>>>>>>
-// // >>>>>>>>>> Link the candidates to a particular position .
-// export const addProviderCandidateEllowRate = (_body) => {
-//     return new Promise((resolve, reject) => {
-//         (async () => {
-
-//             const client = await database().connect()
-//             try {
-//                 await client.query('BEGIN');
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>> Link the providers candidate to a particular position .
+export const addProviderCandidateEllowRate = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
     
-//                 if (_body.userRoleId == 1) {
-                   
-//                      await  client.query(queryService.linkCandidateByAdminQuery(_body))
+                if (_body.userRoleId == '1') {
+                    console.log(_body)
+                     await  client.query(queryService.updateProviderCandidateEllowRate(_body))
+                     await client.query('COMMIT')
+                     resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
                 
-//                 }
-//                 else {
-                  
-//                 }
-//                 // // Adding client based hiring steps with respect to poition being linked
-//                 // for (const element of candidateList) {
-//                 //     _body.candidateId = element.candidateId;
-//                 //     await client.query(queryService.addCandidateHiringSteps(_body));
-//                 // }
-  
+                }
+                else{
+                    reject({ code: 400, message: "Unauthorized Access", data: {} });
 
-//                 resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
-//             } catch (e) {
-//                 console.log("error : ", e)
-//                 await client.query('ROLLBACK')
-//                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-//             } finally {
-//                 client.release();
-//             }
-//         })().catch(e => {
-//             console.log("error : ", e)
-//             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
-//         })
-//     })
-// }
+                }
+
+            } catch (e) {
+                console.log("error : ", e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("error : ", e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
