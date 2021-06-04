@@ -18,10 +18,4 @@ router
     .post('/ellowRecruiterSignup',ellowRecruiterSignup)
     .get('/getAllAdmins', getellowAdminsDetails)
     .get('/getEmployees',jwtAuth, setData(), getEmployeesFromCompany)
-
-    
-
-    
-    
 export default router;
-
