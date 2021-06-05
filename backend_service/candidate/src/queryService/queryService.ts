@@ -550,6 +550,13 @@ export const addDefaultTraits = (_body) => {
         values: { candidateid: _body.candidateId, employeeid: _body.employeeId, currenttime: currentTime() },
     }
 }
+export const updateCandidateStatus = (_body) => {
+    return {
+        name: 'update-admin-approve-status',
+        text: candidateQuery.updateAdminApproveStatusQuery,
+        values: [_body.candidateId,3,_body.employeeId,currentTime()]
+    }
+}
 
 
 export const removeCandidateFromPositionQuery = (_body) => {
