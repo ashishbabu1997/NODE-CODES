@@ -190,7 +190,9 @@ export const resourceTab = (body) =>{
         case '5':
         vettedQuery=` where (chsv."candidateStatus" = 4 and chsv."createdBy" = ${body.employeeId}) and chsv."blacklisted"=false`
         break; 
-        
+        case '6':
+        vettedQuery=`  where chsv."companyId" not in (select company_id from company where company_type=2) and chsv."candidateStatus"=9`
+        break; 
         default:
         break;
     }
@@ -251,14 +253,10 @@ export const JsonStringParse=(_body)=> {
 }
 export const resourceRoleBased = (reqBody,queryValues) =>{
     let roleBasedQuery = '';
-    if (reqBody.userRoleId != 1) {
+    if (reqBody.userRoleId != '1') {
         roleBasedQuery = ' and  chsv."companyId" = $companyid '
         queryValues=Object.assign({companyid:reqBody.companyId},queryValues)
     }
-    else {
-        roleBasedQuery =  ' and (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid)) ' 
-        queryValues=Object.assign({employeeid:reqBody.employeeId},queryValues)
-    }     
     
     return {roleBasedQuery,queryValues};
 }

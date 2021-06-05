@@ -550,6 +550,13 @@ export const addDefaultTraits = (_body) => {
         values: { candidateid: _body.candidateId, employeeid: _body.employeeId, currenttime: currentTime() },
     }
 }
+export const updateCandidateStatus = (_body) => {
+    return {
+        name: 'update-admin-approve-status',
+        text: candidateQuery.updateAdminApproveStatusQuery,
+        values: [_body.candidateId,3,_body.employeeId,currentTime()]
+    }
+}
 
 
 export const removeCandidateFromPositionQuery = (_body) => {
@@ -960,6 +967,13 @@ export const linkCandidateByAdminQuery = (element) => {
         name: 'link-candidate-with-position',
         text: candidateQuery.linkCandidateWithPositionByAdmin,
         values: [element.positionId, element.candidateId, element.employeeId, currentTime(), element.ellowRate, element.currencyTypeId, element.billingTypeId, element.adminComment, 1],
+    }
+}
+export const updateProviderCandidateEllowRate = (_body) => {
+    return {
+        name: 'link-provider-candidate-with-position',
+        text: candidateQuery.updateEllowRate,
+        values: [_body.positionId, _body.candidateId,_body.ellowRate, _body.currencyTypeId,_body.billingTypeId,_body.adminComment, _body.employeeId, currentTime(),1],
     }
 }
 export const linkCandidateQuery = (element) => {

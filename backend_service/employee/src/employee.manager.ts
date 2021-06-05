@@ -65,11 +65,17 @@ export const createEmployee = (_body) => {
                 else{
                     console.log("Subuser registration")
                 }
-                console.log("User Type",_body.body.accountType)
+                if (_body.body.accountType==1)
+                {
+                    _body.userRoleId=2
+                }
+                else{
+                    _body.userRoleId=3
+                }
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
-                    values: [_body.body.firstName, _body.body.lastName, loweremailId, _body.body.accountType, companyId, _body.body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus],
+                    values: [_body.body.firstName, _body.body.lastName, loweremailId, _body.body.accountType, companyId, _body.body.telephoneNumber, currentTime, _body.userRoleId, approvalStatus, adminApproveStatus],
                 }
                 await client.query(createEmployeeQuery);
                 let message=`A new user ${_body.body.firstName + ' ' + _body.body.lastName} with company name ${_body.body.companyName} has registered with us`
