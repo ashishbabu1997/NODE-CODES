@@ -62,7 +62,7 @@ export const getAllCandidateHiringSteps = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                if(_body.userRoleId==1)
+                if(_body.userRoleId==1 || _body.userRoleId==3)
                 {
                     var result=await client.query(queryService.candidateAllPositionHiringStepsQuery(_body));
                     resolve({ code: 200, message: "Candidate client hiring steps for all positions listed successfully", data: result.rows });
