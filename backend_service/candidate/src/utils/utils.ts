@@ -190,7 +190,9 @@ export const resourceTab = (body) =>{
         case '5':
         vettedQuery=` where (chsv."candidateStatus" = 4 and chsv."createdBy" = ${body.employeeId}) and chsv."blacklisted"=false`
         break; 
-        
+        case '6':
+        vettedQuery=`  where chsv."companyId" not in (select company_id from company where company_type=2) and chsv."candidateStatus"=9`
+        break; 
         default:
         break;
     }
@@ -225,7 +227,7 @@ export const resourceHirerTab = (body) =>{
                 vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
                 break;
             case '3':
-                vettedQuery=' and chsv."candidateStatus"=4 and chsv."blacklisted"=false '
+                vettedQuery=' and ( chsv."candidateStatus"= 9 or chsv."candidateStatus"= 4 ) and chsv."blacklisted"=false '
                 break;
             default:
             break;
