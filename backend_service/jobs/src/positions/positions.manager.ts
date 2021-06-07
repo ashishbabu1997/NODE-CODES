@@ -211,7 +211,7 @@ export const fetchPositionDetails = (_body) => {
                         positionStatus:step.job_status,
                         phoneNumber : step.phoneNumber,
                         companyLinkedinId: step.company_linkedin_id,
-                        skills: []
+                        skills:step.skills
                     }
           
                 })

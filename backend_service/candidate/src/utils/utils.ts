@@ -172,25 +172,25 @@ export const resourceTab = (body) =>{
     
     switch (body.tabValue) {
         
-        case '0':
+        case 'allResources':
         vettedQuery='  where chsv."candidateStatus"=3 and chsv."blacklisted"=false '
         break;
-        case '1':
+        case 'nonVetted':
         vettedQuery='  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
         break;
-        case '2':
+        case 'vetted':
         vettedQuery='  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
         break;
-        case '3':
+        case 'blacklisted':
         vettedQuery='  where chsv."blacklisted"=true'
         break; 
-        case '4':
+        case 'draftFreelancer':
         vettedQuery=`  where chsv."companyId"= (select company_id from company where company_type=2) and  ( chsv."candidateStatus" in (4,9) or chsv."candidateStatus" is null )   and chsv."blacklisted"=false  and chsv."createdBy" not in (select employee_id from employee where user_role_id=1)`
         break; 
-        case '5':
+        case 'myDraft':
         vettedQuery=` where (chsv."candidateStatus" = 4 and chsv."createdBy" = ${body.employeeId}) and chsv."blacklisted"=false`
         break; 
-        case '6':
+        case 'provider':
         vettedQuery=`  where chsv."companyId" not in (select company_id from company where company_type=2) and chsv."candidateStatus"=9`
         break; 
         default:
@@ -203,10 +203,10 @@ export const resourceTab = (body) =>{
 export const resourceHirerTab = (body) =>{
     let vettedQuery = '';
     switch (body.tabValue) {
-        case '1':
+        case 'allResources':
         vettedQuery=' and chsv."candidateStatus"=6 '
         break;
-        case '2':
+        case 'myDraft':
         vettedQuery=' and chsv."candidateStatus"!=6 '
         break;
         default:
@@ -217,16 +217,16 @@ export const resourceHirerTab = (body) =>{
     export const resourceProviderTab = (body) =>{
         let vettedQuery = '';
         switch (body.tabValue) {
-            case '0':
+            case 'allResources':
                 vettedQuery='  and chsv."candidateStatus"=3 and chsv."blacklisted"=false '
                 break;
-            case '1':
+            case 'nonVetted':
                 vettedQuery='  and chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
                 break;
-            case '2':
+            case 'vetted':
                 vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
                 break;
-            case '3':
+            case 'myDraft':
                 vettedQuery=' and ( chsv."candidateStatus"= 9 or chsv."candidateStatus"= 4 ) and chsv."blacklisted"=false '
                 break;
             default:

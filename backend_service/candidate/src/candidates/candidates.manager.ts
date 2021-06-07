@@ -259,14 +259,14 @@ export const linkCandidateWithPosition = (_body) => {
                 let promise = [];
                 const candidateList = _body.candidates;
                 const positionId = _body.positionId;
-                let count = 0;
+                _body.count = 0;
 
                 // Inserting candidates to candidate_positions table
                 if (_body.userRoleId == 1) {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;
                         element.positionId = positionId;
-                        count = count + 1;
+                        _body.count = _body.count + 1;
                         promise.push(client.query(queryService.linkCandidateByAdminQuery(element)));
                     });
                     await Promise.all(promise);
@@ -275,7 +275,7 @@ export const linkCandidateWithPosition = (_body) => {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;
                         element.positionId = positionId;
-                        count = count + 1
+                        _body.count = _body.count + 1
                         promise.push(client.query(queryService.linkCandidateQuery(element)));
 
                     });
@@ -2061,7 +2061,7 @@ export const addProviderCandidateEllowRate = (_body) => {
                     console.log(_body)
                      await  client.query(queryService.updateProviderCandidateEllowRate(_body))
                      await client.query('COMMIT')
-                     resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
+                     resolve({ code: 200, message: "ellow rate added successfully", data: {} });
                 
                 }
                 else{
