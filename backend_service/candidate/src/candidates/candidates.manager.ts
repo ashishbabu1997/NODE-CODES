@@ -14,6 +14,7 @@ import * as https from 'http';
 import fetch from 'node-fetch'
 import * as jwt from 'jsonwebtoken';
 import * as HtmlDocx from 'html-docx-js';
+import { createNotification, createHirerNotifications,createProviderNotifications } from '../common/notifications/notifications';
 
 
 const myCache = new nodeCache();
@@ -1943,6 +1944,10 @@ export const updateProviderCandidateInfo = (_body) => {
                 }
                 else {
                     _body.candidateStatus = 9
+                    var names=await client.query(queryService.getCandidateProfileName(_body));
+                    var message=`${names.rows[0].company}  has submitted a candidate named ${name} for approval`
+                    createProviderNotifications({  companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId,image:null, firstName: names.rows[0].firstname, lastName: names.rows[0].lastname })
+   
                 }
                 await client.query(queryService.updateProviderCandidateDetails(_body));
                 await client.query(queryService.updateProviderCandidateAvailability(_body));
