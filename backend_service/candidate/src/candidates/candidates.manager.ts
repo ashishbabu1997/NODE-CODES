@@ -388,7 +388,7 @@ export const modifyResumeData = (_body) => {
                 else {
 
                     if (_body.userRoleId == 3) {
-                        extractedData["companyId"] = _body.companyId
+                        extractedData["companyId"] = Number(_body.companyId)
                     }
                     else {
                         let freelancer = await client.query(queryService.getFreelancerCompany(_body))
@@ -402,6 +402,8 @@ export const modifyResumeData = (_body) => {
                     }
 
                     candidateId = candidateResult.rows[0].candidate_id;
+                    console.log("CANDIDATEID",candidateId)
+
                 }
                 await client.query('COMMIT');
                 try {
