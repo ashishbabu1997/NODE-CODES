@@ -388,7 +388,7 @@ export const modifyResumeData = (_body) => {
                 else {
 
                     if (_body.userRoleId == 3) {
-                        extractedData["companyId"] = _body.companyId
+                        extractedData["companyId"] = Number(_body.companyId)
                     }
                     else {
                         let freelancer = await client.query(queryService.getFreelancerCompany(_body))
@@ -402,6 +402,8 @@ export const modifyResumeData = (_body) => {
                     }
 
                     candidateId = candidateResult.rows[0].candidate_id;
+                    console.log("CANDIDATEID",candidateId)
+
                 }
                 await client.query('COMMIT');
                 try {
@@ -1945,7 +1947,7 @@ export const updateProviderCandidateInfo = (_body) => {
                 else {
                     _body.candidateStatus = 9
                     var names=await client.query(queryService.getCandidateProfileName(_body));
-                    var message=`${names.rows[0].company}  has submitted a candidate named ${name} for approval`
+                    var message=`${names.rows[0].company}  has submitted a candidate named ${names.rows[0].name} for approval`
                     createProviderNotifications({  companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId,image:null, firstName: names.rows[0].firstname, lastName: names.rows[0].lastname })
    
                 }
