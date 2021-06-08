@@ -1,6 +1,7 @@
 import * as adminController from './admin.controller';
 import * as express from 'express';
 import { jwtAuth } from '../middleware/jwtAuthenticate';
+import {checkJwt} from '../middleware/auth0Jwt'
 import setData from '../middleware/setData';
 import setProfileAuth from '../middleware/setProfileAuth';
 
@@ -15,5 +16,7 @@ router
     .post('/addJobCategory', jwtAuth, adminController.addJobCategory)
     .post('/addSkills', jwtAuth, adminController.addSkills)
     .get('/allSkills',  jwtAuth,setData(), adminController.allSkills)
-    .get('/reports',  adminController.reports)
+    .get('/reports',checkJwt(), adminController.reports)
 export default router;
+
+// Admin@ellow123 
