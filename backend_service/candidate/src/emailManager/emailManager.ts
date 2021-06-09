@@ -18,13 +18,13 @@ export const emailManager = (mailId,subject,path,replacements) =>
     })
 }
 
-export const emailManagerWithAttachments = (mailId,subject,path,replacements,attach) =>
+export const emailManagerWithAttachments = (mailId,subject,path,replacements,attach,cc) =>
 {
     readHTMLFile(path, function(err, html) {
         var template = handlebars.compile(html);
         var htmlToSend = template(replacements);
-        attach.name = replacements.name;
-        sendMailWithAttachments(mailId, subject, htmlToSend,attach, function (err, data) {
+        attach.name = replacements.filename;
+        sendMailWithAttachments(mailId, subject, htmlToSend,cc,attach, function (err, data) {
             if (err) {
                 console.log('Error raised in mail : ',err)
                 throw err;

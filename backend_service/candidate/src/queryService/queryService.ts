@@ -679,6 +679,15 @@ export const getImageDetails = (_body) => {
         values: [_body.candidateId]
     }
 }
+
+export const getLinkToPositionEmailDetails = (_body) => {
+    return {
+        name: 'get-link-to-position-email-details',
+        text: freelancerQuery.getLinkToPositionEmailDetails,
+        values: [_body.candidateId,_body.positionId]
+    }
+}
+
 export const getCompanyDetails = (_body) => {
     return {
         name: 'company-name',

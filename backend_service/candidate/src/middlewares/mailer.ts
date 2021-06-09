@@ -24,10 +24,11 @@ export const sendMail = (email, subject, html, callback) => {
         return callback(null, data);
     });
 }
-export const sendMailWithAttachments = (email, subject, html,attach, callback) => {
+export const sendMailWithAttachments = (email, subject, html,cc,attach, callback) => {
     const mailOptions = {
         from: config.mail.user, 
         to: email, 
+        cc:cc,
         subject:subject,
         html:html,
         attachments:{

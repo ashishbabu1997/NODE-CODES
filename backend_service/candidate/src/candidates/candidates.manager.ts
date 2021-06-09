@@ -287,7 +287,8 @@ export const linkCandidateWithPosition = (_body) => {
                     _body.candidateId = element.candidateId;
                     await client.query(queryService.addCandidateHiringSteps(_body));
                 }
-                await emailService.linkCandidateWithPositionEMail(_body, client);
+
+                await emailService.linkCandidateWithPositionEMail(_body, client,myCache);
                 await client.query('COMMIT')
 
                 resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
@@ -1352,18 +1353,25 @@ export const fetchResumeDataForPdf = (_body) => {
         (async () => {
             const client = await database()
             try {
-
+                console.log("fetchResumeDataForPdf");
+                
                 if (myCache.has(_body.uniqueId)) {
+                console.log("_body.uniqueId");
+
                     let candidateId = myCache.take(_body.uniqueId);
                     _body.candidateId = candidateId;
                     let data = await getResume(_body);
                     delete data["data"].assesmentLink;
                     delete data["data"].assesementComment;
                     delete data["data"].assesments;
+
+                    
                     resolve({ code: 200, message: "Candidate resume shared data fetched successfully", data: data["data"] });
 
                 }
                 else {
+                    console.log("uniqueId does not exist");
+
                     reject({ code: 400, message: "UniqueId expired or does not exist", data: {} });
                 }
             } catch (e) {
