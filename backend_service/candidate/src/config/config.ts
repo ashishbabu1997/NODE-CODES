@@ -12,7 +12,8 @@ export default {
         "newUserAdminTextSubject":"Customer Registration through Link",
         "addCandidatesTextSubject":"Applied Candidates List",
         "addCandidatesUsersTextSubject":"Profile is Shortlisted",
-        "sharePdfTextSubject":"ellow resume"
+        "sharePdfTextSubject":"ellow resume",
+        "linkCandidateHireSubject":"Candidate applied to job post"
     },
     "integerReferences":{
         "profileSubmissionStatusValue":3,

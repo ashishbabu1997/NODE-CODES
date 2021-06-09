@@ -288,3 +288,31 @@ export const capitalize = (s) => {
     if (typeof s !== 'string') return ''
     return s.charAt(0).toUpperCase() + s.slice(1)
   }
+
+
+export const constValues = (type,value) => {
+
+    let crr = {1:'₹',2:'$'},bill={0:'hour',1:'day',2:'month'},
+    readytostart = {1:'immediate',2:'in one week',3:'in two weeks',4:'in one month',5:'more than one month'};
+   
+    switch (type) {
+        case 'currencyType':
+            return crr[value];
+            break;
+        case 'billType':
+            return bill[value];
+            break;
+        case 'readyToStart':
+            return readytostart[value];
+            break;
+        default:
+            break;
+    }
+}
+
+export const shortNameForPdf = (name)=>{
+    let firstName = notNull(name.split(" ")[0][0])?name.split(" ")[0][0]:'',
+    lastName = notNull(name.split(" ")[1])?name.split(" ")[1]:'';
+
+    return firstName+"."+lastName+".pdf"
+}
