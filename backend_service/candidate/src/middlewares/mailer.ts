@@ -9,9 +9,10 @@ const transporter = nodemailer.createTransport({
     }
    
 })
+
 export const sendMail = (email, subject, html, callback) => {
     const mailOptions = {
-        from: config.mail.user, 
+        from: 'ashish.babu@ellow.io', 
         to: email, 
         subject,
         html,

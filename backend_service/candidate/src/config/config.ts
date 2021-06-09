@@ -32,6 +32,7 @@ export default {
     "mail": {
         "service": "gmail",
         "user": "cs@ellow.io",
+        // "password": "nkybzgbltlsoeiur"  
         "password": "ricggklkmqeaxbxx"
     },
     "noreplymail": {
