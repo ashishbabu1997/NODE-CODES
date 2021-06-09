@@ -14,6 +14,7 @@ import * as https from 'http';
 import fetch from 'node-fetch'
 import * as jwt from 'jsonwebtoken';
 import * as HtmlDocx from 'html-docx-js';
+import { createNotification, createHirerNotifications,createProviderNotifications } from '../common/notifications/notifications';
 
 
 const myCache = new nodeCache();
@@ -259,14 +260,14 @@ export const linkCandidateWithPosition = (_body) => {
                 let promise = [];
                 const candidateList = _body.candidates;
                 const positionId = _body.positionId;
-                let count = 0;
+                _body.count = 0;
 
                 // Inserting candidates to candidate_positions table
                 if (_body.userRoleId == 1) {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;
                         element.positionId = positionId;
-                        count = count + 1;
+                        _body.count = _body.count + 1;
                         promise.push(client.query(queryService.linkCandidateByAdminQuery(element)));
                     });
                     await Promise.all(promise);
@@ -275,7 +276,7 @@ export const linkCandidateWithPosition = (_body) => {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;
                         element.positionId = positionId;
-                        count = count + 1
+                        _body.count = _body.count + 1
                         promise.push(client.query(queryService.linkCandidateQuery(element)));
 
                     });
@@ -387,7 +388,7 @@ export const modifyResumeData = (_body) => {
                 else {
 
                     if (_body.userRoleId == 3) {
-                        extractedData["companyId"] = _body.companyId
+                        extractedData["companyId"] = Number(_body.companyId)
                     }
                     else {
                         let freelancer = await client.query(queryService.getFreelancerCompany(_body))
@@ -401,6 +402,8 @@ export const modifyResumeData = (_body) => {
                     }
 
                     candidateId = candidateResult.rows[0].candidate_id;
+                    console.log("CANDIDATEID",candidateId)
+
                 }
                 await client.query('COMMIT');
                 try {
@@ -2062,7 +2065,7 @@ export const addProviderCandidateEllowRate = (_body) => {
                     console.log(_body)
                      await  client.query(queryService.updateProviderCandidateEllowRate(_body))
                      await client.query('COMMIT')
-                     resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
+                     resolve({ code: 200, message: "ellow rate added successfully", data: {} });
                 
                 }
                 else{
