@@ -2264,7 +2264,7 @@
 *     produces:
 *       - application/json
 *     parameters:
-*       - in: query
+*       - in: body
 *         name: candidateId
 *         schema:
 *         type: integer

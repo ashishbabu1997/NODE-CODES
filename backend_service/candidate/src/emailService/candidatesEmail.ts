@@ -84,7 +84,7 @@ export const removeCandidateFromPositionEmail = async (_body, client) => {
 export const linkCandidateWithPositionEMail = async (_body, client) => {
         try {
             const candidateList = _body.candidates;
-            let positionName = '', hirerName = '', count = 0, names = '', firstName, lastName;
+            let positionName = '', hirerName = '', count = _body.count, names = '', firstName, lastName;
 
             var ellowAdmins = await client.query(queryService.getEllowAdmins())
             var positionResult = await client.query(queryService.getPositionDetails(_body));

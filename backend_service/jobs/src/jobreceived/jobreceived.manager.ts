@@ -343,7 +343,7 @@ export const submitCandidateProfile = (_body) => {
                 let candidateLastName=result.rows[0].candidate_last_name;
                 _body.emailAddress=result.rows[0].email_address;
                 _body.sellerCompanyId = result.rows[0].company_id;
-                let jobReceivedId = result.rows[0].job_received_id;
+                let jobReceivedId = null
                 let positionName = _body.positionName;
                 var companyResults = await client.query(queryService.getCompanyName(_body))
                 var companyName=companyResults.rows[0].company_name
