@@ -114,16 +114,20 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             let res = await client.query(queryService.getLinkToPositionEmailDetails(element));
             let { work_experience, name, ready_to_start, relevantExperience } = res.rows[0];
 
-            let cost = element.ellowRate > 0 ? `\n Cost : ${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}` : '';
-            let workExperience = work_experience > 0 ? `\n Total work experience : ${work_experience}` : '';
-            let relevantWorkExperience = relevantExperience > 0 ? `\n Total work experience : ${relevantExperience}` : '';
-            let availability = utils.notNull(ready_to_start) ? `\n Joining : ${utils.constValues('readyToStart', ready_to_start)}` : '';
-
+            let cost = element.ellowRate > 0 ? `\n Rate : ${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}` : '';
+            let workExperience = work_experience > 0 ? `\n Total Years of Work Experience : ${work_experience}` : '';
+            let relevantWorkExperience = relevantExperience > 0 ? `\n Relevant Years of Experience : ${relevantExperience}` : '';
+            let availability = utils.notNull(ready_to_start) ? `\n Availability : ${utils.constValues('readyToStart', ready_to_start)}` : '';
+            var subjectLine=config.text.linkCandidateHireSubject+positionName
             let candidateEmailDetail = cost + workExperience + relevantWorkExperience + availability;
             let replacements = {
+                subjectLine:subjectLine,
                 positionName: positionName,
                 candidateName: name,
-                candidateDetails: candidateEmailDetail,
+                workExperience: workExperience,
+                relevantWorkExperience:relevantWorkExperience,
+                cost:cost,
+                availability:availability,
                 filename: utils.shortNameForPdf(name)
             };
 
@@ -132,11 +136,10 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
             let file = { url: _body.host + "/sharePdf/" + uniqueId };
             console.log("file : ",file);
-
             if (utils.notNull(hirerEmail))
             await htmlToPdf.generatePdf(file, options).then( pdfBuffer => {
                     candidatePdfBuffer = {candidateId:pdfBuffer}
-                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail, config.text.linkCandidateHireSubject, path, replacements, pdfBuffer,adminFilteredEmails,_body.userMailId);
+                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail,subjectLine, path, replacements, pdfBuffer,adminFilteredEmails,_body.userMailId);
             });
         });
 
