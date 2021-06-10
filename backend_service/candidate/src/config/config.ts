@@ -53,7 +53,7 @@ export default {
             "name": "Ashish Babu",
             "appPass": "fywbgnpnjdisipmx"
         },
-        "deena.s@ellow.io": {
+        "deena.s+98@ellow.io": {
             "email": "deena.s@ellow.io",
             "name": "Deena Sasidhar",
             "appPass": "nkybzgbltlsoeiur"
