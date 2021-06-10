@@ -48,7 +48,7 @@ export default {
     },
 
     "mailAuth": {
-        "ashish.babu@ellow.io": {
+        "ashish.babu+7@ellow.io": {
             "email": "ashish.babu@ellow.io",
             "name": "Ashish Babu",
             "appPass": "fywbgnpnjdisipmx"
