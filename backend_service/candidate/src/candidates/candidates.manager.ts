@@ -14,9 +14,8 @@ import * as https from 'http';
 import fetch from 'node-fetch'
 import * as jwt from 'jsonwebtoken';
 import * as HtmlDocx from 'html-docx-js';
-import { createNotification, createHirerNotifications,createProviderNotifications } from '../common/notifications/notifications';
+import { createProviderNotifications } from '../common/notifications/notifications';
 import * as dotenv from "dotenv";
-import {google} from 'googleapis'
 dotenv.config();
 
 const myCache = new nodeCache();

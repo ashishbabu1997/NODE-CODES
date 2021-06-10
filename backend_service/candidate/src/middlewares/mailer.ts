@@ -16,6 +16,17 @@ const transporter = nodemailer.createTransport({
    
 })
 
+const getTransporter = (user,pass) => {
+    return nodemailer.createTransport({
+        service:config.mail.service,
+        auth: {
+            user: user,
+            pass: pass
+        }
+       
+    })
+}
+
 
 
 
@@ -54,35 +65,12 @@ export const sendMailWithAttachments = (email, subject, html,cc,attach, callback
     });
 }
 export const sendMailWithAttachmentsAndCc = (email, subject, html,cc,attach,userMail, callback) => {
-    var userName=userMail.split('@')[0].split('.');
-    var name=userName[0]
-    recepient=util.capitalize(name)
-    if (name=='deena')
-    {
-        user=config.deena.user;
-        pass=config.deena.password
-    }
-    else if (name=='ashish')
-    {
-        user=config.ashish.user
-        pass=config.ashish.password
-
-    }
-    else{
-        user=config.mail.user
-        pass=config.mail.password
-        recepient='ellow Customer Support'
-    }
-    const transpotterCc = nodemailer.createTransport({
-        service:config.mail.service,
-        auth: {
-            user: user,
-            pass: pass
-        }
-       
-    })
+    let userDetails = util.reccuiterMailCheck(userMail);
+    const {user,recipient,pass} = userDetails;
+    const transpotterCc = getTransporter(user,pass);
+    
     const mailOptions = {
-        from: `"${recepient}" <${user}>`, 
+        from: `"${recipient}" <${user}>`, 
         to: email, 
         cc:cc,
         subject:subject,
