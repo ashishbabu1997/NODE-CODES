@@ -15,7 +15,9 @@ import fetch from 'node-fetch'
 import * as jwt from 'jsonwebtoken';
 import * as HtmlDocx from 'html-docx-js';
 import { createNotification, createHirerNotifications,createProviderNotifications } from '../common/notifications/notifications';
-
+import * as dotenv from "dotenv";
+import {google} from 'googleapis'
+dotenv.config();
 
 const myCache = new nodeCache();
 // >>>>>>> FUNC. >>>>>>>
@@ -2095,3 +2097,58 @@ export const addProviderCandidateEllowRate = (_body) => {
         })
     })
 }
+
+
+
+export const mailers = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                 
+                // const oauth2Client = new google.auth.OAuth2(
+                //     process.env.GMAIL_OAUTH_CLIENT_ID,
+                //     process.env.GMAIL_OAUTH_CLIENT_SECRET,
+                //     process.env.GMAIL_OAUTH_REDIRECT_URL,
+                // );
+                
+                // // Generate a url that asks permissions for Gmail scopes
+                // const GMAIL_SCOPES = [
+                //     'https://mail.google.com/',
+                //     'https://www.googleapis.com/auth/gmail.modify',
+                //     'https://www.googleapis.com/auth/gmail.compose',
+                //     'https://www.googleapis.com/auth/gmail.send',
+                // ];
+                
+                // const url = oauth2Client.generateAuthUrl({
+                //     access_type: 'offline',
+                //     scope: GMAIL_SCOPES,
+                // });
+                
+                // console.info(`authUrl: ${url}`);
+                // const code = '4%2F0AY0e-g6FEhMGKmvYw3wKbBs4fRONjXYpzGiW6Ik8UGQmnufgdY3Zo4eZi8XaUgDTg7uPXw';
+ 
+                // const oauth2Client = new google.auth.OAuth2(
+                //   process.env.GMAIL_OAUTH_CLIENT_ID,
+                //   process.env.GMAIL_OAUTH_CLIENT_SECRET,
+                //   process.env.GMAIL_OAUTH_REDIRECT_URL,
+                // );
+               
+                // const getToken ()  => {
+                //   const { tokens } =  oauth2Client.getToken(code);
+                //   console.info(tokens);
+                // };
+               
+                // getToken();
+            } catch (e) {
+                console.log("Error raised from try : ", e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error raised from async : ", e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+

@@ -91,7 +91,9 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
         let candidatePdfBuffer ={};
 
         var ellowAdmins = await client.query(queryService.getEllowAdmins());
+        var fetchUsersMail = await client.query(queryService.getUsersMail(_body));
 
+        _body.userMailId=fetchUsersMail.rows[0].email
         ellowAdmins.rows.forEach(element => {
             adminEmails.push(element.email)
         });
@@ -133,7 +135,7 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             if (utils.notNull(hirerEmail))
             await htmlToPdf.generatePdf(file, options).then( pdfBuffer => {
                     candidatePdfBuffer = {candidateId:pdfBuffer}
-                    emailClient.emailManagerWithAttachments(hirerEmail, config.text.linkCandidateHireSubject, path, replacements, pdfBuffer,adminEmails);
+                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail, config.text.linkCandidateHireSubject, path, replacements, pdfBuffer,adminEmails,_body.userMailId);
             });
         });
 

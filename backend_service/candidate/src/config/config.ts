@@ -36,6 +36,17 @@ export default {
         // "password": "nkybzgbltlsoeiur"  
         "password": "ricggklkmqeaxbxx"
     },
+    "deena": {
+        "service": "gmail",
+        "user": "deena.s@ellow.io",
+        "password": "nkybzgbltlsoeiur"  
+    },
+    "ashish": {
+        "service": "gmail",
+        "user": "ashish.babu@ellow.io",
+        "password": "fywbgnpnjdisipmx"  
+    },
+    
     "noreplymail": {
         "service": "gmail",
         "user": "no-reply@ellow.io",

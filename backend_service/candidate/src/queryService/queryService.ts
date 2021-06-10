@@ -901,6 +901,13 @@ export const insertAuditLog = (_body) => {
         values: ['ellow hiring stage', _body.auditType, _body.auditLogComment, currentTime(), _body.employeeId]
     }
 }
+export const getUsersMail = (_body) => {
+    return {
+        name: 'get-users-mail',
+        text: candidateQuery.getUserMail,
+        values: [_body.employeeId]
+    }
+}
 
 
 export const getAssigneeName = (_body) => {
