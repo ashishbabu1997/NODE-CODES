@@ -41,36 +41,19 @@ export const updateHiringStepDetails = (_body) => {
                                     cName: positions.rows[0].company_name,
                                     pName:positions.rows[0].position_name
                             }; 
-                            if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subj,path,adminReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
-                            if(positions.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(positions.rows[0].email,subj,path,adminReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
+                           
+                            emailClient.emailManagerForNoReply(resourceAllocatedRecruiter.rows[0].email,subj,path,adminReplacements);
+                           
+                            emailClient.emailManagerForNoReply(positions.rows[0].email,subj,path,adminReplacements);
+                            
                             let assigneePath = 'src/emailTemplates/resourceAcceptionAssigneeMailText.html';
                             let assigneeReplacements = {
                                     fName: imageResults.rows[0].candidate_first_name,
                                     lName: imageResults.rows[0].candidate_last_name,
                                     pName:positions.rows[0].position_name
                             }; 
-                            if(assignee.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(assignee.rows[0].email,subj,assigneePath,assigneeReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
+                            
+                            emailClient.emailManagerForNoReply(assignee.rows[0].email,subj,assigneePath,assigneeReplacements);
                             await client.query(queryService.updateAvailabilityOfCandidate(_body));
                             let updatedResourceCounts=await client.query(queryService.updateClosedCount(_body))
                             if(updatedResourceCounts.rows[0].developer_count>=updatedResourceCounts.rows[0].close_count)
@@ -89,22 +72,11 @@ export const updateHiringStepDetails = (_body) => {
                                     cName: positions.rows[0].company_name,
                                     pName:positions.rows[0].position_name
                             }; 
-                            if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
-                            if(positions.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(positions.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
+                            
+                            emailClient.emailManagerForNoReply(resourceAllocatedRecruiter.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
+                            emailClient.emailManagerForNoReply(positions.rows[0].email,subject,rejectionPath,rejectionAdminReplacements);
+                            
+                            
                         }
                         else
                         {
@@ -115,30 +87,11 @@ export const updateHiringStepDetails = (_body) => {
                                     lName: imageResults.rows[0].candidate_last_name,
                                     pName:positions.rows[0].position_name
                             }; 
-                            if(assignee.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(assignee.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
-                            if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
-                            if(positions.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(positions.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
+                            emailClient.emailManagerForNoReply(assignee.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
+                            emailClient.emailManagerForNoReply(resourceAllocatedRecruiter.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
+                            emailClient.emailManagerForNoReply(positions.rows[0].email,ellowSubject,ellowRejectionAssigneePath,ellowRejectionAssigneeReplacements);
+                            
+                          
                         }
                     }
                     else if (candidateClientHiringStepName=='Discussion with resource')

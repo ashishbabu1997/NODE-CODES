@@ -20,7 +20,7 @@ export const addCandidateReviewEmail = async (_body, client) => {
         };
 
         if (utils.notNull(candidateDetailResults.rows[0].email))
-            emailClient.emailManager(candidateDetailResults.rows[0].email, subject, path, replacements);
+            emailClient.emailManagerForNoReply(candidateDetailResults.rows[0].email, subject, path, replacements);
     } catch (e) {
         console.log("error : ", e.message)
         throw new Error('Failed to send mail');
@@ -233,7 +233,7 @@ export const shareResumeSignupEmail = async (_body, client) => {
         if (Array.isArray(ellowAdmins.rows)) {
             ellowAdmins.rows.forEach(element => {
                 if (utils.notNull(element.email))
-                    emailClient.emailManager(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
+                    emailClient.emailManagerForNoReply(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
             })
         }
 
