@@ -1567,9 +1567,10 @@ export const listHirerResources = (_body) => {
             try {
                 queryText = selectQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
                 var queryCountText = totalQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery
-                queryValues = Object.assign({ hirercompanyid: _body.body.companyId }, queryValues)
+                queryValues = Object.assign({ hirercompanyid: Number(_body.body.companyId) }, queryValues)
 
                 const candidatesResult = await client.query(queryService.listCandidatesOfHirer(queryText, queryValues));
+                console.log(candidatesResult.rows)
                 const totalCount = await client.query(queryService.listCandidatesOfHirerCount(queryCountText, queryValues))
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates: candidatesResult.rows, totalCount: totalCount.rows[0].totalCount } });
             } catch (e) {
