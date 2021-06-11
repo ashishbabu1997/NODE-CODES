@@ -152,22 +152,10 @@ export const updateHiringStepDetails = (_body) => {
                                 cName: positions.rows[0].company_name,
                                 pName:positions.rows[0].position_name
                         }; 
-                        if(resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
-                            if(positions.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(positions.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
+                       
+                        emailClient.emailManagerForNoReply(resourceAllocatedRecruiter.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
+                        emailClient.emailManagerForNoReply(positions.rows[0].email,discussionWithResourceSubject,recruitersPath,recruitersReplacements);
+                            
                         let assigneesReplacements = {
                             fName: imageResults.rows[0].candidate_first_name,
                             lName:imageResults.rows[0].candidate_last_name,
@@ -175,28 +163,17 @@ export const updateHiringStepDetails = (_body) => {
                             pName:positions.rows[0].position_name,
                             pcName:positions.rows[0].company_name
                         }; 
-                        if(assignee.rows[0].email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(assignee.rows[0].email,discussionWithResourceSubject,assigneesPath,assigneesReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
+                        
+                        emailClient.emailManagerForNoReply(assignee.rows[0].email,discussionWithResourceSubject,assigneesPath,assigneesReplacements);
+                            
                         let resourcesReplacements = {
                             fName: imageResults.rows[0].candidate_first_name,
                             cName: positions.rows[0].company_name,
                             aName: assignee.rows[0].firstname,
                             pName:positions.rows[0].position_name
                     }; 
-                    if(imageResults.rows[0].email_address!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(imageResults.rows[0].email_address,discussionWithResourceSubject,ressourcesPath,resourcesReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
+                     emailClient.emailManager(imageResults.rows[0].email_address,discussionWithResourceSubject,ressourcesPath,resourcesReplacements);
+                           
                     }
                     else
                     {

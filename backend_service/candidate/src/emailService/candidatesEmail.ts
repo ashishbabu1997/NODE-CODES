@@ -63,13 +63,13 @@ export const removeCandidateFromPositionEmail = async (_body, client) => {
         };
 
         if (utils.notNull(sellerMail))
-            emailClient.emailManager(sellerMail, subject, path, replacements);
+            emailClient.emailManagerForNoReply(sellerMail, subject, path, replacements);
 
         if (utils.notNull(resourceAllocatedRecruiter.rows[0].email))
-            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email, subject, path, replacements);
+            emailClient.emailManagerForNoReply(resourceAllocatedRecruiter.rows[0].email, subject, path, replacements);
 
         if (utils.notNull(hirerDetails.rows[0].email)) {
-            emailClient.emailManager(hirerDetails.rows[0].email, subject, path, replacements);
+            emailClient.emailManagerForNoReply(hirerDetails.rows[0].email, subject, path, replacements);
         }
 
         await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name })
@@ -157,7 +157,7 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             let path = 'src/emailTemplates/addCandidatesUsersText.html';
 
             if (utils.notNull(email))
-                emailClient.emailManager(email, config.text.addCandidatesUsersTextSubject, path, replacements);
+                emailClient.emailManagerForNoReply(email, config.text.addCandidatesUsersTextSubject, path, replacements);
         }
 
         // Sending email to ellow recuiter for each candidate linked to a position
@@ -282,7 +282,7 @@ export const changeAssigneeEmail = async (_body, client) => {
         let path = 'src/emailTemplates/changeAssigneeText.html';
 
         if (utils.notNull(assigneeMail))
-            emailClient.emailManager(assigneeMail, subject, path, replacements);
+            emailClient.emailManagerForNoReply(assigneeMail, subject, path, replacements);
 
         await client.query(queryService.insertAuditLog(_body));
     } catch (e) {

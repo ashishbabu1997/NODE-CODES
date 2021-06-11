@@ -208,7 +208,7 @@ export const clearance = (_body) => {
                             loginPassword: password
                         };
                         if (email != null || '' || undefined) {
-                            emailClient.emailManager(email, subject, path, replacements);
+                            emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
                         }
                         else {
                             console.log("Email Recipient is empty")
@@ -246,7 +246,7 @@ export const clearance = (_body) => {
                             loginPassword: password
                         };
                         if (email != null || '') {
-                            emailClient.emailManager(email, subject, path, replacements);
+                            emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
                         }
                         else {
                             console.log("Email Recipient is empty")
@@ -288,7 +288,7 @@ export const clearance = (_body) => {
                         var reRejectionReplacements = {
                             description: desc
                         };
-                        emailClient.emailManager(employeeMail, reRejectionSubject, reRejectionpath, reRejectionReplacements);
+                        emailClient.emailManagerCustomerSupport(employeeMail, reRejectionSubject, reRejectionpath, reRejectionReplacements);
 
                         if (Array.isArray(ellowAdmins.rows)) {
                             let subject = 'Company Rejection Notification'
@@ -312,13 +312,7 @@ export const clearance = (_body) => {
                         var userReplacements = {
                             description: desc
                         };
-                        if (employeeMail != null || '' || undefined) {
-                            emailClient.emailManager(employeeMail, subject, path, userReplacements);
-
-                        }
-                        else {
-                            console.log("Email Recipient is empty")
-                        }
+                        emailClient.emailManagerCustomerSupport(employeeMail, subject, path, userReplacements)
                         await client.query('COMMIT');
                         if (Array.isArray(ellowAdmins.rows)) {
                             let subject = 'Company Rejection Notification'

@@ -18,6 +18,7 @@ export const emailManager = (mailId,subject,path,replacements) =>
     })
 }
 
+
 export const emailManagerWithAttachments = (mailId,subject,path,replacements,attach,cc) =>
 {
     readHTMLFile(path, function(err, html) {
