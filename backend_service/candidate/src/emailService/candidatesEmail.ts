@@ -20,7 +20,7 @@ export const addCandidateReviewEmail = async (_body, client) => {
         };
 
         if (utils.notNull(candidateDetailResults.rows[0].email))
-            emailClient.emailManager(candidateDetailResults.rows[0].email, subject, path, replacements);
+            emailClient.emailManagerForNoReply(candidateDetailResults.rows[0].email, subject, path, replacements);
     } catch (e) {
         console.log("error : ", e.message)
         throw new Error('Failed to send mail');
@@ -63,13 +63,13 @@ export const removeCandidateFromPositionEmail = async (_body, client) => {
         };
 
         if (utils.notNull(sellerMail))
-            emailClient.emailManager(sellerMail, subject, path, replacements);
+            emailClient.emailManagerForNoReply(sellerMail, subject, path, replacements);
 
         if (utils.notNull(resourceAllocatedRecruiter.rows[0].email))
-            emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email, subject, path, replacements);
+            emailClient.emailManagerForNoReply(resourceAllocatedRecruiter.rows[0].email, subject, path, replacements);
 
         if (utils.notNull(hirerDetails.rows[0].email)) {
-            emailClient.emailManager(hirerDetails.rows[0].email, subject, path, replacements);
+            emailClient.emailManagerForNoReply(hirerDetails.rows[0].email, subject, path, replacements);
         }
 
         await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name })
@@ -109,21 +109,23 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
 
         candidateList.forEach(async (element, index) => {
             element.positionId = _body.positionId;
-
             let path = 'src/emailTemplates/addCandidateHirerMail.html';
             let res = await client.query(queryService.getLinkToPositionEmailDetails(element));
             let { work_experience, name, ready_to_start, relevantExperience } = res.rows[0];
-
-            let cost = element.ellowRate > 0 ? `\n Cost : ${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}` : '';
-            let workExperience = work_experience > 0 ? `\n Total work experience : ${work_experience}` : '';
-            let relevantWorkExperience = relevantExperience > 0 ? `\n Total work experience : ${relevantExperience}` : '';
-            let availability = utils.notNull(ready_to_start) ? `\n Joining : ${utils.constValues('readyToStart', ready_to_start)}` : '';
-
+            let cost = element.ellowRate > 0 ? `\n Rate : ${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}` : '';
+            let workExperience = work_experience > 0 ? `\n Total Years of Work Experience : ${work_experience}` : '';
+            let relevantWorkExperience = relevantExperience > 0 ? `\n Relevant Years of Experience : ${relevantExperience}` : `\n Relevant Years of Experience : Nil`;
+            let availability = utils.notNull(ready_to_start) ? `\n Availability : ${utils.constValues('readyToStart', ready_to_start)}` : '';
+            var subjectLine=config.text.linkCandidateHireSubject+positionName
             let candidateEmailDetail = cost + workExperience + relevantWorkExperience + availability;
             let replacements = {
+                subjectLine:subjectLine,
                 positionName: positionName,
                 candidateName: name,
-                candidateDetails: candidateEmailDetail,
+                workExperience: workExperience,
+                relevantWorkExperience:relevantWorkExperience,
+                cost:cost,
+                availability:availability,
                 filename: utils.shortNameForPdf(name)
             };
 
@@ -132,11 +134,10 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
             let file = { url: _body.host + "/sharePdf/" + uniqueId };
             console.log("file : ",file);
-
             if (utils.notNull(hirerEmail))
             await htmlToPdf.generatePdf(file, options).then( pdfBuffer => {
                     candidatePdfBuffer = {candidateId:pdfBuffer}
-                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail, config.text.linkCandidateHireSubject, path, replacements, pdfBuffer,adminFilteredEmails,_body.userMailId);
+                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail,subjectLine, path, replacements, pdfBuffer,adminFilteredEmails,_body.userMailId);
             });
         });
 
@@ -154,7 +155,7 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             let path = 'src/emailTemplates/addCandidatesUsersText.html';
 
             if (utils.notNull(email))
-                emailClient.emailManager(email, config.text.addCandidatesUsersTextSubject, path, replacements);
+                emailClient.emailManagerForNoReply(email, config.text.addCandidatesUsersTextSubject, path, replacements);
         }
 
         // Sending email to ellow recuiter for each candidate linked to a position
@@ -230,7 +231,7 @@ export const shareResumeSignupEmail = async (_body, client) => {
         if (Array.isArray(ellowAdmins.rows)) {
             ellowAdmins.rows.forEach(element => {
                 if (utils.notNull(element.email))
-                    emailClient.emailManager(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
+                    emailClient.emailManagerForNoReply(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
             })
         }
 
@@ -279,7 +280,7 @@ export const changeAssigneeEmail = async (_body, client) => {
         let path = 'src/emailTemplates/changeAssigneeText.html';
 
         if (utils.notNull(assigneeMail))
-            emailClient.emailManager(assigneeMail, subject, path, replacements);
+            emailClient.emailManagerForNoReply(assigneeMail, subject, path, replacements);
 
         await client.query(queryService.insertAuditLog(_body));
     } catch (e) {

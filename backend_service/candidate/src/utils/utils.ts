@@ -184,10 +184,10 @@ export const resourceHirerTab = (body) => {
     let vettedQuery = '';
     switch (body.tabValue) {
         case 'allResources':
-            vettedQuery = ' and chsv."candidateStatus"=6 '
+            vettedQuery = ' and chsv."candidateStatus"=3 '
             break;
         case 'myDraft':
-            vettedQuery = ' and chsv."candidateStatus"!=6 '
+            vettedQuery = ' and chsv."candidateStatus"=4 '
             break;
         default:
             break;

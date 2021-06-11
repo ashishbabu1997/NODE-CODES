@@ -17,4 +17,9 @@ export default {
         "user": "no-reply@ellow.io",
         "password": "fqlroidzaxmlhgml"
     }
+    ,"csmail": {
+        "service": "gmail",
+        "user": "cs@ellow.io",
+        "password": "ricggklkmqeaxbxx"
+    }
 }

@@ -26,10 +26,9 @@ export const submitFreelancerProfileEmail = async (_body, client) => {
                 await createNotification({ positionId:null, jobReceivedId:null, companyId:_body.companyId, message:message, candidateId:_body.candidateId, notificationType: 'freelancer',userRoleId:_body.userRoleId,employeeId:_body.employeeId,image:imageResults.rows[0].image,firstName:imageResults.rows[0].candidate_first_name,lastName:imageResults.rows[0].candidate_last_name })
                 if(Array.isArray(ellowAdmins.rows))
                                 {
-                                   
                                     ellowAdmins.rows.forEach(element => {
                                         if (utils.notNull(element.email))
-                                            emailClient.emailManager(element.email,config.text.submitProfileSubject,path,replacements);
+                                            emailClient.emailManagerForNoReply(element.email,config.text.submitProfileSubject,path,replacements);
                                         
                                        
 

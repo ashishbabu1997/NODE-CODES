@@ -307,7 +307,7 @@ export const fetchPositionDetails = (_body) => {
                                     ellowAdmins.rows.forEach(element => {
                                         if(element.email!=null || '' || undefined)
                                         {
-                                            emailClient.emailManager(element.email,subject,path,userReplacements);
+                                            emailClient.emailManagerForNoReply(element.email,subject,path,userReplacements);
                                         }
                                         else
                                         {
@@ -381,7 +381,7 @@ export const fetchPositionDetails = (_body) => {
                             ellowAdmins.rows.forEach(element => {
                                 if(element.email!=null || '' || undefined)
                                 {
-                                    emailClient.emailManager(element.email,subject,path,userReplacements);
+                                    emailClient.emailManagerForNoReply(element.email,subject,path,userReplacements);
                                 }
                                 else
                                 {
@@ -492,12 +492,12 @@ export const fetchPositionDetails = (_body) => {
                         else{
                             console.log("Job Status out of bound")
                         }
-                        emailClient.emailManager(userMailAddress,subj,userPath,userReplacements);
+                        emailClient.emailManagerForNoReply(userMailAddress,subj,userPath,userReplacements);
                         if(Array.isArray(ellowAdmins.rows))
                             {
                                 ellowAdmins.rows.forEach(element => {
 
-                                        emailClient.emailManager(element.email,subj,adminPath,adminReplacements);
+                                        emailClient.emailManagerForNoReply(element.email,subj,adminPath,adminReplacements);
             
                                     
                                 })
@@ -586,12 +586,12 @@ export const fetchPositionDetails = (_body) => {
 
                         }
                         else{         
-                            emailClient.emailManager(emailAddress,config.PositionText.subject,path,userReplacements);            
+                            emailClient.emailManagerForNoReply(emailAddress,config.PositionText.subject,path,userReplacements);            
                             var ellowAdmins=await client.query(queryService.getEllowAdmins(_body))
                             if(Array.isArray(ellowAdmins.rows))
                             {
                                 ellowAdmins.rows.forEach(element => {
-                                    emailClient.emailManager(element.email,config.PositionText.subject,adminPath,adminReplacements);
+                                    emailClient.emailManagerForNoReply(element.email,config.PositionText.subject,adminPath,adminReplacements);
                                                                        
                                 })
                                 const message=`The position, ${positionName}  has been removed .`

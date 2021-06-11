@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Candidate applied to job posting</title>
+    <title>{{subjectLine}}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
         table, tr, td, p, h1{
@@ -38,7 +38,7 @@
                                     <td style="color: #000000; font-family: Poppins;">
                                         <h1
                                             style="color: #000000;text-align: left; margin:0;font-size: 32px; font-weight: 600;margin: 0px;">
-                                            Candidate applied to job posting</h1>
+                                            {{subjectLine}}</h1>
                                     </td>
                                 </tr>
                                 <tr>
@@ -47,16 +47,31 @@
                                         <p
                                             style="color:#000000;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
                                             Hi, <br /><br/>
-                                            A candidate {{candidateName}} have been applied for the position {{positionName}} with the below mentioned details<br />
+                                            The following profile is received for your job post, {{positionName}}
+                                              <br />
                                         </p>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="color:#000000">
-                                        <p style="color:#000000; font-size: 18px;line-height: 25px;"> <span
-                                                style="font-size: 18px;color:#1890FF;font-weight: bold;white-space: break-spaces;">{{candidateDetails}}
-                                                </span>
+                                    <td
+                                        style="color: #000000; font-family: Poppins; font-size: 18px; line-height: 25px; padding: 20px 0 0px 0;">
+                                        <p
+                                            style="color:#000000;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
+                                            Name of the Candidate :<b>{{candidateName}}</b> <br /><br/>
+                                            {{workExperience}}<br/>
+                                            {{relevantWorkExperience}}<br/>
+                                            {{availability}} <br/>
+                                            {{cost}} <br/><br>
+                                            Please find attached the resume in pdf format.
                                         </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p style="color:#000000; font-size: 18px;line-height: 25px;"> <span
+                                            style="font-size: 18px;color:#000000;white-space: break-spaces;"><br/><br/>If you are already registered with ellow.io, please <a href="https://ellow.io/" target="_blank" style="font-size: 18px;color:#1890FF;font-weight: bold;white-space: break-spaces;">sign in</a> here </span>
+                                    </p>
+                                        
                                     </td>
                                 </tr>
                                 <tr>
