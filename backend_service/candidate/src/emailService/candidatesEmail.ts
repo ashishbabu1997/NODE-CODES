@@ -109,11 +109,9 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
 
         candidateList.forEach(async (element, index) => {
             element.positionId = _body.positionId;
-
             let path = 'src/emailTemplates/addCandidateHirerMail.html';
             let res = await client.query(queryService.getLinkToPositionEmailDetails(element));
             let { work_experience, name, ready_to_start, relevantExperience } = res.rows[0];
-
             let cost = element.ellowRate > 0 ? `\n Rate : ${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}` : '';
             let workExperience = work_experience > 0 ? `\n Total Years of Work Experience : ${work_experience}` : '';
             let relevantWorkExperience = relevantExperience > 0 ? `\n Relevant Years of Experience : ${relevantExperience}` : `\n Relevant Years of Experience : Nil`;
