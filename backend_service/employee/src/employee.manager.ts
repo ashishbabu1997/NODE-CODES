@@ -159,14 +159,9 @@ export const createEmployee = (_body) => {
                     {
         
                         ellowAdmins.rows.forEach(element => {
-                            if(element.email!=null || '' || undefined)
-                            {
-                                emailClient.emailManager(element.email,config.text.subject,adminPath,adminReplacements);
-                            }
-                            else
-                            {
-                                console.log("Email Recipient is empty")
-                            } 
+
+                                emailClient.emailManagerForNoReply(element.email,config.text.subject,adminPath,adminReplacements);
+                           
                         })
                     }
                 }
@@ -294,14 +289,9 @@ export const createEmployeeByAdmin = (_body) => {
             if(Array.isArray(ellowAdmins.rows))
             {
                 ellowAdmins.rows.forEach(element => {
-                    if(element.email!=null || '' || undefined)
-                    {
-                        emailClient.emailManager(element.email,config.text.newCompanySubject,path,adminReplacements);
-                    }
-                    else
-                    {
-                        console.log("Email Recipient is empty")
-                    } 
+                   
+                        emailClient.emailManagerForNoReply(element.email,config.text.newCompanySubject,path,adminReplacements);
+                   
                             
                     })
                         
@@ -519,14 +509,10 @@ export const resetFreelancerToken = (_body) => {
                     };
                     let path = 'src/emailTemplates/resetConfirmationText.html';
                     const message = `A new employee, ${firstName + ' ' + lastName}  has been registered with us as a freelancer.`
-                    if(emailAddress!=null || '' || undefined)
-                    {
-                        emailClient.emailManager(emailAddress,config.text.resetConfirmSubject,path,replacements);
-                    }
-                    else
-                    {
-                        console.log("Email Recipient is empty")
-                    }                        
+                   
+                        emailClient.emailManagerForNoReply(emailAddress,config.text.resetConfirmSubject,path,replacements);
+                    
+                                         
                     resolve({ code: 200, message: "Employee token reset successfully and password updated", data: {email:emailAddress} });
                 }
                 else

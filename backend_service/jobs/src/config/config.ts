@@ -17,6 +17,11 @@ export default {
         "service": "gmail",
         "user": "cs@ellow.io",
         "password": "ricggklkmqeaxbxx"
+    }, 
+    "noreplymail": {
+        "service": "gmail",
+        "user": "no-reply@ellow.io",
+        "password": "fqlroidzaxmlhgml"
     },
    
     "PositionText": {
