@@ -262,7 +262,10 @@ export const linkCandidateWithPosition = (_body) => {
                 const candidateList = _body.candidates;
                 const positionId = _body.positionId;
                 _body.count = 0;
-
+                let content = [{title:"Total experience",value:3},{title:"Relevant experience",value:5}]
+                let str = '';
+                
+                
                 // Inserting candidates to candidate_positions table
                 if (_body.userRoleId == 1) {
                     candidateList.forEach(element => {
@@ -273,6 +276,7 @@ export const linkCandidateWithPosition = (_body) => {
                     });
                     await Promise.all(promise);
                 }
+        
                 else {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;

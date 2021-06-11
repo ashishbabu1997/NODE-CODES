@@ -6,6 +6,7 @@ import * as utils from '../utils/utils';
 import { WorkExperience } from '../candidates/candidates.controller';
 import { nanoid } from 'nanoid';
 import * as htmlToPdf from "html-pdf-node";
+import { parse } from 'node-html-parser';
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>>Email Function for admin to add reviews,assesment comments about the candidate
@@ -94,6 +95,9 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
         var fetchUsersMail = await client.query(queryService.getUsersMail(_body));
 
         _body.userMailId=fetchUsersMail.rows[0].email
+        _body.adminName=fetchUsersMail.rows[0].name
+        _body.adminNumber=fetchUsersMail.rows[0].telephone_number
+
         ellowAdmins.rows.forEach(element => {
             adminEmails.push(element.email)
         });
@@ -112,17 +116,23 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             let path = 'src/emailTemplates/addCandidateHirerMail.html';
             let res = await client.query(queryService.getLinkToPositionEmailDetails(element));
             let { work_experience, name, ready_to_start, relevantExperience } = res.rows[0];
-            let cost = element.ellowRate > 0 ? `\n Rate : ${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
-            let workExperience = work_experience > 0 ? `\n Total Years of Work Experience : ${work_experience}\n` : '';
-            let relevantWorkExperience = relevantExperience > 0 ? `\nRelevant Years of Experience : ${relevantExperience}\n` : ``;
-            let availability = utils.notNull(ready_to_start) ? `\n Availability : ${utils.constValues('readyToStart', ready_to_start)}\n` : '';
+            let cost = element.ellowRate > 0 ? ` ${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
+            let workExperience = work_experience > 0 ? ` ${work_experience}` : '';
+            let relevantWorkExperience = relevantExperience > 0 ? ` ${relevantExperience}\n` :'----';
+            let availability = utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
             var subjectLine=config.text.linkCandidateHireSubject+positionName
             let candidateEmailDetail = cost + workExperience + relevantWorkExperience + availability;
+    
             let replacements = {
                 subjectLine:subjectLine,
                 positionName: positionName,
                 candidateName: name,
-                candidateDetails: candidateEmailDetail,
+                cost:cost,
+                workExperience:workExperience,
+                relevantWorkExperience:relevantWorkExperience,
+                availability:availability,
+                name:_body.adminName,
+                number:_body.adminNumber,
                 filename: utils.shortNameForPdf(name)
             };
 

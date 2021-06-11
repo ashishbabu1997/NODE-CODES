@@ -273,7 +273,7 @@ export const capitalize = (s) => {
 export const constValues = (type, value) => {
 
     let crr = { 1: '₹', 2: '$' }, bill = { 0: 'hour', 1: 'day', 2: 'month' },
-        readytostart = { 1: 'immediate', 2: 'in one week', 3: 'in two weeks', 4: 'in one month', 5: 'more than one month' };
+        readytostart = { 1: 'Immediate', 2: 'In one week', 3: 'In two weeks', 4: 'In one month', 5: 'More than one month' };
 
     switch (type) {
         case 'currencyType':

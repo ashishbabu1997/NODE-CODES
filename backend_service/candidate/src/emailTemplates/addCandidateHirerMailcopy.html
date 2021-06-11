@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title></title>
+    <title>{{subjectLine}}</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
         table, tr, td, p, h1{
@@ -38,7 +38,7 @@
                                     <td style="color: #000000; font-family: Poppins;">
                                         <h1
                                             style="color: #000000;text-align: left; margin:0;font-size: 32px; font-weight: 600;margin: 0px;">
-                                            </h1>
+                                            {{subjectLine}}</h1>
                                     </td>
                                 </tr>
                                 <tr>
@@ -59,24 +59,23 @@
                                         style="color: #000000; font-family: Poppins; font-size: 18px; line-height: 25px; padding: 20px 0 0px 0;">
                                         <p
                                             style="color:#000000;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
-                                            <ul  style="color:#000000;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
+                                            <ul id="ul" style="color:#000000;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
                                        
+                                                 <li>
+                                                    Name of the Candidate :<b>{{candidateName}}</b>
+                                                </li>
                                                 <li>
-                                                Name of the Candidate :<b>{{candidateName}}</b>
-                                               </li>
-                                               <li>
-                                                Total Years of Experience :<b>{{workExperience}}</b>
-                                               </li>
-                                               <li>
-                                                Relevant Years of Experience:<b>{{relevantWorkExperience}}</b>
-                                               </li>
-                                               <li>
-                                                Availability :<b>{{availability}}</b>
-                                               </li>
-                                               <li>
-                                                Rate :<b>{{cost}}</b>
-                                               </li> 
+                                                    Total Years of Experience :<b>{{workExperience}}</b>
+                                                </li>
+                                                     
+                                                <li>
+                                                    Availability :<b>{{availability}}</b>
+                                                </li>
+                                                <li>
+                                                    Rate :<b>{{cost}}</b>
+                                                </li> 
                                             </ul>
+
                                             <br />
                                             
                                         </p>
@@ -96,8 +95,7 @@
                                         <p
                                             style="color:#000000;font-size: 16px;text-align: justify;line-height: 25px;margin-top: 30px;">
                                             With regards, <br />
-                                            {{name}}<br />
-                                            {{number}}
+                                            Team <b style="color:#000000">ellow.io</b>
                                         </p>
                                     </td>
                                 </tr>

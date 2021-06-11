@@ -13,7 +13,7 @@ export default {
         "addCandidatesTextSubject": "Applied Candidates List",
         "addCandidatesUsersTextSubject": "Profile is Shortlisted",
         "sharePdfTextSubject": "ellow resume",
-        "linkCandidateHireSubject": "ellow.io Profile details | "
+        "linkCandidateHireSubject": " New profile from ellow.io |  "
     },
     "integerReferences": {
         "profileSubmissionStatusValue": 3,
