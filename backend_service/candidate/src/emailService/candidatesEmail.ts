@@ -114,7 +114,7 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             let { work_experience, name, ready_to_start, relevantExperience } = res.rows[0];
             let cost = element.ellowRate > 0 ? `\n Rate : ${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
             let workExperience = work_experience > 0 ? `\n Total Years of Work Experience : ${work_experience}\n` : '';
-            let relevantWorkExperience = relevantExperience > 0 ? `\nRelevant Years of Experience : ${relevantExperience}\n` : ``;
+            let relevantWorkExperience = relevantExperience > 0 ? `\n Relevant Years of Experience : ${relevantExperience}\n` : ``;
             let availability = utils.notNull(ready_to_start) ? `\n Availability : ${utils.constValues('readyToStart', ready_to_start)}\n` : '';
             var subjectLine=config.text.linkCandidateHireSubject+positionName
             let candidateEmailDetail = cost + workExperience + relevantWorkExperience + availability;
