@@ -985,6 +985,15 @@ export const linkCandidateByAdminQuery = (element) => {
         values: [element.positionId, element.candidateId, element.employeeId, currentTime(), element.ellowRate, element.currencyTypeId, element.billingTypeId, element.adminComment, 1],
     }
 }
+
+export const updatePositionUpdatedOnAndBy = (_body) => {
+    return {
+        name: 'Update-position-date-and-by',
+        text: candidateQuery.updatePositionDateAndBy,
+        values: [_body.positionId,_body.employeeId,currentTime()],
+    }
+}
+
 export const updateProviderCandidateEllowRate = (_body) => {
     return {
         name: 'link-provider-candidate-with-position',
