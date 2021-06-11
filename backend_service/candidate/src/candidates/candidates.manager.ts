@@ -289,6 +289,8 @@ export const linkCandidateWithPosition = (_body) => {
                     await client.query(queryService.addCandidateHiringSteps(_body));
                 }
 
+                await client.query(queryService.updatePositionUpdatedOnAndBy(_body));
+
                 await emailService.linkCandidateWithPositionEMail(_body, client,myCache);
                 await client.query('COMMIT')
 
