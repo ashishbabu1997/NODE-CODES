@@ -563,7 +563,7 @@ export const allSkills = (_body) => {
 }
 
 //>>>>>>> FUNC. >>>>>>> 
-//>>>>>>>>>> Fetch recuiter reports
+//>>>>>>>>>> Fetch recruiter reports
 export const reports = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -578,7 +578,7 @@ export const reports = (_body) => {
                     groupByPosition = ` group by ("RecruiterName", "PositionStatus") `,
                     groupByCandidatePosition = ` group by ("RecruiterName") `,
                     groupByCompanyReg = `group by "assesedBy", "adminApproveStatus" order by "assesedBy","status"`,
-                    groupByFreelancer=`group by "currentStatus", allocated_to order by allocated_to, "currentStatus" desc`
+                    groupByFreelancer=`group by "candidateStatus", allocated_to order by allocated_to, "candidateStatus" desc`
 
                 if (utils.notNull(_body.fromDate) && utils.notNull(_body.toDate)) {
                     dateRangeCandidate = ` and ca.created_on between ${_body.fromDate} and ${_body.toDate} `
