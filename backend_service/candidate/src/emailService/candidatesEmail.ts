@@ -139,7 +139,6 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
                 'number':_body.adminNumber,
                 'filename': utils.shortNameForPdf(name)
             };
-          
             let uniqueId = nanoid(),candidateId = element.candidateId;
             myCache.set(uniqueId, candidateId);
             let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
