@@ -116,26 +116,30 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             let path = 'src/emailTemplates/addCandidateHirerMail.html';
             let res = await client.query(queryService.getLinkToPositionEmailDetails(element));
             let { work_experience, name, ready_to_start, relevantExperience } = res.rows[0];
-            let cost = element.ellowRate > 0 ? ` ${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
+            let cost = element.ellowRate > 0 ? `${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
             let workExperience = work_experience > 0 ? ` ${work_experience}` : '';
-            let relevantWorkExperience = relevantExperience > 0 ? ` ${relevantExperience}\n` :'----';
+            let relevantWorkExperience = relevantExperience > 0 ? ` ${relevantExperience}\n` :'';
             let availability = utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
             var subjectLine=config.text.linkCandidateHireSubject+positionName
-            let candidateEmailDetail = cost + workExperience + relevantWorkExperience + availability;
-    
-            let replacements = {
-                subjectLine:subjectLine,
-                positionName: positionName,
-                candidateName: name,
-                cost:cost,
-                workExperience:workExperience,
-                relevantWorkExperience:relevantWorkExperience,
-                availability:availability,
-                name:_body.adminName,
-                number:_body.adminNumber,
-                filename: utils.shortNameForPdf(name)
-            };
+            _body.arraylist=[]
+            if(relevantWorkExperience=='')
+            {
+                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+            }
+            else
+            {
+                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
 
+            }
+            console
+            let replacements = {
+                'positionName': positionName,
+                'keys':_body.arraylist,
+                'name':_body.adminName,
+                'number':_body.adminNumber,
+                'filename': utils.shortNameForPdf(name)
+            };
+          
             let uniqueId = nanoid(),candidateId = element.candidateId;
             myCache.set(uniqueId, candidateId);
             let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
