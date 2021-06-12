@@ -148,7 +148,7 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             if (utils.notNull(hirerEmail))
             await htmlToPdf.generatePdf(file, options).then( pdfBuffer => {
                     candidatePdfBuffer = {candidateId:pdfBuffer}
-                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail,subjectLine, path, replacements, pdfBuffer,adminFilteredEmails,_body.userMailId);
+                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail,subjectLine, path, replacements, pdfBuffer,_body.userMailId);
             });
         });
 

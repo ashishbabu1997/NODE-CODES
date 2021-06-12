@@ -34,13 +34,13 @@ export const emailManagerWithAttachments = (mailId,subject,path,replacements,att
         });
     })
 }
-export const emailManagerWithAttachmentsAndCc = (mailId,subject,path,replacements,attach,cc,userMail) =>
+export const emailManagerWithAttachmentsAndCc = (mailId,subject,path,replacements,attach,userMail) =>
 {
     readHTMLFile(path, function(err, html) {
         var template = handlebars.compile(html);
         var htmlToSend = template(replacements);
         attach.name = replacements.filename;
-        sendMailWithAttachmentsAndCc(mailId, subject, htmlToSend,cc,attach,userMail, function (err, data) {
+        sendMailWithAttachmentsAndCc(mailId, subject, htmlToSend,attach,userMail, function (err, data) {
             if (err) {
                 console.log('Error raised in mail : ',err)
                 throw err;
