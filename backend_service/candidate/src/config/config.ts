@@ -53,7 +53,7 @@ export default {
             "name": "Ashish Babu",
             "appPass": "fywbgnpnjdisipmx"
         },
-        "deena.s+98@ellow.io": {
+        "deena.s@ellow.io": {
             "email": "deena.s@ellow.io",
             "name": "Deena Sasidhar",
             "appPass": "nkybzgbltlsoeiur"
@@ -67,7 +67,32 @@ export default {
             "email": "no-reply@ellow.io",
             "name": "No-reply",
             "password": "fqlroidzaxmlhgml"
-        }
+        },
+        "jjoseph@ellow.io": {
+            "email": "jjoseph@ellow.io",
+            "name": "Jyothis Joseph",
+            "password": "nzzcthkajlwhmlga"
+        },
+        "ramya.nair@ellow.io": {
+            "email": "ramya.nair@ellow.io",
+            "name": "Ramya Nair",
+            "password": "Wulxavjfjzynpqrf"
+        },
+        "anju.r@ellow.io": {
+            "email": "anju.r@ellow.io",
+            "name": "Anju R Pillai",
+            "password": "fgbezpitwikaftuo"
+        },
+        "jesleen@ellow.io": {
+            "email": "jesleen@ellow.io",
+            "name": "Jesleen Varghese",
+            "password": "fqmgcanrqdexyqlx"
+        },
+        "jithin.s@ellow.io": {
+            "email": "jithin.s@ellow.io",
+            "name": "Jithin S",
+            "password": "cvsbksxtrmawcfrv"
+        },
     },
 
     "noreplymail": {
