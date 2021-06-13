@@ -77,14 +77,14 @@ export const allUsersList = (_body) => {
             const client = await database()
             try {
                 _body.queryValues = {};
-                var filterQuery = '', filter = _body.body.filter,body = _body.query, searchKey = '%%';
+                var filterQuery = '', filter = _body.body.filter, body = _body.query, searchKey = '%%';
                 // Search for filters in the body        
-                
+
                 let filterResult = utils.usersFilter(filter, filterQuery);
                 filterQuery = filterResult.filterQuery;
-                
+
                 if (utils.notNull(body.searchKey))
-                    searchKey = body.searchKey + '%';                
+                    searchKey = body.searchKey + '%';
 
                 _body.queryValues = Object.assign({ searchkey: searchKey }, _body.queryValues)
                 _body.queryCountText = adminQuery.allRegisteredUsersListCount + filterQuery;
@@ -208,7 +208,7 @@ export const clearance = (_body) => {
                             loginPassword: password
                         };
                         if (email != null || '' || undefined) {
-                            emailClient.emailManager(email, subject, path, replacements);
+                            emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
                         }
                         else {
                             console.log("Email Recipient is empty")
@@ -246,7 +246,7 @@ export const clearance = (_body) => {
                             loginPassword: password
                         };
                         if (email != null || '') {
-                            emailClient.emailManager(email, subject, path, replacements);
+                            emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
                         }
                         else {
                             console.log("Email Recipient is empty")
@@ -288,7 +288,7 @@ export const clearance = (_body) => {
                         var reRejectionReplacements = {
                             description: desc
                         };
-                        emailClient.emailManager(employeeMail, reRejectionSubject, reRejectionpath, reRejectionReplacements);
+                        emailClient.emailManagerCustomerSupport(employeeMail, reRejectionSubject, reRejectionpath, reRejectionReplacements);
 
                         if (Array.isArray(ellowAdmins.rows)) {
                             let subject = 'Company Rejection Notification'
@@ -312,13 +312,7 @@ export const clearance = (_body) => {
                         var userReplacements = {
                             description: desc
                         };
-                        if (employeeMail != null || '' || undefined) {
-                            emailClient.emailManager(employeeMail, subject, path, userReplacements);
-
-                        }
-                        else {
-                            console.log("Email Recipient is empty")
-                        }
+                        emailClient.emailManagerCustomerSupport(employeeMail, subject, path, userReplacements)
                         await client.query('COMMIT');
                         if (Array.isArray(ellowAdmins.rows)) {
                             let subject = 'Company Rejection Notification'
@@ -563,37 +557,45 @@ export const allSkills = (_body) => {
 }
 
 //>>>>>>> FUNC. >>>>>>> 
-//>>>>>>>>>> Fetch recuiter reports
+//>>>>>>>>>> Fetch recruiter reports
 export const reports = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                let dateRangeCandidate = "", dateRangePosition = "", dateRangeCandidatePosition = "",dateRangeCompanyReg ='';
+                let dateRangeCandidate = "", dateRangePosition = "",
+                    dateRangeCandidatePosition = "", dateRangeCompanyReg = '',
+                    dateRangeFreelancer = '';
+
                 let groupByCandidate = ` group by ("RecruiterName", "CandidateStatus") `,
                     groupByPosition = ` group by ("RecruiterName", "PositionStatus") `,
                     groupByCandidatePosition = ` group by ("RecruiterName") `,
-                    groupByCompanyReg = `group by "assesedBy", "adminApproveStatus" order by "assesedBy","status"`
+                    groupByCompanyReg = `group by "assesedBy", "adminApproveStatus" order by "assesedBy","status"`,
+                    groupByFreelancer=`group by "candidateStatus", allocated_to order by allocated_to, "candidateStatus" desc`
 
                 if (utils.notNull(_body.fromDate) && utils.notNull(_body.toDate)) {
                     dateRangeCandidate = ` and ca.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangePosition = ` and p.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangeCandidatePosition = ` and cp.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangeCompanyReg = `where "updatedDate" between ${_body.fromDate} and ${_body.toDate}`
+                    dateRangeFreelancer=`and c.created_on between ${_body.fromDate} and ${_body.toDate}`
                 }
 
                 let cpResults = await client.query(queryService.fetchCandidatePositionReports(dateRangeCandidatePosition, groupByCandidatePosition));
                 let pResults = await client.query(queryService.fetchPositionReports(dateRangePosition, groupByPosition));
                 let cResults = await client.query(queryService.fetchCandidateReports(dateRangeCandidate, groupByCandidate));
                 let crResults = await client.query(queryService.fetchCompanyRegReports(dateRangeCompanyReg, groupByCompanyReg));
+                let fResults = await client.query(queryService.fetchFreelancerReports(dateRangeFreelancer, groupByFreelancer));
 
                 let data = {
                     'CandidatePositionReports': cpResults.rows,
                     'PositionReports': pResults.rows,
                     'CandidateReports': cResults.rows,
-                    'CompanyRegistrationReports': crResults.rows
+                    'CompanyRegistrationReports': crResults.rows,
+                    'FreelancerReports': fResults.rows
                 }
+                
                 await client.query('COMMIT');
                 resolve({ code: 200, message: "Reports fetched successfully", data });
 

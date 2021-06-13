@@ -14,8 +14,11 @@ import * as https from 'http';
 import fetch from 'node-fetch'
 import * as jwt from 'jsonwebtoken';
 import * as HtmlDocx from 'html-docx-js';
-import { createNotification, createHirerNotifications,createProviderNotifications } from '../common/notifications/notifications';
+import { createProviderNotifications } from '../common/notifications/notifications';
+import * as dotenv from "dotenv";
+import * as emailClient from '../emailManager/emailManager';
 
+dotenv.config();
 
 const myCache = new nodeCache();
 // >>>>>>> FUNC. >>>>>>>
@@ -261,7 +264,10 @@ export const linkCandidateWithPosition = (_body) => {
                 const candidateList = _body.candidates;
                 const positionId = _body.positionId;
                 _body.count = 0;
-
+                let content = [{title:"Total experience",value:3},{title:"Relevant experience",value:5}]
+                let str = '';
+                
+                
                 // Inserting candidates to candidate_positions table
                 if (_body.userRoleId == 1) {
                     candidateList.forEach(element => {
@@ -272,6 +278,7 @@ export const linkCandidateWithPosition = (_body) => {
                     });
                     await Promise.all(promise);
                 }
+        
                 else {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;
@@ -287,7 +294,10 @@ export const linkCandidateWithPosition = (_body) => {
                     _body.candidateId = element.candidateId;
                     await client.query(queryService.addCandidateHiringSteps(_body));
                 }
-                await emailService.linkCandidateWithPositionEMail(_body, client);
+
+                await client.query(queryService.updatePositionUpdatedOnAndBy(_body));
+
+                await emailService.linkCandidateWithPositionEMail(_body, client,myCache);
                 await client.query('COMMIT')
 
                 resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
@@ -1352,18 +1362,25 @@ export const fetchResumeDataForPdf = (_body) => {
         (async () => {
             const client = await database()
             try {
-
+                console.log("fetchResumeDataForPdf");
+                
                 if (myCache.has(_body.uniqueId)) {
+                console.log("_body.uniqueId");
+
                     let candidateId = myCache.take(_body.uniqueId);
                     _body.candidateId = candidateId;
                     let data = await getResume(_body);
                     delete data["data"].assesmentLink;
                     delete data["data"].assesementComment;
                     delete data["data"].assesments;
+
+                    
                     resolve({ code: 200, message: "Candidate resume shared data fetched successfully", data: data["data"] });
 
                 }
                 else {
+                    console.log("uniqueId does not exist");
+
                     reject({ code: 400, message: "UniqueId expired or does not exist", data: {} });
                 }
             } catch (e) {
@@ -1558,9 +1575,10 @@ export const listHirerResources = (_body) => {
             try {
                 queryText = selectQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
                 var queryCountText = totalQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery
-                queryValues = Object.assign({ hirercompanyid: _body.body.companyId }, queryValues)
+                queryValues = Object.assign({ hirercompanyid: Number(_body.body.companyId) }, queryValues)
 
                 const candidatesResult = await client.query(queryService.listCandidatesOfHirer(queryText, queryValues));
+                console.log(candidatesResult.rows)
                 const totalCount = await client.query(queryService.listCandidatesOfHirerCount(queryCountText, queryValues))
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates: candidatesResult.rows, totalCount: totalCount.rows[0].totalCount } });
             } catch (e) {
@@ -2064,6 +2082,7 @@ export const addProviderCandidateEllowRate = (_body) => {
                 if (_body.userRoleId == '1') {
                     console.log(_body)
                      await  client.query(queryService.updateProviderCandidateEllowRate(_body))
+                     await emailService.mailToHirerWithEllowRate(_body, client,myCache);
                      await client.query('COMMIT')
                      resolve({ code: 200, message: "ellow rate added successfully", data: {} });
                 
@@ -2084,3 +2103,76 @@ export const addProviderCandidateEllowRate = (_body) => {
         })
     })
 }
+
+
+
+export const mailers = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                 
+                // const oauth2Client = new google.auth.OAuth2(
+                //     process.env.GMAIL_OAUTH_CLIENT_ID,
+                //     process.env.GMAIL_OAUTH_CLIENT_SECRET,
+                //     process.env.GMAIL_OAUTH_REDIRECT_URL,
+                // );
+                
+                // // Generate a url that asks permissions for Gmail scopes
+                // const GMAIL_SCOPES = [
+                //     'https://mail.google.com/',
+                //     'https://www.googleapis.com/auth/gmail.modify',
+                //     'https://www.googleapis.com/auth/gmail.compose',
+                //     'https://www.googleapis.com/auth/gmail.send',
+                // ];
+                
+                // const url = oauth2Client.generateAuthUrl({
+                //     access_type: 'offline',
+                //     scope: GMAIL_SCOPES,
+                // });
+                
+                // console.info(`authUrl: ${url}`);
+                // const code = '4%2F0AY0e-g6FEhMGKmvYw3wKbBs4fRONjXYpzGiW6Ik8UGQmnufgdY3Zo4eZi8XaUgDTg7uPXw';
+ 
+                // const oauth2Client = new google.auth.OAuth2(
+                //   process.env.GMAIL_OAUTH_CLIENT_ID,
+                //   process.env.GMAIL_OAUTH_CLIENT_SECRET,
+                //   process.env.GMAIL_OAUTH_REDIRECT_URL,
+                // );
+               
+                // const getToken ()  => {
+                //   const { tokens } =  oauth2Client.getToken(code);
+                //   console.info(tokens);
+                // };
+               
+                // getToken();
+                let adminReplacements =
+                {
+                    
+                };
+
+                let adminPath = 'src/emailTemplates/ind.html';
+                var ellowAdmins = await client.query(queryService.getEllowAdmins())
+                console.log(ellowAdmins)
+                if (Array.isArray(ellowAdmins.rows)) {
+                    ellowAdmins.rows.forEach(element => {
+                        if (utils.notNull(element.email))
+                            emailClient.emailManagerForNoReply(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
+                    })
+                    resolve({ code: 200, message: "Mail Send", data: {} });
+                }
+
+            } catch (e) {
+                console.log("Error raised from try : ", e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error raised from async : ", e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+
+

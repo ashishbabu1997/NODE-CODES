@@ -679,6 +679,15 @@ export const getImageDetails = (_body) => {
         values: [_body.candidateId]
     }
 }
+
+export const getLinkToPositionEmailDetails = (_body) => {
+    return {
+        name: 'get-link-to-position-email-details',
+        text: freelancerQuery.getLinkToPositionEmailDetails,
+        values: [_body.candidateId,_body.positionId]
+    }
+}
+
 export const getCompanyDetails = (_body) => {
     return {
         name: 'company-name',
@@ -892,6 +901,13 @@ export const insertAuditLog = (_body) => {
         values: ['ellow hiring stage', _body.auditType, _body.auditLogComment, currentTime(), _body.employeeId]
     }
 }
+export const getUsersMail = (_body) => {
+    return {
+        name: 'get-users-mail',
+        text: candidateQuery.getUserMail,
+        values: [_body.employeeId]
+    }
+}
 
 
 export const getAssigneeName = (_body) => {
@@ -969,6 +985,15 @@ export const linkCandidateByAdminQuery = (element) => {
         values: [element.positionId, element.candidateId, element.employeeId, currentTime(), element.ellowRate, element.currencyTypeId, element.billingTypeId, element.adminComment, 1],
     }
 }
+
+export const updatePositionUpdatedOnAndBy = (_body) => {
+    return {
+        name: 'Update-position-date-and-by',
+        text: candidateQuery.updatePositionDateAndBy,
+        values: [_body.positionId,_body.employeeId,currentTime()],
+    }
+}
+
 export const updateProviderCandidateEllowRate = (_body) => {
     return {
         name: 'link-provider-candidate-with-position',

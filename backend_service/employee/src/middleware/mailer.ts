@@ -21,13 +21,13 @@ const noreplyTransporter = nodemailer.createTransport({
 })
 export const sendMail = (email, subject, html, callback) => {
     const mailOptions = {
-        from: config.mail.user, 
+        from: `"ellow Customer Support" <${config.mail.user}>`, 
         to: email, 
         subject,
         html
     };
     
-    noreplyTransporter.sendMail(mailOptions, function (err, data) {
+    transporter.sendMail(mailOptions, function (err, data) {
         if (err) {
             return callback(err, null);
         }
@@ -37,7 +37,7 @@ export const sendMail = (email, subject, html, callback) => {
 
 export const sendUserMail = (email, subject, html, callback) => {
     const mailOptions = {
-        from: config.noreplymail.user, 
+        from: `"noreply@ellow.io" <${config.noreplymail.user}>`, 
         to: email, 
         subject,
         html

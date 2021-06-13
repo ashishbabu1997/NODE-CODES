@@ -22,5 +22,6 @@ router
     .post('/changePositionStatus',jwtAuth, setData(),validate(jobStatusSchema),positionController.changePositionStatus)
     .post('/deletePosition',jwtAuth, setData(),validate(positionIdSchema),positionController.positionDeletion)
     .put('/updateReadStatus',jwtAuth, setData(),validate(positionIdSchema),positionController.updateReadStatus)
+    .put('/resetReadStatus',jwtAuth, setData(),validate(positionIdSchema),positionController.resetReadStatusAsNew)
     .put('/updateAllocatedTo',jwtAuth, setData(),positionController.updateAllocatedTo)
 export default router;
