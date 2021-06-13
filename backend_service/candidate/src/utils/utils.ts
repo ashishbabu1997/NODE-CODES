@@ -147,6 +147,8 @@ export const resourceSearch = (body, queryValues) => {
     return { searchQuery, queryValues };
 }
 
+
+
 export const resourceTab = (body) => {
     var vettedQuery = '';
 
