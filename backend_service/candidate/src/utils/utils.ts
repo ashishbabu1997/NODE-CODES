@@ -152,27 +152,27 @@ export const resourceTab = (body) => {
 
     switch (body.tabValue) {
         
-        case '0':
-        vettedQuery='  where chsv."candidateStatus"=3 and chsv."blacklisted"=false '
-        break;
-        case '1':
-        vettedQuery='  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
-        break;
-        case '2':
-        vettedQuery='  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
-        break;
-        case '3':
-        vettedQuery='  where chsv."blacklisted"=true'
-        break; 
-        case '4':
-        vettedQuery=`  where chsv."companyId"= (select company_id from company where company_type=2) and  ( chsv."candidateStatus" in (4,9) or chsv."candidateStatus" is null )   and chsv."blacklisted"=false  and chsv."createdBy" not in (select employee_id from employee where user_role_id=1)`
-        break; 
-        case '5':
-        vettedQuery=` where (chsv."candidateStatus" = 4 and chsv."createdBy" = ${body.employeeId}) and chsv."blacklisted"=false`
-        break; 
-        case '6':
-        vettedQuery=`  where chsv."companyId" not in (select company_id from company where company_type=2) and chsv."candidateStatus"=9`
-        break; 
+        case 'allResources':
+            vettedQuery = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false '
+            break;
+        case 'nonVetted':
+            vettedQuery = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
+            break;
+        case 'vetted':
+            vettedQuery = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
+            break;
+        case 'blacklisted':
+            vettedQuery = '  where chsv."blacklisted"=true'
+            break;
+        case 'draftFreelancer':
+            vettedQuery = `  where chsv."companyId"= (select company_id from company where company_type=2) and  ( chsv."candidateStatus" in (4,9) or chsv."candidateStatus" is null )   and chsv."blacklisted"=false  and chsv."createdBy" not in (select employee_id from employee where user_role_id=1)`
+            break;
+        case 'myDraft':
+            vettedQuery = ` where (chsv."candidateStatus" = 4 and chsv."createdBy" = ${body.employeeId}) and chsv."blacklisted"=false`
+            break;
+        case 'provider':
+            vettedQuery = `  where chsv."companyId" not in (select company_id from company where company_type=2) and chsv."candidateStatus"=9`
+            break;
         default:
             break;
     }
@@ -183,34 +183,35 @@ export const resourceTab = (body) => {
 export const resourceHirerTab = (body) => {
     let vettedQuery = '';
     switch (body.tabValue) {
-        case '1':
-        vettedQuery=' and chsv."candidateStatus"=6 '
-        break;
-        case '2':
-        vettedQuery=' and chsv."candidateStatus"!=6 '
-        break;
-        default:
-            break;
+    
+            case 'allResources':
+                vettedQuery = ' and chsv."candidateStatus"=3 '
+                break;
+            case 'myDraft':
+                vettedQuery = ' and chsv."candidateStatus"=4 '
+                break;
+            default:
+                break;
     }
     return vettedQuery;
 }
     export const resourceProviderTab = (body) =>{
         let vettedQuery = '';
         switch (body.tabValue) {
-            case '0':
-                vettedQuery='  and chsv."candidateStatus"=3 and chsv."blacklisted"=false '
+            case 'allResources':
+                vettedQuery = '  and (chsv."candidateStatus"=3 or chsv."candidateStatus"= 9)  and chsv."blacklisted"=false '
                 break;
-            case '1':
-                vettedQuery='  and chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
+            case 'nonVetted':
+                vettedQuery = '  and chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
                 break;
-            case '2':
-                vettedQuery='  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
+            case 'vetted':
+                vettedQuery = '  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
                 break;
-            case '3':
-                vettedQuery=' and chsv."candidateStatus"=4 and chsv."blacklisted"=false '
+            case 'myDraft':
+                vettedQuery = ' and  chsv."candidateStatus"= 4  and chsv."blacklisted"=false '
                 break;
             default:
-            break;
+                break;
      
     }
     return vettedQuery;
