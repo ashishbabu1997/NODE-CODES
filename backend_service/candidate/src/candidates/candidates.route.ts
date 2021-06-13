@@ -64,5 +64,4 @@ router
 .put('/approveCandidate',jwtAuth, setData(),candidateController.approveProviderCandidates)
 .get('/mailers',candidateController.mailers)
 
-
 export default router;

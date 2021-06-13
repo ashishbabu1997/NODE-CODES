@@ -110,7 +110,8 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
         hirerEmail = positionResult.rows[0].email
         var hirerCompanyId = positionResult.rows[0].companyId
         var jobReceivedId = positionResult.rows[0].jobReceivedId
-
+    
+        
         candidateList.forEach(async (element, index) => {
             element.positionId = _body.positionId;
             let path = 'src/emailTemplates/addCandidateHirerMail.html';
@@ -121,65 +122,77 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             let relevantWorkExperience = relevantExperience > 0 ? ` ${relevantExperience}\n` :'';
             let availability = utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
             var subjectLine=config.text.linkCandidateHireSubject+positionName
-            _body.arraylist=[]
-            if(relevantWorkExperience=='')
-            {
-                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
-            }
-            else
-            {
-                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+            for (const element of candidateList) {
 
+                let imageResults = await client.query(queryService.getImageDetails(element));
+                    firstName = utils.capitalize(imageResults.rows[0].candidate_first_name);
+                    lastName = utils.capitalize(imageResults.rows[0].candidate_last_name);
+        
+                    names += `${firstName} ${lastName} \n`
+                    if(_body.userRoleId == 1)
+                    {
+                            var email = imageResults.rows[0].email_address
+
+                            let replacements = { name: firstName, positionName: positionName };
+                            let path = 'src/emailTemplates/addCandidatesUsersText.html';
+                
+                            if (utils.notNull(email))
+                                emailClient.emailManagerForNoReply(email, config.text.addCandidatesUsersTextSubject, path, replacements);
+                    }
             }
-            console
-            let replacements = {
-                'positionName': positionName,
-                'keys':_body.arraylist,
-                'name':_body.adminName,
-                'number':_body.adminNumber,
-                'filename': utils.shortNameForPdf(name)
-            };
-            let uniqueId = nanoid(),candidateId = element.candidateId;
-            myCache.set(uniqueId, candidateId);
-            let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-            let file = { url: _body.host + "/sharePdf/" + uniqueId };
-            console.log("file : ",file);
-            if (utils.notNull(hirerEmail))
-            await htmlToPdf.generatePdf(file, options).then( pdfBuffer => {
-                    candidatePdfBuffer = {candidateId:pdfBuffer}
-                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail,subjectLine, path, replacements, pdfBuffer,_body.userMailId);
-            });
+            if(_body.userRoleId==1)
+            {
+                            _body.arraylist=[]
+                            if(relevantWorkExperience=='')
+                            {
+                                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+                            }
+                            else
+                            {
+                                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+
+                            }
+
+                            let replacements = {
+                                'positionName': positionName,
+                                'keys':_body.arraylist,
+                                'name':_body.adminName,
+                                'number':_body.adminNumber,
+                                'filename': utils.shortNameForPdf(name)
+                            };
+                            let uniqueId = nanoid(),candidateId = element.candidateId;
+                            myCache.set(uniqueId, candidateId);
+                            let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+                            let file = { url: _body.host + "/sharePdf/" + uniqueId };
+                            console.log("file : ",file);
+                            if (utils.notNull(hirerEmail))
+                            var cc = 'ashish.babu@ellow.io'
+                            await htmlToPdf.generatePdf(file, options).then( pdfBuffer => {
+                                    candidatePdfBuffer = {candidateId:pdfBuffer}
+                                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail,subjectLine, path, replacements, pdfBuffer,_body.userMailId);
+                            });
+        }
+        else
+        {
+            if (Array.isArray(ellowAdmins.rows)) {
+
+                let replacements = { positionName: positionName, candidateNames: names };
+                let path = 'src/emailTemplates/addCandidatesText.html';
+    
+                ellowAdmins['rows'].forEach(element => {
+                    if (utils.notNull(element.email))
+                        emailClient.emailManager(element.email, config.text.addCandidatesTextSubject, path, replacements);
+                })
+            }
+        }
         });
+    
 
         // Sending email to each candidate linked to a position
-        for (const element of candidateList) {
-
-        let imageResults = await client.query(queryService.getImageDetails(element));
-            firstName = utils.capitalize(imageResults.rows[0].candidate_first_name);
-            lastName = utils.capitalize(imageResults.rows[0].candidate_last_name);
-
-            names += `${firstName} ${lastName} \n`
-            var email = imageResults.rows[0].email_address
-
-            let replacements = { name: firstName, positionName: positionName };
-            let path = 'src/emailTemplates/addCandidatesUsersText.html';
-
-            if (utils.notNull(email))
-                emailClient.emailManagerForNoReply(email, config.text.addCandidatesUsersTextSubject, path, replacements);
-        }
+       
 
         // Sending email to ellow recuiter for each candidate linked to a position
-        // if (Array.isArray(ellowAdmins.rows)) {
-
-        //     let replacements = { positionName: positionName, candidateNames: names };
-        //     let path = 'src/emailTemplates/addCandidatesText.html';
-
-        //     ellowAdmins['rows'].forEach(element => {
-        //         if (utils.notNull(element.email))
-        //             emailClient.emailManager(element.email, config.text.addCandidatesTextSubject, path, replacements);
-        //     })
-        // }
-
+        
         let message = `${count} candidates has been added for the position ${positionName}`
         createHirerNotifications({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: hirerCompanyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
         createNotification({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
@@ -366,5 +379,107 @@ export const changeBlacklistedEmail = async (_body, client) => {
     } catch (e) {
         console.log("error : ", e.message);
         throw new Error('Failed to send mail');
+    }
+}
+
+
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>Emails for Link the candidates to a particular position .
+export const mailToHirerWithEllowRate = async (_body, client, myCache) => {
+    try {
+        const candidateList = _body.candidates,adminEmails=[];
+        let positionName = '', hirerName = '', hirerEmail = '', count = _body.count, names = '', firstName, lastName;
+        let candidatePdfBuffer ={},adminFilteredEmails=[];
+
+        var ellowAdmins = await client.query(queryService.getEllowAdmins());
+        var fetchUsersMail = await client.query(queryService.getUsersMail(_body));
+
+        _body.userMailId=fetchUsersMail.rows[0].email
+        _body.adminName=fetchUsersMail.rows[0].name
+        _body.adminNumber=fetchUsersMail.rows[0].telephone_number
+
+        ellowAdmins.rows.forEach(element => {
+            adminEmails.push(element.email)
+        });
+        adminFilteredEmails=adminEmails.filter(word => !word.includes(_body.userMailId));
+        var positionResult = await client.query(queryService.getPositionDetails(_body));
+
+        // Get position realted details
+        positionName = positionResult.rows[0].positionName
+        hirerName = positionResult.rows[0].hirerName
+        hirerEmail = positionResult.rows[0].email
+        var hirerCompanyId = positionResult.rows[0].companyId
+        var jobReceivedId = positionResult.rows[0].jobReceivedId
+    
+        
+            let path = 'src/emailTemplates/addCandidateHirerMail.html';
+            let res = await client.query(queryService.getLinkToPositionEmailDetails(_body));
+            let { work_experience, name, ready_to_start, relevantExperience } = res.rows[0];
+            let cost = _body.ellowRate > 0 ? `${utils.constValues('currencyType', _body.currencyTypeId)} ${_body.ellowRate} / ${utils.constValues('billType', _body.billingTypeId)}\n` : '';
+            let workExperience = work_experience > 0 ? ` ${work_experience}` : '';
+            let relevantWorkExperience = relevantExperience > 0 ? ` ${relevantExperience}\n` :'';
+            let availability = utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
+            var subjectLine=config.text.linkCandidateHireSubject+positionName
+            let imageResults = await client.query(queryService.getImageDetails(_body));
+            firstName = utils.capitalize(imageResults.rows[0].candidate_first_name);
+            lastName = utils.capitalize(imageResults.rows[0].candidate_last_name);
+            var email = imageResults.rows[0].email_address
+            let replacements = { name: firstName, positionName: positionName };
+            let userPath = 'src/emailTemplates/addCandidatesUsersText.html';  
+            if (utils.notNull(email))
+                            emailClient.emailManagerForNoReply(email, config.text.addCandidatesUsersTextSubject, userPath, replacements);
+                    
+            
+           
+            _body.arraylist=[]
+            if(relevantWorkExperience=='')
+            {
+                                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+            }
+            else
+            {
+                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+
+            }
+
+            let hirerReplacements = {
+                                'positionName': positionName,
+                                'keys':_body.arraylist,
+                                'name':_body.adminName,
+                                'number':_body.adminNumber,
+                                'filename': utils.shortNameForPdf(name)
+                            };
+        let uniqueId = nanoid(),candidateId = _body.candidateId;
+        myCache.set(uniqueId, candidateId);
+                            let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+                            let file = { url: _body.host + "/sharePdf/" + uniqueId };
+                            console.log("file : ",file);
+                            if (utils.notNull(hirerEmail))
+                            await htmlToPdf.generatePdf(file, options).then( pdfBuffer => {
+                                    candidatePdfBuffer = {candidateId:pdfBuffer}
+                                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail,subjectLine, path, hirerReplacements, pdfBuffer,_body.userMailId);
+                            });
+        
+      
+    
+
+        // Sending email to each candidate linked to a position
+       
+
+        // Sending email to ellow recuiter for each candidate linked to a position
+        
+        let message = `A new candidate has been added for the position ${positionName} with updated ellow rate`
+        createHirerNotifications({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: hirerCompanyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
+        createNotification({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
+
+    } catch (e) {
+        console.log('error : ', e.message)
+        await client.query('ROLLBACK')
+        throw new Error('Failed to send mail');
+
     }
 }

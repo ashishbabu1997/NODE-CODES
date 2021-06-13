@@ -16,6 +16,8 @@ import * as jwt from 'jsonwebtoken';
 import * as HtmlDocx from 'html-docx-js';
 import { createProviderNotifications } from '../common/notifications/notifications';
 import * as dotenv from "dotenv";
+import * as emailClient from '../emailManager/emailManager';
+
 dotenv.config();
 
 const myCache = new nodeCache();
@@ -2083,6 +2085,7 @@ export const addProviderCandidateEllowRate = (_body) => {
                 if (_body.userRoleId == '1') {
                     console.log(_body)
                      await  client.query(queryService.updateProviderCandidateEllowRate(_body))
+                     await emailService.mailToHirerWithEllowRate(_body, client,myCache);
                      await client.query('COMMIT')
                      resolve({ code: 200, message: "ellow rate added successfully", data: {} });
                 
@@ -2146,6 +2149,22 @@ export const mailers = (_body) => {
                 // };
                
                 // getToken();
+                let adminReplacements =
+                {
+                    
+                };
+
+                let adminPath = 'src/emailTemplates/ind.html';
+                var ellowAdmins = await client.query(queryService.getEllowAdmins())
+                console.log(ellowAdmins)
+                if (Array.isArray(ellowAdmins.rows)) {
+                    ellowAdmins.rows.forEach(element => {
+                        if (utils.notNull(element.email))
+                            emailClient.emailManagerForNoReply(element.email, config.text.newUserAdminTextSubject, adminPath, adminReplacements);
+                    })
+                    resolve({ code: 200, message: "Mail Send", data: {} });
+                }
+
             } catch (e) {
                 console.log("Error raised from try : ", e)
                 await client.query('ROLLBACK')
@@ -2157,4 +2176,6 @@ export const mailers = (_body) => {
         })
     })
 }
+
+
 
