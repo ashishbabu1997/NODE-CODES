@@ -2,24 +2,25 @@ export default {
     "appName": "company",
     "version": "v1",
     "http": {
-        "port":4005
+        "port": 4005
     },
-    "text":{
+    "text": {
 
-        "submitProfileSubject":"Profile Submission Notification",
-        "shareEmailSubject":"ellow Resume Share Notification",
-        "newUserTextSubject":"ellow LOGIN PASSWORD",
-        "newUserAdminTextSubject":"Customer Registration through Link",
-        "addCandidatesTextSubject":"Applied Candidates List",
-        "addCandidatesUsersTextSubject":"Profile is Shortlisted",
-        "sharePdfTextSubject":"ellow resume"
+        "submitProfileSubject": "Profile Submission Notification",
+        "shareEmailSubject": "ellow Resume Share Notification",
+        "newUserTextSubject": "ellow LOGIN PASSWORD",
+        "newUserAdminTextSubject": "Customer Registration through Link",
+        "addCandidatesTextSubject": "Applied Candidates List",
+        "addCandidatesUsersTextSubject": "Profile is Shortlisted",
+        "sharePdfTextSubject": "ellow resume",
+        "linkCandidateHireSubject": " New profile from ellow.io |  "
     },
-    "integerReferences":{
-        "profileSubmissionStatusValue":3,
-        "draftCandidateStatusValue":9
+    "integerReferences": {
+        "profileSubmissionStatusValue": 3,
+        "draftCandidateStatusValue": 9
     },
-    "textReferences":{
-            "listJobsFilterQuery":'HAVING $skillid = ANY(ARRAY_AGG(s.skill_id))'
+    "textReferences": {
+        "listJobsFilterQuery": 'HAVING $skillid = ANY(ARRAY_AGG(s.skill_id))'
     },
     "db": {
         "user": "devdb_user",
@@ -28,19 +29,54 @@ export default {
         "password": "DevD8u5er",
         "port": 5432
     },
-    "adminEmail":"jjoseph@ellow.io",
+    "adminEmail": "jjoseph@ellow.io",
     "mail": {
         "service": "gmail",
         "user": "cs@ellow.io",
+        // "password": "nkybzgbltlsoeiur"  
         "password": "ricggklkmqeaxbxx"
     },
+    "deena": {
+        "service": "gmail",
+        "user": "deena.s@ellow.io",
+        "password": "nkybzgbltlsoeiur"
+    },
+    "ashish": {
+        "service": "gmail",
+        "user": "ashish.babu@ellow.io",
+        "password": "fywbgnpnjdisipmx"
+    },
+
+    "mailAuth": {
+        "ashish.babu+7@ellow.io": {
+            "email": "ashish.babu@ellow.io",
+            "name": "Ashish Babu",
+            "appPass": "fywbgnpnjdisipmx"
+        },
+        "deena.s+98@ellow.io": {
+            "email": "deena.s@ellow.io",
+            "name": "Deena Sasidhar",
+            "appPass": "nkybzgbltlsoeiur"
+        },
+        "cs": {
+            "email": "cs@ellow.io",
+            "name": "ellow customer support",
+            "appPass": "ricggklkmqeaxbxx"
+        },
+        "noreplymail": {
+            "email": "no-reply@ellow.io",
+            "name": "No-reply",
+            "password": "fqlroidzaxmlhgml"
+        }
+    },
+
     "noreplymail": {
         "service": "gmail",
         "user": "no-reply@ellow.io",
         "password": "fqlroidzaxmlhgml"
     },
     "jwtSecretKey": "elL0wA!",
-    "countries":[
+    "countries": [
         {
             "id": 1,
             "name": "Afghanistan",

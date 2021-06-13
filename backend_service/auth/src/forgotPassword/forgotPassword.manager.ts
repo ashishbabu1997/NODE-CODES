@@ -52,14 +52,7 @@ export const sendLink = (_body) => {
             let replacements =  {
                 resetLink: link
               };
-              if(lowerEmail!=null || '' || undefined)
-              {
-                await emailClient.emailManager(lowerEmail,subject,path,replacements);
-              }
-              else
-              {
-                  console.log("Email Recipient is empty")
-              } 
+              await emailClient.emailManager(lowerEmail,subject,path,replacements);
               resolve({ code: 200, message: "Link has sent to the email successfully", data:{}});
 
         }
