@@ -65,9 +65,34 @@ export default {
         },
         "noreplymail": {
             "email": "no-reply@ellow.io",
-            "name": "No-reply",
-            "password": "fqlroidzaxmlhgml"
-        }
+            "name": "No Reply",
+            "appPass": "fqlroidzaxmlhgml"
+        },
+        "jjoseph@ellow.io": {
+            "email": "jjoseph@ellow.io",
+            "name": "Jyothis Joseph",
+            "appPass": "nzzcthkajlwhmlga"
+        },
+        "ramya.nair@ellow.io": {
+            "email": "ramya.nair@ellow.io",
+            "name": "Ramya Nair",
+            "appPass": "Wulxavjfjzynpqrf"
+        },
+        "anju.r@ellow.io": {
+            "email": "anju.r@ellow.io",
+            "name": "Anju R Pillai",
+            "appPass": "fgbezpitwikaftuo"
+        },
+        "jesleen@ellow.io": {
+            "email": "jesleen@ellow.io",
+            "name": "Jesleen Varghese",
+            "appPass": "fqmgcanrqdexyqlx"
+        },
+        "jithin.s@ellow.io": {
+            "email": "jithin.s@ellow.io",
+            "name": "Jithin S",
+            "appPass": "cvsbksxtrmawcfrv"
+        },
     },
 
     "noreplymail": {
