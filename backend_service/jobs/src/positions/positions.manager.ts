@@ -118,8 +118,6 @@ export const createCompanyPositions = async (_body) => {
                     }
                     await client.query('COMMIT');
 
-                    console.log("COMPNAME", details.rows[0].companyName)
-
                     await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
                     var subject = 'New position notification'
                     // Sending a notification mail about position creation; to the admin
