@@ -21,7 +21,7 @@ const transporterCustomerSupport = nodemailer.createTransport({
 })
 export const sendMail = (email, subject, html, callback) => {
     const mailOptions = {
-        from: `"noreply@ellow.io" <${config.mail.user}>`, 
+        from: `"No Reply" <${config.mail.user}>`, 
         to: email, 
         subject,
         html
