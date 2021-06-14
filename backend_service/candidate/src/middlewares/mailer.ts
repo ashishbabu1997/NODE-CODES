@@ -10,8 +10,8 @@ dotenv.config();
 const transporter = nodemailer.createTransport({
     service:config.mail.service,
     auth: {
-        user: config.mail.user,
-        pass: config.mail.password
+        user: config.noreplymail.user,
+        pass: config.noreplymail.password
     }
    
 })
@@ -40,7 +40,7 @@ const getTransporter = (user,pass) => {
 
 export const sendMail = (email, subject, html, callback) => {
     const mailOptions = {
-        from: `"ellow Customer Support" <${config.mail.user}>`, 
+        from: `"ellow Alert" <${config.noreplymail.user}>`, 
         to: email, 
         subject,
         html,
@@ -55,7 +55,7 @@ export const sendMail = (email, subject, html, callback) => {
 }
 export const sendMailWithAttachments = (email, subject, html,cc,attach, callback) => {
     const mailOptions = {
-        from: `"ellow Customer Support" <${config.mail.user}>`, 
+        from: `"ellow Alert" <${config.noreplymail.user}>`, 
         to: email, 
         cc:cc,
         subject:subject,
@@ -97,7 +97,7 @@ export const sendMailWithAttachmentsAndCc = (email, subject, html,attach,userMai
 }
 export const sendMailWithDoc = (email, subject, html,attach, callback) => {
     const mailOptions = {
-        from: `"ellow Customer Support" <${config.mail.user}>`, 
+        from: `"ellow Alert" <${config.noreplymail.user}>`, 
         to: email, 
         subject:subject,
         html:html,
@@ -115,7 +115,7 @@ export const sendMailWithDoc = (email, subject, html,attach, callback) => {
 }
 export const sendMailForNoReply = (email, subject, html, callback) => {
     const mailOptions = {
-        from: `"noreply@ellow.io" <${config.noreplymail.user}>`, 
+        from: `"ellow Alert" <${config.noreplymail.user}>`, 
         to: email, 
         subject,
         html,

@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 })
 export const sendMail = (email, subject, html, callback) => {
     const mailOptions = {
-        from: `"ellow Customer Support" <${config.mail.user}>`, 
+        from: `"ellow Alert" <${config.mail.user}>`, 
         to: email, 
         subject,
         html
