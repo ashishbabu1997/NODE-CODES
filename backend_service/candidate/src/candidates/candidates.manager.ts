@@ -269,12 +269,15 @@ export const linkCandidateWithPosition = (_body) => {
                 
                 
                 // Inserting candidates to candidate_positions table
+                console.log("HIII")
+
                 if (_body.userRoleId == 1) {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;
                         element.positionId = positionId;
-                        element.ellowRate=utils.emptyStringCheck(element.ellowRate)
+                        element.ellowRate=utils.notNull(element.ellowRate)?null:element.ellowRate
                         _body.count = _body.count + 1;
+                        console.log("Ellow Rate",element.ellowRate)
                         promise.push(client.query(queryService.linkCandidateByAdminQuery(element)));
                     });
                     await Promise.all(promise);

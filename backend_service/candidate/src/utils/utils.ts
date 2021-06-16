@@ -216,7 +216,7 @@ export const resourceProviderTab = (body) => {
 }
 
 export const emptyStringCheck = (_body) => {
-    console.log(_body)
+    console.log("BODY",_body)
     _body = _body === '' || undefined ? null : _body
     return _body;
 
