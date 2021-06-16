@@ -6,8 +6,8 @@ const transporter = nodemailer.createTransport({
     host:"smtp.gmail.com",
     port: 465,
     auth: {
-        user: config.mail.user,
-        pass: config.mail.password
+        user: config.noreplymail.user,
+        pass: config.noreplymail.password
     }
 })
 const transporterForNorReply = nodemailer.createTransport({
@@ -21,7 +21,7 @@ const transporterForNorReply = nodemailer.createTransport({
 })
 export const sendMail = (email, subject, html, callback) => {
     const mailOptions = {
-        from: `"ellow Customer Support" <${config.mail.user}>`, 
+        from: `"ellow Alert" <${config.noreplymail.user}>`, 
         to: email, 
         subject,
         html
@@ -36,7 +36,7 @@ export const sendMail = (email, subject, html, callback) => {
 }
 export const sendMailForNoReply = (email, subject, html, callback) => {
     const mailOptions = {
-        from: `"noreply@ellow.io" <${config.noreplymail.user}>`, 
+        from: `"ellow Alert" <${config.noreplymail.user}>`, 
         to: email, 
         subject,
         html

@@ -299,7 +299,7 @@ export const shortNameForPdf = (name) => {
 
 
 export const reccuiterMailCheck = (email) => {
-    let data = notNull(config.mailAuth[email]) ? config.mailAuth[email] : config.mailAuth["cs"];
+    let data = notNull(config.mailAuth[email]) ? config.mailAuth[email] : config.mailAuth["noreplymail"];
     return {
         user: data.email,
         pass: data.appPass,
