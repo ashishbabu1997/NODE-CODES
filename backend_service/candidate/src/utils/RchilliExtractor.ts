@@ -1,4 +1,5 @@
 import config from '../config/config';
+import { notNull } from './utils';
 
 export const rchilliExtractor = (data) => {
     let extractedData = {};
@@ -12,7 +13,7 @@ export const rchilliExtractor = (data) => {
         extractedData["firstName"] = resumeData["Name"]["FirstName"]+ ' ' + resumeData["Name"]["MiddleName"];
         extractedData["lastName"] = resumeData["Name"]["LastName"];
         extractedData["middleName"] = resumeData["Name"]["MiddleName"];
-        extractedData["email"] = resumeData["Email"][0]["EmailAddress"];
+        extractedData["email"] = notNull(resumeData["Email"][0]["EmailAddress"])?resumeData["Email"][0]["EmailAddress"]:null;
         extractedData["city"] = resumeData["Address"][0]["City"];
         extractedData["Address"] = resumeData["Address"][0];
         extractedData["designation"] = resumeData["SubCategory"];

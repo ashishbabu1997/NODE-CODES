@@ -391,6 +391,7 @@ export const modifyResumeData = (_body) => {
                 extractedData["employeeId"] = _body.employeeId;
                 extractedData["resume"] = _body.resume;
                 extractedData["candidateId"] = _body.candidateId;
+                
                 if (_body.candidateId) {
                     await client.query(queryService.updateExtractedCandidateDetails(extractedData));
                     candidateId = _body.candidateId;
@@ -412,7 +413,6 @@ export const modifyResumeData = (_body) => {
                     }
 
                     candidateId = candidateResult.rows[0].candidate_id;
-                    console.log("CANDIDATEID",candidateId)
 
                 }
                 await client.query('COMMIT');
@@ -1704,7 +1704,9 @@ export const resumeParser = (_body) => {
                             responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
 
                             let resp = await modifyResumeData(responseData).catch((e) => {
-                                reject({ code: 400, message: "Failed Please try again, parser error ", data: e.message });
+                                console.log("error data received : ",e);
+                                
+                                reject({ code: 400, message: "Failed Please try again, parser error ", data: e.data });
                             });
                             resolve({ code: 200, message: "Resume parsed successfully", data: { candidateId: resp["data"] } });
 
