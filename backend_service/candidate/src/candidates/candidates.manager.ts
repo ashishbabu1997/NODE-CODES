@@ -273,6 +273,7 @@ export const linkCandidateWithPosition = (_body) => {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;
                         element.positionId = positionId;
+                        element.ellowRate=utils.emptyStringCheck(element.ellowRate)
                         _body.count = _body.count + 1;
                         promise.push(client.query(queryService.linkCandidateByAdminQuery(element)));
                     });

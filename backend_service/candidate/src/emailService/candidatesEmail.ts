@@ -116,9 +116,11 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             element.positionId = _body.positionId;
             let path = 'src/emailTemplates/addCandidateHirerMail.html';
             let res = await client.query(queryService.getLinkToPositionEmailDetails(element));
-            let { work_experience, name, ready_to_start, relevantExperience } = res.rows[0];
+            let { work_experience, name,candidate_first_name ,candidate_last_name, ready_to_start, relevantExperience } = res.rows[0];
             let cost = element.ellowRate > 0 ? `${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
             let workExperience = work_experience > 0 ? ` ${work_experience}` : '';
+            let comments = element.adminComment ? element.adminComment : '';
+            _body.candidateName=utils.capitalize(candidate_first_name)+' '+utils.capitalize(candidate_last_name)
             let relevantWorkExperience = relevantExperience > 0 ? ` ${relevantExperience}\n` :'';
             let availability = utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
             var subjectLine=config.text.linkCandidateHireSubject+positionName
@@ -145,19 +147,43 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
                             _body.arraylist=[]
                             if(relevantWorkExperience=='')
                             {
-                                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+                                if(cost=='')
+                                {
+                                    _body.arraylist=[{'name':'Name of the Candidate','value':_body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability}]
+
+                                }
+                                else
+                                {
+                                    _body.arraylist=[{'name':'Name of the Candidate','value':_body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+
+                                }
                             }
                             else
                             {
-                                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+                                if(cost=='')
+                                {
+                                    _body.arraylist=[{'name':'Name of the Candidate','value':_body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability}]
+
+                                }
+                                else{
+                                    _body.arraylist=[{'name':'Name of the Candidate','value':_body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+
+                                }
 
                             }
+                            if(_body.userMailId=='')
+                            {
+
+                            }
+                            let userDetails = utils.reccuiterSignatureCheck(_body.userMailId);
+                            const {signature}=userDetails
 
                             let replacements = {
                                 'positionName': positionName,
                                 'keys':_body.arraylist,
-                                'name':_body.adminName,
-                                'number':_body.adminNumber,
+                                'comments':comments,
+                                'name':`With regards,\n ${_body.adminName}`,
+                                'number':signature,
                                 'filename': utils.shortNameForPdf(name)
                             };
                             let uniqueId = nanoid(),candidateId = element.candidateId;
@@ -165,8 +191,8 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
                             let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
                             let file = { url: _body.host + "/sharePdf/" + uniqueId };
                             console.log("file : ",file);
+                           
                             if (utils.notNull(hirerEmail))
-                            var cc = 'ashish.babu@ellow.io'
                             await htmlToPdf.generatePdf(file, options).then( pdfBuffer => {
                                     candidatePdfBuffer = {candidateId:pdfBuffer}
                                     emailClient.emailManagerWithAttachmentsAndCc(hirerEmail,subjectLine, path, replacements, pdfBuffer,_body.userMailId);
