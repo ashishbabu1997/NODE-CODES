@@ -216,7 +216,7 @@ export const resourceProviderTab = (body) => {
 }
 
 export const emptyStringCheck = (_body) => {
-    console.log(_body)
+    console.log("BODY",_body)
     _body = _body === '' || undefined ? null : _body
     return _body;
 
@@ -266,7 +266,7 @@ export const notNull = (val) => {
 
 export const capitalize = (s) => {
     if (typeof s !== 'string') return ''
-    return s.charAt(0).toUpperCase() + s.slice(1)
+    return s.charAt(0).toUpperCase() + s.slice(1).toLocaleLowerCase()
 }
 
 
@@ -304,6 +304,14 @@ export const reccuiterMailCheck = (email) => {
         user: data.email,
         pass: data.appPass,
         recipient: data.name
+    }
+
+}
+
+export const reccuiterSignatureCheck = (email) => {
+    let data = notNull(config.mailAuth[email]) ? config.mailAuth[email] : config.mailAuth["noreplymail"];
+    return {
+       signature:data.signature
     }
 
 }
