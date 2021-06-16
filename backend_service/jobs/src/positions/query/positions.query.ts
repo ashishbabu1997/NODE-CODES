@@ -12,7 +12,7 @@ export default {
     updatePositionSecond: `UPDATE positions SET contract_start_date = $1, currency_type_id = $2, billing_type = $3, min_budget = $4, max_budget = $5 , updated_by = $6, updated_on = $7,contract_duration=$10,immediate=$11,type_of_job=$12 WHERE position_id = $8 AND  company_id = $9 AND status = true`,
     deletePositionSkills: `delete from job_skills WHERE position_id = $1 AND status = true AND skill_id <> ALL ($2)`,
     checkJobStatus:'select job_status from positions where position_id=$1',
-    changePositionStatus: `UPDATE positions SET job_status = 6, updated_on = $2,active_date=$2 WHERE position_id = $1 AND status = true`,
+    changePositionStatus: `UPDATE positions SET job_status = 6, updated_on = $2,active_date=$2 WHERE position_id = $1 `,
     deletePositionReadStatus:'delete from position_read_status where position_id=$1',
     changeJobStatus: 'UPDATE positions SET job_status=$3,updated_on=$1 WHERE position_id=$2 ',
     changeJobReceivedStatus: 'UPDATE job_received SET job_received_status=$3,updated_on=$1 WHERE position_id=$2 ',
