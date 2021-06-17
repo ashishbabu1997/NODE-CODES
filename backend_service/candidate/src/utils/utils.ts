@@ -265,7 +265,7 @@ export const stringEquals = (a, b) => {
 }
 
 export const notNull = (val) => {
-    return [undefined, null, ''].includes(val) ? false : true;
+    return [undefined, null, ''," "].includes(val) ? false : true;
 }
 
 export const capitalize = (s) => {

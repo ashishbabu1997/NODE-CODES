@@ -116,6 +116,7 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             element.positionId = _body.positionId;
             let path = 'src/emailTemplates/addCandidateHirerMail.html';
             let res = await client.query(queryService.getLinkToPositionEmailDetails(element));
+            element.ellowRate
             let { work_experience, name,candidate_first_name ,candidate_last_name, ready_to_start, relevantExperience } = res.rows[0];
             let cost = element.ellowRate > 0 ? `${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
             let workExperience = work_experience > 0 ? ` ${work_experience}` : '';
@@ -144,6 +145,7 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             }
             if(_body.userRoleId==1)
             {
+                            console.log("COST",cost)
                             _body.arraylist=[]
                             if(relevantWorkExperience=='')
                             {
