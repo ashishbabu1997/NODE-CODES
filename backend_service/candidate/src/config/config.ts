@@ -51,47 +51,60 @@ export default {
         "ashish.babu@ellow.io": {
             "email": "ashish.babu@ellow.io",
             "name": "Ashish Babu",
-            "appPass": "fywbgnpnjdisipmx"
+            "appPass": "fywbgnpnjdisipmx",
+            "signature":`Recruitment Specialist ellow.io\nEmail: ashish.babu@ellow.io\nMob: +91 9048023413`
         },
         "deena.s@ellow.io": {
             "email": "deena.s@ellow.io",
             "name": "Deena Sasidhar",
-            "appPass": "nkybzgbltlsoeiur"
+            "appPass": "nkybzgbltlsoeiur",
+            "signature":`Recruitment Specialist ellow.io\nEmail: deena.s@ellow.io\nMob: +91 9645759244`
         },
         "cs": {
             "email": "cs@ellow.io",
             "name": "ellow customer support",
-            "appPass": "ricggklkmqeaxbxx"
+            "appPass": "ricggklkmqeaxbxx",
+            "signature":`ellow Customer Support`
+
         },
         "noreplymail": {
             "email": "no-reply@ellow.io",
-            "name": "No Reply",
-            "appPass": "fqlroidzaxmlhgml"
+            "name": "ellow Alert",
+            "appPass": "fqlroidzaxmlhgml",
+            "signature":`ellow Customer Support`
+
         },
         "jjoseph@ellow.io": {
             "email": "jjoseph@ellow.io",
             "name": "Jyothis Joseph",
-            "appPass": "nzzcthkajlwhmlga"
+            "appPass": "nzzcthkajlwhmlga",
+            "signature":`Founder and CEO\nhttps://ellow.io\nMob: +919846462362\njjoseph @ellow.io\nhttps://www.linkedin.com/in/jyothisjoseph/`
+
+
         },
         "ramya.nair@ellow.io": {
             "email": "ramya.nair@ellow.io",
             "name": "Ramya Nair",
-            "appPass": "Wulxavjfjzynpqrf"
+            "appPass": "Wulxavjfjzynpqrf",
+            "signature":`Talent Acquisition Specialist ellow.io\nEmail: ramya.nair@ellow.io\nMob: +91 7738649979`
         },
         "anju.r@ellow.io": {
             "email": "anju.r@ellow.io",
             "name": "Anju R Pillai",
-            "appPass": "fgbezpitwikaftuo"
+            "appPass": "fgbezpitwikaftuo",
+            "signature":`Recruitment Specialist ellow.io\nEmail: anju.r@ellow.io\nMob: +91 9400516617`
         },
         "jesleen@ellow.io": {
             "email": "jesleen@ellow.io",
             "name": "Jesleen Varghese",
-            "appPass": "fqmgcanrqdexyqlx"
+            "appPass": "fqmgcanrqdexyqlx",
+            "signature":`HR Generalist ellow.io\nEmail: jesleen@ellow.io\nMob: +91 9495620068`
         },
         "jithin.s@ellow.io": {
             "email": "jithin.s@ellow.io",
             "name": "Jithin S",
-            "appPass": "cvsbksxtrmawcfrv"
+            "appPass": "cvsbksxtrmawcfrv",
+            "signature":`Recruitment Specialist ellow.io\nEmail: jithin.s@ellow.io\nMob: +91 8606464037`
         },
     },
 

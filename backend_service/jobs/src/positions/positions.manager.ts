@@ -302,9 +302,7 @@ export const updateCompanyPositions = async (_body) => {
 
                     }
                 }
-                else {
-                    console.log("Position saved as draft")
-                }
+
                 resolve({ code: 200, message: "Position updated successfully", data: { positionId, companyName } });
 
             } catch (e) {

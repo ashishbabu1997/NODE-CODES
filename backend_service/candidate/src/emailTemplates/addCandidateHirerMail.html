@@ -58,7 +58,7 @@
                                             style="color:#000000;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
                                             Hi, <br /><br />
                                             ellow has shortlisted the below profile for your job
-                                            post,<b>{{positionName}}</b><br />
+                                            post,<b>{{positionName}}</b><br /><br />
                                             Please find the details and the resume in PDF format
                                             <br /><br />
 
@@ -70,15 +70,15 @@
                                         style="color: #000000; font-family: Poppins; font-size: 18px; line-height: 25px; padding: 20px 0 0px 0;">
                                         <p
                                             style="color:#000000;font-family: Poppins;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
-                                        <ul style="color:#000000;font-family: Poppins;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
+                                        <ul>
                                             {{#keys}}
-                                            <li style="color:#000000;font-family: Poppins;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
+                                            <li style="color:#000000;">
                                                 {{name}} : <b>{{value}}</b>
                                             </li>
                                             {{/keys}}
                                         </ul>
                                         <br />
-
+                                        {{comments}}
                                         </p>
                                     </td>
                                 </tr>
@@ -96,13 +96,13 @@
                                 <tr>
                                     <td>
                                         <p
-                                            style="color:#000000;font-size: 16px;text-align: justify;line-height: 25px;margin-top: 30px;">
-                                            With regards, <br />
-                                            {{name}}<br />
+                                            style="color:#000000;font-size: 16px;text-align: justify;line-height:25px;margin-top: 30px;white-space:pre-line;">
+                                            {{name}}
                                             {{number}}
                                         </p>
                                     </td>
                                 </tr>
+                                
                             </table>
                         </td>
                     </tr>
