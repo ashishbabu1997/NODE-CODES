@@ -184,7 +184,7 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
                                 'comments':comments,
                                 'name':`With regards,\n ${_body.adminName}`,
                                 'number':signature,
-                                'filename': element.fileName
+                                'filename': element.fileName+".pdf"
                             };
                             let uniqueId = nanoid(),candidateId = element.candidateId;
                             myCache.set(uniqueId, candidateId);
@@ -475,7 +475,7 @@ export const mailToHirerWithEllowRate = async (_body, client, myCache) => {
                                 'keys':_body.arraylist,
                                 'name':_body.adminName,
                                 'number':_body.adminNumber,
-                                'filename': _body.fileName
+                                'filename': _body.fileName+".pdf"
                             };
         let uniqueId = nanoid(),candidateId = _body.candidateId;
         myCache.set(uniqueId, candidateId);
