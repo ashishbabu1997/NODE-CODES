@@ -69,7 +69,7 @@ export default {
         },
         "noreplymail": {
             "email": "no-reply@ellow.io",
-            "name": "No Reply",
+            "name": "ellow Alert",
             "appPass": "fqlroidzaxmlhgml",
             "signature":`ellow Customer Support`
 
