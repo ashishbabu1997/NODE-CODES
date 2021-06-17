@@ -444,37 +444,42 @@ export const mailToHirerWithEllowRate = async (_body, client, myCache) => {
         
             let path = 'src/emailTemplates/addCandidateHirerMail.html';
             let res = await client.query(queryService.getLinkToPositionEmailDetails(_body));
-            let { work_experience, name, ready_to_start, relevantExperience } = res.rows[0];
+            let comments = _body.adminComment ? _body.adminComment : '';
+            let { work_experience, name,candidate_first_name ,candidate_last_name, ready_to_start, relevantExperience } = res.rows[0];
             let cost = _body.ellowRate > 0 ? `${utils.constValues('currencyType', _body.currencyTypeId)} ${_body.ellowRate} / ${utils.constValues('billType', _body.billingTypeId)}\n` : '';
             let workExperience = work_experience > 0 ? ` ${work_experience}` : '';
             let relevantWorkExperience = relevantExperience > 0 ? ` ${relevantExperience}\n` :'';
             let availability = utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
             var subjectLine=config.text.linkCandidateHireSubject+positionName
+            _body.candidateName=utils.capitalize(candidate_first_name)+' '+utils.capitalize(candidate_last_name)
             let imageResults = await client.query(queryService.getImageDetails(_body));
             firstName = utils.capitalize(imageResults.rows[0].candidate_first_name);
             lastName = utils.capitalize(imageResults.rows[0].candidate_last_name);
             var email = imageResults.rows[0].email_address
             let replacements = { name: firstName, positionName: positionName };
             let userPath = 'src/emailTemplates/addCandidatesUsersText.html';  
+            let userDetails = utils.reccuiterSignatureCheck(_body.userMailId);
+            const {signature}=userDetails
             if (utils.notNull(email))
                             emailClient.emailManagerForNoReply(email, config.text.addCandidatesUsersTextSubject, userPath, replacements);
            
             _body.arraylist=[]
             if(relevantWorkExperience=='')
             {
-                                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+                                _body.arraylist=[{'name':'Name of the Candidate','value': _body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
             }
             else
             {
-                _body.arraylist=[{'name':'Name of the Candidate','value':name},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+                _body.arraylist=[{'name':'Name of the Candidate','value': _body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
 
             }
-
+         
             let hirerReplacements = {
                                 'positionName': positionName,
                                 'keys':_body.arraylist,
-                                'name':_body.adminName,
-                                'number':_body.adminNumber,
+                                'comments':comments,
+                                'name':`With regards,\n ${_body.adminName}`,
+                                'number':signature,
                                 'filename': _body.fileName+".pdf"
                             };
         let uniqueId = nanoid(),candidateId = _body.candidateId;
