@@ -184,7 +184,7 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
                                 'comments':comments,
                                 'name':`With regards,\n ${_body.adminName}`,
                                 'number':signature,
-                                'filename': utils.shortNameForPdf(name)
+                                'filename': element.fileName
                             };
                             let uniqueId = nanoid(),candidateId = element.candidateId;
                             myCache.set(uniqueId, candidateId);
@@ -458,8 +458,6 @@ export const mailToHirerWithEllowRate = async (_body, client, myCache) => {
             let userPath = 'src/emailTemplates/addCandidatesUsersText.html';  
             if (utils.notNull(email))
                             emailClient.emailManagerForNoReply(email, config.text.addCandidatesUsersTextSubject, userPath, replacements);
-                    
-            
            
             _body.arraylist=[]
             if(relevantWorkExperience=='')
@@ -477,18 +475,17 @@ export const mailToHirerWithEllowRate = async (_body, client, myCache) => {
                                 'keys':_body.arraylist,
                                 'name':_body.adminName,
                                 'number':_body.adminNumber,
-                                'filename': utils.shortNameForPdf(name)
+                                'filename': _body.fileName
                             };
         let uniqueId = nanoid(),candidateId = _body.candidateId;
         myCache.set(uniqueId, candidateId);
-                            let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-                            let file = { url: _body.host + "/sharePdf/" + uniqueId };
-                            console.log("file : ",file);
-                            if (utils.notNull(hirerEmail))
-                            await htmlToPdf.generatePdf(file, options).then( pdfBuffer => {
-                                    candidatePdfBuffer = {candidateId:pdfBuffer}
-                                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail,subjectLine, path, hirerReplacements, pdfBuffer,_body.userMailId);
-                            });
+        let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+        let file = { url: _body.host + "/sharePdf/" + uniqueId };
+        if (utils.notNull(hirerEmail))
+        await htmlToPdf.generatePdf(file, options).then( pdfBuffer => {
+        candidatePdfBuffer = {candidateId:pdfBuffer}
+                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail,subjectLine, path, hirerReplacements, pdfBuffer,_body.userMailId);
+         });
         
       
     
