@@ -93,15 +93,11 @@ export const toggleEmployeeActiveStatus = (_body) => {
             var companyId = '';
             try {
                 await client.query('BEGIN');
-
-                if (_body.userRoleId == 1)
-                    companyId = _body.userCompanyId
-                else
-                    companyId = _body.companyId
+                _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
 
                 var result = await client.query(queryService.getCompanyIdFromEmployeeId(_body));
 
-                if (result.rows && result.rows[0].company_id == companyId)
+                if (result.rows && result.rows[0].company_id == _body["userCompanyId"])
                     await client.query(queryService.updateActiveState(_body));
                 else
                     reject({ code: 400, message: "Access Denied", data: "Unauthorised access detected, please try again later" });
@@ -128,18 +124,14 @@ export const setAsPrimaryContact = (_body) => {
         const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database()
-            var companyId = '';
             try {
                 await client.query('BEGIN');
 
-                if (_body.userRoleId == 1)
-                    companyId = _body.userCompanyId
-                else
-                    companyId = _body.companyId
+                _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
 
                 var result = await client.query(queryService.getCompanyIdFromEmployeeId(_body));
 
-                if (result.rows && result.rows[0].company_id == companyId)
+                if (result.rows && result.rows[0].company_id == _body["userCompanyId"])
                     await client.query(queryService.updatePrimaryContact(_body));
                 else
                     reject({ code: 400, message: "Access Denied", data: "Unauthorised access detected, please try again later" });

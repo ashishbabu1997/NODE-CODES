@@ -1,6 +1,7 @@
 import employeeQuery from '../employee/query/employee.query';
 import companyQuery from '../profile/query/query'
 import locationQuery from '../locations/query/locations.query'
+import servicesQuery from '../services/query/services.query'
 
 
 const currentTime = () => { return new Date().getTime() }
@@ -28,7 +29,7 @@ export const updatePrimaryContact = (_body) => {
     return {
         name: 'update-primary-contact',
         text: employeeQuery.updatePrimaryContact,
-        values: [_body.companyId, _body.userId,currentTime(),_body.employeeId]
+        values: [_body.userCompanyId, _body.userId,currentTime(),_body.employeeId]
     }
 }
 
@@ -37,7 +38,7 @@ export const updateActiveState = (_body) => {
     return {
         name: 'update-active-state',
         text: employeeQuery.updateActiveState,
-        values: [_body.companyId, _body.userId,currentTime(),_body.employeeId]
+        values: [_body.userId,currentTime(),_body.employeeId]
     }
 }
 
@@ -45,7 +46,7 @@ export const addEmploye = (_body) => {
     return {
         name: 'add-employee-details',
         text: employeeQuery.addEmploye,
-        values: [_body.firstName, _body.lastName, _body.userCompanyId, _body.email, _body.roleId, currentTime(), _body.contactNumber, true, _body.document, 3,_body.account_type,currentTime(),_body.employeeId,currentTime(),_body.employeeId],
+        values: [_body.firstName, _body.lastName, _body.userCompanyId, _body.email, _body.roleId, currentTime(), _body.contactNumber, true, _body.document, 3,_body.account_type,_body.employeeId],
     }
 }
 
@@ -140,5 +141,39 @@ export const deleteCompanyLocations = (_body) => {
         name: 'delete-company-locations',
         text: locationQuery.deleteCompanyLocations,
         values: [_body.locationId]
+    }
+}
+
+// ------------------------------------------Services queries---------------------------------------//
+export const getCompanyServicesQuery = (_body) => {
+    return {
+        name: 'get-company-services',
+        text: servicesQuery.getCompanyServices,
+        values: [_body.userCompanyId]
+    }
+}
+
+export const getCompanyDomainsQuery = (_body) => {
+    return {
+        name: 'get-company-domains',
+        text: servicesQuery.getCompanyDomains,
+        values: [_body.userCompanyId]
+
+    }
+}
+export const getCompanyTechnologyAreasQuery = (_body) => {
+    return {
+        name: 'get-company-technologyAreas',
+        text: servicesQuery.getCompanyTechnologyAreas,
+        values: [_body.userCompanyId]
+    }
+}
+
+
+export const getSupportingDocumentQuery = (_body) => {
+    return {
+        name: 'get-company-supporting-document',
+        text: servicesQuery.getSupportingDocument,
+        values: [_body.userCompanyId]
     }
 }
