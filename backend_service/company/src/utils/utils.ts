@@ -63,3 +63,16 @@ export const objectToArray = (objectArray, keyName) => {
     });
     return reqArray;
 }
+
+
+export const getCountryStateFromId = (stateId: any, countryId: any) => {
+
+    const {states,countries} = config;
+
+    const stateResult = states.filter(state => state.id == stateId);
+    const stateName = stateResult[0].name
+    const countryResult = countries.filter(country => country.id == countryId);
+    const countryName = countryResult[0].name
+
+    return { countryName, stateName };
+}

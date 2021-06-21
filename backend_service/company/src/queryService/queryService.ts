@@ -1,5 +1,6 @@
 import employeeQuery from '../employee/query/employee.query';
 import companyQuery from '../profile/query/query'
+import locationQuery from '../locations/query/locations.query'
 
 
 const currentTime = () => { return new Date().getTime() }
@@ -104,5 +105,40 @@ export const updateCompanyCoverPage = (_body) => {
         name: 'update-profile',
         text: companyQuery.updateCoverPic,
         values: [_body.userCompanyId, _body.fileName,currentTime(),_body.employeeId],
+    }
+}
+
+
+// ------------------------------------------Location queries---------------------------------------//
+
+export const fetchCompanyLocations = (_body) => {
+    return {
+        name: 'fetch-company-locations',
+        text: locationQuery.getCompanyLocations,
+        values: [_body.userCompanyId],
+    }
+}
+
+export const addCompanyLocations = (_body) => {
+    return {
+        name: 'add-company-locations',
+        text: locationQuery.addCompanyLocations,
+        values: [_body.userCompanyId, _body.streetAddress1, _body.streetAddress2, _body.zipCode, _body.city, _body.stateId, _body.countryId,_body.gstNumber,_body.panNumber,_body.employeeId],
+    }
+}
+
+export const updateCompanyLocations = (_body) => {
+    return {
+        name: 'update-company-locations',
+        text: locationQuery.updateCompanyLocations,
+        values: [_body.streetAddress1, _body.streetAddress2, _body.zipCode, _body.city, _body.stateId, _body.countryId, _body.locationId, _body.userCompanyId,_body.employeeId]
+    }
+}
+
+export const deleteCompanyLocations = (_body) => {
+    return {
+        name: 'delete-company-locations',
+        text: locationQuery.deleteCompanyLocations,
+        values: [_body.locationId]
     }
 }
