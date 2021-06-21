@@ -4,6 +4,6 @@ export default {
     updateProfileDetails: "UPDATE company SET  company_profile_url= $1,company_description=$2,company_logo=$3,company_cover_page=$4,company_tagline=$5,company_linkedin_id=$6,profile_percentage=$7,company_type=$9,user_id=$10,company_website=$11,company_size_id=$12,currency_type_id=$13 WHERE company_id=$8",
     getProfilePercentage: 'SELECT profile_percentage as "profilePercentage" FROM company WHERE company_id = $1',
     updateLogo: "update company set company_logo=$2 where company_id=$1",
-    updateProfile:"update company set company_cover_page=$2 where company_id=$1",
+    updateCoverPic:"update company set company_cover_page=$2 where company_id=$1",
 
 }
