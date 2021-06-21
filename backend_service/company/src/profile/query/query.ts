@@ -5,5 +5,6 @@ export default {
     getProfilePercentage: 'SELECT profile_percentage as "profilePercentage" FROM company WHERE company_id = $1',
     updateLogo: "update company set company_logo=$2,updated_on=$3,updated_by=$4 where company_id=$1",
     updateCoverPic:"update company set company_cover_page=$2,updated_on=$3,updated_by=$4 where company_id=$1",
-
+    getPreferences:'select is_ellow_rate as "isEllowRate" from company where company_id=$1;',
+    updatePreferences:'update company set is_ellow_rate=$2,updated_on=$3,updated_by=$4 where company_id=$1;'
 }

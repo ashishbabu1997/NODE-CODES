@@ -77,6 +77,22 @@ export const getCompanyProfile = (_body) => {
     }
 }
 
+export const getPreferences = (_body) => {
+    return {
+        name: 'get-company-preferences',
+        text: companyQuery.getPreferences,
+        values: [_body.userCompanyId],
+    }
+}
+
+export const updatePreferences = (_body) => {
+    return {
+        name: 'update-company-preferneces',
+        text: companyQuery.updatePreferences,
+        values: [_body.userCompanyId,_body.isEllowRate,currentTime(),_body.employeeId],
+    }
+}
+
 export const getProfilePercentage = (_body) => {
     return{
         name: 'get-profile-percentage',

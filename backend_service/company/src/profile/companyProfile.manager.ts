@@ -11,7 +11,7 @@ export const get_Details = (_body) => {
 
         database().query(queryService.getCompanyProfile(_body), (error, results) => {
             if (error) {
-                reject({ code: 400, message: "Failed to access profile. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed to access profile. Please try again.", data: error.message });
                 return;
             }
             const response = results.rows[0];
@@ -74,6 +74,39 @@ export const updateProfileLogo = (_body) => {
                 return;
             }
             resolve({ code: 200, message: "Image updated successfully", data: {} });
+        })
+    });
+}
+
+
+export const getPreferences = (_body) => {
+    return new Promise((resolve, reject) => {
+
+        _body["userCompanyId"] = _body.userRoleId == '1' ? _body["userCompanyId"] : _body.companyId;
+
+        database().query(queryService.getPreferences(_body), (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed to access profile. Please try again.", data: error.message});
+                return;
+            }
+            const response = results.rows[0];
+
+            resolve({ code: 200, message: "Profile listed successfully", data: { Profile: response } });
+        })
+    });
+}
+
+export const updatePreferences = (_body) => {
+    return new Promise((resolve, reject) => {
+
+        _body["userCompanyId"] = _body.userRoleId == '1' ? _body["userCompanyId"] : _body.companyId;
+
+        database().query(queryService.updatePreferences(_body), (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed to access profile. Please try again.", data: error.message });
+                return;
+            }
+            resolve({ code: 200, message: "Profile listed successfully", data: {} });
         })
     });
 }

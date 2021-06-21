@@ -9,7 +9,7 @@ const swaggerDefinition = {
   info: {
     title: 'Ellow.io Api documentation',
     version: '1.0.0',
-    description: 'Endpoints to test employee routes',
+    description: 'Endpoints to test company routes, userCompanyId is required only in case of authenticated user is an admin/ellowRecruiter',
   },
   basePath: `/api/${AppConfig.version}/company`,
   securityDefinitions: {
@@ -24,6 +24,6 @@ const swaggerDefinition = {
 
 const options = {
     swaggerDefinition,
-    apis:[`./src/employee/*.ts`]
+    apis:[`./src/employee/*.ts`,`./src/profile/*.ts`]
   };
  export const swaggerSpec = swaggerJsDoc(options);
