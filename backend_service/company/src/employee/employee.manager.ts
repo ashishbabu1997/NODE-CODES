@@ -7,12 +7,12 @@ export const getEmployeesByCompanyId = (_body) => {
     return new Promise((resolve, reject) => {
 
         var selectQuery = employeeQuery.getemployees;
-        _body["userCompanyId"] = _body.userRoleId=='1'?_body["userCompanyId"]:_body.companyId;
-        
-         selectQuery += utils.employeeSort(_body)
-         selectQuery += utils.pagination(_body)
+        _body["userCompanyId"] = _body.userRoleId == '1' ? _body["userCompanyId"] : _body.companyId;
 
-        database().query(queryService.getEmployeeDetailsFromCompanyId(_body,selectQuery), (error, results) => {
+        selectQuery += utils.employeeSort(_body)
+        selectQuery += utils.pagination(_body)
+
+        database().query(queryService.getEmployeeDetailsFromCompanyId(_body, selectQuery), (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: error.message });
                 return;
@@ -24,18 +24,12 @@ export const getEmployeesByCompanyId = (_body) => {
 
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
-        let contactNumber = _body.contactNumber = null ? '' : _body.contactNumber
-        _body["userCompanyId"] = _body.userRoleId==1?_body["userCompanyId"]:_body.companyId;
+        _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
 
-        const query = {
-            name: 'add-employee',
-            text: employeeQuery.addEmploye,
-            values: [_body.firstName, _body.lastName, _body.userCompanyId, _body.email, _body.roleId, currentTime, contactNumber, true, _body.document, 3],
-        }
-        database().query(query, (error, results) => {
+
+        database().query(queryService.addEmploye(_body), (error) => {
             if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed. Please try again.", data: error.message });
                 return;
             }
             resolve({ code: 200, message: "Employee added successfully", data: {} });
@@ -45,34 +39,17 @@ export const createEmployee = (_body) => {
 
 export const updateUser = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
         (async () => {
             const client = await database().connect()
             try {
                 await client.query('BEGIN');
-                let contactNumber = _body.phoneNumber = null ? '' : _body.phoneNumber
-                if (_body.decisionValue == 1) {
-                    const employeeUpdate = {
-                        name: 'update-employees',
-                        text: employeeQuery.updateEmployee,
-                        values: [_body.empId, _body.firstName, _body.lastName, _body.roleId, contactNumber]
-                    }
-                    await client.query(employeeUpdate);
-                }
-                else {
-                    const employeeDelete = {
-                        name: 'list-employees',
-                        text: employeeQuery.deleteEmployee,
-                        values: [_body.empId]
-                    }
-                    await client.query(employeeDelete);
-                }
+                await client.query(queryService.updateEmployee(_body));
+
                 await client.query('COMMIT');
-                resolve({ code: 200, message: "Employees updated successfully", data: {} });
+                resolve({ code: 200, message: "Employee details updated successfully", data: {} });
             } catch (e) {
-                console.log(e)
                 await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             } finally {
                 client.release();
             }
@@ -82,25 +59,19 @@ export const updateUser = (_body) => {
         })
     })
 }
+
 export const getUserDetails = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
         (async () => {
             const client = await database().connect()
             try {
-                await client.query('BEGIN');
-                const employeeData = {
-                    name: 'data-employees',
-                    text: employeeQuery.getEmployeeData,
-                    values: [_body.empId]
-                }
-                var result = await client.query(employeeData)
-                await client.query('COMMIT');
-                resolve({ code: 200, message: "Employees updated successfully", data: { employee: result.rows[0] } });
+                var result = await client.query(queryService.getEmployeeData(_body))
+
+                resolve({ code: 200, message: "Employees data retrieved successfully", data: { employee: result.rows[0] } });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             } finally {
                 client.release();
             }

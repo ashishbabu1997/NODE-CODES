@@ -27,7 +27,7 @@ export const updatePrimaryContact = (_body) => {
     return {
         name: 'update-primary-contact',
         text: employeeQuery.updatePrimaryContact,
-        values: [_body.companyId, _body.userId]
+        values: [_body.companyId, _body.userId,currentTime(),_body.employeeId]
     }
 }
 
@@ -36,10 +36,33 @@ export const updateActiveState = (_body) => {
     return {
         name: 'update-active-state',
         text: employeeQuery.updateActiveState,
-        values: [_body.companyId, _body.userId]
+        values: [_body.companyId, _body.userId,currentTime(),_body.employeeId]
     }
 }
 
+export const addEmploye = (_body) => {
+    return {
+        name: 'add-employee-details',
+        text: employeeQuery.addEmploye,
+        values: [_body.firstName, _body.lastName, _body.userCompanyId, _body.email, _body.roleId, currentTime(), _body.contactNumber, true, _body.document, 3,_body.account_type,currentTime(),_body.employeeId,currentTime(),_body.employeeId],
+    }
+}
+
+export const updateEmployee = (_body) => {
+    return {
+        name: 'update-employee-details',
+        text: employeeQuery.updateEmployee,
+        values: [_body.empId, _body.firstName, _body.lastName, _body.roleId, _body.phoneNumber,currentTime(),_body.employeeId]
+    }
+}
+
+export const getEmployeeData = (_body) => {
+    return {
+        name: 'get-data-employees',
+        text: employeeQuery.getEmployeeData,
+        values: [_body.empId]
+    }
+}
 
 // -------------------------------------------------- Company profile queries---------------------------------------//
 
@@ -64,7 +87,7 @@ export const updateCompanyProfile = (_body) => {
     return {
         name: 'update-company-profile-details',
         text: companyQuery.updateProfileDetails,
-        values: [_body.profileUrl, _body.description, _body.logo, _body.coverPage, _body.tagline, _body.linkedinId, _body.count,_body.userCompanyId, _body.accountType, _body.roleId, _body.website, _body.companySizeId, _body.currencyTypeId]
+        values: [_body.profileUrl, _body.description, _body.logo, _body.coverPage, _body.tagline, _body.linkedinId, _body.count,_body.userCompanyId, _body.accountType, _body.roleId, _body.website, _body.companySizeId, _body.currencyTypeId,currentTime(),_body.employeeId]
     }
 }
 
@@ -72,7 +95,7 @@ export const updateCompanyLogo = (_body) => {
     return {
         name: 'update-company-logo',
         text: companyQuery.updateLogo,
-        values: [_body.userCompanyId, _body.fileName],
+        values: [_body.userCompanyId, _body.fileName,currentTime(),_body.employeeId],
     }
 }
 
@@ -80,6 +103,6 @@ export const updateCompanyCoverPage = (_body) => {
     return  {
         name: 'update-profile',
         text: companyQuery.updateCoverPic,
-        values: [_body.userCompanyId, _body.fileName],
+        values: [_body.userCompanyId, _body.fileName,currentTime(),_body.employeeId],
     }
 }
