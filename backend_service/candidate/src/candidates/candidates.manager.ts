@@ -1802,7 +1802,7 @@ export const singleSignOn = (_body) => {
                         employeeId: employeeId.toString(),
                         companyId: _body.cmpId.toString(),
                         userRoleId: _body.userRoleId.toString()
-                    }, config.jwtSecretKey, { expiresIn: '24h' });
+                    }, process.env.TOKEN_SECRET, { expiresIn: '24h' });
                     await client.query(queryService.insertEmployeeToken(_body));
                 }
                 else {
