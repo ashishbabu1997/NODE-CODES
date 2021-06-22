@@ -20,7 +20,10 @@ export const employeeSort = (body) => {
         sort = `order by primary_email desc,status desc,firstname`
     return sort;
 }
-
+export const domainExtractor=(email)=>{
+    var domain = email. substring(email. lastIndexOf("@")+1);
+    return domain
+}
 export const pagination = (body) => {
     let pagination = '';
     // Pagination

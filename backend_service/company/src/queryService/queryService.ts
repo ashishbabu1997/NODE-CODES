@@ -77,6 +77,14 @@ export const getCompanyProfile = (_body) => {
     }
 }
 
+export const getEllowAdmins = () => {
+    return {
+        name: 'details-admin',
+        text: companyQuery.getellowAdmins,
+        values: []
+    }
+}
+
 export const getPreferences = (_body) => {
     return {
         name: 'get-company-preferences',

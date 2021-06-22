@@ -6,6 +6,7 @@ import config from './config/config'
 import { nanoid } from 'nanoid';
 import { createNotification } from './common/notifications/notifications';
 import * as emailClient from './emailService/emailService';
+import * as utils from './utils/utils'
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>> Registration of a new employee(company)
 export const createEmployee = (_body) => {
@@ -51,17 +52,21 @@ export const createEmployee = (_body) => {
                 let companyId = _body.body.companyId;
                 let adminApproveStatus = 1, approvalStatus = true;
                 if (companyId == null) {
+                    var domain=utils.domainExtractor(loweremailId)
                     const createCompanyQuery = {
                         name: 'createCompany',
                         text: employeeQuery.createCompany,
-                        values: [_body.body.companyName, currentTime],
+                        values: [_body.body.companyName, currentTime,domain],
                     }
                     const result = await client.query(createCompanyQuery);
                     companyId = result.rows[0].company_id;
                     adminApproveStatus = null;
                     approvalStatus = false;
+                    _body.primaryEmail=true
                 }
                 else {
+                    _body.primaryEmail=false
+
                     console.log("Subuser registration")
                 }
                 if (_body.body.accountType == 1) {
@@ -73,7 +78,7 @@ export const createEmployee = (_body) => {
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
-                    values: [_body.body.firstName, _body.body.lastName, loweremailId, _body.body.accountType, companyId, _body.body.telephoneNumber, currentTime, _body.userRoleId, approvalStatus, adminApproveStatus],
+                    values: [_body.body.firstName, _body.body.lastName, loweremailId, _body.body.accountType, companyId, _body.body.telephoneNumber, currentTime, _body.userRoleId, approvalStatus, adminApproveStatus,_body.primaryEmail],
                 }
                 await client.query(createEmployeeQuery);
                 let message = `A new user ${_body.body.firstName + ' ' + _body.body.lastName} with company name ${_body.body.companyName} has registered with us`
@@ -220,11 +225,15 @@ export const createEmployeeByAdmin = (_body) => {
                     }
                     const result = await client.query(createCompanyQuery);
                     companyId = result.rows[0].company_id;
+                    _body.primaryEmail=true
+                }
+                else{
+                    _body.primaryEmail=false
                 }
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
-                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus],
+                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus,_body.primaryEmail],
                 }
                 await client.query(createEmployeeQuery);
 
