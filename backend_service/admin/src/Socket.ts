@@ -3,17 +3,13 @@ import database from './common/database/database';
 import {notify} from './common/database/database';
 import * as queryService from './queryService/queryService';
 import config from './config/config';
-import AppConfig from './config/config';
-import * as express from 'express';
 
 
 const jwt = require('jsonwebtoken');
 
 export const  connect =(app) =>{
-    let server = require('https').createServer();    
-    server.on('request', app);
     
-    const io = socketIo(server, {
+    const io = socketIo(app, {
         cors: { origin: '*' } });
         
         io.use(function(socket, next){            
@@ -107,5 +103,5 @@ export const  connect =(app) =>{
                 getData(socket);
             });
         }
-        server.listen(AppConfig.http.port, () => console.log(`Listening on port ${AppConfig.http.port}`));
+        // app.listen(AppConfig.http.port, () => console.log(`Listening on port ${AppConfig.http.port}`));
     }    

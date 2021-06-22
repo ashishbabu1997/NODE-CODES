@@ -14,7 +14,7 @@ import AppConfig from './config/config';
 let app = express();
 
 
-socket.connect(app);
+// socket.connect(app);
 
 app.use(cors());
 app.use(bodyParser.json({ limit: '150mb' }));
@@ -31,10 +31,10 @@ app.use('/', router);
 
 
  
-// app.listen(AppConfig.http.port, () => {
-//   console.log('Listening on port ' + AppConfig.http.port);
-// });
+const server = app.listen(AppConfig.http.port, () => {
+  console.log('Listening on port ' + AppConfig.http.port);
+});
 
-// socket.connect(app);
+socket.connect(server);
 
 //wFBQ7bWKkXjRBAG
