@@ -32,6 +32,10 @@ export const pagination = (body) => {
     }
     return pagination;
 }
+export const checkEmailExistance = (email) => {
+    
+    return pagination;
+}
 
 export const JsonStringParse = (_body) => {
     let parsedString = "";

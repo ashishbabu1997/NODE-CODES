@@ -218,10 +218,11 @@ export const createEmployeeByAdmin = (_body) => {
                 let companyId = _body.employeeCompanyId;
                 let adminApproveStatus = 1, approvalStatus = true;
                 if (companyId == null) {
+                    var domain=utils.domainExtractor(loweremailId)
                     const createCompanyQuery = {
                         name: 'createCompany',
                         text: employeeQuery.createCompany,
-                        values: [_body.companyName, currentTime],
+                        values: [_body.companyName, currentTime,domain],
                     }
                     const result = await client.query(createCompanyQuery);
                     companyId = result.rows[0].company_id;
