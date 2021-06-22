@@ -35,7 +35,7 @@ export const createEmployee = (_body) => {
                 if(utils.domainExtractor(_body.email) == companyDomain)
                 {
                     _body.companyName=companyResults.rows[0].name
-                    await client.query(queryService.addEmploye(_body));
+                    await client.query(queryService.addSubUser(_body));
                     emailService.addSubUserEmail(_body,client);
 
                 }
@@ -48,6 +48,7 @@ export const createEmployee = (_body) => {
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
                 await client.query('ROLLBACK')
+                console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             } finally {
                 client.release();

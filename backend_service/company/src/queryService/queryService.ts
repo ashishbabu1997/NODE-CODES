@@ -49,6 +49,13 @@ export const addEmploye = (_body) => {
         values: [_body.firstName, _body.lastName, _body.userCompanyId, _body.email, _body.roleId, currentTime(), _body.contactNumber, true, _body.document, 3,_body.account_type,_body.employeeId],
     }
 }
+export const addSubUser = (_body) => {
+    return {
+        name: 'add-subuser-details',
+        text: employeeQuery.addSubUser,
+        values: [_body.firstName, _body.lastName, _body.userCompanyId, _body.email, _body.roleId, currentTime(),true,5,_body.employeeId,1],
+    }
+}
 
 export const updateEmployee = (_body) => {
     return {
