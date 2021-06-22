@@ -89,7 +89,7 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
     try {
         const candidateList = _body.candidates,adminEmails=[];
         let positionName = '', hirerName = '', hirerEmail = '', count = _body.count, names = '', firstName, lastName;
-        let candidatePdfBuffer ={},adminFilteredEmails=[];
+        let candidatePdfBuffer ={},adminFilteredEmails=[],cost='';
 
         var ellowAdmins = await client.query(queryService.getEllowAdmins());
         var fetchUsersMail = await client.query(queryService.getUsersMail(_body));
@@ -117,7 +117,7 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
             let path = 'src/emailTemplates/addCandidateHirerMail.html';
             let res = await client.query(queryService.getLinkToPositionEmailDetails(element));
             let { work_experience, name,candidate_first_name ,candidate_last_name, ready_to_start, relevantExperience } = res.rows[0];
-            let cost = element.ellowRate > 0 ? `${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
+            cost= positionResult.rows[0].isellowRate==false?'': element.ellowRate > 0 ? `${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
             let workExperience = work_experience > 0 ? ` ${work_experience}` : '';
             let comments = element.adminComment ? element.adminComment : '';
             _body.candidateName=utils.capitalize(candidate_first_name)+' '+utils.capitalize(candidate_last_name)
@@ -169,10 +169,6 @@ export const linkCandidateWithPositionEMail = async (_body, client, myCache) => 
                                     _body.arraylist=[{'name':'Name of the Candidate','value':_body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
 
                                 }
-
-                            }
-                            if(_body.userMailId=='')
-                            {
 
                             }
                             let userDetails = utils.reccuiterSignatureCheck(_body.userMailId);
@@ -419,7 +415,7 @@ export const mailToHirerWithEllowRate = async (_body, client, myCache) => {
     try {
         const candidateList = _body.candidates,adminEmails=[];
         let positionName = '', hirerName = '', hirerEmail = '', count = _body.count, names = '', firstName, lastName;
-        let candidatePdfBuffer ={},adminFilteredEmails=[];
+        let candidatePdfBuffer ={},adminFilteredEmails=[],cost=''
 
         var ellowAdmins = await client.query(queryService.getEllowAdmins());
         var fetchUsersMail = await client.query(queryService.getUsersMail(_body));
@@ -446,7 +442,7 @@ export const mailToHirerWithEllowRate = async (_body, client, myCache) => {
             let res = await client.query(queryService.getLinkToPositionEmailDetails(_body));
             let comments = _body.adminComment ? _body.adminComment : '';
             let { work_experience, name,candidate_first_name ,candidate_last_name, ready_to_start, relevantExperience } = res.rows[0];
-            let cost = _body.ellowRate > 0 ? `${utils.constValues('currencyType', _body.currencyTypeId)} ${_body.ellowRate} / ${utils.constValues('billType', _body.billingTypeId)}\n` : '';
+            cost= positionResult.rows[0].isellowRate==false?'': _body.ellowRate > 0 ? `${utils.constValues('currencyType', _body.currencyTypeId)} ${_body.ellowRate} / ${utils.constValues('billType', _body.billingTypeId)}\n` : '';
             let workExperience = work_experience > 0 ? ` ${work_experience}` : '';
             let relevantWorkExperience = relevantExperience > 0 ? ` ${relevantExperience}\n` :'';
             let availability = utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
@@ -466,11 +462,28 @@ export const mailToHirerWithEllowRate = async (_body, client, myCache) => {
             _body.arraylist=[]
             if(relevantWorkExperience=='')
             {
-                                _body.arraylist=[{'name':'Name of the Candidate','value': _body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+                if(cost=='')
+                {
+                    _body.arraylist=[{'name':'Name of the Candidate','value':_body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability}]
+
+                }
+                else
+                {
+                    _body.arraylist=[{'name':'Name of the Candidate','value':_body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+
+                }
             }
             else
             {
-                _body.arraylist=[{'name':'Name of the Candidate','value': _body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+                if(cost=='')
+                {
+                    _body.arraylist=[{'name':'Name of the Candidate','value':_body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability}]
+
+                }
+                else{
+                    _body.arraylist=[{'name':'Name of the Candidate','value':_body.candidateName},{'name':'Total Years of Experience','value':workExperience},{'name':'Relevant Years of Experience','value':relevantWorkExperience},{'name':'Availability','value':availability},{'name':'Rate','value':cost}]
+
+                }
 
             }
          

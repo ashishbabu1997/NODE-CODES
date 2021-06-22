@@ -1,6 +1,7 @@
 export default {
     getemployees: 'SELECT employee_id as "empId", firstname as "firstName", lastname as "lastName", company_id as "companyId", email as "email", role_id as "roleId", created_on as "createdOn", contact_number as "contactNumber", status as "status", user_role_id as "userRoleId", primary_email as "primaryEmail" FROM employee WHERE company_id = $1 ',
     addEmploye: "INSERT INTO employee(firstname, lastname, company_id, email, role_id, created_on, contact_number, status, documents, user_role_id, account_type, created_by, updated_on, updated_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,$7,$6,$7)",
+    addSubUser: "INSERT INTO employee(firstname, lastname, company_id, email, role_id, created_on, updated_on, status, user_role_id, account_type, created_by, updated_by,admin_approve_status) VALUES ($1, $2, $3, $4, $5, $6, $6, $7, $8,(select account_type from employee where employee_id=$9),$9,$9,$10)",
     updateEmployee: "UPDATE employee SET firstname=$2, lastname=$3, role_id=$4, contact_number=$5, updated_on=$6, updated_by=$7 WHERE employee_id = $1",
     deleteEmployee: "UPDATE employee SET status=false WHERE employee_id=$1",
     getEmployeeData: 'SELECT employee_id as "employeeId",firstname as "firstName",lastname as "lastName",email as "email",role_id as "roleId",contact_number as "contactNumber" FROM employee WHERE employee_id = $1 ',

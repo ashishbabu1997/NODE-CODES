@@ -2,6 +2,7 @@ import employeeQuery from './query/employee.query';
 import database from '../common/database/database';
 import * as queryService from '../queryService/queryService';
 import * as utils from '../utils/utils';
+import * as emailService from '../emailService/employeeEmails';
 
 export const getEmployeesByCompanyId = (_body) => {
     return new Promise((resolve, reject) => {
@@ -24,15 +25,37 @@ export const getEmployeesByCompanyId = (_body) => {
 
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
-        _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+                _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
+                var companyResults=await client.query(queryService.getCompanyProfile(_body));
+                var companyDomain=companyResults.rows[0].domain
+                if(utils.domainExtractor(_body.email) == companyDomain)
+                {
+                    _body.companyName=companyResults.rows[0].name
+                    await client.query(queryService.addSubUser(_body));
+                    emailService.addSubUserEmail(_body,client);
 
+                }
+                else{
+                    reject({ code: 400, message: "Email address does'nt belong to your company domain.", data: {} });
 
-        database().query(queryService.addEmploye(_body), (error) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: error.message });
-                return;
+                }
+
+                await client.query('COMMIT');
+                resolve({ code: 200, message: "Employee added successfully", data: {} });
+            } catch (e) {
+                await client.query('ROLLBACK')
+                console.log(e)
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
             }
-            resolve({ code: 200, message: "Employee added successfully", data: {} });
+        })().catch(e => {
+            console.log(e)
+            reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
 }
