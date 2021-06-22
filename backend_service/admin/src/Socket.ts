@@ -10,7 +10,7 @@ import * as express from 'express';
 const jwt = require('jsonwebtoken');
 
 export const  connect =(app) =>{
-    let server = require('http').createServer();    
+    let server = require('https').createServer();    
     server.on('request', app);
     
     const io = socketIo(server, {
