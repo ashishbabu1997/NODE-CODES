@@ -1,4 +1,6 @@
 import config from '../config/config';
+import database from '../common/database/database';
+import * as queryService from '../queryService/queryService';
 
 
 export const employeeSort = (body) => {
@@ -32,10 +34,12 @@ export const pagination = (body) => {
     }
     return pagination;
 }
-export const checkEmailExistance = (email) => {
-    
-    return pagination;
-}
+
+
+
+
+
+
 
 export const JsonStringParse = (_body) => {
     let parsedString = "";

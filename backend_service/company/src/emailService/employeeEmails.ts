@@ -6,7 +6,7 @@ import * as utils from '../utils/utils';
 
 
 
-export const addSubUserEmail = async (_body, client) => {
+export const addSubUserEmail = async (_body, client,password) => {
     try {
         var ellowAdmins = await client.query(queryService.getEllowAdmins());
         var message=`${_body.companyName} has added a new subuser named ${utils.capitalize(_body.firstName)+' '+utils.capitalize(_body.lastName)}`
@@ -15,6 +15,12 @@ export const addSubUserEmail = async (_body, client) => {
 
             let subject = "Subuser Registration Notification"
             let path = 'src/emailTemplates/addSubUser.html';
+            let usersPath = 'src/emailTemplates/newUserText.html';
+            let userSubject='ellow.io Login Credentials'
+            let userReplacements = { loginPassword: password };
+            if (utils.notNull(_body.email)) {
+                emailClient.emailManager(_body.email, userSubject, usersPath, userReplacements);
+            }
             let replacements = {
                 name: utils.capitalize(_body.firstName)+' '+utils.capitalize(_body.lastName),
                 cName:_body.companyName,
