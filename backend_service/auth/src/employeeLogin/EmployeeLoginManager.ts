@@ -3,6 +3,7 @@ import database from '../common/database/database';
 import * as jwt from 'jsonwebtoken';
 import config from '../config/config';
 import * as crypto from 'crypto';
+const dotenv = require('dotenv');
 
 // FUNC. Login for a registered user
 export const employeeLoginMethod = (_body) => {
@@ -30,6 +31,8 @@ export const employeeLoginMethod = (_body) => {
                 // Check if the password is correct
                 if (data.length > 0) {
                     const value = data[0];
+                    dotenv.config();
+
                     if(value.status)
                     {
                        
@@ -37,7 +40,7 @@ export const employeeLoginMethod = (_body) => {
                             employeeId: value.employeeId.toString(),
                             companyId: value.companyId.toString(),
                             userRoleId:value.userRoleId.toString()
-                        }, config.jwtSecretKey, { expiresIn: '24h' });
+                        }, process.env.TOKEN_SECRET, { expiresIn: '24h' });
                         
                         // Check if the login user is a freelancer
                         await client.query('COMMIT')

@@ -3,9 +3,11 @@ import database from './common/database/database';
 import { notify } from './common/database/database';
 import * as queryService from './queryService/queryService';
 import config from './config/config';
+const dotenv = require('dotenv');
 
 
 const jwt = require('jsonwebtoken');
+dotenv.config();
 
 export const connect = (app) => {
 
@@ -16,7 +18,7 @@ export const connect = (app) => {
     io.use(function (socket, next) {
         if (socket.handshake.auth && socket.handshake.auth.token) {
             let token = socket.handshake.auth.token.replace('Bearer ', '');
-            jwt.verify(token, config.jwtSecretKey, function (err, decoded) {
+            jwt.verify(token, process.env.TOKEN_SECRET, function (err, decoded) {
                 if (err) {
                     console.log('error : ', err.message)
                     return next(new Error('Authentication error'));
