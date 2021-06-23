@@ -20,7 +20,7 @@ import * as builder from '../utils/Builder';
 dotenv.config();
 
 // >>>>>>> FUNC. >>>>>>>
-// />>>>>>>> FUnction for listing all the candidates with his/her basic details.
+// />>>>>>>> FUnction for listing all the candidates with his/her basic details for a given position
 export const listCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.listCandidates;
@@ -59,13 +59,12 @@ export const listCandidatesDetails = (_body) => {
             } finally {
                 client.release();
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
 
     })
 }
-
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>Listing all the free candidates from the candidates list.
@@ -74,7 +73,7 @@ export const listFreeCandidatesDetails = (_body) => {
 
         var selectQuery = candidateQuery.listFreeCandidatesFromView;
         let totalQuery = candidateQuery.listFreeCandidatesTotalCount;
-        var roleBasedQuery = '', queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
+        var queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
             body = _body.query, reqBody = _body.body;
         body.employeeId = reqBody.employeeId
 
@@ -107,7 +106,7 @@ export const listFreeCandidatesDetails = (_body) => {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -155,7 +154,7 @@ export const listAddFromListCandidates = (_body) => {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -212,7 +211,7 @@ export const editVettingStatus = (_body) => {
             } finally {
                 client.release();
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -365,7 +364,7 @@ export const modifyResumeFile = (_body) => {
             } finally {
                 client.release();
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -666,8 +665,7 @@ export const modifyCandidateWorkHistory = (_body) => {
             const client = await database().connect()
             _body.startDate = utils.emptyStringCheck(_body.startDate)
             _body.endDate = utils.emptyStringCheck(_body.endDate)
-            console.log("START DATE", _body.startDate)
-            console.log("END DATE", _body.startDate)
+
             try {
                 switch (_body.action) {
                     case 'add':
@@ -806,7 +804,6 @@ export const modifySocialPresence = (_body) => {
 // >>>>>>>>>>>>> Update any publications done by the candidate
 export const modifyPublication = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());
         var candidatePublicationId;
         (async () => {
             const client = await database().connect()
@@ -842,7 +839,7 @@ export const modifyPublication = (_body) => {
             } finally {
                 client.release();
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -852,7 +849,6 @@ export const modifyPublication = (_body) => {
 // >>>>>>>>>>>>> Update any awards acheived by the candidate
 export const modifyAward = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database().connect()
             _body.certifiedYear = utils.emptyStringCheck(_body.certifiedYear)
@@ -1151,7 +1147,6 @@ export const getSharedEmails = (_body) => {
 //>>>>>>>> Signup from a shared resume page
 export const shareResumeSignup = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
         (async () => {
             const client = await database().connect()
             try {
@@ -1351,8 +1346,6 @@ export const fetchResumeDataForPdf = (_body) => {
         (async () => {
             const client = await database()
             try {
-                console.log("fetchResumeDataForPdf");
-
                 if (builder.getCache().has(_body.uniqueId)) {
                     let candidateId = builder.getCache().take(_body.uniqueId);
                     _body.candidateId = candidateId;
@@ -1361,9 +1354,7 @@ export const fetchResumeDataForPdf = (_body) => {
                     delete data["data"].assesementComment;
                     delete data["data"].assesments;
 
-
                     resolve({ code: 200, message: "Candidate resume shared data fetched successfully", data: data["data"] });
-
                 }
                 else {
                     console.log("uniqueId does not exist");
@@ -1543,7 +1534,7 @@ export const getAllAuditLogs = (_body) => {
 //>>>>>>>>>>>Listing all the free candidates from the candidates list of hirer.
 export const listHirerResources = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView, totalQuery = candidateQuery.listFreeCandidatesofHirerTotalCount, vettedQuery = '';
+        var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView, totalQuery = candidateQuery.listFreeCandidatesofHirerTotalCount;
         var queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
             body = _body.query;
 
@@ -1824,7 +1815,7 @@ export const singleSignOn = (_body) => {
                 console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -1868,7 +1859,7 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -1878,7 +1869,7 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
 //>>>>>>>>>>>Listing all the free candidates from the candidates list of provider.
 export const listProviderResources = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.listFreeCandidatesOfProviderFromView, totalQuery = candidateQuery.listFreeCandidatesofProviderTotalCount, vettedQuery = '';
+        var selectQuery = candidateQuery.listFreeCandidatesOfProviderFromView, totalQuery = candidateQuery.listFreeCandidatesofProviderTotalCount;
         var queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
             body = _body.query;
 
@@ -1982,8 +1973,6 @@ export const updateProviderCandidateInfo = (_body) => {
 export const getProviderCandidateResume = (_body) => {
     return new Promise((resolve, reject) => {
         const candidateId = _body.candidateId;
-        var projectArray = [];
-        var assesmentArray = [];
 
         (async () => {
             const client = await database().connect()

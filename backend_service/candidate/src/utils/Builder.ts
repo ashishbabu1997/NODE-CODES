@@ -1,9 +1,10 @@
-
 import { nanoid } from 'nanoid';
 import * as nodeCache from 'node-cache';
 import * as htmlToPdf from "html-pdf-node";
 
 const myCache = new nodeCache();
+
+export const getCache = () => { return myCache }
 
 export const pdfBuilder = async (candidateId, host) => {
     let uniqueId = nanoid()
@@ -14,5 +15,3 @@ export const pdfBuilder = async (candidateId, host) => {
     let pdfBuffer = await htmlToPdf.generatePdf(file, options);
     return pdfBuffer;
 }
-
-export const getCache = () => { return myCache }
