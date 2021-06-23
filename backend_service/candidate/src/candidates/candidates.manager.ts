@@ -269,7 +269,6 @@ export const linkCandidateWithPosition = (_body) => {
                 
                 
                 // Inserting candidates to candidate_positions table
-                console.log("HIII")
 
                 if (_body.userRoleId == 1) {
                     candidateList.forEach(element => {
