@@ -216,7 +216,7 @@ export const resourceProviderTab = (body) => {
 }
 
 export const emptyStringCheck = (_body) => {
-    console.log("BODY",_body)
+    console.log("BODY", _body)
     _body = _body === '' || undefined ? null : _body
     return _body;
 
@@ -310,8 +310,5 @@ export const reccuiterMailCheck = (email) => {
 
 export const reccuiterSignatureCheck = (email) => {
     let data = notNull(config.mailAuth[email]) ? config.mailAuth[email] : config.mailAuth["noreplymail"];
-    return {
-       signature:data.signature
-    }
-
+    return { signature: data.signature}
 }

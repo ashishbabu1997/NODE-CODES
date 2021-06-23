@@ -672,10 +672,10 @@ export const getPositionDetails = (_body) => {
     }
 }
 
-export const getImageDetails = (_body) => {
+export const getCandidateMailDetails = (_body) => {
     return {
-        name: 'get-image-names',
-        text: freelancerQuery.getImageNames,
+        name: 'get-candidate-image-details',
+        text: freelancerQuery.getCandidateMailDetails,
         values: [_body.candidateId]
     }
 }
