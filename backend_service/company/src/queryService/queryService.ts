@@ -53,7 +53,7 @@ export const addSubUser = (_body) => {
     return {
         name: 'add-subuser-details',
         text: employeeQuery.addSubUser,
-        values: [_body.firstName, _body.lastName, _body.userCompanyId, _body.email, _body.roleId, currentTime(),true,5,_body.employeeId,1,_body.hashedPassword],
+        values: [_body.firstName, _body.lastName, _body.userCompanyId, _body.email, _body.roleId, currentTime(),true,_body.userRoleId,_body.employeeId,1,_body.hashedPassword],
     }
 }
 export const checkEmailExistance = (email) => {
