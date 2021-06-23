@@ -4,6 +4,7 @@ import { createNotification, createHirerNotifications } from '../common/notifica
 import * as emailClient from '../emailManager/emailManager';
 import * as utils from '../utils/utils';
 import * as builder from "../utils/Builder";
+import * as constants from '../config/Constants';
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>>Email Function for admin to add reviews,assesment comments about the candidate
@@ -18,7 +19,7 @@ export const addCandidateReviewEmail = async (_body, client) => {
         };
 
         if (utils.notNull(candidateDetailResults.rows[0].email))
-            emailClient.emailManagerForNoReply(candidateDetailResults.rows[0].email, subject, path, replacements);
+            emailClient.emailManagerForNoReply(candidateDetailResults.rows[0].email, subject, constants.emailPath.ELLOW_VETTED, replacements);
     } catch (e) {
         console.log("error : ", e.message)
         throw new Error('Failed to send mail');
