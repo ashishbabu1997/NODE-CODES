@@ -3,11 +3,8 @@ import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
 import config from '../config/config';
 import * as emailService from '../emailService/candidatesEmail';
-import { nanoid } from 'nanoid';
 import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
-import * as htmlToPdf from "html-pdf-node";
-import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
 import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
@@ -17,10 +14,11 @@ import * as HtmlDocx from 'html-docx-js';
 import { createProviderNotifications } from '../common/notifications/notifications';
 import * as dotenv from "dotenv";
 import * as emailClient from '../emailManager/emailManager';
+import { nanoid } from 'nanoid';
+import * as builder from '../utils/Builder';
 
 dotenv.config();
 
-const myCache = new nodeCache();
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for listing all the candidates with his/her basic details.
 export const listCandidatesDetails = (_body) => {
@@ -46,7 +44,7 @@ export const listCandidatesDetails = (_body) => {
             try {
                 await client.query('BEGIN');
                 queryText = selectQuery + adminApproveQuery + sort;
-                queryValues = Object.assign({ positionid: body.positionId}, queryValues)
+                queryValues = Object.assign({ positionid: body.positionId }, queryValues)
 
                 const candidatesResult = await client.query(queryService.listCandidates(queryText, queryValues));
                 const jobReceivedIdResult = await client.query(queryService.getJobReceivedId(body));
@@ -147,8 +145,8 @@ export const listAddFromListCandidates = (_body) => {
                 const candidatesResult = await client.query(queryService.listAddFromList(queryText, queryValues));
 
                 queryText = totaltQuery + roleBasedQuery + filterQuery + searchQuery;
-                
-                
+
+
                 const totalCountResult = await client.query(queryService.listAddFromListTotal(queryText, queryValues));
 
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates: candidatesResult.rows, totalCount: totalCountResult.rows[0].totalCount } });
@@ -264,23 +262,19 @@ export const linkCandidateWithPosition = (_body) => {
                 const candidateList = _body.candidates;
                 const positionId = _body.positionId;
                 _body.count = 0;
-                let content = [{title:"Total experience",value:3},{title:"Relevant experience",value:5}]
-                let str = '';
-                
-                
-                // Inserting candidates to candidate_positions table
 
+                // Inserting candidates to candidate_positions table
                 if (_body.userRoleId == 1) {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;
                         element.positionId = positionId;
-                        element.ellowRate=utils.notNull(element.ellowRate)==false?null:element.ellowRate
+                        element.ellowRate = utils.notNull(element.ellowRate) == false ? null : element.ellowRate
                         _body.count = _body.count + 1;
                         promise.push(client.query(queryService.linkCandidateByAdminQuery(element)));
                     });
                     await Promise.all(promise);
                 }
-        
+
                 else {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;
@@ -298,8 +292,8 @@ export const linkCandidateWithPosition = (_body) => {
                 }
 
                 await client.query(queryService.updatePositionUpdatedOnAndBy(_body));
-
-                await emailService.linkCandidateWithPositionEMail(_body, client,myCache);
+                _body.addEllowRateOnly = false;
+                emailService.linkCandidateWithPositionEMail(_body, client);
                 await client.query('COMMIT')
 
                 resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
@@ -393,7 +387,7 @@ export const modifyResumeData = (_body) => {
                 extractedData["employeeId"] = _body.employeeId;
                 extractedData["resume"] = _body.resume;
                 extractedData["candidateId"] = _body.candidateId;
-                
+
                 if (_body.candidateId) {
                     await client.query(queryService.updateExtractedCandidateDetails(extractedData));
                     candidateId = _body.candidateId;
@@ -1331,16 +1325,9 @@ export const createPdfFromHtml = (_body) => {
             const client = await database()
             try {
                 var candidateId = _body.candidateId
-                let uniqueId = nanoid();
-                myCache.set(uniqueId, candidateId);
                 _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
-
-                let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-                let file = { url: _body.host + "/sharePdf/" + uniqueId };
-
-                await htmlToPdf.generatePdf(file, options).then(pdfBuffer => {
-                    emailService.createPdfFromHtmlEmail(_body, pdfBuffer);
-                });
+                let pdf = await builder.pdfBuilder(candidateId, _body.host);                
+                emailService.createPdfFromHtmlEmail(_body, pdf);
                 await client.query('COMMIT')
 
                 resolve({ code: 200, message: "Resume in PDF format has been shared successfully", data: {} });
@@ -1365,18 +1352,16 @@ export const fetchResumeDataForPdf = (_body) => {
             const client = await database()
             try {
                 console.log("fetchResumeDataForPdf");
-                
-                if (myCache.has(_body.uniqueId)) {
-                console.log("_body.uniqueId");
 
-                    let candidateId = myCache.take(_body.uniqueId);
+                if (builder.getCache().has(_body.uniqueId)) {
+                    let candidateId = builder.getCache().take(_body.uniqueId);
                     _body.candidateId = candidateId;
                     let data = await getResume(_body);
                     delete data["data"].assesmentLink;
                     delete data["data"].assesementComment;
                     delete data["data"].assesments;
 
-                    
+
                     resolve({ code: 200, message: "Candidate resume shared data fetched successfully", data: data["data"] });
 
                 }
@@ -1706,8 +1691,8 @@ export const resumeParser = (_body) => {
                             responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
 
                             let resp = await modifyResumeData(responseData).catch((e) => {
-                                console.log("error data received : ",e);
-                                
+                                console.log("error data received : ", e);
+
                                 reject({ code: 400, message: "Failed Please try again, parser error ", data: e.data });
                             });
                             resolve({ code: 200, message: "Resume parsed successfully", data: { candidateId: resp["data"] } });
@@ -1933,28 +1918,28 @@ export const listProviderResources = (_body) => {
 
 export const getHtmlResume = (req, res) => {
     var fs = require('fs');
-    
+
     var inputFile = req.files.htmlres.data;
     var filename = req.files.htmlres.name.split('.').slice(0, -1).join('.')
-    
+
     var temp = './sample.html';
     var outputFile = `./${filename}.docx`;
 
     fs.writeFile(temp, inputFile, function (err) {
+        if (err) throw err;
+
+        fs.readFile(temp, 'utf-8', function (err, html) {
             if (err) throw err;
 
-            fs.readFile(temp, 'utf-8', function (err, html) {
+            var docx = HtmlDocx.asBlob(html);
+            fs.writeFile(outputFile, docx, function (err) {
                 if (err) throw err;
-        
-                var docx = HtmlDocx.asBlob(html);
-                fs.writeFile(outputFile, docx, function (err) {
-                    if (err) throw err;
-                    res.download(outputFile);
-        
-                });
-         
+                res.download(outputFile);
+
             });
+
         });
+    });
 }
 
 
@@ -1968,10 +1953,10 @@ export const updateProviderCandidateInfo = (_body) => {
                 }
                 else {
                     _body.candidateStatus = 9
-                    var names=await client.query(queryService.getCandidateProfileName(_body));
-                    var message=`${names.rows[0].company}  has submitted a candidate named ${names.rows[0].name} for approval`
-                    createProviderNotifications({  companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId,image:null, firstName: names.rows[0].firstname, lastName: names.rows[0].lastname })
-   
+                    var names = await client.query(queryService.getCandidateProfileName(_body));
+                    var message = `${names.rows[0].company}  has submitted a candidate named ${names.rows[0].name} for approval`
+                    createProviderNotifications({ companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: names.rows[0].firstname, lastName: names.rows[0].lastname })
+
                 }
                 await client.query(queryService.updateProviderCandidateDetails(_body));
                 await client.query(queryService.updateProviderCandidateAvailability(_body));
@@ -2056,9 +2041,9 @@ export const approveProvidersCandidates = (_body) => {
         (async () => {
             const client = await database()
             try {
-                 await client.query(queryService.updateCandidateStatus(_body));
-                 await client.query(queryService.addDefaultTraits(_body));
-                 await client.query('COMMIT')
+                await client.query(queryService.updateCandidateStatus(_body));
+                await client.query(queryService.addDefaultTraits(_body));
+                await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate informations updated successfully", data: {} });
             } catch (e) {
                 console.log("Error raised from try : ", e)
@@ -2072,11 +2057,6 @@ export const approveProvidersCandidates = (_body) => {
     })
 }
 
-
-
-
-
-
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>> Link the providers candidate to a particular position .
 export const addProviderCandidateEllowRate = (_body) => {
@@ -2085,16 +2065,28 @@ export const addProviderCandidateEllowRate = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-    
+
                 if (_body.userRoleId == '1') {
                     console.log(_body)
-                     await  client.query(queryService.updateProviderCandidateEllowRate(_body))
-                     await emailService.mailToHirerWithEllowRate(_body, client,myCache);
-                     await client.query('COMMIT')
-                     resolve({ code: 200, message: "ellow rate added successfully", data: {} });
-                
+                    await client.query(queryService.updateProviderCandidateEllowRate(_body))
+
+                    _body.candidates = [{
+                        adminComment: _body.adminComment,
+                        billingTypeId: _body.billingTypeId,
+                        candidateId: _body.candidateId,
+                        currencyTypeId: _body.currencyTypeId,
+                        ellowRate: _body.ellowRate,
+                        fileName: _body.fileName,
+                    }]
+
+                    _body.addEllowRateOnly = true;
+
+                    await emailService.linkCandidateWithPositionEMail(_body, client);
+                    await client.query('COMMIT')
+                    resolve({ code: 200, message: "ellow rate added successfully", data: {} });
+
                 }
-                else{
+                else {
                     reject({ code: 400, message: "Unauthorized Access", data: {} });
 
                 }
@@ -2118,13 +2110,13 @@ export const mailers = (_body) => {
         (async () => {
             const client = await database()
             try {
-                 
+
                 // const oauth2Client = new google.auth.OAuth2(
                 //     process.env.GMAIL_OAUTH_CLIENT_ID,
                 //     process.env.GMAIL_OAUTH_CLIENT_SECRET,
                 //     process.env.GMAIL_OAUTH_REDIRECT_URL,
                 // );
-                
+
                 // // Generate a url that asks permissions for Gmail scopes
                 // const GMAIL_SCOPES = [
                 //     'https://mail.google.com/',
@@ -2132,30 +2124,30 @@ export const mailers = (_body) => {
                 //     'https://www.googleapis.com/auth/gmail.compose',
                 //     'https://www.googleapis.com/auth/gmail.send',
                 // ];
-                
+
                 // const url = oauth2Client.generateAuthUrl({
                 //     access_type: 'offline',
                 //     scope: GMAIL_SCOPES,
                 // });
-                
+
                 // console.info(`authUrl: ${url}`);
                 // const code = '4%2F0AY0e-g6FEhMGKmvYw3wKbBs4fRONjXYpzGiW6Ik8UGQmnufgdY3Zo4eZi8XaUgDTg7uPXw';
- 
+
                 // const oauth2Client = new google.auth.OAuth2(
                 //   process.env.GMAIL_OAUTH_CLIENT_ID,
                 //   process.env.GMAIL_OAUTH_CLIENT_SECRET,
                 //   process.env.GMAIL_OAUTH_REDIRECT_URL,
                 // );
-               
+
                 // const getToken ()  => {
                 //   const { tokens } =  oauth2Client.getToken(code);
                 //   console.info(tokens);
                 // };
-               
+
                 // getToken();
                 let adminReplacements =
                 {
-                    
+
                 };
 
                 let adminPath = 'src/emailTemplates/ind.html';
@@ -2183,3 +2175,28 @@ export const mailers = (_body) => {
 
 
 
+
+
+
+// create pdf
+export const shareAppliedCandidates = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
+                emailService.linkCandidateWithPositionEMail(_body, client);
+                await client.query('COMMIT')
+
+                resolve({ code: 200, message: "Resume in PDF format has been shared successfully", data: {} });
+
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
