@@ -4,6 +4,7 @@ import { createNotification, createHirerNotifications } from '../common/notifica
 import * as emailClient from '../emailManager/emailManager';
 import * as utils from '../utils/utils';
 import * as builder from "../utils/Builder";
+import * as constants from '../config/Constants';
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>>Email Function for admin to add reviews,assesment comments about the candidate

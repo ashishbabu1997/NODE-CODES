@@ -1,0 +1,31 @@
+//---------------------------Email path constants-------------------------------------------------//
+
+export const path = {
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATES : 'src/emailTemplates/addCandidatesText.html',
+    ADD_CANDIDATE_USER : 'src/emailTemplates/addCandidatesUsersText.html',
+    BLACKLIST_CANDIDATE : 'src/emailTemplates/addToBlacklistMail.html',
+    DISCUSSION_WITH_RESOURCE : 'src/emailTemplates/assigneeDisscussionMailText.html',
+    DELETE_CANDIDATE_FROM_POSITION : 'src/emailTemplates/candidateDeletionMailText.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+    ADD_CANDIDATE_HIRER : 'src/emailTemplates/addCandidateHirerMail.html',
+
+    ELLOW_VETTED : 'src/emailTemplates/ellowVettedText.html',
+}
