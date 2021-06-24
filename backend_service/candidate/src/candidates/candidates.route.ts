@@ -64,4 +64,6 @@ router
 .put('/approveCandidate',jwtAuth, setData(),candidateController.approveProviderCandidates)
 .get('/mailers',candidateController.mailers)
 
-export default router;
+.post('/emailTemplate',candidateController.postEmailTemplate)
+.get('/emailTemplate',candidateController.getEmailTemplate)
+export default router;  

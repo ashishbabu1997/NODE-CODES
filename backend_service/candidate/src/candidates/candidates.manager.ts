@@ -1321,7 +1321,7 @@ export const createPdfFromHtml = (_body) => {
             try {
                 var candidateId = _body.candidateId
                 _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
-                let pdf = await builder.pdfBuilder(candidateId, _body.host);                
+                let pdf = await builder.pdfBuilder(candidateId, _body.host);
                 emailService.createPdfFromHtmlEmail(_body, pdf);
                 await client.query('COMMIT')
 
@@ -2164,3 +2164,87 @@ export const mailers = (_body) => {
 
 
 
+export const getEmailTemplate = (req, res) => {
+    var fs = require('fs');
+    let pass = req.body.pass;
+    let isHtml = req.body.html, file = req.body.file;
+
+    if (isHtml) {
+        console.log('header : ', req.body.Authorisation)
+
+        if (builder.checkKey(req.body.Authorisation)) {       
+            fs.readFile(`./src/emailTemplates/${file}`, function (err, data2) {
+                if (err) {
+                    res.writeHead(404, { 'Content-Type': 'text/html' });
+                    return res.end("404 Not Found");
+                }
+                res.writeHead(200, { "Content-Type": "text/html" });
+                res.write(data2);
+                return res.end();
+            });
+        }
+        else {
+            res.writeHead(401, { "Content-Type": "text/html" });
+            res.end('Unauthorised access');
+        }
+    }
+    else {
+        var hashedPassword = crypto.createHash("sha256").update(pass).digest("hex");
+
+        if (hashedPassword == config.templatePass) {
+
+            fs.readFile('./src/public/Email.html', function (err, data) {
+                if (err) {
+                    res.writeHead(404, { 'Content-Type': 'text/html' });
+                    return res.end("404 Not Found");
+                }
+                res.writeHead(200, {
+                    "Content-Type": "text/html",
+                });
+                res.write(data);
+                return res.end();
+            });
+        }
+        else {
+            res.writeHead(401, { "Content-Type": "text/html" });
+            res.end('Wrong passkey');
+        }
+    }
+
+
+}
+
+
+export const setEmailTemplate = (req, res) => {
+    var fs = require('fs');
+    let isJs = req.query.js
+
+    if (isJs) {
+        let token = builder.tempToken(req);
+
+        fs.readFile('./src/public/start.js', function (err, data) {
+            if (err) {
+                res.writeHead(404, { 'Content-Type': 'text/javascript' });
+                return res.end("404 Not Found");
+            }
+            res.writeHead(200, {
+                "Content-Type": "text/javascript",
+                'Authorisation': token
+            });
+            res.write(data);
+            return res.end();
+        });
+    }
+
+    else {
+        fs.readFile('./src/public/passkey.html', function (err, data) {
+            if (err) {
+                res.writeHead(404, { 'Content-Type': 'text/html' });
+                return res.end("404 Not Found");
+            }
+            res.writeHead(200, { "Content-Type": "text/html" });
+            res.write(data);
+            return res.end();
+        });
+    }
+} 
