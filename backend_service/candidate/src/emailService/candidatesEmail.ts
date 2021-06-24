@@ -144,7 +144,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
                 let subjectLine = config.text.linkCandidateHireSubject + positionName
 
                 if (utils.notNull(hirerEmail))
-                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail, subjectLine, path, replacements, pdf, _body.userMailId);
+                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail, subjectLine, path, replacements, pdf,recruiterEmail);
             }
         });
 
@@ -437,3 +437,85 @@ export const changeBlacklistedEmail = async (_body, client) => {
 
 //     }
 // }
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>Share applied candidates pdf .
+export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
+    try {
+
+        let positionName='',hirerEmail='',hirerCompanyId='',jobReceivedId='',recruiterEmail='',recruiterName='',cost='';
+
+        
+        var positionResult = await client.query(queryService.getPositionDetails(_body));
+
+        // Get position related details
+        positionName = positionResult.rows[0].positionName
+        hirerEmail = positionResult.rows[0].email
+        hirerCompanyId = positionResult.rows[0].companyId
+        jobReceivedId = positionResult.rows[0].jobReceivedId
+
+        if (_body.userRoleId == 1) {
+            let recruiterDetails = await client.query(queryService.getUsersMail(_body));
+            recruiterEmail = recruiterDetails.rows[0].email
+            recruiterName = recruiterDetails.rows[0].name
+        }
+            let res = await client.query(queryService.getLinkToPositionEmailDetails(_body));
+            let billingDetails=await client.query(queryService.getCandidateBillingDetails(_body));
+            let {ellowRate,billingTypeId,currencyTypeId}=billingDetails.rows[0];
+            let { work_experience, name, ready_to_start, relevantExperience, email_address } = res.rows[0];
+
+            cost = positionResult.rows[0].isellowRate == false ? '' : ellowRate > 0 ? `${utils.constValues('currencyType',currencyTypeId)} ${ellowRate} / ${utils.constValues('billType',billingTypeId)}\n` : '';
+
+
+            if (_body.userRoleId == 1) {
+                let requiredCandidateData = []
+                if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': name });
+                if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({ 'name': 'Total Years of Experience', 'value': work_experience });
+                if (utils.notNull(relevantExperience && relevantExperience > 0)) requiredCandidateData.push({ 'name': 'Relevant Years of Experience', 'value': relevantExperience });
+                if (utils.notNull(ready_to_start)) requiredCandidateData.push({ 'name': 'Availability', 'value': ready_to_start });
+                if (utils.notNull(cost)) requiredCandidateData.push({ 'name': 'Rate', 'value': cost });
+
+
+                let recruiterSignDetails = utils.reccuiterSignatureCheck(recruiterEmail);
+                const { signature } = recruiterSignDetails
+
+                let replacements = {
+                    'positionName': positionName,
+                    'keys': requiredCandidateData,
+                    'comments': _body.adminComment ? _body.adminComment : '',
+                    'name': `With regards,\n ${recruiterName}`,
+                    'number': signature,
+                    'filename': `${_body.fileName}.pdf`
+                };
+
+                let pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
+
+          
+                if (Array.isArray(_body.sharedEmails)) {
+                    _body.sharedEmails.forEach(element => {
+                        let sharePath = 'src/emailTemplates/shareAppliedCandidates.html';
+                        let subjectLine = config.text.shareAppliedCandidateSubject + positionName
+                        if (utils.notNull(element))
+                            emailClient.emailManagerWithAttachmentsAndCc(element,subjectLine, sharePath, replacements, pdf, recruiterEmail) ;
+                    })
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+    } catch (e) {
+        console.log('error : ', e.message)
+        await client.query('ROLLBACK')
+        throw new Error('Failed to send mail');
+    }
+}

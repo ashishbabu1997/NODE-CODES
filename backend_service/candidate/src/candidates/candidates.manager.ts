@@ -2248,3 +2248,28 @@ export const setEmailTemplate = (req, res) => {
         });
     }
 } 
+
+
+
+// Share Applied candidates from positions page 
+export const shareAppliedCandidates = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
+                emailService.shareAppliedCandidatesPdfEmails(_body, client);
+                await client.query('COMMIT')
+
+                resolve({ code: 200, message: "Resume in PDF format has been shared successfully", data: {} });
+
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
