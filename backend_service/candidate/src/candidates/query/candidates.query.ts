@@ -25,7 +25,7 @@ export default {
     listFreeCandidatesTotalCount : 'select count(distinct chsv."candidateId") as "totalCount" from candidate_hiring_steps_view chsv ',
     updateCandidateVetting: 'UPDATE candidate set candidate_vetted=$2,updated_by=$3,updated_on=$4 where candidate_id=$1;',
     deleteCandidateFromPosition: `delete from candidate_position where candidate_id = $1 and position_id = $2`,
-    
+    getCandidateBillingDetails:'select ellow_rate as "ellowRate",billing_type as "billingTypeId",currency_type_id as "currencyTypeId" from candidate_position where candidate_id=$1 and position_id=$2',
     updateAdminApproveStatusQuery:'update candidate set candidate_status=$2,allocated_to=$3,updated_by=$3,updated_on=$4 where candidate_id=$1',
     deleteCandidateFromCandidateClientHiringStep: `delete from candidate_client_hiring_step where candidate_id = $1 and position_id = $2`,
     getSellerMail: 'SELECT e.email as "email",c.candidate_first_name as "cFirstName",c.candidate_last_name as "cLastName" FROM employee e LEFT JOIN candidate c ON c.company_id=e.company_id WHERE c.candidate_id=$1',

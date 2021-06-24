@@ -463,9 +463,11 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
             recruiterName = recruiterDetails.rows[0].name
         }
             let res = await client.query(queryService.getLinkToPositionEmailDetails(_body));
+            let billingDetails=await client.query(queryService.getCandidateBillingDetails(_body));
+            let {ellowRate,billingTypeId,currencyTypeId}=billingDetails.rows[0];
             let { work_experience, name, ready_to_start, relevantExperience, email_address } = res.rows[0];
 
-            cost = positionResult.rows[0].isellowRate == false ? '' : _body.ellowRate > 0 ? `${utils.constValues('currencyType', _body.currencyTypeId)} ${_body.ellowRate} / ${utils.constValues('billType', _body.billingTypeId)}\n` : '';
+            cost = positionResult.rows[0].isellowRate == false ? '' : ellowRate > 0 ? `${utils.constValues('currencyType',currencyTypeId)} ${ellowRate} / ${utils.constValues('billType',billingTypeId)}\n` : '';
 
 
             if (_body.userRoleId == 1) {

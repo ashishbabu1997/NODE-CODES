@@ -680,6 +680,14 @@ export const getCandidateMailDetails = (_body) => {
     }
 }
 
+export const getCandidateBillingDetails = (_body) => {
+    return {
+        name: 'get-candidate-billing-details',
+        text: candidateQuery.getCandidateBillingDetails,
+        values: [_body.candidateId,_body.positionId]
+    }
+}
+
 export const getLinkToPositionEmailDetails = (_body) => {
     return {
         name: 'get-link-to-position-email-details',
