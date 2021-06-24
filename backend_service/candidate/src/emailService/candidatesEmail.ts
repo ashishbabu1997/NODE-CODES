@@ -144,7 +144,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
                 let subjectLine = config.text.linkCandidateHireSubject + positionName
 
                 if (utils.notNull(hirerEmail))
-                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail, subjectLine, path, replacements, pdf, _body.userMailId);
+                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail, subjectLine, path, replacements, pdf,recruiterEmail);
             }
         });
 
@@ -465,7 +465,7 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
             let res = await client.query(queryService.getLinkToPositionEmailDetails(_body));
             let { work_experience, name, ready_to_start, relevantExperience, email_address } = res.rows[0];
 
-            cost = positionResult.rows[0].isellowRate == false ? '' : _body.ellowRate > 0 ? `${utils.constValues('currencyType', _body.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
+            cost = positionResult.rows[0].isellowRate == false ? '' : _body.ellowRate > 0 ? `${utils.constValues('currencyType', _body.currencyTypeId)} ${_body.ellowRate} / ${utils.constValues('billType', _body.billingTypeId)}\n` : '';
 
 
             if (_body.userRoleId == 1) {
@@ -491,8 +491,15 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
 
                 let pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
 
-                let sharePath = 'src/emailTemplates/addCandidateHirerMail.html';
-                let subjectLine = config.text.linkCandidateHireSubject + positionName
+          
+                if (Array.isArray(_body.sharedEmails)) {
+                    _body.sharedEmails.forEach(element => {
+                        let sharePath = 'src/emailTemplates/shareAppliedCandidates.html';
+                        let subjectLine = config.text.shareAppliedCandidateSubject + positionName
+                        if (utils.notNull(element))
+                            emailClient.emailManagerWithAttachments(element,subjectLine, sharePath, replacements, pdf, recruiterEmail) ;
+                    })
+                }
             }
 
 

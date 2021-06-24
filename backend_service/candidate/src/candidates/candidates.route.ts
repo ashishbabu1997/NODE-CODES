@@ -63,5 +63,7 @@ router
 .put('/updateProviderCandidateEllowRate', jwtAuth, setData(), candidateController.updateProviderCandidateEllowRateController)
 .put('/approveCandidate',jwtAuth, setData(),candidateController.approveProviderCandidates)
 .get('/mailers',candidateController.mailers)
+.put('/shareAppliedCandidate',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.shareAppliedCandidatesController)
+
 
 export default router;
