@@ -499,7 +499,7 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
                         let sharePath = 'src/emailTemplates/shareAppliedCandidates.html';
                         let subjectLine = config.text.shareAppliedCandidateSubject + positionName
                         if (utils.notNull(element))
-                            emailClient.emailManagerWithAttachments(element,subjectLine, sharePath, replacements, pdf, recruiterEmail) ;
+                            emailClient.emailManagerWithAttachmentsAndCc(element,subjectLine, sharePath, replacements, pdf, recruiterEmail) ;
                     })
                 }
             }
