@@ -2167,7 +2167,7 @@ export const mailers = (_body) => {
 
 
 
-// create pdf
+// Share Applied candidates from positions page 
 export const shareAppliedCandidates = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
