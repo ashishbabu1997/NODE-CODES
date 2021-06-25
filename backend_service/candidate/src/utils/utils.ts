@@ -1,4 +1,5 @@
 import config from '../config/config';
+const fs = require("fs");
 
 export const objectToArray = (objectArray, keyName) => {
     let reqArray = [];
@@ -311,4 +312,10 @@ export const reccuiterMailCheck = (email) => {
 export const reccuiterSignatureCheck = (email) => {
     let data = notNull(config.mailAuth[email]) ? config.mailAuth[email] : config.mailAuth["noreplymail"];
     return { signature: data.signature}
+}
+
+
+
+export const base64_encode = (file) => {
+    return "data:image/gif;base64,"+fs.readFileSync(file, 'base64');
 }
