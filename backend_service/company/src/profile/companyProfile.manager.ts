@@ -106,7 +106,7 @@ export const updatePreferences = (_body) => {
                 reject({ code: 400, message: "Failed to access profile. Please try again.", data: error.message });
                 return;
             }
-            resolve({ code: 200, message: "Profile listed successfully", data: {} });
+            resolve({ code: 200, message: "Settings updated successfully", data: {} });
         })
     });
 }
