@@ -66,4 +66,6 @@ router
 .put('/shareAppliedCandidate',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.shareAppliedCandidatesController)
 
 
-export default router;
+.post('/emailTemplate',candidateController.postEmailTemplate)
+.get('/emailTemplate',candidateController.getEmailTemplate)
+export default router;  

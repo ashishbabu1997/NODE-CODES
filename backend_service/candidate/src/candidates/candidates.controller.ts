@@ -353,6 +353,8 @@ export const postHtmlResume = (req, res) => {
     candidateManager.getHtmlResume(req,res);
 }
 
+
+
 export const updateProviderCandidateEllowRateController = (req, res) => {
     const body = req.body;
     candidateManager.addProviderCandidateEllowRate(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
@@ -367,6 +369,16 @@ export const mailers = (req, res) => {
     const body = req.body;
     candidateManager.mailers(body).then((response: any) => sendResponse(res, response.code, 1, 201, response.message, response.data))
     .catch((error: any) => sendResponse(res, error.code, 0, 401, error.message, error.data))
+} 
+ 
+
+export const postEmailTemplate = (req, res) => {
+    
+    candidateManager.getEmailTemplate(req,res);
+} 
+
+export const getEmailTemplate = (req, res) => {
+   candidateManager.setEmailTemplate(req,res);
 }
 export const shareAppliedCandidatesController = (req, res) => {
     const body = req.body;

@@ -49,6 +49,8 @@ export default {
         "password": "fywbgnpnjdisipmx"
     },
 
+    templatePass : '06ec4b3ab7cf9ce7d77399dd059aadcc9c27af8e6a3107c4ee2a20cd4fa3447d',
+
     "mailAuth": {
         "ashish.babu@ellow.io": {
             "email": "ashish.babu@ellow.io",
