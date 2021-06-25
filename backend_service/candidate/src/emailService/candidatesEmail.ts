@@ -519,3 +519,28 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
         throw new Error('Failed to send mail');
     }
 }
+
+
+
+
+
+
+
+
+export const requestForScreeningMail = async (_body, client) => {
+    try {
+
+        let adminReplacements = { name: _body.candidateName,designation:_body.candidatePositionName, email: _body.candidateEmail };
+        let adminPath = 'src/emailTemplates/newUserAdminText.html';
+        var ellowAdmins = await client.query(queryService.getEllowAdmins())
+        if (Array.isArray(ellowAdmins.rows)) {
+            ellowAdmins.rows.forEach(element => {
+                if (utils.notNull(element.email))
+                    emailClient.emailManagerForNoReply(element.email, config.text.requestForScreeningSubject, adminPath, adminReplacements);
+            })
+        }
+    } catch (e) {
+        console.log("error : ", e.message);
+        throw new Error('Failed to send mail');
+    }
+}
