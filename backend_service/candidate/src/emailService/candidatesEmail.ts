@@ -494,14 +494,14 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
                 
                 let pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
           
-                // if (Array.isArray(_body.sharedEmails)) {
-                //     _body.sharedEmails.forEach(element => {
-                //         let sharePath = 'src/emailTemplates/shareAppliedCandidates.html';
-                //         let subjectLine = config.text.shareAppliedCandidateSubject + positionName
-                //         if (utils.notNull(element))
-                //             emailClient.emailManagerWithAttachmentsAndCc(element,subjectLine, sharePath, replacements, pdf, recruiterEmail) ;
-                //     })
-                // }
+                if (Array.isArray(_body.sharedEmails)) {
+                    _body.sharedEmails.forEach(element => {
+                        let sharePath = 'src/emailTemplates/shareAppliedCandidates.html';
+                        let subjectLine = config.text.shareAppliedCandidateSubject + positionName
+                        if (utils.notNull(element))
+                            emailClient.emailManagerWithAttachmentsAndCc(element,subjectLine, sharePath, replacements, pdf, recruiterEmail) ;
+                    })
+                }
             }
     } catch (e) {
         console.log('error : ', e.message)
