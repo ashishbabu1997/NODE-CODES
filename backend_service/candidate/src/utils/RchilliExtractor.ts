@@ -177,9 +177,19 @@ const extractSocialProfile = (data) => {
 
 const extractLanguages = (data) => {
     let languages = [];
+    console.log(data)
     data.map((details) => {
         if (!['', undefined, null].includes(details["Language"]))
+        {
+            console.log(details["Language"])
             languages.push(details["Language"])
+        }
+        else
+        {
+            languages.push('English')
+        }
+        if(!languages.includes('English'))
+            languages.push('English')
     })
 
     return languages;
