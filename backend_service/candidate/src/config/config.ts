@@ -14,7 +14,8 @@ export default {
         "addCandidatesUsersTextSubject": "Profile is Shortlisted",
         "sharePdfTextSubject": "ellow resume",
         "linkCandidateHireSubject": " New profile from ellow.io |  ",
-        "shareAppliedCandidateSubject": " Profile shared from ellow.io |  "
+        "shareAppliedCandidateSubject": " Profile shared from ellow.io |  ",
+        "requestForScreeningSubject":"Freelancer Requested for Screening Process"
 
     },
     "integerReferences": {

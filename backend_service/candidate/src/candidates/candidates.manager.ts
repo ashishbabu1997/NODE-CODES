@@ -1028,6 +1028,7 @@ export const getResume = (_body) => {
                     {
                         candidateId: Number(_body.candidateId),
                         profile: profileDetails,
+                        requestForScreening:allProfileDetails.rows[0].requestForScreening,
                         detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
                         htmlResume: allProfileDetails.rows[0].htmlResume,
                         bagOfWords: allProfileDetails.rows[0].bagOfWords,
@@ -2269,6 +2270,43 @@ export const shareAppliedCandidates = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             }
         })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+
+
+
+
+
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>> Link the providers candidate to a particular position .
+export const requestForScreeningManager = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                    let candidateDetails=await client.query(queryService.getCandidateMailDetails(_body))
+                    await client.query(queryService.updateRequestForScreening(_body))
+                    _body.candidateName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)+' '+utils.capitalize(candidateDetails.rows[0].candidate_last_name)
+                    _body.candidateEmail=candidateDetails.rows[0].email_address
+                    _body.candidatePositionName=candidateDetails.rows[0].candidate_position_name
+                    await emailService.requestForScreeningMail(_body, client);
+                    await client.query('COMMIT')
+                    resolve({ code: 200, message: "ellow rate added successfully", data: {} });
+            } catch (e) {
+                console.log("error : ", e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("error : ", e)
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })

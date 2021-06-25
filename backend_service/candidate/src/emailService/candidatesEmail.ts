@@ -110,7 +110,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
             let { work_experience, name, ready_to_start, relevantExperience, email_address } = res.rows[0];
 
             cost = positionResult.rows[0].isellowRate == false ? '' : element.ellowRate > 0 ? `${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
-
+            let availability=utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
             candidateNames += `${name}\n`
 
             if (_body.userRoleId == 1) {
@@ -118,7 +118,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
                 if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': name });
                 if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({ 'name': 'Total Years of Experience', 'value': work_experience });
                 if (utils.notNull(relevantExperience && relevantExperience > 0)) requiredCandidateData.push({ 'name': 'Relevant Years of Experience', 'value': relevantExperience });
-                if (utils.notNull(ready_to_start)) requiredCandidateData.push({ 'name': 'Availability', 'value': ready_to_start });
+                if (utils.notNull(ready_to_start)) requiredCandidateData.push({ 'name': 'Availability', 'value': availability });
                 if (utils.notNull(cost)) requiredCandidateData.push({ 'name': 'Rate', 'value': cost });
 
                 let candidateReplacements = { name: name, positionName: positionName };
@@ -506,6 +506,31 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
     } catch (e) {
         console.log('error : ', e.message)
         await client.query('ROLLBACK')
+        throw new Error('Failed to send mail');
+    }
+}
+
+
+
+
+
+
+
+
+export const requestForScreeningMail = async (_body, client) => {
+    try {
+
+        let adminReplacements = { name: _body.candidateName,designation:_body.candidatePositionName, email: _body.candidateEmail };
+        let adminPath = 'src/emailTemplates/newUserAdminText.html';
+        var ellowAdmins = await client.query(queryService.getEllowAdmins())
+        if (Array.isArray(ellowAdmins.rows)) {
+            ellowAdmins.rows.forEach(element => {
+                if (utils.notNull(element.email))
+                    emailClient.emailManagerForNoReply(element.email, config.text.requestForScreeningSubject, adminPath, adminReplacements);
+            })
+        }
+    } catch (e) {
+        console.log("error : ", e.message);
         throw new Error('Failed to send mail');
     }
 }

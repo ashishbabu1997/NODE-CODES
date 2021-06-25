@@ -679,6 +679,13 @@ export const getCandidateMailDetails = (_body) => {
         values: [_body.candidateId]
     }
 }
+export const updateRequestForScreening = (_body) => {
+    return {
+        name: 'update-request-for-screening',
+        text: freelancerQuery.updateRequestForScreening,
+        values: [_body.candidateId]
+    }
+}
 
 export const getCandidateBillingDetails = (_body) => {
     return {

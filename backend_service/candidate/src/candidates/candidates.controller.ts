@@ -385,3 +385,12 @@ export const shareAppliedCandidatesController = (req, res) => {
     candidateManager.shareAppliedCandidates(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
+
+export const requestForScreeningController = (req, res) => {
+    const body = req.query;
+    candidateManager.requestForScreeningManager(body).then((response: any) => {
+        sendResponse(res, response.code, 1, 201, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 401, error.message, error.data)
+    })
+}

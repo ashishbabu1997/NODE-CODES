@@ -2335,3 +2335,39 @@
 *       500:
 *         description: Server down
 */
+
+
+
+
+/**
+* @swagger
+* /candidates/requestForScreening:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Freelancer request for screening
+*     summary: Button for all freelancers for requesting for screening after submitting thier profile
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*         type: integer
+*         required: [candidateId]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
