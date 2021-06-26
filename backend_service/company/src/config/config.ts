@@ -11,6 +11,18 @@ export default {
         "password": "DevD8u5er",
         "port":5432
     },
+    "mail": {
+        "service": "gmail",
+        "user": "cs@ellow.io",
+        // "password": "nkybzgbltlsoeiur"  
+        "password": "ricggklkmqeaxbxx"
+    },
+    
+    "noreplymail": {
+        "service": "gmail",
+        "user": "no-reply@ellow.io",
+        "password": "fqlroidzaxmlhgml"
+    },
     "jwtSecretKey": "elL0wA!",
     "countries":[
       {

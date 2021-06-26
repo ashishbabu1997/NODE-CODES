@@ -12,6 +12,6 @@ router
     .get('/', jwtAuth, setData(), getCertifications)
     .post('/', jwtAuth, setData(), validate(addCertificationSchema), addCertifications)
     .put('/', jwtAuth, setData(), validate(updateCertificationSchema), updateCertifications)
-    .delete('/:companycertificationId', jwtAuth, setData(), deleteCertifications)
+    .delete('/:companyCertificationId', jwtAuth, setData(), deleteCertifications)
 
 export default router;

@@ -3,11 +3,8 @@ import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
 import config from '../config/config';
 import * as emailService from '../emailService/candidatesEmail';
-import { nanoid } from 'nanoid';
 import * as passwordGenerator from 'generate-password'
 import * as crypto from "crypto";
-import * as htmlToPdf from "html-pdf-node";
-import * as nodeCache from 'node-cache';
 import * as utils from '../utils/utils';
 import * as rchilliExtractor from '../utils/RchilliExtractor';
 import * as https from 'http';
@@ -17,12 +14,13 @@ import * as HtmlDocx from 'html-docx-js';
 import { createProviderNotifications } from '../common/notifications/notifications';
 import * as dotenv from "dotenv";
 import * as emailClient from '../emailManager/emailManager';
+import { nanoid } from 'nanoid';
+import * as builder from '../utils/Builder';
 
 dotenv.config();
 
-const myCache = new nodeCache();
 // >>>>>>> FUNC. >>>>>>>
-// />>>>>>>> FUnction for listing all the candidates with his/her basic details.
+// />>>>>>>> FUnction for listing all the candidates with his/her basic details for a given position
 export const listCandidatesDetails = (_body) => {
     return new Promise((resolve, reject) => {
         var selectQuery = candidateQuery.listCandidates;
@@ -46,7 +44,7 @@ export const listCandidatesDetails = (_body) => {
             try {
                 await client.query('BEGIN');
                 queryText = selectQuery + adminApproveQuery + sort;
-                queryValues = Object.assign({ positionid: body.positionId}, queryValues)
+                queryValues = Object.assign({ positionid: body.positionId }, queryValues)
 
                 const candidatesResult = await client.query(queryService.listCandidates(queryText, queryValues));
                 const jobReceivedIdResult = await client.query(queryService.getJobReceivedId(body));
@@ -61,13 +59,12 @@ export const listCandidatesDetails = (_body) => {
             } finally {
                 client.release();
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
 
     })
 }
-
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>Listing all the free candidates from the candidates list.
@@ -76,7 +73,7 @@ export const listFreeCandidatesDetails = (_body) => {
 
         var selectQuery = candidateQuery.listFreeCandidatesFromView;
         let totalQuery = candidateQuery.listFreeCandidatesTotalCount;
-        var roleBasedQuery = '', queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
+        var queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
             body = _body.query, reqBody = _body.body;
         body.employeeId = reqBody.employeeId
 
@@ -109,7 +106,7 @@ export const listFreeCandidatesDetails = (_body) => {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -147,8 +144,8 @@ export const listAddFromListCandidates = (_body) => {
                 const candidatesResult = await client.query(queryService.listAddFromList(queryText, queryValues));
 
                 queryText = totaltQuery + roleBasedQuery + filterQuery + searchQuery;
-                
-                
+
+
                 const totalCountResult = await client.query(queryService.listAddFromListTotal(queryText, queryValues));
 
                 resolve({ code: 200, message: "Candidate Listed successfully", data: { candidates: candidatesResult.rows, totalCount: totalCountResult.rows[0].totalCount } });
@@ -157,7 +154,7 @@ export const listAddFromListCandidates = (_body) => {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -214,7 +211,7 @@ export const editVettingStatus = (_body) => {
             } finally {
                 client.release();
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -264,24 +261,19 @@ export const linkCandidateWithPosition = (_body) => {
                 const candidateList = _body.candidates;
                 const positionId = _body.positionId;
                 _body.count = 0;
-                let content = [{title:"Total experience",value:3},{title:"Relevant experience",value:5}]
-                let str = '';
-                
-                
-                // Inserting candidates to candidate_positions table
-                console.log("HIII")
 
+                // Inserting candidates to candidate_positions table
                 if (_body.userRoleId == 1) {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;
                         element.positionId = positionId;
-                        element.ellowRate=utils.notNull(element.ellowRate)==false?null:element.ellowRate
+                        element.ellowRate = utils.notNull(element.ellowRate) == false ? null : element.ellowRate
                         _body.count = _body.count + 1;
                         promise.push(client.query(queryService.linkCandidateByAdminQuery(element)));
                     });
                     await Promise.all(promise);
                 }
-        
+
                 else {
                     candidateList.forEach(element => {
                         element.employeeId = _body.employeeId;
@@ -299,8 +291,8 @@ export const linkCandidateWithPosition = (_body) => {
                 }
 
                 await client.query(queryService.updatePositionUpdatedOnAndBy(_body));
-
-                await emailService.linkCandidateWithPositionEMail(_body, client,myCache);
+                _body.addEllowRateOnly = false;
+                emailService.linkCandidateWithPositionEMail(_body, client);
                 await client.query('COMMIT')
 
                 resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
@@ -372,7 +364,7 @@ export const modifyResumeFile = (_body) => {
             } finally {
                 client.release();
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -394,7 +386,7 @@ export const modifyResumeData = (_body) => {
                 extractedData["employeeId"] = _body.employeeId;
                 extractedData["resume"] = _body.resume;
                 extractedData["candidateId"] = _body.candidateId;
-                
+
                 if (_body.candidateId) {
                     await client.query(queryService.updateExtractedCandidateDetails(extractedData));
                     candidateId = _body.candidateId;
@@ -673,8 +665,7 @@ export const modifyCandidateWorkHistory = (_body) => {
             const client = await database().connect()
             _body.startDate = utils.emptyStringCheck(_body.startDate)
             _body.endDate = utils.emptyStringCheck(_body.endDate)
-            console.log("START DATE", _body.startDate)
-            console.log("END DATE", _body.startDate)
+
             try {
                 switch (_body.action) {
                     case 'add':
@@ -813,7 +804,6 @@ export const modifySocialPresence = (_body) => {
 // >>>>>>>>>>>>> Update any publications done by the candidate
 export const modifyPublication = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());
         var candidatePublicationId;
         (async () => {
             const client = await database().connect()
@@ -849,7 +839,7 @@ export const modifyPublication = (_body) => {
             } finally {
                 client.release();
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -859,7 +849,6 @@ export const modifyPublication = (_body) => {
 // >>>>>>>>>>>>> Update any awards acheived by the candidate
 export const modifyAward = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database().connect()
             _body.certifiedYear = utils.emptyStringCheck(_body.certifiedYear)
@@ -1039,6 +1028,7 @@ export const getResume = (_body) => {
                     {
                         candidateId: Number(_body.candidateId),
                         profile: profileDetails,
+                        requestForScreening:allProfileDetails.rows[0].requestForScreening,
                         detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
                         htmlResume: allProfileDetails.rows[0].htmlResume,
                         bagOfWords: allProfileDetails.rows[0].bagOfWords,
@@ -1158,7 +1148,6 @@ export const getSharedEmails = (_body) => {
 //>>>>>>>> Signup from a shared resume page
 export const shareResumeSignup = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
         (async () => {
             const client = await database().connect()
             try {
@@ -1332,16 +1321,9 @@ export const createPdfFromHtml = (_body) => {
             const client = await database()
             try {
                 var candidateId = _body.candidateId
-                let uniqueId = nanoid();
-                myCache.set(uniqueId, candidateId);
                 _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
-
-                let options = { format: 'A4', printBackground: true, headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] };
-                let file = { url: _body.host + "/sharePdf/" + uniqueId };
-
-                await htmlToPdf.generatePdf(file, options).then(pdfBuffer => {
-                    emailService.createPdfFromHtmlEmail(_body, pdfBuffer);
-                });
+                let pdf = await builder.pdfBuilder(candidateId, _body.host);
+                emailService.createPdfFromHtmlEmail(_body, pdf);
                 await client.query('COMMIT')
 
                 resolve({ code: 200, message: "Resume in PDF format has been shared successfully", data: {} });
@@ -1365,21 +1347,15 @@ export const fetchResumeDataForPdf = (_body) => {
         (async () => {
             const client = await database()
             try {
-                console.log("fetchResumeDataForPdf");
-                
-                if (myCache.has(_body.uniqueId)) {
-                console.log("_body.uniqueId");
-
-                    let candidateId = myCache.take(_body.uniqueId);
+                if (builder.getCache().has(_body.uniqueId)) {
+                    let candidateId = builder.getCache().take(_body.uniqueId);
                     _body.candidateId = candidateId;
                     let data = await getResume(_body);
                     delete data["data"].assesmentLink;
                     delete data["data"].assesementComment;
                     delete data["data"].assesments;
 
-                    
                     resolve({ code: 200, message: "Candidate resume shared data fetched successfully", data: data["data"] });
-
                 }
                 else {
                     console.log("uniqueId does not exist");
@@ -1559,7 +1535,7 @@ export const getAllAuditLogs = (_body) => {
 //>>>>>>>>>>>Listing all the free candidates from the candidates list of hirer.
 export const listHirerResources = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView, totalQuery = candidateQuery.listFreeCandidatesofHirerTotalCount, vettedQuery = '';
+        var selectQuery = candidateQuery.listFreeCandidatesOfHirerFromView, totalQuery = candidateQuery.listFreeCandidatesofHirerTotalCount;
         var queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
             body = _body.query;
 
@@ -1707,8 +1683,8 @@ export const resumeParser = (_body) => {
                             responseData["ResumeParserData"]["ResumeFileName"] = _body.fileName.substring(36);
 
                             let resp = await modifyResumeData(responseData).catch((e) => {
-                                console.log("error data received : ",e);
-                                
+                                console.log("error data received : ", e);
+
                                 reject({ code: 400, message: "Failed Please try again, parser error ", data: e.data });
                             });
                             resolve({ code: 200, message: "Resume parsed successfully", data: { candidateId: resp["data"] } });
@@ -1802,7 +1778,7 @@ export const singleSignOn = (_body) => {
                         employeeId: employeeId.toString(),
                         companyId: _body.cmpId.toString(),
                         userRoleId: _body.userRoleId.toString()
-                    }, config.jwtSecretKey, { expiresIn: '24h' });
+                    }, process.env.TOKEN_SECRET, { expiresIn: '24h' });
                     await client.query(queryService.insertEmployeeToken(_body));
                 }
                 else {
@@ -1840,7 +1816,7 @@ export const singleSignOn = (_body) => {
                 console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -1884,7 +1860,7 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: {} });
             }
-        })().catch(e => {
+        })().catch(() => {
             reject({ code: 400, message: "Failed. Please try again.", data: {} })
         })
     })
@@ -1894,7 +1870,7 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
 //>>>>>>>>>>>Listing all the free candidates from the candidates list of provider.
 export const listProviderResources = (_body) => {
     return new Promise((resolve, reject) => {
-        var selectQuery = candidateQuery.listFreeCandidatesOfProviderFromView, totalQuery = candidateQuery.listFreeCandidatesofProviderTotalCount, vettedQuery = '';
+        var selectQuery = candidateQuery.listFreeCandidatesOfProviderFromView, totalQuery = candidateQuery.listFreeCandidatesofProviderTotalCount;
         var queryText = '', searchQuery = '', queryValues = {}, filterQuery = '', filter = _body.body != undefined ? _body.body.filter : '',
             body = _body.query;
 
@@ -1934,28 +1910,28 @@ export const listProviderResources = (_body) => {
 
 export const getHtmlResume = (req, res) => {
     var fs = require('fs');
-    
+
     var inputFile = req.files.htmlres.data;
     var filename = req.files.htmlres.name.split('.').slice(0, -1).join('.')
-    
+
     var temp = './sample.html';
     var outputFile = `./${filename}.docx`;
 
     fs.writeFile(temp, inputFile, function (err) {
+        if (err) throw err;
+
+        fs.readFile(temp, 'utf-8', function (err, html) {
             if (err) throw err;
 
-            fs.readFile(temp, 'utf-8', function (err, html) {
+            var docx = HtmlDocx.asBlob(html);
+            fs.writeFile(outputFile, docx, function (err) {
                 if (err) throw err;
-        
-                var docx = HtmlDocx.asBlob(html);
-                fs.writeFile(outputFile, docx, function (err) {
-                    if (err) throw err;
-                    res.download(outputFile);
-        
-                });
-         
+                res.download(outputFile);
+
             });
+
         });
+    });
 }
 
 
@@ -1968,8 +1944,16 @@ export const updateProviderCandidateInfo = (_body) => {
                     _body.candidateStatus = 4
                 }
                 else {
+<<<<<<< HEAD
                     _body.candidateStatus = 3
                     await client.query(queryService.addDefaultTraits(_body));
+=======
+                    _body.candidateStatus = 9
+                    var names = await client.query(queryService.getCandidateProfileName(_body));
+                    var message = `${names.rows[0].company}  has submitted a candidate named ${names.rows[0].name} for approval`
+                    createProviderNotifications({ companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: names.rows[0].firstname, lastName: names.rows[0].lastname })
+
+>>>>>>> develop
                 }
                 await client.query(queryService.updateProviderCandidateDetails(_body));
                 await client.query(queryService.updateProviderCandidateAvailability(_body));
@@ -1995,8 +1979,6 @@ export const updateProviderCandidateInfo = (_body) => {
 export const getProviderCandidateResume = (_body) => {
     return new Promise((resolve, reject) => {
         const candidateId = _body.candidateId;
-        var projectArray = [];
-        var assesmentArray = [];
 
         (async () => {
             const client = await database().connect()
@@ -2054,9 +2036,9 @@ export const approveProvidersCandidates = (_body) => {
         (async () => {
             const client = await database()
             try {
-                 await client.query(queryService.updateCandidateStatus(_body));
-                 await client.query(queryService.addDefaultTraits(_body));
-                 await client.query('COMMIT')
+                await client.query(queryService.updateCandidateStatus(_body));
+                await client.query(queryService.addDefaultTraits(_body));
+                await client.query('COMMIT')
                 resolve({ code: 200, message: "Candidate informations updated successfully", data: {} });
             } catch (e) {
                 console.log("Error raised from try : ", e)
@@ -2070,11 +2052,6 @@ export const approveProvidersCandidates = (_body) => {
     })
 }
 
-
-
-
-
-
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>> Link the providers candidate to a particular position .
 export const addProviderCandidateEllowRate = (_body) => {
@@ -2083,16 +2060,28 @@ export const addProviderCandidateEllowRate = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-    
+
                 if (_body.userRoleId == '1') {
                     console.log(_body)
-                     await  client.query(queryService.updateProviderCandidateEllowRate(_body))
-                     await emailService.mailToHirerWithEllowRate(_body, client,myCache);
-                     await client.query('COMMIT')
-                     resolve({ code: 200, message: "ellow rate added successfully", data: {} });
-                
+                    await client.query(queryService.updateProviderCandidateEllowRate(_body))
+
+                    _body.candidates = [{
+                        adminComment: _body.adminComment,
+                        billingTypeId: _body.billingTypeId,
+                        candidateId: _body.candidateId,
+                        currencyTypeId: _body.currencyTypeId,
+                        ellowRate: _body.ellowRate,
+                        fileName: _body.fileName,
+                    }]
+
+                    _body.addEllowRateOnly = true;
+
+                    await emailService.linkCandidateWithPositionEMail(_body, client);
+                    await client.query('COMMIT')
+                    resolve({ code: 200, message: "ellow rate added successfully", data: {} });
+
                 }
-                else{
+                else {
                     reject({ code: 400, message: "Unauthorized Access", data: {} });
 
                 }
@@ -2116,13 +2105,13 @@ export const mailers = (_body) => {
         (async () => {
             const client = await database()
             try {
-                 
+
                 // const oauth2Client = new google.auth.OAuth2(
                 //     process.env.GMAIL_OAUTH_CLIENT_ID,
                 //     process.env.GMAIL_OAUTH_CLIENT_SECRET,
                 //     process.env.GMAIL_OAUTH_REDIRECT_URL,
                 // );
-                
+
                 // // Generate a url that asks permissions for Gmail scopes
                 // const GMAIL_SCOPES = [
                 //     'https://mail.google.com/',
@@ -2130,30 +2119,30 @@ export const mailers = (_body) => {
                 //     'https://www.googleapis.com/auth/gmail.compose',
                 //     'https://www.googleapis.com/auth/gmail.send',
                 // ];
-                
+
                 // const url = oauth2Client.generateAuthUrl({
                 //     access_type: 'offline',
                 //     scope: GMAIL_SCOPES,
                 // });
-                
+
                 // console.info(`authUrl: ${url}`);
                 // const code = '4%2F0AY0e-g6FEhMGKmvYw3wKbBs4fRONjXYpzGiW6Ik8UGQmnufgdY3Zo4eZi8XaUgDTg7uPXw';
- 
+
                 // const oauth2Client = new google.auth.OAuth2(
                 //   process.env.GMAIL_OAUTH_CLIENT_ID,
                 //   process.env.GMAIL_OAUTH_CLIENT_SECRET,
                 //   process.env.GMAIL_OAUTH_REDIRECT_URL,
                 // );
-               
+
                 // const getToken ()  => {
                 //   const { tokens } =  oauth2Client.getToken(code);
                 //   console.info(tokens);
                 // };
-               
+
                 // getToken();
                 let adminReplacements =
                 {
-                    
+
                 };
 
                 let adminPath = 'src/emailTemplates/ind.html';
@@ -2181,3 +2170,149 @@ export const mailers = (_body) => {
 
 
 
+export const getEmailTemplate = (req, res) => {
+    var fs = require('fs');
+    let pass = req.body.pass;
+    let isHtml = req.body.html, file = req.body.file;
+
+    if (isHtml) {
+        console.log('header : ', req.body.Authorisation)
+
+        if (builder.checkKey(req.body.Authorisation)) {       
+            fs.readFile(`./src/emailTemplates/${file}`, function (err, data2) {
+                if (err) {
+                    res.writeHead(404, { 'Content-Type': 'text/html' });
+                    return res.end("404 Not Found");
+                }
+                res.writeHead(200, { "Content-Type": "text/html" });
+                res.write(data2);
+                return res.end();
+            });
+        }
+        else {
+            res.writeHead(401, { "Content-Type": "text/html" });
+            res.end('Unauthorised access');
+        }
+    }
+    else {
+        var hashedPassword = crypto.createHash("sha256").update(pass).digest("hex");
+
+        if (hashedPassword == config.templatePass) {
+
+            fs.readFile('./src/public/Email.html', function (err, data) {
+                if (err) {
+                    res.writeHead(404, { 'Content-Type': 'text/html' });
+                    return res.end("404 Not Found");
+                }
+                res.writeHead(200, {
+                    "Content-Type": "text/html",
+                });
+                res.write(data);
+                return res.end();
+            });
+        }
+        else {
+            res.writeHead(401, { "Content-Type": "text/html" });
+            res.end('Wrong passkey');
+        }
+    }
+
+
+}
+
+
+export const setEmailTemplate = (req, res) => {
+    var fs = require('fs');
+    let isJs = req.query.js
+
+    if (isJs) {
+        let token = builder.tempToken(req);
+
+        fs.readFile('./src/public/start.js', function (err, data) {
+            if (err) {
+                res.writeHead(404, { 'Content-Type': 'text/javascript' });
+                return res.end("404 Not Found");
+            }
+            res.writeHead(200, {
+                "Content-Type": "text/javascript",
+                'Authorisation': token
+            });
+            res.write(data);
+            return res.end();
+        });
+    }
+
+    else {
+        fs.readFile('./src/public/passkey.html', function (err, data) {
+            if (err) {
+                res.writeHead(404, { 'Content-Type': 'text/html' });
+                return res.end("404 Not Found");
+            }
+            res.writeHead(200, { "Content-Type": "text/html" });
+            res.write(data);
+            return res.end();
+        });
+    }
+} 
+
+
+
+// Share Applied candidates from positions page 
+export const shareAppliedCandidates = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
+                emailService.shareAppliedCandidatesPdfEmails(_body, client);
+                await client.query('COMMIT')
+
+                resolve({ code: 200, message: "Resume in PDF format has been shared successfully", data: {} });
+
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+
+
+
+
+
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>> Link the providers candidate to a particular position .
+export const requestForScreeningManager = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                    let candidateDetails=await client.query(queryService.getCandidateMailDetails(_body))
+                    await client.query(queryService.updateRequestForScreening(_body))
+                    _body.candidateName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)+' '+utils.capitalize(candidateDetails.rows[0].candidate_last_name)
+                    _body.candidateEmail=candidateDetails.rows[0].email_address
+                    _body.candidatePositionName=candidateDetails.rows[0].candidate_position_name
+                    await emailService.requestForScreeningMail(_body, client);
+                    await client.query('COMMIT')
+                    resolve({ code: 200, message: "ellow rate added successfully", data: {} });
+            } catch (e) {
+                console.log("error : ", e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("error : ", e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}

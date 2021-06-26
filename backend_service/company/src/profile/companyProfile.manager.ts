@@ -1,126 +1,58 @@
-import companyQuery from './query/query';
 import database from '../common/database/database';
 import { Promise } from 'es6-promise'
+import * as queryService from '../queryService/queryService';
+import * as profilePercentageUtil from '../utils/profilePercentage';
+
 
 export const get_Details = (_body) => {
     return new Promise((resolve, reject) => {
-        const query = {
-            name: 'get_details',
-            text: companyQuery.getProfiles,
-            values: [_body.companyId],
-        }
-        database().query(query, (error, results) => {
+
+        _body["userCompanyId"] = _body.userRoleId == '1' ? _body["userCompanyId"] : _body.companyId;
+
+        database().query(queryService.getCompanyProfile(_body), (error, results) => {
             if (error) {
-                reject({ code: 400, message: "Failed to access profile. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed to access profile. Please try again.", data: error.message });
                 return;
             }
             const response = results.rows[0];
-            const responseData = {
-                "profileUrl": response.profileUrl === null ? '' : response.profileUrl,
-                "description": response.description === null ? '' : response.description,
-                "logo": response.logo === null ? '' : response.logo,
-                "coverPage": response.coverPage === null ? '' : response.coverPage,
-                "tagline": response.tagline === null ? '' : response.tagline,
-                "accountType":response.accountType === null ? '' : response.accountType,
-                "roleId":response.roleId === null ? '' : response.roleId,
-                "companySizeId":response.companySizeId === null ? '' : response.companySizeId,
-                "company_website":response.website === null ? '' : response.website,
-                // "facebookId": response.facebookId === null ? '' : response.facebookId,
-                // "instagramId": response.instagramId === null ? '' : response.instagramId,
-                // "twitterId": response.twitterId === null ? '' : response.twitterId,
-                "linkedinId": response.linkedinId === null ? '' : response.linkedinId,
-            }
-            resolve({ code: 200, message: "Profile listed successfully", data: { Profile: responseData } });
+
+            resolve({ code: 200, message: "Profile listed successfully", data: { Profile: response } });
         })
     });
 }
 export const update_Details = (_body) => {
     return new Promise((resolve, reject) => {
         var count;
-        const accountType=_body.accountType
-            if (accountType == 1)
-            {
-                    if (_body.logo==''&& _body.coverPage==''&&_body.linkedinId==''&&_body.tagline=='')
-                    {
-                         count=50;
+        _body["userCompanyId"] = _body.userRoleId == '1' ? _body["userCompanyId"] : _body.companyId;
 
-                    }
-                    else if(_body.logo==''||_body.coverPage==''||_body.linkedinId==''||_body.tagline=='')
-                    {
-                         count=90
-                        if((_body.logo==''&& _body.coverPage=='') ||(_body.logo==''&&_body.linkedinId=='')||(_body.logo==''&&_body.tagline=='')||(_body.coverPage==''&& _body.linkedinId=='')||(_body.coverPage==''&&_body.tagline=='')||(_body.linkedinId==''&&_body.tagline==''))
-                        {   
-                            count=75;
-                            if((_body.logo==''&& _body.coverPage==''&&_body.linkedinId=='')||(_body.logo==''&&_body.linkedinId==''&&_body.tagline=='')||(_body.tagline==''&&_body.coverPage==''&&_body.linkedinId=='')||(_body.tagline==''&&_body.coverPage==''&&_body.logo==''))
-                            {
-                                 count=65;
-                            }
-                        }
-                    }
-                    else
-                    {
-                         count=100
-                    }
+        const accountType = _body.accountType
+        if (accountType == 1)
+            count = profilePercentageUtil.hirer(_body);
+
+        else {
+
+            database().query(queryService.getProfilePercentage(_body), (error, results) => {
+                if (error) {
+                    reject({ code: 400, message: "Failed to access profile. Please try again.", data: error.message });
+                    return;
                 }
-        
-            else
-                {
-                    const profilequery = {
-                        name: 'get-account-type',
-                        text: companyQuery.getProfilePercentage,
-                        values: [_body.companyId],
-                    }
-                database().query(profilequery, (error, results) => {
-                    if (error) {
-                            reject({ code: 400, message: "Failed to access profile. Please try again.", data: {} });
-                            return;
-                    }
-                    else{
-                        const profilePercentage=results.rows[0].profilePercentage
-                        if (profilePercentage<=50)
-                        {
-                            if (_body.logo==''&& _body.coverPage==''&&_body.linkedinId==''&&_body.tagline=='')
-                            {
-                                 count=profilePercentage+25;
+                else {
+                    const profilePercentage = results.rows[0].profilePercentage
+                    count = profilePercentageUtil.update(_body, profilePercentage);
+                }
+            })
 
-                            }
-                            else if(_body.logo==''||_body.coverPage==''||_body.linkedinId==''||_body.tagline=='')
-                            {
-                                 count=profilePercentage+40
-                                if((_body.logo==''&& _body.coverPage=='') ||(_body.logo==''&&_body.linkedinId=='')||(_body.logo==''&&_body.tagline=='')||(_body.coverPage==''&& _body.linkedinId=='')||(_body.coverPage==''&&_body.tagline=='')||(_body.linkedinId==''&&_body.tagline==''))
-                                {   
-                                     count=profilePercentage+35;
-                                    if((_body.logo==''&& _body.coverPage==''&&_body.linkedinId=='')||(_body.logo==''&&_body.linkedinId==''&&_body.tagline=='')||(_body.tagline==''&&_body.coverPage==''&&_body.linkedinId=='')||(_body.tagline==''&&_body.coverPage==''&&_body.logo==''))
-                                    {
-                                        count=profilePercentage+30;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                count=profilePercentage+50
-                            }
-                        }
-                    }
-                })
-                
-            }
-        const currentTime = Math.floor(Date.now() / 1000);
-        const query = {
-            name: 'update_details',
-            text: companyQuery.updateProfileDetails,
-            values: [_body.profileUrl, _body.description, _body.logo, _body.coverPage, _body.tagline,_body.linkedinId,count, parseInt(_body.companyId),_body.accountType,_body.roleId,_body.company_website,_body.companySizeId,_body.currencyTypeId]
         }
-        database().query(query, (error, results) => {
+        _body.count = count;
+
+        database().query(queryService.updateCompanyProfile(_body), (error, results) => {
             if (error) {
-                console.log(error)
-                reject({ code: 400, message: "Failed to update profile. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed to update profile. Please try again.", data: error.message });
                 return;
-            } 
+            }
             resolve({ code: 200, message: "Profile updated successfully", data: {} });
         })
-
-    }) 
+    })
 }
 
 
@@ -128,29 +60,53 @@ export const update_Details = (_body) => {
 
 export const updateProfileLogo = (_body) => {
     return new Promise((resolve, reject) => {
+        _body["userCompanyId"] = _body.userRoleId == '1' ? _body["userCompanyId"] : _body.companyId;
+
         var query
-        if(_body.type==1)
-        {
-            query = {
-                name: 'update-logo',
-                text: companyQuery.updateLogo,
-                values: [_body.companyId,_body.fileName],
-            }  
-        }
+        if (_body.type == 1)
+            query = queryService.updateCompanyLogo(_body)
         else
-        {
-         query = {
-            name: 'update-profile',
-            text: companyQuery.updateProfile,
-            values: [_body.companyId,_body.fileName],
-        }
-    }
+            query = queryService.updateCompanyCoverPage(_body)
+            
         database().query(query, (error, results) => {
             if (error) {
-                reject({ code: 400, message: "Failed to update image. Please try again.", data: {} });
+                reject({ code: 400, message: "Failed to update image. Please try again.", data: error.message });
                 return;
             }
-            resolve({ code: 200, message: "Image updated successfully", data: {  } });
+            resolve({ code: 200, message: "Image updated successfully", data: {} });
+        })
+    });
+}
+
+
+export const getPreferences = (_body) => {
+    return new Promise((resolve, reject) => {
+
+        _body["userCompanyId"] = _body.userRoleId == '1' ? _body["userCompanyId"] : _body.companyId;
+
+        database().query(queryService.getPreferences(_body), (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed to access profile. Please try again.", data: error.message});
+                return;
+            }
+            const response = results.rows[0];
+
+            resolve({ code: 200, message: "Profile listed successfully", data: { Profile: response } });
+        })
+    });
+}
+
+export const updatePreferences = (_body) => {
+    return new Promise((resolve, reject) => {
+
+        _body["userCompanyId"] = _body.userRoleId == '1' ? _body["userCompanyId"] : _body.companyId;
+
+        database().query(queryService.updatePreferences(_body), (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed to access profile. Please try again.", data: error.message });
+                return;
+            }
+            resolve({ code: 200, message: "Settings updated successfully", data: {} });
         })
     });
 }

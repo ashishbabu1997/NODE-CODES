@@ -1,4 +1,4 @@
-import { addEmployee,addEmployeeByAdmin,resetToken,addFreelancer,getCompanyByEmail,checkVerificationLink,ellowRecruiterSignup,getellowAdminsDetails,getEmployeesFromCompany } from './employee.controller';
+import * as employeeController from './employee.controller';
  import * as express from 'express';
  import validate from './middleware/validation';
  import {companyRegistrationSchema,freelancerSchema,tokenSchema} from './schema/create.schema';
@@ -9,13 +9,14 @@ import { addEmployee,addEmployeeByAdmin,resetToken,addFreelancer,getCompanyByEma
 const router = express.Router();
 
 router
-    .post('/', validate(companyRegistrationSchema), addEmployee)
-    .post('/freelancer', validate(freelancerSchema), addFreelancer)
-    .post('/freelancer/setTokenAndPassword', validate(tokenSchema), resetToken)
-    .get('/getCompanyByEmail', getCompanyByEmail)
-    .post('/addEmployeeByAdmin',jwtAuth, setData(),setProfileAuth([1]), validate(companyRegistrationSchema), addEmployeeByAdmin)
-    .get('/verifyToken', checkVerificationLink)
-    .post('/ellowRecruiterSignup',ellowRecruiterSignup)
-    .get('/getAllAdmins', getellowAdminsDetails)
-    .get('/getEmployees',jwtAuth, setData(), getEmployeesFromCompany)
+    .post('/', validate(companyRegistrationSchema), employeeController.addEmployee)
+    .post('/freelancer', validate(freelancerSchema), employeeController.addFreelancer)
+    .post('/freelancer/setTokenAndPassword', validate(tokenSchema), employeeController.resetToken)
+    .get('/getCompanyByEmail', employeeController.getCompanyByEmail)
+    .post('/addEmployeeByAdmin',jwtAuth, setData(),setProfileAuth([1]), validate(companyRegistrationSchema), employeeController.addEmployeeByAdmin)
+    .get('/verifyToken', employeeController.checkVerificationLink)
+    .post('/ellowRecruiterSignup',employeeController.ellowRecruiterSignup)
+    .get('/getAllAdmins', employeeController.getellowAdminsDetails)
+    .get('/getEmployees',jwtAuth, setData(), employeeController.getEmployeesFromCompany)
+
 export default router;

@@ -4,10 +4,12 @@ import config from '../config/config';
 
 export const getCompanyDetails = (_body) => {
     return new Promise((resolve, reject) => {
+        _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
+        
         const query = {
             name: 'get-personal-profile',
             text: profileQuery.getProfiles,
-            values: [parseInt(_body.companyId)],
+            values: [parseInt(_body.userCompanyId)],
         }
         
         database().query(query, (error, results) => {

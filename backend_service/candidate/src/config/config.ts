@@ -13,7 +13,10 @@ export default {
         "addCandidatesTextSubject": "Applied Candidates List",
         "addCandidatesUsersTextSubject": "Profile is Shortlisted",
         "sharePdfTextSubject": "ellow resume",
-        "linkCandidateHireSubject": " New profile from ellow.io |  "
+        "linkCandidateHireSubject": " New profile from ellow.io |  ",
+        "shareAppliedCandidateSubject": " Profile shared from ellow.io |  ",
+        "requestForScreeningSubject":"Freelancer Requested for Screening Process"
+
     },
     "integerReferences": {
         "profileSubmissionStatusValue": 3,
@@ -46,6 +49,8 @@ export default {
         "user": "ashish.babu@ellow.io",
         "password": "fywbgnpnjdisipmx"
     },
+
+    templatePass : '06ec4b3ab7cf9ce7d77399dd059aadcc9c27af8e6a3107c4ee2a20cd4fa3447d',
 
     "mailAuth": {
         "ashish.babu@ellow.io": {
