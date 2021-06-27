@@ -24,7 +24,7 @@ export const updateHiringStepDetails = (_body) => {
                     let resourceAllocatedRecruiter = await client.query(queryService.getResourceAllocatedRecruiter(_body));
                     var positions=await client.query(queryService. getPositionName(_body));
                     var assignee=await client.query(queryService. getAssigneeName(_body));
-                    let imageResults=await client.query(queryService.getImageDetails(_body))
+                    let imageResults=await client.query(queryService.getCandidateMailDetails(_body))
                     if(candidateClientHiringStepName=='Negotiation/Close position')
                     {
                         await client.query(queryService.updateMakeOfferValue(_body));

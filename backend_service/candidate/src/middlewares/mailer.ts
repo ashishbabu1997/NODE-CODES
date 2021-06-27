@@ -1,7 +1,6 @@
 import * as nodemailer from 'nodemailer'
 import config from '../config/config';
 import * as dotenv from "dotenv";
-import { utils } from 'xlsx/types';
 import * as util from '../utils/utils';
 
 let user='',pass='',recepient='';

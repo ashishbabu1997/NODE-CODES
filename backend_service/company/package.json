@@ -20,10 +20,15 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "generate-password": "^1.6.0",
+    "handlebars": "^4.7.7",
+    "nodemailer": "^6.6.2",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^8.2.1",
-    "pm2": "^4.4.0"
+    "pm2": "^4.4.0",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
     "typescript": "^3.9.5"

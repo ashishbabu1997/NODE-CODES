@@ -8,6 +8,7 @@ import * as helmet  from 'helmet';
 
 import AppConfig from './config/config';
 import router from './candidate.router';
+
 import configurePassport from './config/passportJwtConfig';
 import {swaggerSpec} from './swagger';
 import * as swaggerUi from 'swagger-ui-express';
@@ -33,6 +34,7 @@ configurePassport();
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/', router);
+app.use(express.static(__dirname + '/public'))
 
 app.listen(AppConfig.http.port, () => {
   console.log('Listening on port ' + AppConfig.http.port);

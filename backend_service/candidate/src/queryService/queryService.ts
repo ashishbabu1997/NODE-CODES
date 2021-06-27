@@ -672,11 +672,26 @@ export const getPositionDetails = (_body) => {
     }
 }
 
-export const getImageDetails = (_body) => {
+export const getCandidateMailDetails = (_body) => {
     return {
-        name: 'get-image-names',
-        text: freelancerQuery.getImageNames,
+        name: 'get-candidate-image-details',
+        text: freelancerQuery.getCandidateMailDetails,
         values: [_body.candidateId]
+    }
+}
+export const updateRequestForScreening = (_body) => {
+    return {
+        name: 'update-request-for-screening',
+        text: freelancerQuery.updateRequestForScreening,
+        values: [_body.candidateId]
+    }
+}
+
+export const getCandidateBillingDetails = (_body) => {
+    return {
+        name: 'get-candidate-billing-details',
+        text: candidateQuery.getCandidateBillingDetails,
+        values: [_body.candidateId,_body.positionId]
     }
 }
 

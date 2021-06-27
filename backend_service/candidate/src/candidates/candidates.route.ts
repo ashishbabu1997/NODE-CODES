@@ -63,5 +63,9 @@ router
 .put('/updateProviderCandidateEllowRate', jwtAuth, setData(), candidateController.updateProviderCandidateEllowRateController)
 .put('/approveCandidate',jwtAuth, setData(),candidateController.approveProviderCandidates)
 .get('/mailers',candidateController.mailers)
+.put('/shareAppliedCandidate',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.shareAppliedCandidatesController)
+.get('/requestForScreening',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.requestForScreeningController)
 
-export default router;
+.post('/emailTemplate',candidateController.postEmailTemplate)
+.get('/emailTemplate',candidateController.getEmailTemplate)
+export default router;  

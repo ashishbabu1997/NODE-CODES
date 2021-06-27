@@ -2282,3 +2282,92 @@
 *         description: Server down
 */
 
+
+
+/**
+* @swagger
+* /candidates/shareAppliedCandidate:
+*   put:
+*     tags:
+*       - Candidates
+*     name: Share applied candidates data
+*     summary: Share details of candidates applied for a particular position along with their resume attached.
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer            
+*             sharedEmails:
+*               type: array
+*               items:
+*                 type: string
+*             host:
+*               type: string
+*             positionId:
+*               type: string
+*             ellowRate:
+*               type: integer
+*             billingTypeId:
+*               type: integer
+*             currencyTypeId:
+*               type: integer
+*           required:
+*             - candidateId
+*             - sharedEmails
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+
+
+/**
+* @swagger
+* /candidates/requestForScreening:
+*   get:
+*     tags:
+*       - Candidates
+*     name: Freelancer request for screening
+*     summary: Button for all freelancers for requesting for screening after submitting thier profile
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: candidateId
+*         schema:
+*         type: integer
+*         required: [candidateId]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
