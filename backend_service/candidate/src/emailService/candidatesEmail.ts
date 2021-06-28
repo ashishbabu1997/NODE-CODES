@@ -520,7 +520,7 @@ export const requestForScreeningMail = async (_body, client) => {
     try {
 
         let adminReplacements = { name: _body.candidateName,designation:_body.candidatePositionName, email: _body.candidateEmail };
-        let adminPath = 'src/emailTemplates/newUserAdminText.html';
+        let adminPath = 'src/emailTemplates/requestForScreeningt.html';
         var ellowAdmins = await client.query(queryService.getEllowAdmins())
         if (Array.isArray(ellowAdmins.rows)) {
             ellowAdmins.rows.forEach(element => {
