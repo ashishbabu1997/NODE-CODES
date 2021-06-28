@@ -2301,7 +2301,7 @@ export const requestForScreeningManager = (_body) => {
                     _body.candidatePositionName=candidateDetails.rows[0].candidate_position_name
                     await emailService.requestForScreeningMail(_body, client);
                     await client.query('COMMIT')
-                    resolve({ code: 200, message: "ellow rate added successfully", data: {} });
+                    resolve({ code: 200, message: "Requested for ellow screening ", data: {} });
             } catch (e) {
                 console.log("error : ", e)
                 await client.query('ROLLBACK')
