@@ -1022,6 +1022,10 @@ export const getResume = (_body) => {
                     typeOfAvailability: allProfileDetails.rows[0].typeOfAvailability,
                     readyToStart: allProfileDetails.rows[0].readyToStart
                 }
+
+                // let tempD = {"dstOffset":0,"rawOffset":19800,"status":"OK","timeZoneId":"Asia/Kolkata","timeZoneName":"India Standard Time"}
+
+
                 await client.query('COMMIT')
                 resolve({
                     code: 200, message: "Resume listed successfully",
@@ -1047,7 +1051,8 @@ export const getResume = (_body) => {
                         awards: awards.rows,
                         languages: languages.rows,
                         workedCompanyList,
-                        designationList: designations.rows[0].designations
+                        designationList: designations.rows[0].designations,
+                        gmtOffset : utils.extractGmt(profileDetails.timezone)
                     }
                 });
 

@@ -324,3 +324,26 @@ export const reccuiterSignatureCheck = (email) => {
 export const base64_encode = (file) => {
     return "data:image/gif;base64,"+fs.readFileSync(file, 'base64');
 }
+
+export const secondsToHms = (d) => {
+    let da = Math.abs(Number(d));
+    var h = Math.floor(da / 3600);
+    var m = Math.floor(da % 3600 / 60);
+    var sign = d>0?'+':'-';
+    return `GMT${sign}${h}:${m}`
+}
+
+export const extractGmt = (data) =>{
+    try {
+        if(notNull(data))
+        {
+            let jsonData = JSON.parse(data);
+            return secondsToHms(parseInt(jsonData.rawOffset)+ parseInt(jsonData.dstOffset))
+        }
+        else
+        return ''
+    } catch (error) {
+        console.log("error while extracting GMT : ",error);
+        return ''
+    }
+}
