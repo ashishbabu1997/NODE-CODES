@@ -1002,6 +1002,7 @@ export const getResume = (_body) => {
                     citizenshipName,
                     residence,
                     phoneNumber: allProfileDetails.rows[0].phoneNumber,
+                    timezone:allProfileDetails.rows[0].timezone,
                     email: allProfileDetails.rows[0].email,
                     candidateVetted: allProfileDetails.rows[0].candidateVetted,
                     blacklisted: allProfileDetails.rows[0].blacklisted,
