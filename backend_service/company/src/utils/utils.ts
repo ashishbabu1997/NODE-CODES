@@ -11,15 +11,16 @@ export const employeeSort = (body) => {
         "lastName": 'last_name',
         "roleId": 'role_id',
         "email": 'email',
-        "createdOn": 'created_on'
+        "createdOn": 'created_on',
+        "primaryEmail":'primary_email'
     }
 
 
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
+        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;
     }
     else
-        sort = `order by primary_email desc,status desc,firstname`
+        sort = `order by primary_email desc,status desc`
     return sort;
 }
 export const domainExtractor=(email)=>{

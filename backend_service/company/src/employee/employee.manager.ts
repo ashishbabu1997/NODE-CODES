@@ -14,7 +14,7 @@ export const getEmployeesByCompanyId = (_body) => {
 
         selectQuery += utils.employeeSort(_body)
         selectQuery += utils.pagination(_body)
-
+        console.log(selectQuery)
         database().query(queryService.getEmployeeDetailsFromCompanyId(_body, selectQuery), (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed. Please try again.", data: error.message });
@@ -147,7 +147,7 @@ export const toggleEmployeeActiveStatus = (_body) => {
                 else
                     reject({ code: 400, message: "Access Denied", data: "Unauthorised access detected, please try again later" });
 
-                resolve({ code: 200, message: "Active status updated successfully", data: {} });
+                resolve({ code: 200, message: "Status changed successfully", data: {} });
                 await client.query('COMMIT')
             } catch (e) {
                 console.log("Error e1: ", e);
@@ -181,7 +181,7 @@ export const setAsPrimaryContact = (_body) => {
                 else
                     reject({ code: 400, message: "Access Denied", data: "Unauthorised access detected, please try again later" });
 
-                resolve({ code: 200, message: "Primary contact update succesfully", data: {} });
+                resolve({ code: 200, message: "Primary contact updated succesfully", data: {} });
                 await client.query('COMMIT')
             } catch (e) {
                 console.log("Error e1: ", e);

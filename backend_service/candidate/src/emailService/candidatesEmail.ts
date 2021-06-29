@@ -468,7 +468,7 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
             let billingDetails=await client.query(queryService.getCandidateBillingDetails(_body));
             let {ellowRate,billingTypeId,currencyTypeId}=billingDetails.rows[0];
             let { work_experience, name, ready_to_start, relevantExperience, email_address } = res.rows[0];
-
+            let availability=utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
             cost = positionResult.rows[0].isellowRate == false ? '' : ellowRate > 0 ? `${utils.constValues('currencyType',currencyTypeId)} ${ellowRate} / ${utils.constValues('billType',billingTypeId)}\n` : '';
 
             if (_body.userRoleId == 1) {
@@ -476,7 +476,7 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
                 if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': name });
                 if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({ 'name': 'Total Years of Experience', 'value': work_experience });
                 if (utils.notNull(relevantExperience && relevantExperience > 0)) requiredCandidateData.push({ 'name': 'Relevant Years of Experience', 'value': relevantExperience });
-                if (utils.notNull(ready_to_start)) requiredCandidateData.push({ 'name': 'Availability', 'value': ready_to_start });
+                if (utils.notNull(ready_to_start)) requiredCandidateData.push({ 'name': 'Availability', 'value': availability });
                 if (utils.notNull(cost)) requiredCandidateData.push({ 'name': 'Rate', 'value': cost });
 
                 let recruiterSignDetails = utils.reccuiterSignatureCheck(recruiterEmail);
@@ -490,7 +490,6 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
                     'number': signature,
                     'filename': `${_body.fileName}.pdf`
                 };
-                console.log("pdf");
                 
                 let pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
           
@@ -521,7 +520,7 @@ export const requestForScreeningMail = async (_body, client) => {
     try {
 
         let adminReplacements = { name: _body.candidateName,designation:_body.candidatePositionName, email: _body.candidateEmail };
-        let adminPath = 'src/emailTemplates/newUserAdminText.html';
+        let adminPath = 'src/emailTemplates/requestForScreeningt.html';
         var ellowAdmins = await client.query(queryService.getEllowAdmins())
         if (Array.isArray(ellowAdmins.rows)) {
             ellowAdmins.rows.forEach(element => {

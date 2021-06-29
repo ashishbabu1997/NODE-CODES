@@ -25,7 +25,8 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
             maxCost = filter.maxcost,
             billingTypeId = filter.billingTypeId,
             currencyType = filter.currencyType,
-            otherSkills = filter.otherSkills
+            otherSkills = filter.otherSkills,
+            createdUser=filter.createdUser
             ;
 
         if (![undefined, null, ''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length) {
@@ -93,6 +94,10 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
         if (![undefined, null, ''].includes(candStatus) && Array.isArray(candStatus) && candStatus.length) {
             filterQuery = filterQuery + ' and chsv."stageStatusName" ilike any(select concat(array_element,\'%\') from unnest($candstatus::text[]) array_element(array_element)) '
             queryValues = Object.assign({ candstatus: candStatus }, queryValues)
+        }
+        if (![undefined, null, ''].includes(createdUser)) {
+         filterQuery=filterQuery+ '  and chsv."createdBy" in (select employee_id from employee where user_role_id=$createdUser and employee_id=chsv."createdBy")'
+         queryValues = Object.assign({ createdUser: createdUser }, queryValues)
         }
     }
 
