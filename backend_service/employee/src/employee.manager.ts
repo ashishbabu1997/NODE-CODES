@@ -276,7 +276,14 @@ export const createEmployeeByAdmin = (_body) => {
                 let emailAddress = _body.email
                 let number = ![null, undefined].includes(_body.telephoneNumber) ? _body.telephoneNumber : "";
                 path = 'src/emailTemplates/newApplicationText.html';
-                let adminReplacements = { applicantName: Name, company: companyName, email: emailAddress, phoneNumber: number };
+                let replacementArray=[]
+                if (utils.notNull(Name)) replacementArray.push({ 'name': 'Name', 'value': Name+'\n' });
+                if (utils.notNull(companyName)) replacementArray.push({ 'name': 'Company Name', 'value': companyName+'\n' });
+                if (utils.notNull(emailAddress)) replacementArray.push({ 'name': 'Email Address', 'value': emailAddress+'\n' });
+                if (utils.notNull(number)) replacementArray.push({ 'name': 'Phone Number', 'value': number });
+
+
+                let adminReplacements ={keys:replacementArray} 
                 const getEllowAdmins = {
                     name: 'get-ellow-admin',
                     text: employeeQuery.getellowAdmins,
