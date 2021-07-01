@@ -17,7 +17,35 @@ export const modifyCandidateProfileDetailsQuery = (_body) => {
         values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.sellerCompanyId,_body.jobCategoryId,_body.timezone],
     }
 }
+export const verifyCandidateInCandidateEmployee = (_body) => {
+    return {
+        name: 'verify-candidate-in-candidateEmployee',
+        text: candidateQuery.verifyCandidateInCandidateEmployeeTable,
+        values:[_body.candidateId],
+    }
+}
+export const companyCheck = (_body) => {
+    return {
+        name: 'verify-freelancer-company',
+        text: candidateQuery.verifyFreelancerCompany,
+        values:[_body.sellerCompanyId],
+    }
+}
+export const addCandidateEmployee = (_body) => {
+    return {
+        name: 'add-candidate-employee',
+        text: candidateQuery.addCandidateEmployeeDetails,
+        values:[_body.candidateEmployeeId,_body.candidateId,true,currentTime(), currentTime()],
+    }
+}
+export const addEmployee = (_body) => {
+    return {
+        name: 'add-employee',
+        text: candidateQuery.addEmployee,
+        values: [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.email, _body.phoneNumber, currentTime(),_body.hashedPassword]
 
+    }
+}
 export const updateProviderCandidateDetails = (_body) => {
     return {
         name: 'update-provider-candidateDetails',

@@ -396,10 +396,7 @@ export const modifyResumeData = (_body) => {
                     if (_body.userRoleId == 3) {
                         extractedData["companyId"] = Number(_body.companyId)
                     }
-                    else {
-                        let freelancer = await client.query(queryService.getFreelancerCompany(_body))
-                        extractedData["companyId"] = freelancer.rows[0].company_id
-                    }
+                 
 
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
                     if ([null, undefined, ''].includes(candidateResult) || [null, undefined, ''].includes(candidateResult.rows[0])) {
@@ -501,6 +498,31 @@ export const modifyProfileDetails = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
+                var companyCheckResults= await client.query(queryService.companyCheck(_body));
+                if (_body.userRoleId==1 && companyCheckResults.rows[0].company_type==2)
+                {
+                    var results= await client.query(queryService.verifyCandidateInCandidateEmployee(_body));
+                    if (results.rowCount==0)
+                    {
+                        const password = passwordGenerator.generate({
+                            length: 10,
+                            numbers: true
+                        });
+                        _body.hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                        var employeeResult= await client.query(queryService.addEmployee(_body))
+                        _body.candidateEmployeeId=employeeResult.rows[0].employee_id
+                        await client.query(queryService.addCandidateEmployee(_body))
+                        var userSubject="ellow.io  Login Credentials"
+                        let userPath = 'src/emailTemplates/freelancerAdminLoginText.html';
+                        var userCredentialReplacements =  {
+                            name:_body.firstName,
+                            user:_body.email,
+                            password:password    
+                        };
+                        
+                        emailClient.emailManagerForNoReply(_body.email,userSubject,userPath,userCredentialReplacements);
+                    }
+                }
                 await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
                 resolve({ code: 200, message: "Candidate ProfileDetails updated successfully", data: {} });
             } catch (e) {
@@ -1032,6 +1054,7 @@ export const getResume = (_body) => {
                     data:
                     {
                         candidateId: Number(_body.candidateId),
+                        companyType:allProfileDetails.rows[0].companyType,
                         profile: profileDetails,
                         requestForScreening:allProfileDetails.rows[0].requestForScreening,
                         detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
