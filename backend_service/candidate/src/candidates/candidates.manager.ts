@@ -1027,7 +1027,7 @@ export const getResume = (_body) => {
                     data:
                     {
                         candidateId: Number(_body.candidateId),
-                        companyType:allProfileDetails.rows[0].profile,
+                        companyType:allProfileDetails.rows[0].companyType,
                         profile: profileDetails,
                         requestForScreening:allProfileDetails.rows[0].requestForScreening,
                         detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
