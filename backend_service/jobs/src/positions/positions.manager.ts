@@ -67,6 +67,7 @@ export const createCompanyPositions = async (_body) => {
                 let hiringStepQueries = [];
                 _body.cmpId = _body.userRoleId == 1 ? _body.positionCreatedCompanyId : _body.companyId;
                 let companyId = _body.cmpId
+                _body.experienceInString=`${_body.experienceLevel[0]} - ${_body.experienceLevel[1]} years`
                 const getCompanyNameResponse = await client.query(queryService.getCompanyNameQuery(_body))
                 const companyName = getCompanyNameResponse.rows[0].companyName
                 const companyPositionResponse = await client.query(queryService.addCompanyPositionsQuery(_body))
@@ -99,6 +100,7 @@ export const createCompanyPositions = async (_body) => {
                 await Promise.all(hiringStepQueries);
                 if (_body.publish == true) {
                     await client.query(queryService.changePositionStatusQuery(_body))
+                
                     const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
                     const jobReceivedId = data.rows[0].job_received_id;
                     const details = await client.query(queryService.getNotificationDetailsQuery(_body));
@@ -111,6 +113,23 @@ export const createCompanyPositions = async (_body) => {
                         const hirerMessage = `New position, ${details.rows[0].positionName} has been created for you by ellow.io admin`
                         await createHirerNotifications({ positionId, jobReceivedId, companyId: _body.cmpId, message: hirerMessage, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
                         await client.query(queryService.assigneeQuery(_body));
+                    if (_body.typeOfJob==0 || _body.typeOfJob==1)
+                    {
+                        var providers=await client.query(queryService.getAllProviders(_body))
+                        var jobCategory=await client.query(queryService.getJobCategoryName(_body))
+                        var jobRole=jobCategory.rows[0].job_category_name
+                        var providerReplacements={jobRole:jobRole,experienceLevel:_body.experienceInString,profiles:_body.developerCount}
+                        console.log(providerReplacements)
+                        var providersPath='src/emailTemplates/newPositionAlertProviders.html';
+                        if (Array.isArray(providers.rows)) {
+                            providers.rows.forEach(element => {
+                            
+                                   emailClient.emailManager(element.email, config.PositionText.providersSubject, providersPath, providerReplacements);
+                                
+    
+                            })
+                        }
+                    }
                     }
                     else {
                         // console.log("Hirer or provider")
@@ -128,12 +147,9 @@ export const createCompanyPositions = async (_body) => {
                     var ellowAdmins = await client.query(queryService.getEllowAdmins(_body))
                     if (Array.isArray(ellowAdmins.rows)) {
                         ellowAdmins.rows.forEach(element => {
-                            if (element.email != null || '' || undefined) {
-                                emailClient.emailManager(element.email, subject, path, userReplacements);
-                            }
-                            else {
-                                console.log("Email Recipient is empty")
-                            }
+                        
+                               emailClient.emailManager(element.email, subject, path, userReplacements);
+                            
 
                         })
                     }

@@ -12,6 +12,7 @@ export default {
     updatePositionSecond: `UPDATE positions SET contract_start_date = $1, currency_type_id = $2, billing_type = $3, min_budget = $4, max_budget = $5 , updated_by = $6, updated_on = $7,contract_duration=$10,immediate=$11,type_of_job=$12 WHERE position_id = $8 AND  company_id = $9 AND status = true`,
     deletePositionSkills: `delete from job_skills WHERE position_id = $1 AND status = true AND skill_id <> ALL ($2)`,
     checkJobStatus:'select job_status from positions where position_id=$1',
+    getAllProviders:'select email from employee where account_type=2 and primary_email=true',
     changePositionStatus: `UPDATE positions SET job_status = 6, updated_on = $2,active_date=$2 WHERE position_id = $1 `,
     deletePositionReadStatus:'delete from position_read_status where position_id=$1',
     changeJobStatus: 'UPDATE positions SET job_status=$3,updated_on=$1 WHERE position_id=$2 ',
@@ -22,6 +23,8 @@ export default {
     getEmailAddressOfBuyerFromPositionId:'SELECT p.position_name ,e.email,e.company_id,c.company_name,p.job_status,j.job_received_id FROM positions p LEFT JOIN employee e ON e.company_id=p.company_id LEFT JOIN company c on c.company_id=p.company_id LEFT JOIN job_received j ON j.position_id=p.position_id WHERE p.position_id=$1 ORDER BY e.employee_id LIMIT 1',
     deletePosition:'delete from positions where position_id=$1',
     updateJobReceivedStatus:'select job_received_id from  job_received  WHERE position_id=$1',
+    getJobCategoryName:'select job_category_name from  job_category  WHERE job_category_id=$1',
+
     updateCompanyJobStatus:'UPDATE company_job SET status=$3,updated_on=$2 WHERE job_received_id=$1',
     insertReadStatus:'INSERT INTO position_read_status( position_id, employee_id, created_on, updated_on) values ($1,$2,$3,$3) on conflict on constraint position_read_status_position_id_employee_id_unique_key do nothing',
     insertHiringSteps:'insert into position_hiring_step (position_id, hiring_step_name, hiring_step_type, hiring_step_order, created_by, updated_by, created_on, updated_on,hiring_assesment_name,hiring_assesment_type,"default") values ($1, $2, $3, $4, $5, $5, $6, $6,$7,$8,$9) on conflict on constraint position_hiring_step_position_id_hiring_step_name_unique_key do update set hiring_step_type=$3,hiring_step_order=$4,updated_by=$5,updated_on=$6',
