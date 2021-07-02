@@ -115,7 +115,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
 
             if (_body.userRoleId == 1) {
                 let requiredCandidateData = []
-                if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': name });
+                if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': utils.capitalize(res.rows[0].candidate_first_name)+' '+utils.capitalize(res.rows[0].candidate_last_name) });
                 if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({ 'name': 'Total Years of Experience', 'value': work_experience });
                 if (utils.notNull(relevantExperience && relevantExperience > 0)) requiredCandidateData.push({ 'name': 'Relevant Years of Experience', 'value': relevantExperience });
                 if (utils.notNull(ready_to_start)) requiredCandidateData.push({ 'name': 'Availability', 'value': availability });
@@ -473,7 +473,7 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
 
             if (_body.userRoleId == 1) {
                 let requiredCandidateData = []
-                if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': name });
+                if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': utils.capitalize(res.rows[0].candidate_first_name)+' '+utils.capitalize(res.rows[0].candidate_last_name) });
                 if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({ 'name': 'Total Years of Experience', 'value': work_experience });
                 if (utils.notNull(relevantExperience && relevantExperience > 0)) requiredCandidateData.push({ 'name': 'Relevant Years of Experience', 'value': relevantExperience });
                 if (utils.notNull(ready_to_start)) requiredCandidateData.push({ 'name': 'Availability', 'value': availability });

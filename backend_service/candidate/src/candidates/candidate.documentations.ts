@@ -2371,3 +2371,42 @@
 *       500:
 *         description: Server down
 */
+
+
+
+/**
+* @swagger
+* /candidates/sentFreelancerLoginCredentials:
+*   post:
+*     tags:
+*       - Candidates
+*     name: sent Freelancer Login Credentials
+*     summary: sent Freelancer Login Credentials
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer            
+*           required:
+*             - candidateId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

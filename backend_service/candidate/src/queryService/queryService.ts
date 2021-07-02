@@ -28,7 +28,7 @@ export const companyCheck = (_body) => {
     return {
         name: 'verify-freelancer-company',
         text: candidateQuery.verifyFreelancerCompany,
-        values:[_body.sellerCompanyId],
+        values:[_body.candidateId],
     }
 }
 export const addCandidateEmployee = (_body) => {
@@ -311,6 +311,14 @@ export const fetchProfile = (candidateId) => {
     return {
         name: 'fetch-profile-details',
         text: candidateQuery.getAllProfileDetails,
+        values: [candidateId],
+    }
+}
+
+export const checkLoginSent = (candidateId) => {
+    return {
+        name: 'check-login-sent',
+        text: candidateQuery.checkPasswordSent,
         values: [candidateId],
     }
 }

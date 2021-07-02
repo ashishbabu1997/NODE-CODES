@@ -498,31 +498,6 @@ export const modifyProfileDetails = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                var companyCheckResults= await client.query(queryService.companyCheck(_body));
-                if (_body.userRoleId==1 && companyCheckResults.rows[0].company_type==2)
-                {
-                    var results= await client.query(queryService.verifyCandidateInCandidateEmployee(_body));
-                    if (results.rowCount==0)
-                    {
-                        const password = passwordGenerator.generate({
-                            length: 10,
-                            numbers: true
-                        });
-                        _body.hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                        var employeeResult= await client.query(queryService.addEmployee(_body))
-                        _body.candidateEmployeeId=employeeResult.rows[0].employee_id
-                        await client.query(queryService.addCandidateEmployee(_body))
-                        var userSubject="ellow.io  Login Credentials"
-                        let userPath = 'src/emailTemplates/freelancerAdminLoginText.html';
-                        var userCredentialReplacements =  {
-                            name:_body.firstName,
-                            user:_body.email,
-                            password:password    
-                        };
-                        
-                        emailClient.emailManagerForNoReply(_body.email,userSubject,userPath,userCredentialReplacements);
-                    }
-                }
                 await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
                 resolve({ code: 200, message: "Candidate ProfileDetails updated successfully", data: {} });
             } catch (e) {
@@ -1046,37 +1021,48 @@ export const getResume = (_body) => {
                 }
 
                 // let tempD = {"dstOffset":0,"rawOffset":19800,"status":"OK","timeZoneId":"Asia/Kolkata","timeZoneName":"India Standard Time"}
-
-
+                _body.resData= {
+                    candidateId: Number(_body.candidateId),
+                    companyType:allProfileDetails.rows[0].companyType,
+                    profile: profileDetails,
+                    requestForScreening:allProfileDetails.rows[0].requestForScreening,
+                    detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
+                    htmlResume: allProfileDetails.rows[0].htmlResume,
+                    bagOfWords: allProfileDetails.rows[0].bagOfWords,
+                    resume: allProfileDetails.rows[0].resume,
+                    overallWorkExperience,
+                    availability,
+                    socialPresence: socialProfileDetails.rows[0],
+                    candidateCloudProficiency: cloudProficiencyDetails.rows,
+                    skills: skills.rows,
+                    projects: projectArray,
+                    assesments: assesmentArray,
+                    workExperience: workExperiences.rows,
+                    education: educations.rows,
+                    publications: publications.rows,
+                    awards: awards.rows,
+                    languages: languages.rows,
+                    workedCompanyList,
+                    designationList: designations.rows[0].designations,
+                    gmtOffset : utils.extractGmt(profileDetails.timezone)
+                }
+                var checkFreechelancerPasswordSent = await client.query(queryService.checkLoginSent(candidateId));
+                if (checkFreechelancerPasswordSent.rowCount==1)
+                {
+                    if(profileDetails.firstName==null && profileDetails.lastName==null && profileDetails.email==null)
+                    {
+                        _body.resData['isLoginSent']=true
+                    }
+                    else
+                    {
+                        _body.resData['isLoginSent']=allProfileDetails.rows[0].isLoginSent
+                    }
+                }
                 await client.query('COMMIT')
                 resolve({
                     code: 200, message: "Resume listed successfully",
-                    data:
-                    {
-                        candidateId: Number(_body.candidateId),
-                        companyType:allProfileDetails.rows[0].companyType,
-                        profile: profileDetails,
-                        requestForScreening:allProfileDetails.rows[0].requestForScreening,
-                        detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
-                        htmlResume: allProfileDetails.rows[0].htmlResume,
-                        bagOfWords: allProfileDetails.rows[0].bagOfWords,
-                        resume: allProfileDetails.rows[0].resume,
-                        overallWorkExperience,
-                        availability,
-                        socialPresence: socialProfileDetails.rows[0],
-                        candidateCloudProficiency: cloudProficiencyDetails.rows,
-                        skills: skills.rows,
-                        projects: projectArray,
-                        assesments: assesmentArray,
-                        workExperience: workExperiences.rows,
-                        education: educations.rows,
-                        publications: publications.rows,
-                        awards: awards.rows,
-                        languages: languages.rows,
-                        workedCompanyList,
-                        designationList: designations.rows[0].designations,
-                        gmtOffset : utils.extractGmt(profileDetails.timezone)
-                    }
+                    data:_body.resData
+                   
                 });
 
             } catch (e) {
@@ -2339,6 +2325,60 @@ export const requestForScreeningManager = (_body) => {
         })().catch(e => {
             console.log("error : ", e)
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> Sent freelancer login credentials
+export const sentFreelancerLoginCredentials = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                var companyCheckResults= await client.query(queryService.companyCheck(_body));
+                var data =companyCheckResults.rows[0]
+                _body.firstName=data.candidate_first_name
+                _body.lastName=data.candidate_last_name
+                _body.sellerCompanyId=data.company_id
+                _body.email=data.email_address
+                _body.phoneNumber=data.phone_number
+                if (_body.userRoleId==1 && companyCheckResults.rows[0].company_type==2)
+                {
+                    var results= await client.query(queryService.verifyCandidateInCandidateEmployee(_body));
+                    if (results.rowCount==0)
+                    {
+                        const password = passwordGenerator.generate({
+                            length: 10,
+                            numbers: true
+                        });
+                        _body.hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                        var employeeResult= await client.query(queryService.addEmployee(_body))
+                        _body.candidateEmployeeId=employeeResult.rows[0].employee_id
+                        await client.query(queryService.addCandidateEmployee(_body))
+                        var userSubject="ellow.io  Login Credentials"
+                        let userPath = 'src/emailTemplates/freelancerAdminLoginText.html';
+                        var userCredentialReplacements =  {
+                            name:_body.firstName,
+                            user:_body.email,
+                            password:password    
+                        };
+                        
+                        emailClient.emailManagerForNoReply(_body.email,userSubject,userPath,userCredentialReplacements);
+                    }
+                }
+                resolve({ code: 200, message: "Password sent successfully", data: {} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again ", data: e.message })
         })
     })
 }

@@ -15,7 +15,9 @@ export const jobsPagination = (body) => {
     }
     return pagination;
 }
-
+export const delay=(ms: number) =>{
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}
 
 export  const positionFilter = (filter,filterQuery,queryValues) =>{
     if(filter)
