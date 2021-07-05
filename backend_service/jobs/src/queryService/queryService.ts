@@ -318,6 +318,14 @@ export const checkPositionStatus = (_body) => {
 
     }
 }
+export const getSkillName = (_body) => {
+    return {
+        name: 'get-skill-name',
+        text: positionsQuery.getSkillName,
+        values: [_body]
+
+    }
+}
 export const deleteReadStatusQuery = (_body) => {
     return {
         name: 'delete-read-status',

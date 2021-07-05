@@ -59,6 +59,8 @@ export const getCompanyPositions = (_body) => {
 export const createCompanyPositions = async (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now());
+        _body.skillNames=[];
+        _body.providerMails=[];
         (async () => {
             const client = await database()
             try {
@@ -117,8 +119,10 @@ export const createCompanyPositions = async (_body) => {
                         var providers=await client.query(queryService.getAllProviders(_body))
                         var jobCategory=await client.query(queryService.getJobCategoryName(_body))
                         var jobRole=jobCategory.rows[0].job_category_name
-                        var providerReplacements={jobRole:jobRole,experienceLevel:_body.experienceInString,profiles:_body.developerCount}
-                        console.log(providerReplacements)
+                        _body.skills.topRatedSkill.forEach  ( element =>{
+                            _body.skillNames.push({skillName:element.skillName})
+                       })
+                        var providerReplacements={jobRole:jobRole,experienceLevel:_body.experienceInString,profiles:_body.developerCount,skills:_body.skillNames}
                         var providersPath='src/emailTemplates/newPositionAlertProviders.html';
                         if (Array.isArray(providers.rows)) {
                             providers.rows.forEach(element => {
@@ -237,7 +241,7 @@ export const updateCompanyPositions = async (_body) => {
         const positionId = _body.positionId;
         const companyId = _body.userRoleId == 1 ? _body.positionCreatedCompanyId : _body.companyId;
         const timer = setTimeout(() => '', 1000);
-
+        _body.skillNames=[];
         (async () => {
             const client = await database().connect()
             try {
@@ -275,6 +279,7 @@ export const updateCompanyPositions = async (_body) => {
                 }
                 await Promise.all(hiringStepQueries);
                 if (_body.publish == true) {
+                    
                     var positionStatus = await client.query(queryService.checkPositionStatus(_body))
                     await client.query(queryService.changePositionStatusQuery(_body))
                     const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
@@ -290,7 +295,7 @@ export const updateCompanyPositions = async (_body) => {
                         await createHirerNotifications({ positionId, jobReceivedId, companyId, message: hirerMessage, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
                         await client.query(queryService.assigneeQuery(_body));
                     }
-
+                  
                     await client.query('COMMIT');
 
                     await createNotification({ positionId, jobReceivedId, positionCompanyId, message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
@@ -306,7 +311,12 @@ export const updateCompanyPositions = async (_body) => {
                         var providers=await client.query(queryService.getAllProviders(_body))
                         var jobCategory=await client.query(queryService.getJobCategoryName(_body))
                         var jobRole=jobCategory.rows[0].job_category_name
-                        var providerReplacements={jobRole:jobRole,experienceLevel:_body.experienceInString,profiles:_body.developerCount}
+                        _body.coreSkills.forEach  ( element =>{
+                             _body.skillNames.push({skillName:element})
+                        })
+
+
+                        var providerReplacements={jobRole:jobRole,experienceLevel:_body.experienceInString,profiles:_body.developerCount,skills:_body.skillNames}
                         console.log(providerReplacements)
                         var providersPath='src/emailTemplates/newPositionAlertProviders.html';
                         _body.providerMails=[]
