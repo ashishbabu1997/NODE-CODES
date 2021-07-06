@@ -542,12 +542,16 @@ export const updateAvailabilityNotificationMails = async (_body, client) => {
         var ellowAdmins = await client.query(queryService.getEllowAdmins())
         var message=_body.availability==true?`The freelancer, ${_body.candidateName} is ready to apply for positions`:`The freelancer, ${_body.candidateName} is no longer available for any openings`
         createNotification({ positionId:null, jobReceivedId: null, companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: _body.firstName, lastName: _body.lastName })
-        if (Array.isArray(ellowAdmins.rows)) {
-            ellowAdmins.rows.forEach(element => {
-                if (utils.notNull(element.email))
-                    emailClient.emailManagerForNoReply(element.email, config.text.updateAvailabilityNotificationSubject, adminPath, adminReplacements);
-            })
+        if(_body.availability==true)
+        {
+            if (Array.isArray(ellowAdmins.rows)) {
+                ellowAdmins.rows.forEach(element => {
+                    if (utils.notNull(element.email))
+                        emailClient.emailManagerForNoReply(element.email, config.text.updateAvailabilityNotificationSubject, adminPath, adminReplacements);
+                })
+            }
         }
+      
     } catch (e) {
         console.log("error : ", e.message);
         throw new Error('Failed to send mail');
