@@ -1596,6 +1596,13 @@ export const changeAvailability = (_body) => {
             const client = await database().connect()
             try {
                 await client.query(queryService.changeAvailabilityOfCandidate(_body));
+                let candidateDetails=await client.query(queryService.getCandidateMailDetails(_body))
+                _body.firstName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)
+                _body.lastName=utils.capitalize(candidateDetails.rows[0].candidate_last_name)
+                _body.candidateName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)+' '+utils.capitalize(candidateDetails.rows[0].candidate_last_name)
+                _body.candidateEmail=candidateDetails.rows[0].email_address
+                _body.candidatePositionName=candidateDetails.rows[0].candidate_position_name
+                await emailService.updateAvailabilityNotificationMails(_body, client);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Availability changed successfully", data: {} });
             } catch (e) {
@@ -2307,10 +2314,10 @@ export const requestForScreeningManager = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                    console.log(_body.candidateId);
                     let candidateDetails=await client.query(queryService.getCandidateMailDetails(_body))
-                    console.log(candidateDetails)
                     await client.query(queryService.updateRequestForScreening(_body))
+                    _body.firstName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)
+                    _body.lastName=utils.capitalize(candidateDetails.rows[0].candidate_last_name)
                     _body.candidateName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)+' '+utils.capitalize(candidateDetails.rows[0].candidate_last_name)
                     _body.candidateEmail=candidateDetails.rows[0].email_address
                     _body.candidatePositionName=candidateDetails.rows[0].candidate_position_name
@@ -2382,3 +2389,4 @@ export const sentFreelancerLoginCredentials = (_body) => {
         })
     })
 }
+

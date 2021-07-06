@@ -415,7 +415,7 @@ export const createFreelancer = (_body) => {
 
                 let adminReplacement = { applicantName: Name, company: companyName, email: emailAddress, phoneNumber: number };
                 let path = 'src/emailTemplates/freelancerApplicationText.html';
-                const message = `A new employee ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer`
+                const message = `A freelancer, ${_body.firstName + ' ' + _body.lastName}  has been registered with us`
                 const freelancer = {
                     name: 'get-freelancer-companyid',
                     text: employeeQuery.getFreelancerCompanyId,
