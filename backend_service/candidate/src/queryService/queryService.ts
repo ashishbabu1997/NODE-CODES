@@ -715,6 +715,13 @@ export const getCandidateMailDetails = (_body) => {
         values: [_body.candidateId]
     }
 }
+export const getCandidateSkillSet = (_body) => {
+    return {
+        name: 'get-candidate-skill-names',
+        text: freelancerQuery.getCandidateSkills,
+        values: [_body.candidateId]
+    }
+}
 export const updateRequestForScreening = (_body) => {
     return {
         name: 'update-request-for-screening',

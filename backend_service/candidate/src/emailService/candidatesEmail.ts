@@ -536,8 +536,16 @@ export const requestForScreeningMail = async (_body, client) => {
 }
 export const updateAvailabilityNotificationMails = async (_body, client) => {
     try {
+        var candidateData=[]
+        var candidateSkills=[]
+        if(utils.notNull(_body.candidateName)) candidateData.push({name:'Name ',value:_body.candidateName} )
+        if(utils.notNull(_body.candidatePositionName)) candidateData.push({name:'Designation ',value:_body.candidatePositionName} )
+        if(utils.notNull(_body.candidateEmail)) candidateData.push({name:'Email ',value:_body.candidateEmail} )
+        if(utils.notNull(_body.phoneNumber)) candidateData.push({name:'Phone Number ',value:_body.phoneNumber} )
+        if(utils.notNull(_body.coreSkills)) candidateSkills.push({name:'Skills Required ',value:_body.coreSkills} )
 
-        let adminReplacements = { name: _body.candidateName,designation:_body.candidatePositionName, email: _body.candidateEmail };
+
+        let adminReplacements = {details:candidateData,skills:candidateSkills};
         let adminPath = 'src/emailTemplates/updateAvailabilityNotificationMail.html';
         var ellowAdmins = await client.query(queryService.getEllowAdmins())
         var message=_body.availability==true?`The freelancer, ${_body.candidateName} is ready to apply for positions`:`The freelancer, ${_body.candidateName} is no longer available for any openings`

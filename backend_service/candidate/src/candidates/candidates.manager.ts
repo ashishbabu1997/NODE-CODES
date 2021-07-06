@@ -1597,8 +1597,12 @@ export const changeAvailability = (_body) => {
             try {
                 await client.query(queryService.changeAvailabilityOfCandidate(_body));
                 let candidateDetails=await client.query(queryService.getCandidateMailDetails(_body))
+                let skillSets=await client.query(queryService.getCandidateSkillSet(_body))
+                _body.coreSkills=skillSets.rows[0].skills
+                console.log("SKILLS",_body.coreSkills)
                 _body.firstName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)
                 _body.lastName=utils.capitalize(candidateDetails.rows[0].candidate_last_name)
+                _body.phoneNumber=candidateDetails.rows[0].phone_number
                 _body.candidateName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)+' '+utils.capitalize(candidateDetails.rows[0].candidate_last_name)
                 _body.candidateEmail=candidateDetails.rows[0].email_address
                 _body.candidatePositionName=candidateDetails.rows[0].candidate_position_name

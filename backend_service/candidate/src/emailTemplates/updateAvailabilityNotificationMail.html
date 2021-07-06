@@ -54,9 +54,30 @@
                                 <tr>
                                     <td style="color:#000000">
                                         <p style="color:#000000; font-size: 18px;line-height: 25px;">
-                                        Name : <span style="font-size: 18px;color:#000000;font-weight: bold;">{{name}}</span><br />
+                                        <!-- Name : <span style="font-size: 18px;color:#000000;font-weight: bold;">{{name}}</span><br />
                                         Designation : <span style="font-size: 18px;color:#000000;font-weight: bold;">{{designation}}</span><br />
                                         Email Address : <span style="font-size: 18px;color:#000000;font-weight: bold;">{{email}}</span><br />
+                                        Phone Number : <span style="font-size: 18px;color:#000000;font-weight: bold;">{{phone}}</span><br /> -->
+                                         <ul>
+                                            {{#details}}
+                                            <li style="color:#000000;font-size: 18px;line-height: 25px">
+                                            {{name}}:<b>{{value}}</b>
+                                            </li>
+                                            {{/details}}
+
+                                            {{#skills}}
+                                                <li style="color:#000000;font-size: 18px;line-height: 25px">
+                                                
+                                                        {{name}}: {{#value}}
+                                                        <li style="color:#000000;font-size: 18px;line-height: 25px;">
+                                                        {{name}}:<b>{{skillName}}</b>
+                                                        </li>
+                                                        {{/value}}
+                                                </li>
+                                            {{/skills}}
+                                        </ul>
+
+
                                         </p>
                                     </td>
                                 </tr>
