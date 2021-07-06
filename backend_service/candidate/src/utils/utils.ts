@@ -146,7 +146,7 @@ export const resourceSearch = (body, queryValues) => {
 
     if (![undefined, null, ''].includes(body.searchKey)) {
         searchKey = '%' + body.searchKey + '%';
-        searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."candidatePositionName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
+        searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."candidatePositionName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey OR  chsv."email" ILIKE $searchkey  OR chsv."phoneNumber" ILIKE $searchkey) '
         queryValues = Object.assign({ searchkey: searchKey }, queryValues)
     }
 

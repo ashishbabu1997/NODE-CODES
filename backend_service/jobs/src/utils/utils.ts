@@ -80,7 +80,7 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
 
         if(Array.isArray(positionStatus) && positionStatus.length)
         {
-            filterQuery += ' and (ARRAY (select case when chsv."positionStatusName" is null then \'Submitted to hirer\' else chsv."positionStatusName" end from candidate_hiring_steps_view chsv where chsv."positionId" = p.position_id)) @> $status '
+            filterQuery += ' and (ARRAY (select case when chsv."positionStatusName" is null then \'Submitted to Hirer\' else chsv."positionStatusName" end from candidate_hiring_steps_view chsv where chsv."positionId" = p.position_id)) @> $status '
             queryValues = Object.assign({status:positionStatus},queryValues)
         }
 
