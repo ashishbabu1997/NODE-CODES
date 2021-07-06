@@ -1603,8 +1603,9 @@ export const changeAvailability = (_body) => {
                 _body.candidateEmail=candidateDetails.rows[0].email_address
                 _body.candidatePositionName=candidateDetails.rows[0].candidate_position_name
                 await emailService.updateAvailabilityNotificationMails(_body, client);
+                var toastMessage=_body.availability==true?"Availability turned ON successfully":"Availability turned OFF successfully"
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Availability changed successfully", data: {} });
+                resolve({ code: 200, message: toastMessage, data: {} });
             } catch (e) {
                 console.log("error : ", e.message)
                 await client.query('ROLLBACK')
