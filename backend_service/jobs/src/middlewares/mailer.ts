@@ -53,7 +53,7 @@ export const sendMailForNoReply = (email, subject, html, callback) => {
 export const sendMultipleMails = (email, subject, html, callback) => {
     const mailOptions = {
         from: `"ellow Alert" <${config.noreplymail.user}>`, 
-        to: email, 
+        bcc: email, 
         subject,
         html
     };

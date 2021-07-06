@@ -38,7 +38,7 @@ router
 .get('/resumeSharedEmails',jwtAuth,setData(),candidateController.resumeSharedEmails)
 .post('/resumeShareLink',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.resumeShareLink)
 .get('/initialSharedResumeData',candidateController.initialResumeData)
-.get('/sharedResumeData',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.sharedResumeData)
+.get('/sharedResumeData',jwtAuth, setData(),candidateController.sharedResumeData)
 .put('/sharePdf',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.getPdf)
 .get('/getSharedEmailsForPdf',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.getSharedEmailsForPdf)
 .get('/sharedResumePdfData',candidateController.sharedResumePdfData)
