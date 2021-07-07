@@ -15,7 +15,9 @@ export const jobsPagination = (body) => {
     }
     return pagination;
 }
-
+export const delay=(ms: number) =>{
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}
 
 export  const positionFilter = (filter,filterQuery,queryValues) =>{
     if(filter)
@@ -78,7 +80,7 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
 
         if(Array.isArray(positionStatus) && positionStatus.length)
         {
-            filterQuery += ' and (ARRAY (select case when chsv."positionStatusName" is null then \'Submitted to hirer\' else chsv."positionStatusName" end from candidate_hiring_steps_view chsv where chsv."positionId" = p.position_id)) @> $status '
+            filterQuery += ' and (ARRAY (select case when chsv."positionStatusName" is null then \'Submitted to Hirer\' else chsv."positionStatusName" end from candidate_hiring_steps_view chsv where chsv."positionId" = p.position_id)) @> $status '
             queryValues = Object.assign({status:positionStatus},queryValues)
         }
 
@@ -122,7 +124,7 @@ export const positionSort = (body) => {
     }
     
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
+        sort = body.sortBy=='updatedOn'? ` ORDER BY p.job_status asc , p.updated_on desc `:` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
     }
     return sort;
 }

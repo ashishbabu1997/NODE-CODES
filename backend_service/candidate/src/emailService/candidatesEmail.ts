@@ -115,7 +115,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
 
             if (_body.userRoleId == 1) {
                 let requiredCandidateData = []
-                if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': name });
+                if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': utils.capitalize(res.rows[0].candidate_first_name)+' '+utils.capitalize(res.rows[0].candidate_last_name) });
                 if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({ 'name': 'Total Years of Experience', 'value': work_experience });
                 if (utils.notNull(relevantExperience && relevantExperience > 0)) requiredCandidateData.push({ 'name': 'Relevant Years of Experience', 'value': relevantExperience });
                 if (utils.notNull(ready_to_start)) requiredCandidateData.push({ 'name': 'Availability', 'value': availability });
@@ -160,8 +160,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
                 })
             }
         }
-
-        let message = `${candidateCount} candidates has been added for the position ${positionName}`
+        let message = candidateCount==1?`${candidateCount} candidate has been added for the position ${positionName}`:`${candidateCount} candidates has been added for the position ${positionName}`
         createHirerNotifications({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: hirerCompanyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
         createNotification({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
 
@@ -473,7 +472,7 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
 
             if (_body.userRoleId == 1) {
                 let requiredCandidateData = []
-                if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': name });
+                if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': utils.capitalize(res.rows[0].candidate_first_name)+' '+utils.capitalize(res.rows[0].candidate_last_name) });
                 if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({ 'name': 'Total Years of Experience', 'value': work_experience });
                 if (utils.notNull(relevantExperience && relevantExperience > 0)) requiredCandidateData.push({ 'name': 'Relevant Years of Experience', 'value': relevantExperience });
                 if (utils.notNull(ready_to_start)) requiredCandidateData.push({ 'name': 'Availability', 'value': availability });
@@ -520,14 +519,45 @@ export const requestForScreeningMail = async (_body, client) => {
     try {
 
         let adminReplacements = { name: _body.candidateName,designation:_body.candidatePositionName, email: _body.candidateEmail };
-        let adminPath = 'src/emailTemplates/newUserAdminText.html';
+        let adminPath = 'src/emailTemplates/requestForScreening.html';
         var ellowAdmins = await client.query(queryService.getEllowAdmins())
+        var message=`A freelancer,${_body.candidateName} has requested to initiate the ellow screening process`
+        createNotification({ positionId:null, jobReceivedId: null, companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: _body.firstName, lastName: _body.lastName })
         if (Array.isArray(ellowAdmins.rows)) {
             ellowAdmins.rows.forEach(element => {
                 if (utils.notNull(element.email))
                     emailClient.emailManagerForNoReply(element.email, config.text.requestForScreeningSubject, adminPath, adminReplacements);
             })
         }
+    } catch (e) {
+        console.log("error : ", e.message);
+        throw new Error('Failed to send mail');
+    }
+}
+export const updateAvailabilityNotificationMails = async (_body, client) => {
+    try {
+        var candidateData=[]
+        var candidateSkills=[]
+        if(utils.notNull(_body.candidateName)) candidateData.push({name:'Name ',value:_body.candidateName} )
+        if(utils.notNull(_body.candidatePositionName)) candidateData.push({name:'Designation ',value:_body.candidatePositionName} )
+        if(utils.notNull(_body.candidateEmail)) candidateData.push({name:'Email ',value:_body.candidateEmail} )
+        if(utils.notNull(_body.phoneNumber)) candidateData.push({name:'Phone Number ',value:_body.phoneNumber} )
+        if(utils.notNull(_body.coreSkills)) candidateSkills.push({name:'Top Skills',value:_body.coreSkills} )
+        let adminReplacements = {details:candidateData,skills:candidateSkills};
+        let adminPath = 'src/emailTemplates/updateAvailabilityNotificationMail.html';
+        var ellowAdmins = await client.query(queryService.getEllowAdmins())
+        var message=_body.availability==true?`The freelancer, ${_body.candidateName} is ready to apply for positions`:`The freelancer, ${_body.candidateName} is no longer available for any openings`
+        createNotification({ positionId:null, jobReceivedId: null, companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: _body.firstName, lastName: _body.lastName })
+        if(_body.availability==true)
+        {
+            if (Array.isArray(ellowAdmins.rows)) {
+                ellowAdmins.rows.forEach(element => {
+                    if (utils.notNull(element.email))
+                        emailClient.emailManagerForNoReply(element.email, config.text.updateAvailabilityNotificationSubject, adminPath, adminReplacements);
+                })
+            }
+        }
+      
     } catch (e) {
         console.log("error : ", e.message);
         throw new Error('Failed to send mail');

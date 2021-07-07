@@ -65,22 +65,6 @@ export default Joi.object().keys({
         });
         return errors;
     }),
-    experienceLevel: Joi.number().required().error(errors => {
-        errors.forEach(err => {
-            switch (err.code) {
-                case "any.required":
-                    err.message = "Experience level should not be empty!";
-                    break;
-                case "number.base":
-                    err.message = "Experience level must be a number"
-                    break;
-                default:
-                    err.message = "Invalid Experience level"
-                    break;
-            }
-        });
-        return errors;
-    }),
     currencyTypeId: Joi.number().allow(null,'').error(errors => {
         errors.forEach(err => {
             switch (err.code) {

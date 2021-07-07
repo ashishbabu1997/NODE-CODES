@@ -25,7 +25,8 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
             maxCost = filter.maxcost,
             billingTypeId = filter.billingTypeId,
             currencyType = filter.currencyType,
-            otherSkills = filter.otherSkills
+            otherSkills = filter.otherSkills,
+            createdUser=filter.createdUser
             ;
 
         if (![undefined, null, ''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length) {
@@ -94,6 +95,10 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
             filterQuery = filterQuery + ' and chsv."stageStatusName" ilike any(select concat(array_element,\'%\') from unnest($candstatus::text[]) array_element(array_element)) '
             queryValues = Object.assign({ candstatus: candStatus }, queryValues)
         }
+        if (![undefined, null, ''].includes(createdUser)) {
+         filterQuery=filterQuery+ '  and chsv."createdBy" in (select employee_id from employee where user_role_id=$createdUser and employee_id=chsv."createdBy")'
+         queryValues = Object.assign({ createdUser: createdUser }, queryValues)
+        }
     }
 
     return { filterQuery, queryValues };
@@ -141,7 +146,7 @@ export const resourceSearch = (body, queryValues) => {
 
     if (![undefined, null, ''].includes(body.searchKey)) {
         searchKey = '%' + body.searchKey + '%';
-        searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."candidatePositionName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey) '
+        searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."candidatePositionName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey OR  chsv."email" ILIKE $searchkey  OR chsv."phoneNumber" ILIKE $searchkey) '
         queryValues = Object.assign({ searchkey: searchKey }, queryValues)
     }
 
@@ -322,4 +327,27 @@ export const reccuiterSignatureCheck = (email) => {
 
 export const base64_encode = (file) => {
     return "data:image/gif;base64,"+fs.readFileSync(file, 'base64');
+}
+
+export const secondsToHms = (d) => {
+    let da = Math.abs(Number(d));
+    var h = Math.floor(da / 3600);
+    var m = Math.floor(da % 3600 / 60);
+    var sign = d>0?'+':'-';
+    return `GMT${sign}${h}:${m}`
+}
+
+export const extractGmt = (data) =>{
+    try {
+        if(notNull(data))
+        {
+            let jsonData = JSON.parse(data);
+            return secondsToHms(parseInt(jsonData.rawOffset)+ parseInt(jsonData.dstOffset))
+        }
+        else
+        return ''
+    } catch (error) {
+        console.log("error while extracting GMT : ",error);
+        return ''
+    }
 }
