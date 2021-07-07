@@ -124,7 +124,7 @@ export const positionSort = (body) => {
     }
     
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-        sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
+        sort = body.sortBy=='updatedOn'? ` ORDER BY p.job_status asc , p.updated_on desc `:` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
     }
     return sort;
 }
