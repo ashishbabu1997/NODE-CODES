@@ -2410,3 +2410,44 @@
 *       500:
 *         description: Server down
 */
+
+
+/**
+* @swagger
+* /candidates/fileDownload:
+*   put:
+*     tags:
+*       - Candidates
+*     name: download pdf data
+*     summary: Download pdf format of a candidate's ellow resume
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer            
+*             host:
+*               type: string
+*           required:
+*             - candidateId
+*             - host
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

@@ -402,3 +402,18 @@ export const sentFreelancerLoginCredentialsController = (req, res) => {
         sendResponse(res, error.code, 0, 401, error.message, error.data)
     })
 }
+
+export const downloadPdfController = (req, res) => {
+    const body = req.body;
+        candidateManager.downloadPdf(body).then((response: any) => {
+            res.contentType("application/pdf");
+            res.send(response.data.pdf);
+        
+    }).catch((error: any) =>
+    { 
+        res.writeHead(301,{Location: 'https://dev.ellow.io/redirect-notification'})
+    res.end()
+    })
+}
+
+

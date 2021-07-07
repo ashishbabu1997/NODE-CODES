@@ -2398,3 +2398,53 @@ export const sentFreelancerLoginCredentials = (_body) => {
     })
 }
 
+// Change stage of ellow recuitment
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>> set corresponding stage values and flags in candidate related db
+export const fileDownload = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                console.log("HAIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+                let pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
+                // Or format the path using the `id` rest param
+                var fileName = "report.pdf"; // The default name the browser will use
+                resolve({ code: 200, message: "DOWLOADED", data: {file:pdf} });
+
+            } catch (e) {
+                console.log("error : ", e.message)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+
+
+// download pdf
+export const downloadPdf = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                var candidateId = _body.candidateId
+                _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
+                let pdf = await builder.pdfBuilder(candidateId, _body.host);
+                await client.query('COMMIT')
+
+                resolve({ code: 200, message: "Resume in PDF format has been shared successfully", data: {pdf:pdf} });
+
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}

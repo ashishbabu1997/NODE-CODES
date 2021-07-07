@@ -666,18 +666,22 @@ export const getAllEmployees = (_body) => {
         (async () => {
             const client = await database()
             var value;
+            _body.query;
             try {
                 await client.query('BEGIN');
 
                 if (_body.userRoleId == 1) {
-                    value = _body.hirerCompanyId
+                    value = _body.positionId
+                    _body.query=employeeQuery.getEmployeesFromPositionId
                 }
                 else {
                     value = _body.companyId
+                    _body.query=employeeQuery.getEmployeesQuery
+
                 }
                 const getCompanyEmployees = {
                     name: 'get-employees',
-                    text: employeeQuery.getEmployeesQuery,
+                    text:_body.query,
                     values: [value]
                 }
 
