@@ -294,11 +294,35 @@ export const changePositionStatusQuery = (_body) => {
 
     }
 }
+export const getAllProviders = (_body) => {
+    return {
+        name: 'get-all-providers',
+        text: positionsQuery.getAllProviders,
+        values: []
+
+    }
+}
+export const getJobCategoryName = (_body) => {
+    return {
+        name: 'get-job-category-name',
+        text: positionsQuery.getJobCategoryName,
+        values: [_body.jobCategoryId]
+
+    }
+}
 export const checkPositionStatus = (_body) => {
     return {
         name: 'check-position-status',
         text: positionsQuery.checkJobStatus,
         values: [_body.positionId]
+
+    }
+}
+export const getSkillName = (_body) => {
+    return {
+        name: 'get-skill-name',
+        text: positionsQuery.getSkillName,
+        values: [_body]
 
     }
 }

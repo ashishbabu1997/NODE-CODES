@@ -396,10 +396,7 @@ export const modifyResumeData = (_body) => {
                     if (_body.userRoleId == 3) {
                         extractedData["companyId"] = Number(_body.companyId)
                     }
-                    else {
-                        let freelancer = await client.query(queryService.getFreelancerCompany(_body))
-                        extractedData["companyId"] = freelancer.rows[0].company_id
-                    }
+                 
 
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
                     if ([null, undefined, ''].includes(candidateResult) || [null, undefined, ''].includes(candidateResult.rows[0])) {
@@ -1002,6 +999,7 @@ export const getResume = (_body) => {
                     citizenshipName,
                     residence,
                     phoneNumber: allProfileDetails.rows[0].phoneNumber,
+                    timezone:allProfileDetails.rows[0].timezone,
                     email: allProfileDetails.rows[0].email,
                     candidateVetted: allProfileDetails.rows[0].candidateVetted,
                     blacklisted: allProfileDetails.rows[0].blacklisted,
@@ -1021,34 +1019,50 @@ export const getResume = (_body) => {
                     typeOfAvailability: allProfileDetails.rows[0].typeOfAvailability,
                     readyToStart: allProfileDetails.rows[0].readyToStart
                 }
+
+                // let tempD = {"dstOffset":0,"rawOffset":19800,"status":"OK","timeZoneId":"Asia/Kolkata","timeZoneName":"India Standard Time"}
+                _body.resData= {
+                    candidateId: Number(_body.candidateId),
+                    companyType:allProfileDetails.rows[0].companyType,
+                    profile: profileDetails,
+                    requestForScreening:allProfileDetails.rows[0].requestForScreening,
+                    detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
+                    htmlResume: allProfileDetails.rows[0].htmlResume,
+                    bagOfWords: allProfileDetails.rows[0].bagOfWords,
+                    resume: allProfileDetails.rows[0].resume,
+                    overallWorkExperience,
+                    availability,
+                    socialPresence: socialProfileDetails.rows[0],
+                    candidateCloudProficiency: cloudProficiencyDetails.rows,
+                    skills: skills.rows,
+                    projects: projectArray,
+                    assesments: assesmentArray,
+                    workExperience: workExperiences.rows,
+                    education: educations.rows,
+                    publications: publications.rows,
+                    awards: awards.rows,
+                    languages: languages.rows,
+                    workedCompanyList,
+                    designationList: designations.rows[0].designations,
+                    gmtOffset : utils.extractGmt(profileDetails.timezone)
+                }
+                var checkFreechelancerPasswordSent = await client.query(queryService.checkLoginSent(candidateId));
+                if (checkFreechelancerPasswordSent.rowCount==1)
+                {
+                    if(profileDetails.firstName==null && profileDetails.lastName==null && profileDetails.email==null)
+                    {
+                        _body.resData['isLoginSent']=true
+                    }
+                    else
+                    {
+                        _body.resData['isLoginSent']=allProfileDetails.rows[0].isLoginSent
+                    }
+                }
                 await client.query('COMMIT')
                 resolve({
                     code: 200, message: "Resume listed successfully",
-                    data:
-                    {
-                        candidateId: Number(_body.candidateId),
-                        companyType:allProfileDetails.rows[0].companyType,
-                        profile: profileDetails,
-                        requestForScreening:allProfileDetails.rows[0].requestForScreening,
-                        detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
-                        htmlResume: allProfileDetails.rows[0].htmlResume,
-                        bagOfWords: allProfileDetails.rows[0].bagOfWords,
-                        resume: allProfileDetails.rows[0].resume,
-                        overallWorkExperience,
-                        availability,
-                        socialPresence: socialProfileDetails.rows[0],
-                        candidateCloudProficiency: cloudProficiencyDetails.rows,
-                        skills: skills.rows,
-                        projects: projectArray,
-                        assesments: assesmentArray,
-                        workExperience: workExperiences.rows,
-                        education: educations.rows,
-                        publications: publications.rows,
-                        awards: awards.rows,
-                        languages: languages.rows,
-                        workedCompanyList,
-                        designationList: designations.rows[0].designations
-                    }
+                    data:_body.resData
+                   
                 });
 
             } catch (e) {
@@ -1251,6 +1265,7 @@ export const initialSharedResumeData = (_body) => {
 
                     var allProfileDetails = await client.query(queryService.fetchProfile(candidateId));
                     var skills = await client.query(queryService.fetchSkills(candidateId));
+                    var sharedEmailSet = await client.query(queryService.fetchSharedResumeLinkEmails(candidateId))
                     let citizenship = allProfileDetails.rows[0].citizenship;
                     let citizenshipName = ![null, undefined, ""].includes(citizenship) ? config.countries.filter(element => element.id == citizenship)[0].name : '';
                     let residence = allProfileDetails.rows[0].residence;
@@ -1285,18 +1300,20 @@ export const initialSharedResumeData = (_body) => {
                         typeOfAvailability: allProfileDetails.rows[0].typeOfAvailability,
                         readyToStart: allProfileDetails.rows[0].readyToStart
                     }
+                    _body.resData=   {
+                        candidateId: Number(_body.candidateId),
+                        profile: profileDetails,
+                        resume: allProfileDetails.rows[0].resume,
+                        overallWorkExperience,
+                        availability,
+                        skills: skills.rows
+                    }
+                    if(sharedEmailSet.rowCount>0)  _body.resData['sharedResume']=sharedEmailSet.rows[0].shared_emails
                     await client.query('COMMIT')
                     resolve({
                         code: 200, message: "Initial Resume data listed successfully",
-                        data:
-                        {
-                            candidateId: Number(_body.candidateId),
-                            profile: profileDetails,
-                            resume: allProfileDetails.rows[0].resume,
-                            overallWorkExperience,
-                            availability,
-                            skills: skills.rows
-                        }
+                        data:_body.resData
+                     
                     });
                 }
                 else {
@@ -1582,8 +1599,20 @@ export const changeAvailability = (_body) => {
             const client = await database().connect()
             try {
                 await client.query(queryService.changeAvailabilityOfCandidate(_body));
+                let candidateDetails=await client.query(queryService.getCandidateMailDetails(_body))
+                let skillSets=await client.query(queryService.getCandidateSkillSet(_body))
+                _body.coreSkills=skillSets.rows[0].skills
+                console.log("SKILLS",_body.coreSkills)
+                _body.firstName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)
+                _body.lastName=utils.capitalize(candidateDetails.rows[0].candidate_last_name)
+                _body.phoneNumber=candidateDetails.rows[0].phone_number
+                _body.candidateName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)+' '+utils.capitalize(candidateDetails.rows[0].candidate_last_name)
+                _body.candidateEmail=candidateDetails.rows[0].email_address
+                _body.candidatePositionName=candidateDetails.rows[0].candidate_position_name
+                await emailService.updateAvailabilityNotificationMails(_body, client);
+                var toastMessage=_body.availability==true?"Availability turned ON successfully":"Availability turned OFF successfully"
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Availability changed successfully", data: {} });
+                resolve({ code: 200, message: toastMessage, data: {} });
             } catch (e) {
                 console.log("error : ", e.message)
                 await client.query('ROLLBACK')
@@ -2295,12 +2324,14 @@ export const requestForScreeningManager = (_body) => {
                 await client.query('BEGIN');
                     let candidateDetails=await client.query(queryService.getCandidateMailDetails(_body))
                     await client.query(queryService.updateRequestForScreening(_body))
+                    _body.firstName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)
+                    _body.lastName=utils.capitalize(candidateDetails.rows[0].candidate_last_name)
                     _body.candidateName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)+' '+utils.capitalize(candidateDetails.rows[0].candidate_last_name)
                     _body.candidateEmail=candidateDetails.rows[0].email_address
                     _body.candidatePositionName=candidateDetails.rows[0].candidate_position_name
                     await emailService.requestForScreeningMail(_body, client);
                     await client.query('COMMIT')
-                    resolve({ code: 200, message: "ellow rate added successfully", data: {} });
+                    resolve({ code: 200, message: "Requested for ellow screening ", data: {} });
             } catch (e) {
                 console.log("error : ", e)
                 await client.query('ROLLBACK')
@@ -2308,6 +2339,111 @@ export const requestForScreeningManager = (_body) => {
             }
         })().catch(e => {
             console.log("error : ", e)
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> Sent freelancer login credentials
+export const sentFreelancerLoginCredentials = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                var companyCheckResults= await client.query(queryService.companyCheck(_body));
+                var data =companyCheckResults.rows[0]
+                _body.firstName=data.candidate_first_name
+                _body.lastName=data.candidate_last_name
+                _body.sellerCompanyId=data.company_id
+                _body.email=data.email_address
+                _body.phoneNumber=data.phone_number
+                if (_body.userRoleId==1 && companyCheckResults.rows[0].company_type==2)
+                {
+                    var results= await client.query(queryService.verifyCandidateInCandidateEmployee(_body));
+                    if (results.rowCount==0)
+                    {
+                        const password = passwordGenerator.generate({
+                            length: 10,
+                            numbers: true
+                        });
+                        _body.hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                        var employeeResult= await client.query(queryService.addEmployee(_body))
+                        _body.candidateEmployeeId=employeeResult.rows[0].employee_id
+                        await client.query(queryService.addCandidateEmployee(_body))
+                        var userSubject="ellow.io  Login Credentials"
+                        let userPath = 'src/emailTemplates/freelancerAdminLoginText.html';
+                        var userCredentialReplacements =  {
+                            name:_body.firstName,
+                            user:_body.email,
+                            password:password    
+                        };
+                        
+                        emailClient.emailManagerForNoReply(_body.email,userSubject,userPath,userCredentialReplacements);
+                    }
+                }
+                resolve({ code: 200, message: "Password sent successfully", data: {} });
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again ", data: e.message })
+        })
+    })
+}
+
+// Change stage of ellow recuitment
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>> set corresponding stage values and flags in candidate related db
+export const fileDownload = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                console.log("HAIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+                let pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
+                // Or format the path using the `id` rest param
+                var fileName = "report.pdf"; // The default name the browser will use
+                resolve({ code: 200, message: "DOWLOADED", data: {file:pdf} });
+
+            } catch (e) {
+                console.log("error : ", e.message)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+
+
+// download pdf
+export const downloadPdf = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                var candidateId = _body.candidateId
+                _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
+                let pdf = await builder.pdfBuilder(candidateId, _body.host);
+                await client.query('COMMIT')
+
+                resolve({ code: 200, message: "Resume in PDF format has been shared successfully", data: {pdf:pdf} });
+
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
         })
     })

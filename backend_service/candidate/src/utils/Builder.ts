@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import * as nodeCache from 'node-cache';
 import * as htmlToPdf from "html-pdf-node";
 import * as utils from './utils';
-
+import * as fs from 'fs';
 const myCache = new nodeCache();
 
 export const getCache = () => { return myCache }

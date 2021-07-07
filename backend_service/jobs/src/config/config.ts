@@ -25,7 +25,8 @@ export default {
     },
    
     "PositionText": {
-        "subject":"Position Deletion Alert"
+        "subject":"Position Deletion Alert",
+        "providersSubject":"New Openings posted in ellow.io"
     },
     "nextLine": "<br>",
     "colon":":"

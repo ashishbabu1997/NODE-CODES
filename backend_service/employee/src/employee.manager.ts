@@ -276,7 +276,14 @@ export const createEmployeeByAdmin = (_body) => {
                 let emailAddress = _body.email
                 let number = ![null, undefined].includes(_body.telephoneNumber) ? _body.telephoneNumber : "";
                 path = 'src/emailTemplates/newApplicationText.html';
-                let adminReplacements = { applicantName: Name, company: companyName, email: emailAddress, phoneNumber: number };
+                let replacementArray=[]
+                if (utils.notNull(Name)) replacementArray.push({ 'name': 'Name', 'value': Name+'\n' });
+                if (utils.notNull(companyName)) replacementArray.push({ 'name': 'Company Name', 'value': companyName+'\n' });
+                if (utils.notNull(emailAddress)) replacementArray.push({ 'name': 'Email Address', 'value': emailAddress+'\n' });
+                if (utils.notNull(number)) replacementArray.push({ 'name': 'Phone Number', 'value': number });
+
+
+                let adminReplacements ={keys:replacementArray} 
                 const getEllowAdmins = {
                     name: 'get-ellow-admin',
                     text: employeeQuery.getellowAdmins,
@@ -408,7 +415,7 @@ export const createFreelancer = (_body) => {
 
                 let adminReplacement = { applicantName: Name, company: companyName, email: emailAddress, phoneNumber: number };
                 let path = 'src/emailTemplates/freelancerApplicationText.html';
-                const message = `A new employee ${_body.firstName + ' ' + _body.lastName}  has been signed up with us as a freelancer`
+                const message = `A freelancer, ${_body.firstName + ' ' + _body.lastName}  has been registered with us`
                 const freelancer = {
                     name: 'get-freelancer-companyid',
                     text: employeeQuery.getFreelancerCompanyId,
@@ -659,18 +666,22 @@ export const getAllEmployees = (_body) => {
         (async () => {
             const client = await database()
             var value;
+            _body.query;
             try {
                 await client.query('BEGIN');
 
                 if (_body.userRoleId == 1) {
-                    value = _body.hirerCompanyId
+                    value = _body.positionId
+                    _body.query=employeeQuery.getEmployeesFromPositionId
                 }
                 else {
                     value = _body.companyId
+                    _body.query=employeeQuery.getEmployeesQuery
+
                 }
                 const getCompanyEmployees = {
                     name: 'get-employees',
-                    text: employeeQuery.getEmployeesQuery,
+                    text:_body.query,
                     values: [value]
                 }
 

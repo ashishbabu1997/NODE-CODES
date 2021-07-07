@@ -15,7 +15,9 @@ export default {
         "sharePdfTextSubject": "ellow resume",
         "linkCandidateHireSubject": " New profile from ellow.io |  ",
         "shareAppliedCandidateSubject": " Profile shared from ellow.io |  ",
-        "requestForScreeningSubject":"Freelancer Requested for Screening Process"
+        "requestForScreeningSubject":"Freelancer Requested for Screening Process",
+        "updateAvailabilityNotificationSubject":"Candidate Availability Notification"
+
 
     },
     "integerReferences": {

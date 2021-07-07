@@ -14,10 +14,38 @@ export const modifyCandidateProfileDetailsQuery = (_body) => {
     return {
         name: 'modify-candidate-ProfileDetails',
         text: candidateQuery.modifyProfileDetails,
-        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.sellerCompanyId,_body.jobCategoryId],
+        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.sellerCompanyId,_body.jobCategoryId,_body.timezone],
     }
 }
+export const verifyCandidateInCandidateEmployee = (_body) => {
+    return {
+        name: 'verify-candidate-in-candidateEmployee',
+        text: candidateQuery.verifyCandidateInCandidateEmployeeTable,
+        values:[_body.candidateId],
+    }
+}
+export const companyCheck = (_body) => {
+    return {
+        name: 'verify-freelancer-company',
+        text: candidateQuery.verifyFreelancerCompany,
+        values:[_body.candidateId],
+    }
+}
+export const addCandidateEmployee = (_body) => {
+    return {
+        name: 'add-candidate-employee',
+        text: candidateQuery.addCandidateEmployeeDetails,
+        values:[_body.candidateEmployeeId,_body.candidateId,true,currentTime(), currentTime()],
+    }
+}
+export const addEmployee = (_body) => {
+    return {
+        name: 'add-employee',
+        text: candidateQuery.addEmployee,
+        values: [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.email, _body.phoneNumber, currentTime(),_body.hashedPassword]
 
+    }
+}
 export const updateProviderCandidateDetails = (_body) => {
     return {
         name: 'update-provider-candidateDetails',
@@ -286,6 +314,14 @@ export const fetchProfile = (candidateId) => {
         values: [candidateId],
     }
 }
+
+export const checkLoginSent = (candidateId) => {
+    return {
+        name: 'check-login-sent',
+        text: candidateQuery.checkPasswordSent,
+        values: [candidateId],
+    }
+}
 export const fetchProviderCandidateProfile = (candidateId) => {
     return {
         name: 'fetch-provider-candidate-profile-details',
@@ -297,6 +333,13 @@ export const fetchSkills = (candidateId) => {
     return {
         name: 'fetch-skill-details',
         text: candidateQuery.fetchSkillDetails,
+        values: [candidateId],
+    }
+}
+export const fetchSharedResumeLinkEmails = (candidateId) => {
+    return {
+        name: 'fetch-shared-resume-emails',
+        text: candidateQuery.fetchSharedResumeEmails,
         values: [candidateId],
     }
 }
@@ -676,6 +719,13 @@ export const getCandidateMailDetails = (_body) => {
     return {
         name: 'get-candidate-image-details',
         text: freelancerQuery.getCandidateMailDetails,
+        values: [_body.candidateId]
+    }
+}
+export const getCandidateSkillSet = (_body) => {
+    return {
+        name: 'get-candidate-skill-names',
+        text: freelancerQuery.getCandidateSkills,
         values: [_body.candidateId]
     }
 }
