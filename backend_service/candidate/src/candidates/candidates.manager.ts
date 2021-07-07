@@ -1265,6 +1265,7 @@ export const initialSharedResumeData = (_body) => {
 
                     var allProfileDetails = await client.query(queryService.fetchProfile(candidateId));
                     var skills = await client.query(queryService.fetchSkills(candidateId));
+                    var sharedEmailSet = await client.query(queryService.fetchSharedResumeLinkEmails(candidateId))
                     let citizenship = allProfileDetails.rows[0].citizenship;
                     let citizenshipName = ![null, undefined, ""].includes(citizenship) ? config.countries.filter(element => element.id == citizenship)[0].name : '';
                     let residence = allProfileDetails.rows[0].residence;
@@ -1299,18 +1300,20 @@ export const initialSharedResumeData = (_body) => {
                         typeOfAvailability: allProfileDetails.rows[0].typeOfAvailability,
                         readyToStart: allProfileDetails.rows[0].readyToStart
                     }
+                    _body.resData=   {
+                        candidateId: Number(_body.candidateId),
+                        profile: profileDetails,
+                        resume: allProfileDetails.rows[0].resume,
+                        overallWorkExperience,
+                        availability,
+                        skills: skills.rows
+                    }
+                    if(sharedEmailSet.rowCount>0)  _body.resData['sharedResume']=sharedEmailSet.rows[0].shared_emails
                     await client.query('COMMIT')
                     resolve({
                         code: 200, message: "Initial Resume data listed successfully",
-                        data:
-                        {
-                            candidateId: Number(_body.candidateId),
-                            profile: profileDetails,
-                            resume: allProfileDetails.rows[0].resume,
-                            overallWorkExperience,
-                            availability,
-                            skills: skills.rows
-                        }
+                        data:_body.resData
+                     
                     });
                 }
                 else {

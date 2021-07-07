@@ -336,6 +336,13 @@ export const fetchSkills = (candidateId) => {
         values: [candidateId],
     }
 }
+export const fetchSharedResumeLinkEmails = (candidateId) => {
+    return {
+        name: 'fetch-shared-resume-emails',
+        text: candidateQuery.fetchSharedResumeEmails,
+        values: [candidateId],
+    }
+}
 
 export const fetchProjects = (candidateId) => {
     return {

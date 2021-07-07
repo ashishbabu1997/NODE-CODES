@@ -61,18 +61,19 @@
                                          <ul>
                                             {{#details}}
                                             <li style="color:#000000;font-size: 18px;line-height: 25px">
-                                            {{name}}:<b>{{value}}</b>
+                                            {{name}}: <b>{{value}}</b>
                                             </li>
                                             {{/details}}
 
                                             {{#skills}}
                                                 <li style="color:#000000;font-size: 18px;line-height: 25px">
-                                                
-                                                        {{name}}: {{#value}}
-                                                        <li style="color:#000000;font-size: 18px;line-height: 25px;">
-                                                        {{name}}:<b>{{skillName}}</b>
-                                                        </li>
-                                                        {{/value}}
+                                                        {{name}}: <ul>
+                                                            {{#value}}
+                                                            <li style="color:#000000;font-size: 18px;line-height: 25px;">
+                                                            <b>{{skillName}}</b>
+                                                            </li>
+                                                            {{/value}}
+                                                        </ul>
                                                 </li>
                                             {{/skills}}
                                         </ul>

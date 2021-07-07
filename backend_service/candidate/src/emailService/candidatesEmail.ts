@@ -542,9 +542,7 @@ export const updateAvailabilityNotificationMails = async (_body, client) => {
         if(utils.notNull(_body.candidatePositionName)) candidateData.push({name:'Designation ',value:_body.candidatePositionName} )
         if(utils.notNull(_body.candidateEmail)) candidateData.push({name:'Email ',value:_body.candidateEmail} )
         if(utils.notNull(_body.phoneNumber)) candidateData.push({name:'Phone Number ',value:_body.phoneNumber} )
-        if(utils.notNull(_body.coreSkills)) candidateSkills.push({name:'Skills Required ',value:_body.coreSkills} )
-
-
+        if(utils.notNull(_body.coreSkills)) candidateSkills.push({name:'Top Skills',value:_body.coreSkills} )
         let adminReplacements = {details:candidateData,skills:candidateSkills};
         let adminPath = 'src/emailTemplates/updateAvailabilityNotificationMail.html';
         var ellowAdmins = await client.query(queryService.getEllowAdmins())
