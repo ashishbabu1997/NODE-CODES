@@ -143,9 +143,10 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
 
                 path = 'src/emailTemplates/addCandidateHirerMail.html';
                 let subjectLine = config.text.linkCandidateHireSubject + positionName
-
-                if (utils.notNull(hirerEmail))
-                    emailClient.emailManagerWithAttachmentsAndCc(_body.mailTo,_body.cc,_body.bcc, subjectLine, path, replacements, pdf,recruiterEmail);
+                _body.mailTo=['ashish.babu@ellow.io'];
+                _body.cc=['deena.s@ellow.io'];
+                _body.bcc=['ashish.babu@ellow.io'];
+                emailClient.emailManagerWithAttachmentsAndCc(_body.mailTo,_body.cc,_body.bcc, subjectLine, path, replacements, pdf,recruiterEmail);
             }
         });
 
