@@ -295,7 +295,7 @@ export const linkCandidateWithPosition = (_body) => {
                 emailService.linkCandidateWithPositionEMail(_body, client);
                 await client.query('COMMIT')
 
-                resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
+                resolve({ code: 200, message: "Profile is shared to the given email addresses successfully", data: {} });
             } catch (e) {
                 console.log("error : ", e)
                 await client.query('ROLLBACK')

@@ -85,7 +85,7 @@ export default {
             "email": "jjoseph@ellow.io",
             "name": "Jyothis Joseph",
             "appPass": "nzzcthkajlwhmlga",
-            "signature":`Founder and CEO\nhttps://ellow.io\nMob: +919846462362\njjoseph @ellow.io\nhttps://www.linkedin.com/in/jyothisjoseph/`
+            "signature":`Founder and CEO\nhttps://ellow.io\nMob: +919846462362\njjoseph@ellow.io\nhttps://www.linkedin.com/in/jyothisjoseph/`
 
 
         },

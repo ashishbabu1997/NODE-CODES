@@ -914,6 +914,7 @@ export const listAddFromListTotal = (queryText, queryValues) => {
     }
 }
 
+
 export const getCompanyNames = (_body) => {
     return {
         name: 'get-distinct-company-names',

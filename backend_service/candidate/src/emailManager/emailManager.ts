@@ -1,6 +1,6 @@
 import {readHTMLFile} from '../middlewares/htmlReader'
 import * as handlebars from 'handlebars'
-import { sendMail,sendMailWithAttachments,sendMailForNoReply, sendMailWithDoc,sendMailWithAttachmentsAndCc } from '../middlewares/mailer'
+import { sendMail,sendMailWithAttachments,sendMailForNoReply, sendMailWithDoc,sendMailWithAttachmentsAndCc,sendMailWithAttachmentsOnly } from '../middlewares/mailer'
 
 
 export const emailManager = (mailId,subject,path,replacements) =>
@@ -34,13 +34,13 @@ export const emailManagerWithAttachments = (mailId,subject,path,replacements,att
         });
     })
 }
-export const emailManagerWithAttachmentsAndCc = (mailId,subject,path,replacements,attach,userMail) =>
+export const emailManagerWithAttachmentsAndCc = (mailId,cc,bcc,subject,path,replacements,attach,userMail) =>
 {
     readHTMLFile(path, function(err, html) {
         var template = handlebars.compile(html);
         var htmlToSend = template(replacements);
         attach.name = replacements.filename;
-        sendMailWithAttachmentsAndCc(mailId, subject, htmlToSend,attach,userMail, function (err, data) {
+        sendMailWithAttachmentsAndCc(mailId,cc,bcc, subject, htmlToSend,attach,userMail, function (err, data) {
             if (err) {
                 console.log('Error raised in mail : ',err)
                 throw err;
@@ -49,7 +49,21 @@ export const emailManagerWithAttachmentsAndCc = (mailId,subject,path,replacement
         });
     })
 }
-
+export const emailManagerWithAttachmentsOnly = (mailId,subject,path,replacements,attach,userMail) =>
+{
+    readHTMLFile(path, function(err, html) {
+        var template = handlebars.compile(html);
+        var htmlToSend = template(replacements);
+        attach.name = replacements.filename;
+        sendMailWithAttachmentsOnly(mailId, subject, htmlToSend,attach,userMail, function (err, data) {
+            if (err) {
+                console.log('Error raised in mail : ',err)
+                throw err;
+            }
+            console.log('Mail sent');
+        });
+    })
+}
 export const emailManagerWithDocs = (mailId,subject,path,replacements,attach) =>
 {
     readHTMLFile(path, function(err, html) {
