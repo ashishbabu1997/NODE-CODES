@@ -182,12 +182,16 @@ export const fetchPositionDetails = (_body) => {
             const client = await database()
             try {
                 let results = await client.query(queryService.fetchPositionDetails(_body))
+                const primaryMails = await client.query(queryService.listPrimaryEmails(_body));
+                const secondaryMails = await client.query(queryService.listSecondaryEmails(_body));
                 const queryResult = results.rows;
                 let result = {};
                 queryResult.forEach(step => {
                     result = {
                         positionId: _body.positionId,
                         maxBudget: step.max_budget,
+                        primaryEmails:primaryMails.rows[0].primaryEmails,
+                        secondaryMails:secondaryMails.rows[0].secondaryEmails,
                         minBudget: step.min_budget,
                         billingTypeId: step.billing_type,
                         contractStartDate: step.contract_start_date,
@@ -221,6 +225,7 @@ export const fetchPositionDetails = (_body) => {
                     }
 
                 })
+                console.log(result)
                 resolve({ code: 200, message: "Fetched position details successfully", data: result });
             } catch (e) {
                 await client.query('ROLLBACK')
