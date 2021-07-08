@@ -144,7 +144,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
                 path = 'src/emailTemplates/addCandidateHirerMail.html';
                 let subjectLine = config.text.linkCandidateHireSubject + positionName
 
-                emailClient.emailManagerWithAttachmentsAndCc(_body.mailTo,_body.cc,_body.bcc, subjectLine, path, replacements, pdf,recruiterEmail);
+                emailClient.emailManagerWithAttachmentsAndCc(element.mailTo,element.cc,element.bcc, subjectLine, path, replacements, pdf,recruiterEmail);
             }
         });
 
