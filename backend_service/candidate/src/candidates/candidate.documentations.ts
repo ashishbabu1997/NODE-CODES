@@ -2415,7 +2415,7 @@
 /**
 * @swagger
 * /candidates/fileDownload:
-*   put:
+*   post:
 *     tags:
 *       - Candidates
 *     name: download pdf data
