@@ -71,7 +71,32 @@ export const sendMailWithAttachments = (email, subject, html,cc,attach, callback
         return callback(null, data);
     });
 }
-export const sendMailWithAttachmentsAndCc = (email, subject, html,attach,userMail, callback) => {
+export const sendMailWithAttachmentsAndCc = (email,cc,bcc, subject, html,attach,userMail, callback) => {
+    let userDetails = util.reccuiterMailCheck(userMail);
+    const {user,recipient,pass} = userDetails;
+    const transpotterCc = getTransporter(user,pass);
+    
+    const mailOptions = {
+        from: `"${recipient}" <${user}>`, 
+        to: email, 
+        cc:cc,
+        bcc:bcc,
+        subject:subject,
+        html:html,
+        attachments:{
+            filename: attach.name,
+            content:attach
+        }
+    };
+ 
+    transpotterCc.sendMail(mailOptions, function (err, data) {
+        if (err) {
+            return callback(err, null);
+        }
+        return callback(null, data);
+    });
+}
+export const sendMailWithAttachmentsOnly = (email, subject, html,attach,userMail, callback) => {
     let userDetails = util.reccuiterMailCheck(userMail);
     const {user,recipient,pass} = userDetails;
     const transpotterCc = getTransporter(user,pass);

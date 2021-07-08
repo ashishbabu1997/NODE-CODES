@@ -113,6 +113,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
             let availability=utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
             candidateNames += `${name}\n`
 
+            
             if (_body.userRoleId == 1) {
                 let requiredCandidateData = []
                 if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': utils.capitalize(res.rows[0].candidate_first_name)+' '+utils.capitalize(res.rows[0].candidate_last_name) });
@@ -144,7 +145,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
                 let subjectLine = config.text.linkCandidateHireSubject + positionName
 
                 if (utils.notNull(hirerEmail))
-                    emailClient.emailManagerWithAttachmentsAndCc(hirerEmail, subjectLine, path, replacements, pdf,recruiterEmail);
+                    emailClient.emailManagerWithAttachmentsAndCc(_body.mailTo,_body.cc,_body.bcc, subjectLine, path, replacements, pdf,recruiterEmail);
             }
         });
 
@@ -497,7 +498,7 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
                         let sharePath = 'src/emailTemplates/shareAppliedCandidates.html';
                         let subjectLine = config.text.shareAppliedCandidateSubject + positionName
                         if (utils.notNull(element))
-                            emailClient.emailManagerWithAttachmentsAndCc(element,subjectLine, sharePath, replacements, pdf, recruiterEmail) ;
+                            emailClient.emailManagerWithAttachmentsOnly(element,subjectLine, sharePath, replacements, pdf, recruiterEmail) ;
                     })
                 }
             }

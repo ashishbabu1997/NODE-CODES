@@ -32,6 +32,20 @@ export const getJobReceivedByIdQuery = (_body) => {
         values: [parseInt(_body.jobReceivedId), parseInt(_body.companyId)]
     }
 }
+export const listPrimaryEmails = (body) => {
+    return {
+        name: 'get-hirer-emails',
+        text: positionsQuery.listPrimaryEmails,
+        values: [body.positionId]
+    }
+}
+export const listSecondaryEmails = (body) => {
+    return {
+        name: 'get-hirer-secondary-mails',
+        text: positionsQuery.listSecondaryEmails,
+        values: [body.positionId]
+    }
+}
 export const getDistinctJobCategoryId = (_body) => {
     return {
         name: 'get-jobs-id',
