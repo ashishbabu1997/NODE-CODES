@@ -2406,7 +2406,6 @@ export const fileDownload = (_body) => {
         (async () => {
             const client = await database()
             try {
-                console.log("HAIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
                 let pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
                 // Or format the path using the `id` rest param
                 var fileName = "report.pdf"; // The default name the browser will use
@@ -2432,7 +2431,6 @@ export const downloadPdf = (_body) => {
             const client = await database()
             try {
                 var candidateId = _body.candidateId
-                _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
                 let pdf = await builder.pdfBuilder(candidateId, _body.host);
                 await client.query('COMMIT')
 

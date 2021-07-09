@@ -15,6 +15,13 @@ router
     .post('/registeredUserList', jwtAuth, adminController.registeredUserList)
     .post('/addJobCategory', jwtAuth, adminController.addJobCategory)
     .post('/addSkills', jwtAuth, adminController.addSkills)
+    
+    .delete('/deleteJobCategory', jwtAuth, adminController.deleteJobCategory)
+    .put('/updateJobCategoryName', jwtAuth, adminController.editJobCategory)
+    .put('/removeSkillsFromJobCategory', jwtAuth, adminController.removeSkillsFromJobCategory)
+    .put('/udpateSkillName',checkJwt(), adminController.editSkill)
+    .delete('/deleteSkills',checkJwt(), adminController.removeSkills)
+
     .get('/allSkills',  jwtAuth,setData(), adminController.allSkills)
     .get('/reports',checkJwt(), adminController.reports)
 export default router;

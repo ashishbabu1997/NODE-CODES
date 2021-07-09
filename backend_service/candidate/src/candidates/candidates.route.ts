@@ -67,7 +67,7 @@ router
 .get('/requestForScreening',jwtAuth, setData(),candidateController.requestForScreeningController)
 .post('/emailTemplate',candidateController.postEmailTemplate)
 .get('/emailTemplate',candidateController.getEmailTemplate)
-.post('/fileDownload',jwtAuth,setProfileAuth([1,2]),candidateController.downloadPdfController)
+.post('/fileDownload',jwtAuth,candidateController.downloadPdfController)
 .post('/sentFreelancerLoginCredentials',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.sentFreelancerLoginCredentialsController)
 
 export default router;  

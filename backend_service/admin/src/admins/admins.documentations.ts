@@ -287,3 +287,229 @@
 *       500:
 *         description: Server down
 */
+
+/**
+* @swagger
+* /updateJobCategoryName:
+*   put:
+*     tags:
+*       - Admins
+*     name: Update job category name
+*     summary: Update job category name
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: body
+*         schema:
+*           type: object
+*           properties:
+*             jobCategoryId:
+*               type: integer
+*             jobCategoryName:
+*               type: string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /updateJobCategoryName:
+*   put:
+*     tags:
+*       - Admins
+*     name: Update job category name
+*     summary: Update job category name
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: body
+*         schema:
+*           type: object
+*           properties:
+*             jobCategoryId:
+*               type: integer
+*             jobCategoryName:
+*               type: string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /udpateSkillName:
+*   put:
+*     tags:
+*       - Admins
+*     name: Update Skill name
+*     summary: Update Skill name
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: body
+*         schema:
+*           type: object
+*           properties:
+*             skillId:
+*               type: integer
+*             skillname:
+*               type: string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+/**
+* @swagger
+* /removeSkillsFromJobCategory:
+*   put:
+*     tags:
+*       - Admins
+*     name: Remove skills from a job category
+*     summary: Remove certain skills from a job category
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: body
+*         schema:
+*           type: object
+*           properties:
+*             jobCategoryId:
+*               type: integer
+*             skillId:
+*               type: array
+*               items:
+*                 type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /deleteJobCategory:
+*   delete:
+*     tags:
+*       - Admins
+*     name: Delete a job category
+*     summary: Delete a job category will throw error in case the job_category is linked to some position or candidate, can be override with forceRemove key
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: body
+*         schema:
+*           type: object
+*           properties:
+*             jobCategoryId:
+*               type: integer
+*             forceRemove:
+*               type: boolean
+*               default: false
+*               desciption: default false used only in case where job category needs to be force removed
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /deleteSkills:
+*   delete:
+*     tags:
+*       - Admins
+*     name: Delete a skill
+*     summary: Delete skill will throw error in case the skill_id is linked to some position or candidate, can be overriden with forceRemove key
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: body
+*         schema:
+*           type: object
+*           properties:
+*             skillId:
+*               type: integer
+*             forceRemove:
+*               type: boolean
+*               default: false
+*               desciption: default false used only in case where job category needs to be force removed
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+

@@ -386,6 +386,187 @@ export const addJobCategory = (_body) => {
     })
 }
 
+//>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new job category
+export const deleteJobCategory = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                if (utils.notNull(_body.jobCategoryId)) {
+                    if (utils.notNull(_body.forceRemove) && _body.forceRemove)
+                        await client.query(queryService.deleteJobCategory(_body));
+
+                    else {
+                        let result1 = await client.query(queryService.getJobCategoryPositionLinks(_body));
+                        let result2 = await client.query(queryService.getJobCategoryCandidateLinks(_body));
+
+                        if (result1.rowCount > 0 || result2.rowCount > 0) {
+                            reject({ code: 400, message: "There are some positions or candidate linked to this job category", data: { positionLinks: result1.rows, candidateLinks: result2.rows } });
+                        }
+                        else {
+                            await client.query(queryService.deleteJobCategory(_body));
+                            resolve({ code: 200, message: "Job category removed successfully", data: {} });
+                        }
+
+                    }
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Job category removed successfully", data: {} });
+                }
+                else {
+                    reject({ code: 400, message: "Failed. Please try again.", data: "Provide a valid job category" });
+                }
+
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+//>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new job category
+export const editJobCategory = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                if (utils.notNull(_body.jobCategoryId)) {
+                    await client.query(queryService.editJobCategory(_body));
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Job category updated successfully", data: {} });
+                }
+                else {
+                    reject({ code: 400, message: "Failed. Please try again.", data: "Provide a valid job category" });
+                }
+
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+//>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new job category
+export const editSkill = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                if (utils.notNull(_body.skillId)) {
+                    await client.query(queryService.editSkill(_body));
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Skill updated successfully", data: {} });
+                }
+                else {
+                    reject({ code: 400, message: "Failed. Please try again.", data: "Provide a valid skill id" });
+                }
+
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+//>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new job category
+export const removeSkillsFromJobCategory = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                if (utils.notNull(_body.jobCategoryId) && utils.notNull(_body.skillId) && Array.isArray(_body.skillId)) {
+
+                    await client.query(queryService.removeSkillsFromJobCategory(_body));
+
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Removed skills from job category successfully", data: {} });
+                }
+                else {
+                    reject({ code: 400, message: "Failed. Please try again.", data: "Provide valid job category and skills" });
+                }
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+//>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new job category
+export const removeSkills = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                if (utils.notNull(_body.skillId)) {
+                    if (utils.notNull(_body.forceRemove) && _body.forceRemove)
+                        await client.query(queryService.removeSkill(_body));
+
+                    else {
+                        let result1 = await client.query(queryService.getSkillPositionLinks(_body));
+                        let result2 = await client.query(queryService.getSkillCandidateLinks(_body));
+
+                        if (result1.rowCount > 0 || result2.rowCount > 0) {
+                            reject({ code: 400, message: "There are some positions or candidate linked to this skill", data: { positionLinks: result1.rows, candidateLinks: result2.rows } });
+                        }
+                        else {
+                            await client.query(queryService.removeSkill(_body));
+                            resolve({ code: 200, message: "Skill removed successfully", data: {} });
+                        }
+
+                    }
+
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Removed skills successfully", data: {} });
+                }
+                else {
+                    reject({ code: 400, message: "Failed. Please try again.", data: "Provide valid skill id in an array" });
+                }
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
 
 //>>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>> Add new skills
@@ -572,14 +753,14 @@ export const reports = (_body) => {
                     groupByPosition = ` group by ("RecruiterName", "PositionStatus") `,
                     groupByCandidatePosition = ` group by ("RecruiterName") `,
                     groupByCompanyReg = `group by "assesedBy", "adminApproveStatus" order by "assesedBy","status"`,
-                    groupByFreelancer=`group by "candidateStatus", allocated_to order by allocated_to, "candidateStatus" desc`
+                    groupByFreelancer = `group by "candidateStatus", allocated_to order by allocated_to, "candidateStatus" desc`
 
                 if (utils.notNull(_body.fromDate) && utils.notNull(_body.toDate)) {
                     dateRangeCandidate = ` and ca.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangePosition = ` and p.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangeCandidatePosition = ` and cp.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangeCompanyReg = `where "updatedDate" between ${_body.fromDate} and ${_body.toDate}`
-                    dateRangeFreelancer=`and c.created_on between ${_body.fromDate} and ${_body.toDate}`
+                    dateRangeFreelancer = `and c.created_on between ${_body.fromDate} and ${_body.toDate}`
                 }
 
                 let cpResults = await client.query(queryService.fetchCandidatePositionReports(dateRangeCandidatePosition, groupByCandidatePosition));
@@ -595,7 +776,7 @@ export const reports = (_body) => {
                     'CompanyRegistrationReports': crResults.rows,
                     'FreelancerReports': fResults.rows
                 }
-                
+
                 await client.query('COMMIT');
                 resolve({ code: 200, message: "Reports fetched successfully", data });
 
