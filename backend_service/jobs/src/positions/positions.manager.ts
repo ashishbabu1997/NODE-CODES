@@ -543,9 +543,10 @@ export const changeJobStatus = (_body) => {
 //>>>>>>>>>>>>>>>>>>Get the list of the companies with details
 export const getCompanies = (_body) => {
     return new Promise((resolve, reject) => {
-        const CompanyQuery = {
+        _body.query=_body.accountType==2?positionsQuery.getProviderNames:positionsQuery.getNames;
+        var  CompanyQuery = {
             name: 'get-company-names',
-            text: positionsQuery.getNames,
+            text: _body.query,
             values: { 'accounttype': _body.accountType },
         }
         database().query(CompanyQuery, (error, results) => {
