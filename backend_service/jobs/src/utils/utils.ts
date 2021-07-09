@@ -166,6 +166,24 @@ export const positionTab = (body) =>{
     
     return vettedQuery;
 }
+
+export const jobsTab = (body) =>{
+    var vettedQuery = '';
+    
+    switch (body.tabValue) {
+        
+        case '0':
+        vettedQuery='  and (select count(*) FROM candidate_hiring_steps_view chsv join candidate cn on cn.candidate_id = chsv."candidateId" WHERE chsv."positionId" = p.position_id and cn.company_id =11 and chsv."cpStatus" = true and p.status = true)=0'
+        break;
+        case '1':
+        vettedQuery='  and (select count(*) FROM candidate_hiring_steps_view chsv join candidate cn on cn.candidate_id = chsv."candidateId" WHERE chsv."positionId" = p.position_id and cn.company_id =11 and chsv."cpStatus" = true and p.status = true)!=0'
+        break;
+        default:
+        break;
+    }
+    
+    return vettedQuery;
+}
 export const positionPagination = (body) => {
     let pagination = '';
     // Pagination

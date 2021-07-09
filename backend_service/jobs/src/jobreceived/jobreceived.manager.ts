@@ -24,7 +24,6 @@ export const getAllJobReceived = (_body) => {
                 var selectQuery = jobReceivedQuery.getAllJobReceived;
                 var totalQuery=jobReceivedQuery.getAllJobReceivedCount;
                 var queryText='', queryValues={}, filterQuery='', filter=_body.body!=undefined?_body.body.filter:'',searchQuery='',body=_body.query, sort = '', searchKey = '';
-                
                 const orderBy = {
                     "position": 'p.position_id',
                     "positionName": 'p.position_name',
@@ -77,8 +76,8 @@ export const getAllJobReceived = (_body) => {
                 {
                     sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
                 }
-                _body.queryText = selectQuery + filterQuery + searchQuery + sort + utils.jobsPagination(body);
-                _body.queryCountText = totalQuery + filterQuery + searchQuery ;
+                _body.queryText = selectQuery +utils.jobsTab(body)+ filterQuery + searchQuery + sort + utils.jobsPagination(body);
+                _body.queryCountText = totalQuery +utils.jobsTab(body)+  filterQuery + searchQuery ;
                 _body.queryValues =  Object.assign({companyid:body.companyId,employeeid:body.employeeId},queryValues)
                 let results = await client.query(queryService.getJobRecievedQuery(_body))
                 let count = await client.query(queryService.getJobRecievedCountQuery(_body))  
