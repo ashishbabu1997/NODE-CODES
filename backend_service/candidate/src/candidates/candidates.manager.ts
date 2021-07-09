@@ -2432,7 +2432,6 @@ export const downloadPdf = (_body) => {
             const client = await database()
             try {
                 var candidateId = _body.candidateId
-                _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
                 let pdf = await builder.pdfBuilder(candidateId, _body.host);
                 await client.query('COMMIT')
 
