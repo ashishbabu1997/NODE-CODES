@@ -2406,7 +2406,6 @@ export const fileDownload = (_body) => {
         (async () => {
             const client = await database()
             try {
-                console.log("HAIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
                 let pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
                 // Or format the path using the `id` rest param
                 var fileName = "report.pdf"; // The default name the browser will use
