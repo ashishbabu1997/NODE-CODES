@@ -245,24 +245,16 @@ export const clearance = (_body) => {
                         let replacements = {
                             loginPassword: password
                         };
-                        if (email != null || '') {
-                            emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
-                        }
-                        else {
-                            console.log("Email Recipient is empty")
-                        }
+                       
+                        emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
                         await client.query('COMMIT');
                         if (Array.isArray(ellowAdmins.rows)) {
                             let recruitersSubject = 'Company Approval Mail'
                             let recruitersPath = 'src/emailTemplates/userApprovalMailText.html';
                             let recruitersReplacements = { fName: approveResult.rows[0].firstname, lName: approveResult.rows[0].lastname, email: approveResult.rows[0].email, cName: companyResults.rows[0].company_name };
                             ellowAdmins.rows.forEach(element => {
-                                if (element.email != null || '' || undefined) {
                                     emailClient.emailManager(element.email, recruitersSubject, recruitersPath, recruitersReplacements);
-                                }
-                                else {
-                                    console.log("Email Recipient is empty")
-                                }
+                                
                             })
                             resolve({ code: 200, message: "User Approval Successfull", data: {} });
                         }

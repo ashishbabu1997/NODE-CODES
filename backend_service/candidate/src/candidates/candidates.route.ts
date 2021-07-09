@@ -38,7 +38,7 @@ router
 .get('/resumeSharedEmails',jwtAuth,setData(),candidateController.resumeSharedEmails)
 .post('/resumeShareLink',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.resumeShareLink)
 .get('/initialSharedResumeData',candidateController.initialResumeData)
-.get('/sharedResumeData',jwtAuth, setData(),candidateController.sharedResumeData)
+.get('/sharedResumeData',jwtAuth, setData(),setProfileAuth([1,2,3,4]),candidateController.sharedResumeData)
 .put('/sharePdf',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.getPdf)
 .get('/getSharedEmailsForPdf',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.getSharedEmailsForPdf)
 .get('/sharedResumePdfData',candidateController.sharedResumePdfData)
@@ -67,7 +67,7 @@ router
 .get('/requestForScreening',jwtAuth, setData(),candidateController.requestForScreeningController)
 .post('/emailTemplate',candidateController.postEmailTemplate)
 .get('/emailTemplate',candidateController.getEmailTemplate)
-.post('/fileDownload',jwtAuth,candidateController.downloadPdfController)
+.post('/fileDownload',jwtAuth,setData(),setProfileAuth([1,2,3,4]),candidateController.downloadPdfController)
 .post('/sentFreelancerLoginCredentials',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.sentFreelancerLoginCredentialsController)
 
 export default router;  

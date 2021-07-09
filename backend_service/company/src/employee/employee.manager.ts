@@ -44,8 +44,10 @@ export const createEmployee = (_body) => {
                     }
                     else{
                         _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
-                        var companyResults=await client.query(queryService.getCompanyProfile(_body));
+                        var companyResults=await client.query(queryService.getProfile(_body));
                         var companyDomain=companyResults.rows[0].domain
+                        _body.accType=companyResults.rows[0].account_type;
+                        _body.urId=companyResults.rows[0].user_role_id;
                         if(utils.domainExtractor(_body.email) == companyDomain)
                         {
                             _body.companyName=companyResults.rows[0].name
