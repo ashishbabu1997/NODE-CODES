@@ -67,7 +67,7 @@ export const createEmployee = (_body) => {
                     }
                                       
                 await client.query('COMMIT');
-                resolve({ code: 200, message: "Thank you for registering with us! We have sent a password to the registered mail address. Please check your inbox and login using the given password", data: {} });
+                resolve({ code: 200, message: "Subuser added successfully. We have sent a password to the registered mail address. Please check your inbox and login using the given password", data: {} });
             } catch (e) {
                 await client.query('ROLLBACK')
                 console.log(e)
