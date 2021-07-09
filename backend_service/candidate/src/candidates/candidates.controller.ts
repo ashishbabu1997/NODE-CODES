@@ -409,10 +409,6 @@ export const downloadPdfController = (req, res) => {
             res.contentType("application/pdf");
             res.send(response.data.pdf);
         
-    }).catch((error: any) =>
-    { 
-        res.writeHead(301,{Location: 'https://dev.ellow.io/redirect-notification'})
-    res.end()
     })
 }
 
