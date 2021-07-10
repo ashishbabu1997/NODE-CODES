@@ -1,4 +1,4 @@
-import { getSkills, addSkills, updateSkills, deleteSkills } from './SkillsController';
+import { getSkills,getOrderedSkills, addSkills, updateSkills, deleteSkills } from './SkillsController';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
 import updateCompanyProfileSchema from './schemas/updateCompanyProfileSchema';
@@ -9,6 +9,7 @@ const router = express.Router();
 router
     .get('/', getSkills)
     .post('/', addSkills)
+    .get('/orderedSkills', getOrderedSkills)
     // .put('/', updateSkills)
     // .delete('/:skillId', deleteSkills)
 
