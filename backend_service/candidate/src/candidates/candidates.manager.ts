@@ -1348,6 +1348,7 @@ export const createPdfFromHtml = (_body) => {
                 var candidateId = _body.candidateId
                 _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
                 let pdf = await builder.pdfBuilder(candidateId, _body.host);
+                await client.query(queryService.saveSharedEmailsForpdf(_body))
                 emailService.createPdfFromHtmlEmail(_body, pdf);
                 await client.query('COMMIT')
 
