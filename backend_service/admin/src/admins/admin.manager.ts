@@ -173,7 +173,6 @@ export const clearance = (_body) => {
                 var companyResults = await client.query(getCompanyName)
                 var companyName = companyResults.rows[0].company_name
                 var companyId = companyResults.rows[0].company_id
-                console.log(_body.userRoleId)
                 const saveRecruiter = {
                     name: 'save-recruiter-id',
                     text: adminQuery.saveRecruiterQuery,
@@ -190,6 +189,11 @@ export const clearance = (_body) => {
                     text: adminQuery.approveEmployeeQuery,
                     values: [_body.selectedEmployeeId, hashedPassword, currentTime]
                 }
+                const adminReApprovalQuery = {
+                    name: 'user-reapproval',
+                    text: adminQuery.reApproveEmployeeQuery,
+                    values: [_body.selectedEmployeeId, hashedPassword, currentTime]
+                }
                 // Approving a user
                 if (_body.decisionValue == 1) {
                     if (_body.repeatValue == true) {
@@ -198,7 +202,7 @@ export const clearance = (_body) => {
                             numbers: true
                         });
                         var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                        var approveResult = await client.query(adminApprovalQuery);
+                        var approveResult = await client.query(adminReApprovalQuery);
                         var email = approveResult.rows[0].email;
                         const subject = " ellow.io LOGIN PASSWORD "
 
@@ -207,24 +211,16 @@ export const clearance = (_body) => {
                         let replacements = {
                             loginPassword: password
                         };
-                        if (email != null || '' || undefined) {
-                            emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
-                        }
-                        else {
-                            console.log("Email Recipient is empty")
-                        }
+                        emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
+                       
                         await client.query('COMMIT');
                         if (Array.isArray(ellowAdmins.rows)) {
                             let recruitersSubject = 'Company Re-Approval Notification'
                             let recruitersPath = 'src/emailTemplates/userReApprovalMailText.html';
                             let recruitersReplacements = { fName: approveResult.rows[0].firstname, lName: approveResult.rows[0].lastname, email: approveResult.rows[0].email, cName: companyResults.rows[0].company_name };
                             ellowAdmins.rows.forEach(element => {
-                                if (element.email != null || '' || undefined) {
                                     emailClient.emailManager(element.email, recruitersSubject, recruitersPath, recruitersReplacements);
-                                }
-                                else {
-                                    console.log("Email Recipient is empty")
-                                }
+                                
                             })
                             resolve({ code: 200, message: "User Approval Successfull", data: {} });
                         }
@@ -245,24 +241,16 @@ export const clearance = (_body) => {
                         let replacements = {
                             loginPassword: password
                         };
-                        if (email != null || '') {
-                            emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
-                        }
-                        else {
-                            console.log("Email Recipient is empty")
-                        }
+                       
+                        emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
                         await client.query('COMMIT');
                         if (Array.isArray(ellowAdmins.rows)) {
                             let recruitersSubject = 'Company Approval Mail'
                             let recruitersPath = 'src/emailTemplates/userApprovalMailText.html';
                             let recruitersReplacements = { fName: approveResult.rows[0].firstname, lName: approveResult.rows[0].lastname, email: approveResult.rows[0].email, cName: companyResults.rows[0].company_name };
                             ellowAdmins.rows.forEach(element => {
-                                if (element.email != null || '' || undefined) {
                                     emailClient.emailManager(element.email, recruitersSubject, recruitersPath, recruitersReplacements);
-                                }
-                                else {
-                                    console.log("Email Recipient is empty")
-                                }
+                                
                             })
                             resolve({ code: 200, message: "User Approval Successfull", data: {} });
                         }
@@ -271,8 +259,14 @@ export const clearance = (_body) => {
                 else {
                     if (_body.repeatValue == true) {
                         var rejectResultSet = await client.query(userRejectQuery);
+                        if(rejectResultSet.rows[0].account_type==1)
+                        {
+                            var employeeCompany=rejectResultSet.rows[0].company_id
+                            await client.query(queryService.closeHirerPositions(employeeCompany));
+                        }
+                            
+
                         var userCompanyId = rejectResultSet.rows[0].company_id
-                        console.log("CompanyID", rejectResultSet.rows[0].company_id)
                         const subUserRejectQuery = {
                             name: 'admin-subuser-rejection',
                             text: adminQuery.subUserClearanceQuery,
@@ -303,10 +297,11 @@ export const clearance = (_body) => {
                     else {
                         // Rejecting a user
                         var rejectResultSet = await client.query(userRejectQuery);
+                       
+
                         var employeeMail = rejectResultSet.rows[0].email
                         var desc = _body.description
                         var subject = "ellow.io ACCOUNT REJECTION MAIL "
-
                         // Rejection mail to the user
                         let path = 'src/emailTemplates/adminRejectText.html';
                         var userReplacements = {
@@ -319,13 +314,8 @@ export const clearance = (_body) => {
                             let path = 'src/emailTemplates/userRejectionMailText.html';
                             let replacements = { fName: rejectResultSet.rows[0].firstname, lName: rejectResultSet.rows[0].lastname, email: rejectResultSet.rows[0].email, cName: companyResults.rows[0].company_name };
                             ellowAdmins.rows.forEach(element => {
-                                if (element.email != null || '' || undefined) {
                                     emailClient.emailManager(element.email, subject, path, replacements);
 
-                                }
-                                else {
-                                    console.log("Email Recipient is empty")
-                                }
                             })
                             resolve({ code: 200, message: "User Rejection Successfull", data: {} });
                         }
@@ -374,6 +364,187 @@ export const addJobCategory = (_body) => {
                     reject({ code: 400, message: "Failed. Please try again.", data: "Provide a valid job category name" });
                 }
 
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+//>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new job category
+export const deleteJobCategory = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                if (utils.notNull(_body.jobCategoryId)) {
+                    if (utils.notNull(_body.forceRemove) && _body.forceRemove)
+                        await client.query(queryService.deleteJobCategory(_body));
+
+                    else {
+                        let result1 = await client.query(queryService.getJobCategoryPositionLinks(_body));
+                        let result2 = await client.query(queryService.getJobCategoryCandidateLinks(_body));
+
+                        if (result1.rowCount > 0 || result2.rowCount > 0) {
+                            reject({ code: 400, message: "There are some positions or candidate linked to this job category", data: { positionLinks: result1.rows, candidateLinks: result2.rows } });
+                        }
+                        else {
+                            await client.query(queryService.deleteJobCategory(_body));
+                            resolve({ code: 200, message: "Job category removed successfully", data: {} });
+                        }
+
+                    }
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Job category removed successfully", data: {} });
+                }
+                else {
+                    reject({ code: 400, message: "Failed. Please try again.", data: "Provide a valid job category" });
+                }
+
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+//>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new job category
+export const editJobCategory = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                if (utils.notNull(_body.jobCategoryId)) {
+                    await client.query(queryService.editJobCategory(_body));
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Job category updated successfully", data: {} });
+                }
+                else {
+                    reject({ code: 400, message: "Failed. Please try again.", data: "Provide a valid job category" });
+                }
+
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+//>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new job category
+export const editSkill = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                if (utils.notNull(_body.skillId)) {
+                    await client.query(queryService.editSkill(_body));
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Skill updated successfully", data: {} });
+                }
+                else {
+                    reject({ code: 400, message: "Failed. Please try again.", data: "Provide a valid skill id" });
+                }
+
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+//>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new job category
+export const removeSkillsFromJobCategory = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                if (utils.notNull(_body.jobCategoryId) && utils.notNull(_body.skillId) && Array.isArray(_body.skillId)) {
+
+                    await client.query(queryService.removeSkillsFromJobCategory(_body));
+
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Removed skills from job category successfully", data: {} });
+                }
+                else {
+                    reject({ code: 400, message: "Failed. Please try again.", data: "Provide valid job category and skills" });
+                }
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+//>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new job category
+export const removeSkills = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                if (utils.notNull(_body.skillId)) {
+                    if (utils.notNull(_body.forceRemove) && _body.forceRemove)
+                        await client.query(queryService.removeSkill(_body));
+
+                    else {
+                        let result1 = await client.query(queryService.getSkillPositionLinks(_body));
+                        let result2 = await client.query(queryService.getSkillCandidateLinks(_body));
+
+                        if (result1.rowCount > 0 || result2.rowCount > 0) {
+                            reject({ code: 400, message: "There are some positions or candidate linked to this skill", data: { positionLinks: result1.rows, candidateLinks: result2.rows } });
+                        }
+                        else {
+                            await client.query(queryService.removeSkill(_body));
+                            resolve({ code: 200, message: "Skill removed successfully", data: {} });
+                        }
+
+                    }
+
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Removed skills successfully", data: {} });
+                }
+                else {
+                    reject({ code: 400, message: "Failed. Please try again.", data: "Provide valid skill id in an array" });
+                }
             } catch (e) {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
@@ -572,14 +743,14 @@ export const reports = (_body) => {
                     groupByPosition = ` group by ("RecruiterName", "PositionStatus") `,
                     groupByCandidatePosition = ` group by ("RecruiterName") `,
                     groupByCompanyReg = `group by "assesedBy", "adminApproveStatus" order by "assesedBy","status"`,
-                    groupByFreelancer=`group by "candidateStatus", allocated_to order by allocated_to, "candidateStatus" desc`
+                    groupByFreelancer = `group by "candidateStatus", allocated_to order by allocated_to, "candidateStatus" desc`
 
                 if (utils.notNull(_body.fromDate) && utils.notNull(_body.toDate)) {
                     dateRangeCandidate = ` and ca.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangePosition = ` and p.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangeCandidatePosition = ` and cp.created_on between ${_body.fromDate} and ${_body.toDate} `
                     dateRangeCompanyReg = `where "updatedDate" between ${_body.fromDate} and ${_body.toDate}`
-                    dateRangeFreelancer=`and c.created_on between ${_body.fromDate} and ${_body.toDate}`
+                    dateRangeFreelancer = `and c.created_on between ${_body.fromDate} and ${_body.toDate}`
                 }
 
                 let cpResults = await client.query(queryService.fetchCandidatePositionReports(dateRangeCandidatePosition, groupByCandidatePosition));
@@ -595,7 +766,7 @@ export const reports = (_body) => {
                     'CompanyRegistrationReports': crResults.rows,
                     'FreelancerReports': fResults.rows
                 }
-                
+
                 await client.query('COMMIT');
                 resolve({ code: 200, message: "Reports fetched successfully", data });
 

@@ -396,7 +396,7 @@ export const modifyResumeData = (_body) => {
                     if (_body.userRoleId == 3) {
                         extractedData["companyId"] = Number(_body.companyId)
                     }
-                 
+
 
                     let candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
                     if ([null, undefined, ''].includes(candidateResult) || [null, undefined, ''].includes(candidateResult.rows[0])) {
@@ -498,7 +498,17 @@ export const modifyProfileDetails = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
+                if (_body.userRoleId==4)
+                {
+                    await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
+
+                }
+                else
+                {
+                    await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
+
+                }
+
                 resolve({ code: 200, message: "Candidate ProfileDetails updated successfully", data: {} });
             } catch (e) {
                 console.log(e)
@@ -999,7 +1009,7 @@ export const getResume = (_body) => {
                     citizenshipName,
                     residence,
                     phoneNumber: allProfileDetails.rows[0].phoneNumber,
-                    timezone:allProfileDetails.rows[0].timezone,
+                    timezone: allProfileDetails.rows[0].timezone,
                     email: allProfileDetails.rows[0].email,
                     candidateVetted: allProfileDetails.rows[0].candidateVetted,
                     blacklisted: allProfileDetails.rows[0].blacklisted,
@@ -1021,11 +1031,11 @@ export const getResume = (_body) => {
                 }
 
                 // let tempD = {"dstOffset":0,"rawOffset":19800,"status":"OK","timeZoneId":"Asia/Kolkata","timeZoneName":"India Standard Time"}
-                _body.resData= {
+                _body.resData = {
                     candidateId: Number(_body.candidateId),
-                    companyType:allProfileDetails.rows[0].companyType,
+                    companyType: allProfileDetails.rows[0].companyType,
                     profile: profileDetails,
-                    requestForScreening:allProfileDetails.rows[0].requestForScreening,
+                    requestForScreening: allProfileDetails.rows[0].requestForScreening,
                     detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
                     htmlResume: allProfileDetails.rows[0].htmlResume,
                     bagOfWords: allProfileDetails.rows[0].bagOfWords,
@@ -1044,25 +1054,22 @@ export const getResume = (_body) => {
                     languages: languages.rows,
                     workedCompanyList,
                     designationList: designations.rows[0].designations,
-                    gmtOffset : utils.extractGmt(profileDetails.timezone)
+                    gmtOffset: utils.extractGmt(profileDetails.timezone)
                 }
                 var checkFreechelancerPasswordSent = await client.query(queryService.checkLoginSent(candidateId));
-                if (checkFreechelancerPasswordSent.rowCount==1)
-                {
-                    if(profileDetails.firstName==null && profileDetails.lastName==null && profileDetails.email==null)
-                    {
-                        _body.resData['isLoginSent']=true
+                if (checkFreechelancerPasswordSent.rowCount == 1) {
+                    if (profileDetails.firstName == null && profileDetails.lastName == null && profileDetails.email == null) {
+                        _body.resData['isLoginSent'] = true
                     }
-                    else
-                    {
-                        _body.resData['isLoginSent']=allProfileDetails.rows[0].isLoginSent
+                    else {
+                        _body.resData['isLoginSent'] = allProfileDetails.rows[0].isLoginSent
                     }
                 }
                 await client.query('COMMIT')
                 resolve({
                     code: 200, message: "Resume listed successfully",
-                    data:_body.resData
-                   
+                    data: _body.resData
+
                 });
 
             } catch (e) {
@@ -1300,7 +1307,7 @@ export const initialSharedResumeData = (_body) => {
                         typeOfAvailability: allProfileDetails.rows[0].typeOfAvailability,
                         readyToStart: allProfileDetails.rows[0].readyToStart
                     }
-                    _body.resData=   {
+                    _body.resData = {
                         candidateId: Number(_body.candidateId),
                         profile: profileDetails,
                         resume: allProfileDetails.rows[0].resume,
@@ -1308,12 +1315,12 @@ export const initialSharedResumeData = (_body) => {
                         availability,
                         skills: skills.rows
                     }
-                    if(sharedEmailSet.rowCount>0)  _body.resData['sharedResume']=sharedEmailSet.rows[0].shared_emails
+                    if (sharedEmailSet.rowCount > 0) _body.resData['sharedResume'] = sharedEmailSet.rows[0].shared_emails
                     await client.query('COMMIT')
                     resolve({
                         code: 200, message: "Initial Resume data listed successfully",
-                        data:_body.resData
-                     
+                        data: _body.resData
+
                     });
                 }
                 else {
@@ -1599,18 +1606,18 @@ export const changeAvailability = (_body) => {
             const client = await database().connect()
             try {
                 await client.query(queryService.changeAvailabilityOfCandidate(_body));
-                let candidateDetails=await client.query(queryService.getCandidateMailDetails(_body))
-                let skillSets=await client.query(queryService.getCandidateSkillSet(_body))
-                _body.coreSkills=skillSets.rows[0].skills
-                console.log("SKILLS",_body.coreSkills)
-                _body.firstName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)
-                _body.lastName=utils.capitalize(candidateDetails.rows[0].candidate_last_name)
-                _body.phoneNumber=candidateDetails.rows[0].phone_number
-                _body.candidateName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)+' '+utils.capitalize(candidateDetails.rows[0].candidate_last_name)
-                _body.candidateEmail=candidateDetails.rows[0].email_address
-                _body.candidatePositionName=candidateDetails.rows[0].candidate_position_name
+                let candidateDetails = await client.query(queryService.getCandidateMailDetails(_body))
+                let skillSets = await client.query(queryService.getCandidateSkillSet(_body))
+                _body.coreSkills = skillSets.rows[0].skills
+                console.log("SKILLS", _body.coreSkills)
+                _body.firstName = utils.capitalize(candidateDetails.rows[0].candidate_first_name)
+                _body.lastName = utils.capitalize(candidateDetails.rows[0].candidate_last_name)
+                _body.phoneNumber = candidateDetails.rows[0].phone_number
+                _body.candidateName = utils.capitalize(candidateDetails.rows[0].candidate_first_name) + ' ' + utils.capitalize(candidateDetails.rows[0].candidate_last_name)
+                _body.candidateEmail = candidateDetails.rows[0].email_address
+                _body.candidatePositionName = candidateDetails.rows[0].candidate_position_name
                 await emailService.updateAvailabilityNotificationMails(_body, client);
-                var toastMessage=_body.availability==true?"Availability turned ON successfully":"Availability turned OFF successfully"
+                var toastMessage = _body.availability == true ? "Availability turned ON successfully" : "Availability turned OFF successfully"
                 await client.query('COMMIT')
                 resolve({ code: 200, message: toastMessage, data: {} });
             } catch (e) {
@@ -2203,7 +2210,7 @@ export const getEmailTemplate = (req, res) => {
     if (isHtml) {
         console.log('header : ', req.body.Authorisation)
 
-        if (builder.checkKey(req.body.Authorisation)) {       
+        if (builder.checkKey(req.body.Authorisation)) {
             fs.readFile(`./src/emailTemplates/${file}`, function (err, data2) {
                 if (err) {
                     res.writeHead(404, { 'Content-Type': 'text/html' });
@@ -2278,7 +2285,7 @@ export const setEmailTemplate = (req, res) => {
             return res.end();
         });
     }
-} 
+}
 
 
 
@@ -2322,16 +2329,16 @@ export const requestForScreeningManager = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                    let candidateDetails=await client.query(queryService.getCandidateMailDetails(_body))
-                    await client.query(queryService.updateRequestForScreening(_body))
-                    _body.firstName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)
-                    _body.lastName=utils.capitalize(candidateDetails.rows[0].candidate_last_name)
-                    _body.candidateName=utils.capitalize(candidateDetails.rows[0].candidate_first_name)+' '+utils.capitalize(candidateDetails.rows[0].candidate_last_name)
-                    _body.candidateEmail=candidateDetails.rows[0].email_address
-                    _body.candidatePositionName=candidateDetails.rows[0].candidate_position_name
-                    await emailService.requestForScreeningMail(_body, client);
-                    await client.query('COMMIT')
-                    resolve({ code: 200, message: "Requested for ellow screening ", data: {} });
+                let candidateDetails = await client.query(queryService.getCandidateMailDetails(_body))
+                await client.query(queryService.updateRequestForScreening(_body))
+                _body.firstName = utils.capitalize(candidateDetails.rows[0].candidate_first_name)
+                _body.lastName = utils.capitalize(candidateDetails.rows[0].candidate_last_name)
+                _body.candidateName = utils.capitalize(candidateDetails.rows[0].candidate_first_name) + ' ' + utils.capitalize(candidateDetails.rows[0].candidate_last_name)
+                _body.candidateEmail = candidateDetails.rows[0].email_address
+                _body.candidatePositionName = candidateDetails.rows[0].candidate_position_name
+                await emailService.requestForScreeningMail(_body, client);
+                await client.query('COMMIT')
+                resolve({ code: 200, message: "Requested for ellow screening ", data: {} });
             } catch (e) {
                 console.log("error : ", e)
                 await client.query('ROLLBACK')
@@ -2353,35 +2360,33 @@ export const sentFreelancerLoginCredentials = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                var companyCheckResults= await client.query(queryService.companyCheck(_body));
-                var data =companyCheckResults.rows[0]
-                _body.firstName=data.candidate_first_name
-                _body.lastName=data.candidate_last_name
-                _body.sellerCompanyId=data.company_id
-                _body.email=data.email_address
-                _body.phoneNumber=data.phone_number
-                if (_body.userRoleId==1 && companyCheckResults.rows[0].company_type==2)
-                {
-                    var results= await client.query(queryService.verifyCandidateInCandidateEmployee(_body));
-                    if (results.rowCount==0)
-                    {
+                var companyCheckResults = await client.query(queryService.companyCheck(_body));
+                var data = companyCheckResults.rows[0]
+                _body.firstName = data.candidate_first_name
+                _body.lastName = data.candidate_last_name
+                _body.sellerCompanyId = data.company_id
+                _body.email = data.email_address
+                _body.phoneNumber = data.phone_number
+                if (_body.userRoleId == 1 && companyCheckResults.rows[0].company_type == 2) {
+                    var results = await client.query(queryService.verifyCandidateInCandidateEmployee(_body));
+                    if (results.rowCount == 0) {
                         const password = passwordGenerator.generate({
                             length: 10,
                             numbers: true
                         });
                         _body.hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                        var employeeResult= await client.query(queryService.addEmployee(_body))
-                        _body.candidateEmployeeId=employeeResult.rows[0].employee_id
+                        var employeeResult = await client.query(queryService.addEmployee(_body))
+                        _body.candidateEmployeeId = employeeResult.rows[0].employee_id
                         await client.query(queryService.addCandidateEmployee(_body))
-                        var userSubject="ellow.io  Login Credentials"
+                        var userSubject = "ellow.io  Login Credentials"
                         let userPath = 'src/emailTemplates/freelancerAdminLoginText.html';
-                        var userCredentialReplacements =  {
-                            name:_body.firstName,
-                            user:_body.email,
-                            password:password    
+                        var userCredentialReplacements = {
+                            name: _body.firstName,
+                            user: _body.email,
+                            password: password
                         };
-                        
-                        emailClient.emailManagerForNoReply(_body.email,userSubject,userPath,userCredentialReplacements);
+
+                        emailClient.emailManagerForNoReply(_body.email, userSubject, userPath, userCredentialReplacements);
                     }
                 }
                 resolve({ code: 200, message: "Password sent successfully", data: {} });
@@ -2406,11 +2411,10 @@ export const fileDownload = (_body) => {
         (async () => {
             const client = await database()
             try {
-                console.log("HAIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
                 let pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
                 // Or format the path using the `id` rest param
                 var fileName = "report.pdf"; // The default name the browser will use
-                resolve({ code: 200, message: "DOWLOADED", data: {file:pdf} });
+                resolve({ code: 200, message: "DOWLOADED", data: { file: pdf } });
 
             } catch (e) {
                 console.log("error : ", e.message)
@@ -2426,25 +2430,31 @@ export const fileDownload = (_body) => {
 
 
 // download pdf
-export const downloadPdf = (_body) => {
-    return new Promise((resolve, reject) => {
-        (async () => {
-            const client = await database()
-            try {
-                var candidateId = _body.candidateId
-                _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
-                let pdf = await builder.pdfBuilder(candidateId, _body.host);
-                await client.query('COMMIT')
+export const downloadPdf = async (req, res) => {
+    // return new Promise((resolve, reject) => {
+    //     (async () => {
+    //         const client = await database()
+    //         try {
+    //             var candidateId = _body.candidateId
+    //             let pdf = await builder.pdfBuilder(candidateId, _body.host);
+    //             await client.query('COMMIT')
 
-                resolve({ code: 200, message: "Resume in PDF format has been shared successfully", data: {pdf:pdf} });
+    //             resolve({ code: 200, message: "Resume in PDF format has been shared successfully", data: {pdf:pdf} });
 
-            } catch (e) {
-                console.log(e)
-                await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            }
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
-        })
-    })
+    //         } catch (e) {
+    //             console.log(e)
+    //             await client.query('ROLLBACK')
+    //             reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+    //         }
+    //     })().catch(e => {
+    //         reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+    //     })
+    // })
+    var candidateId = req.body.candidateId
+    let pdf = await builder.pdfBuilder(candidateId, req.body.host);
+
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader('Content-Disposition', 'attachment; filename=resume.Pdf')
+    res.setHeader('Content-Length', pdf.length)
+    return res.end(pdf)
 }

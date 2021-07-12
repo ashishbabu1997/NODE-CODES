@@ -8,6 +8,7 @@ export default {
     getCompanyId: "select company_id from employee where employee_id=$1",
     updateActiveState: "update employee set status = (NOT status),updated_on=$2,updated_by=$3 where employee_id=$1",
     checkEmail:'select employee_id,email,admin_approve_status from employee where email=$1',
+    checkCompanyStatus:'select e.admin_approve_status from employee e  where e.primary_email=true and e.company_id=$1',
     updatePrimaryContact: "update employee set primary_email = case when employee_id = $2 then true else false end, updated_on = case when employee_id = $2 then $3 else updated_on end, updated_by = case when employee_id = $2 then $4 else updated_by end where company_id = $1",
 
 }

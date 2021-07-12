@@ -29,13 +29,14 @@ export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
             const client = await database().connect()
+            let message=''
             try {
                 await client.query('BEGIN');
-                        const getEmailResult = await client.query(queryService.checkEmailExistance);
-
+                    const getEmailResult = await client.query(queryService.checkEmailExistance(_body.email));
+                    
                     if (getEmailResult.rowCount >= 1) {
                                 var adminStatus = getEmailResult.rows[0].admin_approve_status
-                                let message = adminStatus === null ? "EmailId is held for approval of Ellow recruiter"
+                                message = adminStatus === null ? "EmailId is held for approval of Ellow recruiter"
                                 : adminStatus == 1 ? "Email already registered"
                                     : "This account is rejected by Ellow";
 

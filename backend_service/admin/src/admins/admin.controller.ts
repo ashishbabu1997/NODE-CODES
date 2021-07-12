@@ -34,6 +34,35 @@ export const addSkills = (req, res) => {
     adminManager.addSkills(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
         .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
+export const editJobCategory = (req, res) => {
+    const body = req.body;
+    adminManager.editJobCategory(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
+
+export const deleteJobCategory = (req, res) => {
+    const body = req.body;
+    adminManager.deleteJobCategory(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
+
+export const removeSkillsFromJobCategory = (req, res) => {
+    const body = req.body;
+    adminManager.removeSkillsFromJobCategory(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
+
+export const editSkill = (req, res) => {
+    const body = req.body;
+    adminManager.editSkill(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
+
+export const removeSkills = (req, res) => {
+    const body = req.body;
+    adminManager.removeSkills(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
 
 export const extractSkillsFromExcel = (req, res) => {
     const body = req.files;
