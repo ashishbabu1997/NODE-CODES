@@ -21,7 +21,7 @@ export const modifyCandidateProfileDetailsQuery = (_body) => {
 export const modifyFreelancerProfileDetailsQuery = (_body) => {
     return {
         name: 'modify-freelancer-ProfileDetails',
-        text: candidateQuery.modifyProfileDetails,
+        text: candidateQuery.modifyFreelancerProfileDetails,
         values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.jobCategoryId,_body.timezone],
     }
 }
