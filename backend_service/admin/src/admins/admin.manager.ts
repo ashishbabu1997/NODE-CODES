@@ -173,7 +173,6 @@ export const clearance = (_body) => {
                 var companyResults = await client.query(getCompanyName)
                 var companyName = companyResults.rows[0].company_name
                 var companyId = companyResults.rows[0].company_id
-                console.log(_body.userRoleId)
                 const saveRecruiter = {
                     name: 'save-recruiter-id',
                     text: adminQuery.saveRecruiterQuery,
@@ -190,6 +189,11 @@ export const clearance = (_body) => {
                     text: adminQuery.approveEmployeeQuery,
                     values: [_body.selectedEmployeeId, hashedPassword, currentTime]
                 }
+                const adminReApprovalQuery = {
+                    name: 'user-reapproval',
+                    text: adminQuery.reApproveEmployeeQuery,
+                    values: [_body.selectedEmployeeId, hashedPassword, currentTime]
+                }
                 // Approving a user
                 if (_body.decisionValue == 1) {
                     if (_body.repeatValue == true) {
@@ -198,7 +202,7 @@ export const clearance = (_body) => {
                             numbers: true
                         });
                         var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                        var approveResult = await client.query(adminApprovalQuery);
+                        var approveResult = await client.query(adminReApprovalQuery);
                         var email = approveResult.rows[0].email;
                         const subject = " ellow.io LOGIN PASSWORD "
 
@@ -207,24 +211,16 @@ export const clearance = (_body) => {
                         let replacements = {
                             loginPassword: password
                         };
-                        if (email != null || '' || undefined) {
-                            emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
-                        }
-                        else {
-                            console.log("Email Recipient is empty")
-                        }
+                        emailClient.emailManagerCustomerSupport(email, subject, path, replacements);
+                       
                         await client.query('COMMIT');
                         if (Array.isArray(ellowAdmins.rows)) {
                             let recruitersSubject = 'Company Re-Approval Notification'
                             let recruitersPath = 'src/emailTemplates/userReApprovalMailText.html';
                             let recruitersReplacements = { fName: approveResult.rows[0].firstname, lName: approveResult.rows[0].lastname, email: approveResult.rows[0].email, cName: companyResults.rows[0].company_name };
                             ellowAdmins.rows.forEach(element => {
-                                if (element.email != null || '' || undefined) {
                                     emailClient.emailManager(element.email, recruitersSubject, recruitersPath, recruitersReplacements);
-                                }
-                                else {
-                                    console.log("Email Recipient is empty")
-                                }
+                                
                             })
                             resolve({ code: 200, message: "User Approval Successfull", data: {} });
                         }
@@ -263,8 +259,14 @@ export const clearance = (_body) => {
                 else {
                     if (_body.repeatValue == true) {
                         var rejectResultSet = await client.query(userRejectQuery);
+                        if(rejectResultSet.rows[0].account_type==1)
+                        {
+                            var employeeCompany=rejectResultSet.rows[0].company_id
+                            await client.query(queryService.closeHirerPositions(employeeCompany));
+                        }
+                            
+
                         var userCompanyId = rejectResultSet.rows[0].company_id
-                        console.log("CompanyID", rejectResultSet.rows[0].company_id)
                         const subUserRejectQuery = {
                             name: 'admin-subuser-rejection',
                             text: adminQuery.subUserClearanceQuery,
@@ -295,10 +297,11 @@ export const clearance = (_body) => {
                     else {
                         // Rejecting a user
                         var rejectResultSet = await client.query(userRejectQuery);
+                       
+
                         var employeeMail = rejectResultSet.rows[0].email
                         var desc = _body.description
                         var subject = "ellow.io ACCOUNT REJECTION MAIL "
-
                         // Rejection mail to the user
                         let path = 'src/emailTemplates/adminRejectText.html';
                         var userReplacements = {
@@ -311,13 +314,8 @@ export const clearance = (_body) => {
                             let path = 'src/emailTemplates/userRejectionMailText.html';
                             let replacements = { fName: rejectResultSet.rows[0].firstname, lName: rejectResultSet.rows[0].lastname, email: rejectResultSet.rows[0].email, cName: companyResults.rows[0].company_name };
                             ellowAdmins.rows.forEach(element => {
-                                if (element.email != null || '' || undefined) {
                                     emailClient.emailManager(element.email, subject, path, replacements);
 
-                                }
-                                else {
-                                    console.log("Email Recipient is empty")
-                                }
                             })
                             resolve({ code: 200, message: "User Rejection Successfull", data: {} });
                         }

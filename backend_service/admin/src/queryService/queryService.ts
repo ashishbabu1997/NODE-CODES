@@ -79,6 +79,13 @@ export const deleteJobCategory = (_body) => {
         values: [_body.jobCategoryId]
     }
 }
+export const closeHirerPositions = (companyId) => {
+    return {
+        name: 'close-hirer-positions',
+        text: adminQuery.closeHirerPositions,
+        values: [companyId]
+    }
+}
 
 export const getJobCategoryPositionLinks = (_body) => {
     return {
