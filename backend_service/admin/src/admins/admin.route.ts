@@ -18,9 +18,9 @@ router
     
     .delete('/deleteJobCategory', jwtAuth, adminController.deleteJobCategory)
     .put('/updateJobCategoryName', jwtAuth, adminController.editJobCategory)
-    .put('/removeSkillsFromJobCategory', jwtAuth, adminController.removeSkillsFromJobCategory)
-    .put('/udpateSkillName',checkJwt(), adminController.editSkill)
-    .delete('/deleteSkills',checkJwt(), adminController.removeSkills)
+    .put('/removeSkillsFromJobCategory', jwtAuth,setData(), adminController.removeSkillsFromJobCategory)
+    .put('/udpateSkillName',jwtAuth,setData(), adminController.editSkill)
+    .delete('/deleteSkills',jwtAuth,setData(), adminController.removeSkills)
 
     .get('/allSkills',  jwtAuth,setData(), adminController.allSkills)
     .get('/reports',checkJwt(), adminController.reports)
