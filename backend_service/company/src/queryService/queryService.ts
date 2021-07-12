@@ -63,6 +63,13 @@ export const checkEmailExistance = (email) => {
         values: [email],
     }
 }
+export const checkCompanyStatus = (_body) => {
+    return {
+        name: 'check-company-status',
+        text: employeeQuery.checkCompanyStatus,
+        values: [_body.userCompanyId],
+    }
+}
 
 export const updateEmployee = (_body) => {
     return {

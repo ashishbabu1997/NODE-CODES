@@ -49,7 +49,7 @@ export const modifyGeneralInfo = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
+                await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
                 await client.query(queryService.modifyCandidateAvailabilityQuery(_body));
                 await client.query(queryService.addWorkExperiences(_body));
                 
