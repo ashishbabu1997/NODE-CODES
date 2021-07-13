@@ -37,7 +37,6 @@ export const employeeLoginMethod = (_body) => {
 
                     }
                     else if (value.adminApproveStatus==0) {
-                        console.log("Hai")
                         reject({ code: 400, message: "Unable to process this request. Please contact our team at sales@ellow.io", data: {} })
 
                     }

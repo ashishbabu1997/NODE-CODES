@@ -328,37 +328,50 @@ export const createEmployeeByAdmin = (_body) => {
 export const checkCompanyByWorkMail = (_body) => {
     return new Promise((resolve, reject) => {
         const currentTime = Math.floor(Date.now() / 1000);
+        
+        (async () => {
+            const client = await database().connect()
+            try {
+                        var email = _body.emailId;
+                        var workMailExtension = email.substring(email.lastIndexOf('@') + 1);
+                        if (workMailExtension == 'gmail.com') {
+                            resolve({ code: 200, message: "Please enter your work mail", data: null });
 
-        var email = _body.emailId;
-        var workMailExtension = email.substring(email.lastIndexOf('@') + 1);
-        if (workMailExtension == 'gmail.com') {
-            resolve({ code: 200, message: "Please enter your work mail", data: null });
-
-        }
-        else {
-            const query = {
-                name: 'add-employee',
-                text: employeeQuery.checkEmailForCompany,
-                values: ['%@' + workMailExtension],
-            }
-            database().query(query, (error, results) => {
-                if (error) {
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                    return;
-                }
-                var companyDetails = null;
-                if (Array.isArray(results.rows) && results.rows.length) {
-                    companyDetails = {
-                        companyId: parseInt(results.rows[0].company_id),
-                        companyName: results.rows[0].company_name,
-                        adminApproveStatus: results.rows[0].admin_approve_status,
-                        accountType: results.rows[0].account_type
-                    }
-                }
-                resolve({ code: 200, message: "Company Details", data: companyDetails });
-            })
-        }
-
+                        }
+                        else {
+                            const query = {
+                                name: 'add-employee',
+                                text: employeeQuery.checkEmailForCompany,
+                                values: ['%@' + workMailExtension],
+                            }
+                           var results= await client.query(query);
+                           if (results.rows[0].admin_approve_status==0 || results.rows[0].admin_approve_status==null)
+                           {
+                               var message=results.rows[0].admin_approve_status==0?'This company was once rejected by ellow recruiters':'Company waiting for ellow recruiters approval'
+                                reject({ code: 400, message: "Company ", data: message })
+                           }
+                            var companyDetails = null;
+                            if (Array.isArray(results.rows) && results.rows.length) {
+                                        companyDetails = {
+                                            companyId: parseInt(results.rows[0].company_id),
+                                            companyName: results.rows[0].company_name,
+                                            adminApproveStatus: results.rows[0].admin_approve_status,
+                                            accountType: results.rows[0].account_type
+                                        }
+                                    }
+                                    resolve({ code: 200, message: "Company Details", data: companyDetails });
+                            }
+    } catch (e) {
+        console.log("Error1", e)
+        await client.query('ROLLBACK')
+        reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+    } finally {
+        client.release();
+    }
+})().catch(e => {
+    console.log("Error2", e)
+    reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+})
     })
 }
 
