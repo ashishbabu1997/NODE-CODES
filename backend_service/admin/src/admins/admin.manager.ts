@@ -486,12 +486,13 @@ export const editSkill = (_body) => {
 export const removeSkillsFromJobCategory = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
-            const client = await database().connect()
+            const client = await database()
             try {
                 await client.query('BEGIN');
 
                 if (utils.notNull(_body.jobCategoryId) && utils.notNull(_body.skillId) && Array.isArray(_body.skillId)) {
-
+                    console.log("skillId : ",_body.skillId);
+                    
                     await client.query(queryService.removeSkillsFromJobCategory(_body));
 
                     await client.query('COMMIT');
@@ -503,8 +504,6 @@ export const removeSkillsFromJobCategory = (_body) => {
             } catch (e) {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            } finally {
-                client.release();
             }
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })

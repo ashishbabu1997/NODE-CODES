@@ -107,7 +107,7 @@ export const editJobCategory = (_body) => {
     return {
         name: 'edit-job-category-name',
         text: adminQuery.editJobCategory,
-        values: [_body.jobCategoryId,_body.jobCategoryName,currentTime()]
+        values: [_body.jobCategoryId, _body.jobCategoryName, currentTime()]
     }
 }
 
@@ -115,7 +115,7 @@ export const removeSkillsFromJobCategory = (_body) => {
     return {
         name: 'remove-skills-from-job-category',
         text: adminQuery.removeSkillsFromJobCategory,
-        values: [_body.jobCategoryId,_body.skillId]
+        values: { id: _body.jobCategoryId, skill: _body.skillId }
     }
 }
 
@@ -123,7 +123,7 @@ export const editSkill = (_body) => {
     return {
         name: 'edit-skill-name',
         text: adminQuery.editSkill,
-        values: [_body.skillId,_body.skillname,currentTime()]
+        values: [_body.skillId, _body.skillName, currentTime()]
     }
 }
 
