@@ -75,8 +75,8 @@ export const createCompanyPositions = async (_body) => {
                 await client.query('COMMIT')
                 const positionId = companyPositionResponse.rows[0].position_id
                 _body.positionId = positionId
-                _body.tSkill = (![undefined, null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"])) ? _body.skills["topRatedSkill"].map(a => a.skillId) : [];
-                _body.oSkill = (![undefined, null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"])) ? _body.skills["otherSkill"].map(a => a.skillId) : [];
+                _body.tSkill = (![undefined, null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkills"])) ? _body.skills["topRatedSkills"].map(a => a.skillId) : [];
+                _body.oSkill = (![undefined, null].includes(_body.skills) && Array.isArray(_body.skills["otherSkills"])) ? _body.skills["otherSkills"].map(a => a.skillId) : [];
 
                 if (_body.tSkill.length > 0) {
                     await client.query(queryService.addTopSkillsQuery(_body))
@@ -259,8 +259,8 @@ export const updateCompanyPositions = async (_body) => {
                 await client.query(queryService.updateCompanyPositionsFirstQuery(_body))
                 await client.query(queryService.updateCompanyPositionsSecondQuery(_body))
                 await client.query('COMMIT')
-                _body.tSkill = (![undefined, null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkill"])) ? _body.skills["topRatedSkill"].map(a => a.skillId) : [];
-                _body.oSkill = (![undefined, null].includes(_body.skills) && Array.isArray(_body.skills["otherSkill"])) ? _body.skills["otherSkill"].map(a => a.skillId) : [];
+                _body.tSkill = (![undefined, null].includes(_body.skills) && Array.isArray(_body.skills["topRatedSkills"])) ? _body.skills["topRatedSkills"].map(a => a.skillId) : [];
+                _body.oSkill = (![undefined, null].includes(_body.skills) && Array.isArray(_body.skills["otherSkills"])) ? _body.skills["otherSkills"].map(a => a.skillId) : [];
                 _body.skillSet = _body.tSkill.concat(_body.oSkill);
                 await client.query(queryService.deleteJobSkillsQuery(_body))
                 await client.query('COMMIT')
