@@ -221,11 +221,11 @@ export const fetchPositionDetails = (_body) => {
                         positionStatus: step.job_status,
                         phoneNumber: step.phoneNumber,
                         companyLinkedinId: step.company_linkedin_id,
-                        skills: step.skills
+                        skills: step.skills,
+                        tyeOfJob:step.type_of_job
                     }
 
                 })
-                console.log(result)
                 resolve({ code: 200, message: "Fetched position details successfully", data: result });
             } catch (e) {
                 await client.query('ROLLBACK')
