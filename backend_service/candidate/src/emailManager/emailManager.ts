@@ -34,6 +34,8 @@ export const emailManagerWithAttachments = (mailId,subject,path,replacements,att
         });
     })
 }
+
+
 export const emailManagerWithAttachmentsAndCc = (mailId,cc,bcc,subject,path,replacements,attach,userMail) =>
 {
     readHTMLFile(path, function(err, html) {

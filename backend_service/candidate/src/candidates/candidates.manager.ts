@@ -295,7 +295,7 @@ export const linkCandidateWithPosition = (_body) => {
                 emailService.linkCandidateWithPositionEMail(_body, client);
                 await client.query('COMMIT')
 
-                resolve({ code: 200, message: "Candidate added to position successfully", data: {} });
+                resolve({ code: 200, message: "Profile is shared to the given email addresses successfully", data: {} });
             } catch (e) {
                 console.log("error : ", e)
                 await client.query('ROLLBACK')
@@ -1343,6 +1343,8 @@ export const createPdfFromHtml = (_body) => {
                 var candidateId = _body.candidateId
                 _body.sharedEmails = _body.sharedEmails.filter(elements => elements != null);
                 let pdf = await builder.pdfBuilder(candidateId, _body.host);
+               let s= await client.query(queryService.saveSharedEmailsForpdf(_body))
+               console.log(s.rows)
                 emailService.createPdfFromHtmlEmail(_body, pdf);
                 await client.query('COMMIT')
 
@@ -1755,7 +1757,7 @@ export const singleSignOn = (_body) => {
             try {
                 console.log("body code : ", _body.code);
 
-                const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=867umqszmeupfh&client_secret=n7oVJe6kbinpdPqu&code=' + _body.code, {
+                const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=867umqszmeupfh&client_secret=n7oVJe6kbinpdPqu&code=' + _body.code, {
                     method: 'POST',
                     headers: {
                         'Accept': 'application/json',

@@ -153,11 +153,13 @@ export const resourceSearch = (body, queryValues) => {
     return { searchQuery, queryValues };
 }
 
+
+
 export const resourceTab = (body) => {
     var vettedQuery = '';
 
     switch (body.tabValue) {
-
+        
         case 'allResources':
             vettedQuery = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false '
             break;
@@ -189,34 +191,36 @@ export const resourceTab = (body) => {
 export const resourceHirerTab = (body) => {
     let vettedQuery = '';
     switch (body.tabValue) {
-        case 'allResources':
-            vettedQuery = ' and chsv."candidateStatus"=3 '
-            break;
-        case 'myDraft':
-            vettedQuery = ' and chsv."candidateStatus"=4 '
-            break;
-        default:
-            break;
+    
+            case 'allResources':
+                vettedQuery = ' and chsv."candidateStatus"=3 '
+                break;
+            case 'myDraft':
+                vettedQuery = ' and chsv."candidateStatus"=4 '
+                break;
+            default:
+                break;
     }
     return vettedQuery;
 }
-export const resourceProviderTab = (body) => {
-    let vettedQuery = '';
-    switch (body.tabValue) {
-        case 'allResources':
-            vettedQuery = '  and (chsv."candidateStatus"=3 or chsv."candidateStatus"= 9)  and chsv."blacklisted"=false '
-            break;
-        case 'nonVetted':
-            vettedQuery = '  and chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
-            break;
-        case 'vetted':
-            vettedQuery = '  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
-            break;
-        case 'myDraft':
-            vettedQuery = ' and  chsv."candidateStatus"= 4  and chsv."blacklisted"=false '
-            break;
-        default:
-            break;
+    export const resourceProviderTab = (body) =>{
+        let vettedQuery = '';
+        switch (body.tabValue) {
+            case 'allResources':
+                vettedQuery = '  and (chsv."candidateStatus"=3 or chsv."candidateStatus"= 9)  and chsv."blacklisted"=false '
+                break;
+            case 'nonVetted':
+                vettedQuery = '  and chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)'
+                break;
+            case 'vetted':
+                vettedQuery = '  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false'
+                break;
+            case 'myDraft':
+                vettedQuery = ' and  chsv."candidateStatus"= 4  and chsv."blacklisted"=false '
+                break;
+            default:
+                break;
+     
     }
     return vettedQuery;
 }
@@ -267,7 +271,7 @@ export const stringEquals = (a, b) => {
 }
 
 export const notNull = (val) => {
-    return [undefined, null, ''].includes(val) ? false : true;
+    return [undefined, null, ''," "].includes(val) ? false : true;
 }
 
 export const capitalize = (s) => {

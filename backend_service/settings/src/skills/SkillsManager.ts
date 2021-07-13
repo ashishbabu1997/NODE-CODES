@@ -160,3 +160,22 @@ export const deleteCompanySkills = (_body) => {
         })
     })
 }
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get skill names as key
+export const getSKillNamesAsKeyManager = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        const query = {
+            name: 'get-skillname-as-key',
+            text: skillsQuery.getSkillNames,
+            values: [],
+        }
+        database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                return;
+            }
+            resolve({ code: 200, message: "Skills listed successfully", data: results.rows[0].skills });
+        })
+    })
+}

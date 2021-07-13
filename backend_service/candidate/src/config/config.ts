@@ -61,7 +61,7 @@ export default {
             "appPass": "fywbgnpnjdisipmx",
             "signature":`Recruitment Specialist ellow.io\nEmail: ashish.babu@ellow.io\nMob: +91 9048023413`
         },
-        "deena.s+98@ellow.io": {
+        "deena.s@ellow.io": {
             "email": "deena.s@ellow.io",
             "name": "Deena Sasidhar",
             "appPass": "nkybzgbltlsoeiur",

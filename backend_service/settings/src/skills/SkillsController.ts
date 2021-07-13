@@ -1,4 +1,4 @@
-import { getCompanySkills,getCompanySkillsOrdered, createNewSkills, updateComppanySkills, deleteCompanySkills } from './SkillsManager';
+import { getCompanySkills,getCompanySkillsOrdered, createNewSkills, updateComppanySkills, deleteCompanySkills,getSKillNamesAsKeyManager } from './SkillsManager';
 import sendResponse from '../common/response/response';
 
 // Fetch the skills
@@ -42,6 +42,14 @@ export const updateSkills = (req, res) => {
 // Delete the skills
 export const deleteSkills = (req, res) => {
     deleteCompanySkills(req.params).then((response: any) => {
+        sendResponse(res, response.code, 1, 203, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0, 403, error.message, error.data)
+    })
+}
+// Get skill name as key
+export const getSKillNamesAsKeyController = (req, res) => {
+    getSKillNamesAsKeyManager(req.params).then((response: any) => {
         sendResponse(res, response.code, 1, 203, response.message, response.data)
     }).catch(error => {
         sendResponse(res, error.code, 0, 403, error.message, error.data)

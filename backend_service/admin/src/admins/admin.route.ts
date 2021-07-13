@@ -3,6 +3,7 @@ import * as express from 'express';
 import { jwtAuth } from '../middleware/jwtAuthenticate';
 import setData from '../middleware/setData';
 import setProfileAuth from '../middleware/setProfileAuth';
+import {checkJwt} from '../middleware/auth0Jwt'
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ router
     .delete('/deleteSkills',jwtAuth,setData(), adminController.removeSkills)
 
     .get('/allSkills',  jwtAuth,setData(), adminController.allSkills)
-    .get('/reports',jwtAuth,setData(), adminController.reports)
+    .get('/reports',checkJwt(), adminController.reports)
 export default router;
 
 // Admin@ellow123 
