@@ -304,49 +304,48 @@ export const updateCompanyPositions = async (_body) => {
                     await client.query('COMMIT');
 
                     await createNotification({ positionId, jobReceivedId, positionCompanyId, message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
-                    var subject = 'New position notification'
-                    // Sending a notification mail about position creation; to the admin
-                    let path = 'src/emailTemplates/positionCreationText.html';
-                    var userReplacements = {
-                        company: cName,
-                        position: cpName
-                    };
-                    if (_body.typeOfJob==0 || _body.typeOfJob==1)
-                    {
-                        var providers=await client.query(queryService.getAllProviders(_body))
-                        var jobCategory=await client.query(queryService.getJobCategoryName(_body))
-                        var jobRole=jobCategory.rows[0].job_category_name
-                        _body.coreSkills.forEach  ( element =>{
-                             _body.skillNames.push({skillName:element})
-                        })
+                    // var subject = 'New position notification'
+                    // // Sending a notification mail about position creation; to the admin
+                    // let path = 'src/emailTemplates/positionCreationText.html';
+                    // var userReplacements = {
+                    //     company: cName,
+                    //     position: cpName
+                    // };
+                    // if (_body.typeOfJob==0 || _body.typeOfJob==1)
+                    // {
+                    //     var providers=await client.query(queryService.getAllProviders(_body))
+                    //     var jobCategory=await client.query(queryService.getJobCategoryName(_body))
+                    //     var jobRole=jobCategory.rows[0].job_category_name
+                    //     _body.coreSkills.forEach  ( element =>{
+                    //          _body.skillNames.push({skillName:element})
+                    //     })
 
 
-                        var providerReplacements={jobRole:jobRole,experienceLevel:_body.experienceInString,profiles:_body.developerCount,skills:_body.skillNames}
-                        console.log(providerReplacements)
-                        var providersPath='src/emailTemplates/newPositionAlertProviders.html';
-                        _body.providerMails=[]
-                        if (Array.isArray(providers.rows)) {
-                            providers.rows.forEach(element => {
-                                _body.providerMails.push(element.email)
+                        // var providerReplacements={jobRole:jobRole,experienceLevel:_body.experienceInString,profiles:_body.developerCount,skills:_body.skillNames}
+                        // var providersPath='src/emailTemplates/newPositionAlertProviders.html';
+                        // _body.providerMails=[]
+                        // if (Array.isArray(providers.rows)) {
+                        //     providers.rows.forEach(element => {
+                        //         _body.providerMails.push(element.email)
     
-                            })
-                        }
-                        emailClient.multipleEmailManager(_body.providerMails, config.PositionText.providersSubject, providersPath, providerReplacements);
+                        //     })
+                        // }
+                        // emailClient.multipleEmailManager(_body.providerMails, config.PositionText.providersSubject, providersPath, providerReplacements);
     
                           
-                    }
-                    var ellowAdmins = await client.query(queryService.getEllowAdmins(_body))
-                    if (Array.isArray(ellowAdmins.rows)) {
-                        ellowAdmins.rows.forEach(element => {
-                            if (element.email != null || '' || undefined) {
-                                emailClient.emailManagerForNoReply(element.email, subject, path, userReplacements);
-                            }
-                            else {
-                                console.log("Email Recipient is empty")
-                            }
+                    // }
+                    // var ellowAdmins = await client.query(queryService.getEllowAdmins(_body))
+                    // if (Array.isArray(ellowAdmins.rows)) {
+                    //     ellowAdmins.rows.forEach(element => {
+                    //         if (element.email != null || '' || undefined) {
+                    //             emailClient.emailManagerForNoReply(element.email, subject, path, userReplacements);
+                    //         }
+                    //         else {
+                    //             console.log("Email Recipient is empty")
+                    //         }
 
-                        })
-                    }
+                    //     })
+                    // }
                     if (positionStatus.rows[0].job_status == 5) {
                         await client.query(queryService.deleteReadStatusQuery(_body))
 
