@@ -66,7 +66,7 @@ export const createCompanyPositions = async (_body) => {
             try {
                 await client.query('BEGIN');
                 let hiringStepQueries = [];
-                _body.cmpId = _body.userRoleId == 1 ? _body.positionCreatedCompanyId : _body.companyId;
+                _body.cmpId = _body.userRoleId == 1 ? _body.hirerCompanyId : _body.companyId;
                 let companyId = _body.cmpId
                 _body.experienceInString=`${_body.experienceLevel[0]} - ${_body.experienceLevel[1]} years`
                 const getCompanyNameResponse = await client.query(queryService.getCompanyNameQuery(_body))
@@ -209,7 +209,7 @@ export const fetchPositionDetails = (_body) => {
                         jobCategoryId: step.job_category_id,
                         jobStatus: step.job_status,
                         jobCategoryName: step.job_category_name,
-                        positionCreatedCompanyId : step.company_id,
+                        hirerCompanyId : step.company_id,
                         companyName: step.company_name,
                         companySize: step.company_size,
                         companyLogo: step.company_logo,
@@ -244,7 +244,7 @@ export const fetchPositionDetails = (_body) => {
 export const updateCompanyPositions = async (_body) => {
     return new Promise((resolve, reject) => {
         const positionId = _body.positionId;
-        const companyId = _body.userRoleId == 1 ? _body.positionCreatedCompanyId : _body.companyId;
+        const companyId = _body.userRoleId == 1 ? _body.hirerCompanyId : _body.companyId;
         const timer = setTimeout(() => '', 1000);
         _body.skillNames=[];
         (async () => {
