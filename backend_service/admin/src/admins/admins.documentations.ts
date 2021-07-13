@@ -381,7 +381,7 @@
 *           properties:
 *             skillId:
 *               type: integer
-*             skillname:
+*             skillName:
 *               type: string
 *     responses:
 *       200:

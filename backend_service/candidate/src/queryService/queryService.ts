@@ -14,7 +14,7 @@ export const modifyCandidateProfileDetailsQuery = (_body) => {
     return {
         name: 'modify-candidate-ProfileDetails',
         text: candidateQuery.modifyProfileDetails,
-        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.sellerCompanyId,_body.jobCategoryId,_body.timezone],
+        values: [_body.candidateId, _body.firstName, _body.lastName, _body.description, _body.image, _body.citizenship, _body.residence, _body.phoneNumber, _body.email, currentTime(), _body.employeeId, _body.candidatePositionName, _body.sellerCompanyId, _body.jobCategoryId, _body.timezone],
     }
 }
 
@@ -22,37 +22,36 @@ export const modifyFreelancerProfileDetailsQuery = (_body) => {
     return {
         name: 'modify-freelancer-ProfileDetails',
         text: candidateQuery.modifyFreelancerProfileDetails,
-        values:[_body.candidateId,_body.firstName,_body.lastName,_body.description,_body.image,_body.citizenship,_body.residence,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.jobCategoryId,_body.timezone],
+        values: [_body.candidateId, _body.firstName, _body.lastName, _body.description, _body.image, _body.citizenship, _body.residence, _body.phoneNumber, _body.email, currentTime(), _body.employeeId, _body.candidatePositionName, _body.jobCategoryId, _body.timezone],
     }
 }
-
 
 export const verifyCandidateInCandidateEmployee = (_body) => {
     return {
         name: 'verify-candidate-in-candidateEmployee',
         text: candidateQuery.verifyCandidateInCandidateEmployeeTable,
-        values:[_body.candidateId],
+        values: [_body.candidateId],
     }
 }
 export const companyCheck = (_body) => {
     return {
         name: 'verify-freelancer-company',
         text: candidateQuery.verifyFreelancerCompany,
-        values:[_body.candidateId],
+        values: [_body.candidateId],
     }
 }
 export const addCandidateEmployee = (_body) => {
     return {
         name: 'add-candidate-employee',
         text: candidateQuery.addCandidateEmployeeDetails,
-        values:[_body.candidateEmployeeId,_body.candidateId,true,currentTime(), currentTime()],
+        values: [_body.candidateEmployeeId, _body.candidateId, true, currentTime(), currentTime()],
     }
 }
 export const addEmployee = (_body) => {
     return {
         name: 'add-employee',
         text: candidateQuery.addEmployee,
-        values: [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.email, _body.phoneNumber, currentTime(),_body.hashedPassword]
+        values: [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.email, _body.phoneNumber, currentTime(), _body.hashedPassword]
 
     }
 }
@@ -60,7 +59,7 @@ export const updateProviderCandidateDetails = (_body) => {
     return {
         name: 'update-provider-candidateDetails',
         text: candidateQuery.updateProviderCandidateProfileDetails,
-        values:[_body.candidateId,_body.firstName,_body.lastName,_body.phoneNumber,_body.email,currentTime(),_body.employeeId,_body.candidatePositionName,_body.companyId,_body.jobCategoryId,_body.candidateStatus,_body.locationName],
+        values: [_body.candidateId, _body.firstName, _body.lastName, _body.phoneNumber, _body.email, currentTime(), _body.employeeId, _body.candidatePositionName, _body.companyId, _body.jobCategoryId, _body.candidateStatus, _body.locationName],
     }
 }
 export const getFreelancerCompany = (_body) => {
@@ -99,7 +98,7 @@ export const addProviderCandidateWorkExperience = (_body) => {
     return {
         name: 'add-provider-candidate-work-experiences',
         text: candidateQuery.updateProviderCandidateWorkExperience,
-        values: [_body.candidateId, _body.workExperience,_body.cost, _body.billingTypeId, _body.currencyTypeId, currentTime(), _body.employeeId],
+        values: [_body.candidateId, _body.workExperience, _body.cost, _body.billingTypeId, _body.currencyTypeId, currentTime(), _body.employeeId],
     }
 }
 export const insertLanguageProficiencyQuery = (_body) => {
@@ -607,7 +606,7 @@ export const updateCandidateStatus = (_body) => {
     return {
         name: 'update-admin-approve-status',
         text: candidateQuery.updateAdminApproveStatusQuery,
-        values: [_body.candidateId,3,_body.employeeId,currentTime()]
+        values: [_body.candidateId, 3, _body.employeeId, currentTime()]
     }
 }
 
@@ -751,7 +750,7 @@ export const getCandidateBillingDetails = (_body) => {
     return {
         name: 'get-candidate-billing-details',
         text: candidateQuery.getCandidateBillingDetails,
-        values: [_body.candidateId,_body.positionId]
+        values: [_body.candidateId, _body.positionId]
     }
 }
 
@@ -759,7 +758,7 @@ export const getLinkToPositionEmailDetails = (_body) => {
     return {
         name: 'get-link-to-position-email-details',
         text: freelancerQuery.getLinkToPositionEmailDetails,
-        values: [_body.candidateId,_body.positionId]
+        values: [_body.candidateId, _body.positionId]
     }
 }
 
@@ -1066,7 +1065,7 @@ export const updatePositionUpdatedOnAndBy = (_body) => {
     return {
         name: 'Update-position-date-and-by',
         text: candidateQuery.updatePositionDateAndBy,
-        values: [_body.positionId,_body.employeeId,currentTime()],
+        values: [_body.positionId, _body.employeeId, currentTime()],
     }
 }
 
@@ -1074,7 +1073,7 @@ export const updateProviderCandidateEllowRate = (_body) => {
     return {
         name: 'link-provider-candidate-with-position',
         text: candidateQuery.updateEllowRate,
-        values: [_body.positionId, _body.candidateId,_body.ellowRate, _body.currencyTypeId,_body.billingTypeId,_body.adminComment, _body.employeeId, currentTime(),1],
+        values: [_body.positionId, _body.candidateId, _body.ellowRate, _body.currencyTypeId, _body.billingTypeId, _body.adminComment, _body.employeeId, currentTime(), 1],
     }
 }
 export const linkCandidateQuery = (element) => {

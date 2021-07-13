@@ -498,17 +498,12 @@ export const modifyProfileDetails = (_body) => {
         (async () => {
             const client = await database().connect()
             try {
-                if (_body.userRoleId==4)
-                {
+                if (_body.userRoleId == 4) {
                     await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
-
                 }
-                else
-                {
+                else {
                     await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
-
                 }
-
                 resolve({ code: 200, message: "Candidate ProfileDetails updated successfully", data: {} });
             } catch (e) {
                 console.log(e)
