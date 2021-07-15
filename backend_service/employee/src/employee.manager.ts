@@ -345,22 +345,34 @@ export const checkCompanyByWorkMail = (_body) => {
                                 values: ['%@' + workMailExtension],
                             }
                            var results= await client.query(query);
-                           if (results.rows[0].admin_approve_status==0 || results.rows[0].admin_approve_status==null)
+                           if(results.rowCount >=1)
                            {
-                               var message=results.rows[0].admin_approve_status==0?'This company was once rejected by ellow recruiters':'Company waiting for ellow recruiters approval'
-                                reject({ code: 400, message: "Company ", data: message })
-                           }
-                            var companyDetails = null;
-                            if (Array.isArray(results.rows) && results.rows.length) {
-                                        companyDetails = {
-                                            companyId: parseInt(results.rows[0].company_id),
-                                            companyName: results.rows[0].company_name,
-                                            adminApproveStatus: results.rows[0].admin_approve_status,
-                                            accountType: results.rows[0].account_type
-                                        }
+                                    if (results.rows[0].admin_approve_status==0 || results.rows[0].admin_approve_status==null)
+                                    {
+                                        var message=results.rows[0].admin_approve_status==0?'This company was once rejected by ellow recruiters':'Company waiting for ellow recruiters approval'
+                                        reject({ code: 400, message:  message, data:'Success' })
                                     }
-                                    resolve({ code: 200, message: "Company Details", data: companyDetails });
-                            }
+                                    else{
+                                        var companyDetails = null;
+                                        if (Array.isArray(results.rows) && results.rows.length) {
+                                                    companyDetails = {
+                                                        companyId: parseInt(results.rows[0].company_id),
+                                                        companyName: results.rows[0].company_name,
+                                                        adminApproveStatus: results.rows[0].admin_approve_status,
+                                                        accountType: results.rows[0].account_type
+                                                    }
+                                                }
+                                                resolve({ code: 200, message: "Company Details", data: companyDetails });
+                                        }
+                             }
+                             else
+                             {
+                                resolve({ code: 200, message: "Success", data: 'Success' });
+
+                             }
+                                   
+                           }
+                          
     } catch (e) {
         console.log("Error1", e)
         await client.query('ROLLBACK')
