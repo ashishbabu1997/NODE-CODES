@@ -264,18 +264,14 @@ export const createEmployeeByAdmin = (_body) => {
                 var userReplacements = {
                     loginPassword: password
                 };
-                if (loweremailId != null || '' || undefined) {
-                    emailClient.emailManager(loweremailId, subject, path, userReplacements);
-                }
-                else {
-                    console.log("Email Recipient is empty")
-                }
-
+                emailClient.emailManager(loweremailId, subject, path, userReplacements);
+               
                 let Name = _body.firstName.charAt(0).toUpperCase() + _body.firstName.slice(1) + " " + _body.lastName.charAt(0).toUpperCase() + _body.lastName.slice(1)
                 let companyName = _body.companyName
                 let emailAddress = _body.email
                 let number = ![null, undefined].includes(_body.telephoneNumber) ? _body.telephoneNumber : "";
-                path = 'src/emailTemplates/newApplicationText.html';
+                _body.path = _body.primaryEmail==true?'src/emailTemplates/newApplicationText.html':'src/emailTemplates/newSubuserText.html'
+                _body.mailSubject=_body.primaryEmail==true?config.text.newCompanySubject:config.text.newSubUserSubject
                 let replacementArray=[]
                 if (utils.notNull(Name)) replacementArray.push({ 'name': 'Name', 'value': Name+'\n' });
                 if (utils.notNull(companyName)) replacementArray.push({ 'name': 'Company Name', 'value': companyName+'\n' });
@@ -295,7 +291,7 @@ export const createEmployeeByAdmin = (_body) => {
                 if (Array.isArray(ellowAdmins.rows)) {
                     ellowAdmins.rows.forEach(element => {
 
-                        emailClient.emailManagerForNoReply(element.email, config.text.newCompanySubject, path, adminReplacements);
+                        emailClient.emailManagerForNoReply(element.email,_body.mailSubject, _body.path, adminReplacements);
 
 
                     })
@@ -349,7 +345,7 @@ export const checkCompanyByWorkMail = (_body) => {
                            {
                                     if (results.rows[0].admin_approve_status==0 || results.rows[0].admin_approve_status==null)
                                     {
-                                        var message=results.rows[0].admin_approve_status==0?'This company was once rejected by ellow recruiters':'Company waiting for ellow recruiters approval'
+                                        var message=results.rows[0].admin_approve_status==0?'This company was once rejected by ellow recruiters.Please approve the company once again from All Companies page':'This company is already registered with ellow.io and is waiting for approval'
                                         reject({ code: 400, message:  message, data:'Success' })
                                     }
                                     else{
