@@ -7,6 +7,7 @@ import { nanoid } from 'nanoid';
 import { createNotification } from './common/notifications/notifications';
 import * as emailClient from './emailService/emailService';
 import * as utils from './utils/utils'
+import * as queryService from './queryService/queryService'
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>> Registration of a new employee(company)
 export const createEmployee = (_body) => {
@@ -216,6 +217,7 @@ export const createEmployeeByAdmin = (_body) => {
                 // If email does not exist allow registration
                 // create a new company if companyId is null or use the same companyId to create employee and other details
                 let companyId = _body.employeeCompanyId;
+                let accountTypeResult;
                 let adminApproveStatus = 1, approvalStatus = true;
                 if (companyId == null) {
                     var domain=utils.domainExtractor(loweremailId)
@@ -227,10 +229,20 @@ export const createEmployeeByAdmin = (_body) => {
                     const result = await client.query(createCompanyQuery);
                     companyId = result.rows[0].company_id;
                     _body.primaryEmail=true
-                }
-                else{
-                    _body.primaryEmail=false
-                }
+                    _body.responseMessage="Company Registration Successfull. We have sent a password to the registered mail address."
+                    }
+                    else{
+                        _body.primaryEmail=false
+                        accountTypeResult=await client.query(queryService.getCompanyAccountType(companyId))
+                        _body.responseMessage=_body.accountType==1?"This Company is already registered as a Hirer company. Login credentials have been sent to the given email address":"This Company is already registered as a Provider company. Login credentials have been sent to the given email address"
+                        if (accountTypeResult.rows[0].account_type !=_body.accountType)
+                        {
+                            let rejectMessage=_body.accountType==1?'This Company is already registered as a Provider company; We are unable to process this request':'This Company is already registered as a Hirer company; We are unable to process this request'
+                            reject({ code: 400, message: rejectMessage, data: 'Failed' });
+
+                        }
+                    }
+                   
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
@@ -297,12 +309,8 @@ export const createEmployeeByAdmin = (_body) => {
                     })
 
                 }
-                else {
-                    console.log("Error in fetch admin query")
-                }
-
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Registration Successfull. We have sent a password to the registered mail address.", data: {} });
+                resolve({ code: 200, message: _body.responseMessage, data: {} });
             } catch (e) {
                 console.log("Error1", e)
                 await client.query('ROLLBACK')
