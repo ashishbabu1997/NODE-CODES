@@ -302,7 +302,7 @@ export const createEmployeeByAdmin = (_body) => {
                 }
 
                 await client.query('COMMIT')
-                resolve({ code: 200, message: "Thank you for registering with us! We have sent a password to the registered mail address.", data: {} });
+                resolve({ code: 200, message: "Registration Successfull. We have sent a password to the registered mail address.", data: {} });
             } catch (e) {
                 console.log("Error1", e)
                 await client.query('ROLLBACK')
