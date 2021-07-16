@@ -125,28 +125,28 @@ export const getJobReceivedByJobReceivedId = (_body) => {
 
 
 
-// >>>>>>> FUNC. >>>>>>> 
-//>>>>>>>>>>>>>>>>>>Update job received status of a user company
-export const updateIsRejectForJobReceived = (_body) => {
-    return new Promise((resolve, reject) => {
-        (async () => {
+// // >>>>>>> FUNC. >>>>>>> 
+// //>>>>>>>>>>>>>>>>>>Update job received status of a user company
+// export const updateIsRejectForJobReceived = (_body) => {
+//     return new Promise((resolve, reject) => {
+//         (async () => {
             
-            const client = await database().connect()
-            try {
-                await client.query(queryService.updateJobReceivedRejectQuery(_body))
-                resolve({ code: 200, message: "IsReject updated successfully", data: {} });
-            } catch (e) {
-                console.log(e)
-                await client.query('ROLLBACK')
-                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            } finally {
-                client.release();
-            }
-        })().catch(e => {
-            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
-        })
-    })
-}
+//             const client = await database().connect()
+//             try {
+//                 await client.query(queryService.updateJobReceivedRejectQuery(_body))
+//                 resolve({ code: 200, message: "IsReject updated successfully", data: {} });
+//             } catch (e) {
+//                 console.log(e)
+//                 await client.query('ROLLBACK')
+//                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+//             } finally {
+//                 client.release();
+//             }
+//         })().catch(e => {
+//             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+//         })
+//     })
+// }
 
 
 // >>>>>>> FUNC. >>>>>>> 
@@ -205,7 +205,7 @@ export const saveCandidateProfile = (_body) => {
                 else
                 {
                     _body.sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
-                    _body.candidates = [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
+                    _body.candidates = [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
                     var addCandidateResult =await client.query(queryService.saveCandidateQuery(_body))
                     _body.candidateId = addCandidateResult.rows[0].candidate_id;
                     var companyResults = await client.query(queryService.getCompanyName(_body))
@@ -228,8 +228,7 @@ export const saveCandidateProfile = (_body) => {
                         
                         await client.query(queryService.addPositionQuery(_body))
                         const response = await client.query(queryService.getJobStatusQuery(_body))
-                        _body.jobStatus = response.rows[0].jobStatus;
-                        await client.query(queryService.updateCompanyJobStatusQuery(_body))
+                        _body.jobStatus = response.rows[0].jobStatus;                        
                         await client.query('COMMIT');
                         
                     }
@@ -274,7 +273,7 @@ export const resumeBuilderProfile = (_body) => {
                 else
                 {
                     _body.sellerCompanyId = _body.userRoleId==1?_body.sellerCompanyId:_body.companyId;
-                    _body.candidates = [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.jobReceivedId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
+                    _body.candidates = [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.description, _body.email, _body.phoneNumber, currentTime, currentTime, _body.employeeId, _body.employeeId, 4, _body.image, _body.citizenship, _body.residence,_body.candidatePositionName]    
                     var addCandidateResult =await client.query(queryService.saveCandidateQuery(_body))
                     _body.candidateId = addCandidateResult.rows[0].candidate_id;
                     var companyResults = await client.query(queryService.getCompanyName(_body))
@@ -298,7 +297,6 @@ export const resumeBuilderProfile = (_body) => {
                         await client.query(queryService.addPositionQuery(_body))
                         const response = await client.query(queryService.getJobStatusQuery(_body))
                         _body.jobStatus = response.rows[0].jobStatus;
-                        await client.query(queryService.updateCompanyJobStatusQuery(_body))
                         await client.query('COMMIT');
                         
                     }
@@ -377,8 +375,8 @@ export const submitCandidateProfile = (_body) => {
                 {
                  
                     const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for the position ${positionName} `
-                    await createHirerNotifications({ positionId:_body.positionId, jobReceivedId,companyId:_body.sellerCompanyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
-                    await createNotification({ positionId:_body.positionId, jobReceivedId,companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
+                    await createHirerNotifications({ positionId:_body.positionId,companyId:_body.sellerCompanyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
+                    await createNotification({ positionId:_body.positionId,companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     let path = 'src/emailTemplates/candidateAdditionText.html';
                     var userReplacements =  {
                         first:candidateFirstName,
@@ -434,7 +432,7 @@ export const submitCandidateProfile = (_body) => {
                 else
                 {
                     const message = `A new candidate, ${candidateFirstName + ' ' + candidateLastName} has been submitted for veting `
-                    await createNotification({ positionId:_body.positionId, jobReceivedId, companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
+                    await createNotification({ positionId:_body.positionId, companyId , message, candidateId, notificationType: 'candidate',userRoleId:_body.userRoleId,employeeId:_body.employeeId })   
                     var status='vetting';
                     let path = 'src/emailTemplates/candidateAdditionText.html';
                     var replacements =  {

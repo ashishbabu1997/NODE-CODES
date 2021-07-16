@@ -60,13 +60,13 @@ export const getSkillsFromId = (_body) => {
         values: [_body.jobCategoryId]
     }
 }
-export const updateJobReceivedRejectQuery = (_body) => {
-    return {
-        name: 'update-JobReceived-reject',
-        text: jobReceivedQuery.updateReject,
-        values: [_body.jobReceivedId, _body.companyId, _body.reject, _body.employeeId, currentTime()]
-    }
-}
+// export const updateJobReceivedRejectQuery = (_body) => {
+//     return {
+//         name: 'update-JobReceived-reject',
+//         text: jobReceivedQuery.updateReject,
+//         values: [_body.jobReceivedId, _body.companyId, _body.reject, _body.employeeId, currentTime()]
+//     }
+// }
 export const getProfileByCompanyIdQuery = (_body) => {
     return {
         name: 'get-ProfileByCompanyId',
@@ -114,7 +114,7 @@ export const addPositionQuery = (_body) => {
     return {
         name: 'add-position',
         text: jobReceivedQuery.addCandidatePosition,
-        values: [_body.positionId, _body.candidateId, _body.jobReceivedId, _body.billingTypeId, _body.currencyTypeId, _body.employeeId, currentTime()],
+        values: [_body.positionId, _body.candidateId, _body.billingTypeId, _body.currencyTypeId, _body.employeeId, currentTime()],
 
     }
 }
@@ -126,14 +126,7 @@ export const getJobStatusQuery = (_body) => {
 
     }
 }
-export const updateCompanyJobStatusQuery = (_body) => {
-    return {
-        name: 'update-company-job-status',
-        text: jobReceivedQuery.updateCompanyJobStatus,
-        values: [_body.jobReceivedId, _body.jobStatus, _body.sellerCompanyId, _body.employeeId, currentTime()],
 
-    }
-}
 export const updateCandidateStatus = (_body) => {
     return {
         name: 'update-candidate-status',
@@ -364,14 +357,14 @@ export const deleteHirerPositions = (_body) => {
 
     }
 }
-export const addPositionToJobReceivedQuery = (_body) => {
-    return {
-        name: 'add-position-to-job-received',
-        text: positionsQuery.addPositionToJob,
-        values: [_body.positionId, currentTime()],
+// export const addPositionToJobReceivedQuery = (_body) => {
+//     return {
+//         name: 'add-position-to-job-received',
+//         text: positionsQuery.addPositionToJob,
+//         values: [_body.positionId, currentTime()],
 
-    }
-}
+//     }
+// }
 export const getNotificationDetailsQuery = (_body) => {
     return {
         name: 'get-notification-details',
@@ -398,14 +391,14 @@ export const positionQuery = (_body) => {
 
     }
 }
-export const changeJobReceivedStatusQuery = (_body) => {
-    return {
-        name: 'change-job-received-status',
-        text: positionsQuery.changeJobReceivedStatus,
-        values: [currentTime(), _body.positionId, _body.jobStatus],
+// export const changeJobReceivedStatusQuery = (_body) => {
+//     return {
+//         name: 'change-job-received-status',
+//         text: positionsQuery.changeJobReceivedStatus,
+//         values: [currentTime(), _body.positionId, _body.jobStatus],
 
-    }
-}
+//     }
+// }
 export const getMailAddress = (_body) => {
     return {
         name: 'fetch-emailaddress',

@@ -866,13 +866,13 @@ export const listCandidatesTotal = (queryText, queryValues) => {
         values: queryValues
     }
 }
-export const getJobReceivedId = (body) => {
-    return {
-        name: 'get-jobreceived-id',
-        text: candidateQuery.getJobReceivedId,
-        values: [body.positionId]
-    }
-}
+// export const getJobReceivedId = (body) => {
+//     return {
+//         name: 'get-jobreceived-id',
+//         text: candidateQuery.getJobReceivedId,
+//         values: [body.positionId]
+//     }
+// }
 
 export const listAddFromList = (queryText, queryValues) => {
     return {

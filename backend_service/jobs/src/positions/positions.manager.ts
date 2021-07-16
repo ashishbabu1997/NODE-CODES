@@ -102,8 +102,8 @@ export const createCompanyPositions = async (_body) => {
                 if (_body.publish == true) {
                     await client.query(queryService.changePositionStatusQuery(_body))
                 
-                    const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
-                    const jobReceivedId = data.rows[0].job_received_id;
+                    // const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
+                    // const jobReceivedId = data.rows[0].job_received_id;
                     const details = await client.query(queryService.getNotificationDetailsQuery(_body));
                     const message = `A new position,${details.rows[0].positionName} has been created by ${details.rows[0].companyName}`
 
@@ -112,7 +112,7 @@ export const createCompanyPositions = async (_body) => {
                     if (_body.userRoleId == 1) {
                         _body.allocatedTo = _body.employeeId;
                         const hirerMessage = `New position, ${details.rows[0].positionName} has been created for you by ellow.io admin`
-                        await createHirerNotifications({ positionId, jobReceivedId, companyId: _body.cmpId, message: hirerMessage, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
+                        await createHirerNotifications({ positionId, companyId: _body.cmpId, message: hirerMessage, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
                         await client.query(queryService.assigneeQuery(_body));
                     if (_body.typeOfJob==0 || _body.typeOfJob==1)
                     {
@@ -138,7 +138,7 @@ export const createCompanyPositions = async (_body) => {
                     }
                     await client.query('COMMIT');
 
-                    await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
+                    await createNotification({ positionId, companyId, message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
                     var subject = 'New position notification'
                     // Sending a notification mail about position creation; to the admin
                     let path = 'src/emailTemplates/positionCreationText.html';
@@ -286,8 +286,8 @@ export const updateCompanyPositions = async (_body) => {
                 if (_body.publish == true) {
                     
                     var positionStatus = await client.query(queryService.checkPositionStatus(_body))
-                    const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
-                    const jobReceivedId = data.rows[0].job_received_id;
+                    // const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
+                    // const jobReceivedId = data.rows[0].job_received_id;
                     const details = await client.query(queryService.getNotificationDetailsQuery(_body));
                     const { positionCompanyId, positionCompanyName, positionName } = details.rows[0];
                     const message = `A new position,${positionName} has been created by ${details.rows[0].companyName}`
@@ -299,13 +299,13 @@ export const updateCompanyPositions = async (_body) => {
                         if (_body.userRoleId == 1) {
                             _body.allocatedTo = _body.employeeId;
                             const hirerMessage = `New position, ${details.rows[0].positionName} has been created for you by ellow.io admin`
-                            await createHirerNotifications({ positionId, jobReceivedId, companyId, message: hirerMessage, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
+                            await createHirerNotifications({ positionId, companyId, message: hirerMessage, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
                             await client.query(queryService.assigneeQuery(_body));
                         }
                       
                         await client.query('COMMIT');
     
-                        await createNotification({ positionId, jobReceivedId, positionCompanyId, message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
+                        await createNotification({ positionId,  positionCompanyId, message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
                         var subject = 'New position notification'
                                         // Sending a notification mail about position creation; to the admin
                         let path = 'src/emailTemplates/positionCreationText.html';
@@ -382,8 +382,8 @@ export const publishCompanyPositions = async (_body) => {
                 await client.query('BEGIN');
                 const positionId = _body.positionId;
                 await client.query(queryService.changePositionStatusQuery(_body))
-                const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
-                const jobReceivedId = data.rows[0].job_received_id;
+                // const data = await client.query(queryService.addPositionToJobReceivedQuery(_body));
+                // const jobReceivedId = data.rows[0].job_received_id;
                 const details = await client.query(queryService.getNotificationDetailsQuery(_body));
 
                 if (_body.userRoleId == 1) {
@@ -396,7 +396,7 @@ export const publishCompanyPositions = async (_body) => {
                 const message = `A new position,${positionName} has been created by ${companyName}`
                 var cName = companyName
                 var cpName = positionName
-                await createNotification({ positionId, jobReceivedId, companyId, message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
+                await createNotification({ positionId, companyId, message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
                 var subject = 'New position notification'
                 // Sending a notification mail about position creation; to the admin
                 let path = 'src/emailTemplates/positionCreationText.html';
@@ -443,7 +443,6 @@ export const changeJobStatus = (_body) => {
 
             try {
                 await client.query('BEGIN');
-                var jobReceivedId;
                 var message;
                 let positionName;
                 let subj;
@@ -455,9 +454,8 @@ export const changeJobStatus = (_body) => {
                 let userMailAddress
                 var ellowAdmins = await client.query(queryService.getEllowAdmins(_body))
                 await client.query(queryService.positionQuery(_body))
-                await client.query(queryService.changeJobReceivedStatusQuery(_body))
+                // await client.query(queryService.changeJobReceivedStatusQuery(_body))
                 var results = await client.query(queryService.mailAddress(_body))
-                jobReceivedId = results.rows[0].job_received_id
                 positionName = results.rows[0].position_name
                 positionCompanyName = results.rows[0].company_name
                 userMailAddress = results.rows[0].email
@@ -465,7 +463,7 @@ export const changeJobStatus = (_body) => {
                 if (_body.jobStatus == 6) {
 
                     message = `A position,${positionName} has been reopened.`
-                    createNotification({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
+                    createNotification({ positionId: _body.positionId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
                     // A notification is sent to the hirer about his/her reopened position
                     if (_body.userRoleId == 1) {
                         subj = "Position Reopen Notification"
@@ -497,7 +495,7 @@ export const changeJobStatus = (_body) => {
                 else if (_body.jobStatus == 8) {
 
                     message = `A position,${positionName} has been closed.`
-                    createNotification({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
+                    createNotification({ positionId: _body.positionId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'position', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
 
                     subj = "Close Position Notification"
                     userPath = 'src/emailTemplates/adminToUserClosePosition.html';
@@ -615,8 +613,8 @@ export const deletePositions = (_body) => {
 
                         })
                         const message = `The position, ${positionName}  has been removed .`
-                        await createHirerNotifications({ positionId, jobReceivedId: null, companyId: hirerCompanyId, message, candidateId: null, notificationType: 'positionList', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
-                        await createNotification({ positionId, jobReceivedId: null, companyId: _body.companyId, message, candidateId: null, notificationType: 'positionList', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
+                        await createHirerNotifications({ positionId, companyId: hirerCompanyId, message, candidateId: null, notificationType: 'positionList', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
+                        await createNotification({ positionId, companyId: _body.companyId, message, candidateId: null, notificationType: 'positionList', userRoleId: _body.userRoleId, employeeId: _body.employeeId })
                         resolve({ code: 200, message: "Position deletion successfull", data: {} });
                     }
                 }

@@ -47,10 +47,9 @@ export const listCandidatesDetails = (_body) => {
                 queryValues = Object.assign({ positionid: body.positionId }, queryValues)
 
                 const candidatesResult = await client.query(queryService.listCandidates(queryText, queryValues));
-                const jobReceivedIdResult = await client.query(queryService.getJobReceivedId(body));
                 await client.query('COMMIT');
 
-                resolve({ code: 200, message: "Candidate Listed successfully", data: { jobReceivedId: jobReceivedIdResult.rows[0].job_received_id, allCandidates: candidatesResult.rows } });
+                resolve({ code: 200, message: "Candidate Listed successfully", data: {  allCandidates: candidatesResult.rows } });
 
             } catch (e) {
                 console.log(e)
