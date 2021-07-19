@@ -2476,29 +2476,29 @@ export const approveOrRejectAppliedCandidate = (_body) => {
                         _body.candidateId=results.candidate_id,_body.positionId=results.position_id,_body.assignedTo = _body.employeeId,_body.candidateHiringStepName= "Discussion with resource"
                         _body.candidateHiringStepOrder= 1,_body.candidateName=results.name
                         var positions=await client.query(queryService. getPositionName(_body));
-                        var positionName=positions.rows[0].position_name
+                        _body.positionName=positions.rows[0].position_name
                         var assigneeDetails=await client.query(queryService.getAssigneeDetails(_body));
                         _body.assignedTo=assigneeDetails.rows[0].employee_id,_body.assigneeName=assigneeDetails.rows[0].name
-                        var companyName=positions.rows[0].company_name
+                        _body.companyName=positions.rows[0].company_name
                         _body.employeeId=_body.assignedTo
-                       
+                        await client.query(queryService.updateDefaultAssigneeQuery(_body));
                         if(_body.status=1)
                         {
-                            _body.auditLogComment=`${_body.assigneeName} (${companyName}) has moved the candidate ${_body.candidateName} to ${_body.candidateHiringStepName} for the position ${positionName}`
+                            _body.auditLogComment=`${_body.assigneeName} (${_body.companyName}) has moved the candidate ${_body.candidateName} to ${_body.candidateHiringStepName} for the position ${_body.positionName}`
                             _body.assigneeComment=`${_body.assigneeName} has moved the candidate to ${_body.candidateHiringStepName}`
                             await client.query(queryService.updateCandidateHiringSteps(_body)); 
                             await client.query(queryService.updateCurrentStage(_body)); 
-
-
+                            await emailService.scheduleInterviewMail(_body, client);
                         }
                         else
                         {
-                            _body.auditLogComment=`${_body.assigneeName} (${companyName}) has rejected the candidate ${_body.candidateName}  for the position ${positionName}`
+                            _body.auditLogComment=`${_body.assigneeName} (${_body.companyName}) has rejected the candidate ${_body.candidateName}  for the position ${_body.positionName}`
                             await client.query(queryService.rejectFromHiring(_body));
+                            await emailService.rejectCandidateMail(_body, client);
                         }
                         await client.query(queryService.insertAuditLogForHiring(_body))
+                        await client.query(queryService.deleteRequestToken(_body))
                         resolve({ code: 200, message: "Steps updated successfully", data: {} });
-
                 }
         
             } catch (e) {

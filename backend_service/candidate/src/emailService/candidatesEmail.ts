@@ -5,6 +5,7 @@ import * as emailClient from '../emailManager/emailManager';
 import * as utils from '../utils/utils';
 import * as builder from "../utils/Builder";
 import * as constants from '../config/Constants';
+import { nanoid } from 'nanoid';
 
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>>Email Function for admin to add reviews,assesment comments about the candidate
@@ -129,7 +130,8 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
 
                 let recruiterSignDetails = utils.reccuiterSignatureCheck(recruiterEmail);
                 const { signature } = recruiterSignDetails
-
+                element.uniqueId = nanoid();
+                await client.query(queryService.insertRequestToken(element));
                 let replacements = {
                     'positionName': positionName,
                     'keys': requiredCandidateData,
@@ -560,6 +562,73 @@ export const updateAvailabilityNotificationMails = async (_body, client) => {
       
     } catch (e) {
         console.log("error : ", e.message);
+        throw new Error('Failed to send mail');
+    }
+}
+
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>Email Function for hirer's to send mail while they schedule interview via email button
+export const scheduleInterviewMail = async (_body, client) => {
+    try {
+        let candidateDetailResults = await client.query(queryService.getCandidateProfileName(_body));
+        var results=candidateDetailResults.rows[0]
+        let availability=utils.notNull(results.ready_to_start) ? `${utils.constValues('readyToStart', results.ready_to_start)}\n` : '';
+
+        var candidateData=[]
+        if(utils.notNull(results.name)) candidateData.push({name:'Candidate Name ',value:results.name} )
+        if(utils.notNull(results.email)) candidateData.push({name:'Email Address ',value:results.email} )
+        if(utils.notNull(results.phone)) candidateData.push({name:'Phone Number ',value:results.phone} )
+        if(utils.notNull(results.work_experience)) candidateData.push({name:'Experience ',value:results.work_experience+' years'} )
+        if(utils.notNull(availability)) candidateData.push({name:'Availability',value:availability} )
+        let adminReplacements = {
+            'hirer': _body.companyName,
+            'position':_body.positionName,
+            'keys': candidateData,
+        };
+        let adminPath = 'src/emailTemplates/scheduleInterviewAdminText.html';
+        var ellowAdmins = await client.query(queryService.getEllowAdmins())
+        if (Array.isArray(ellowAdmins.rows)) {
+            ellowAdmins.rows.forEach(element => {
+                if (utils.notNull(element.email))
+                    emailClient.emailManagerForNoReply(element.email, config.text.scheduleInterviewMailSubject, adminPath, adminReplacements);
+            })
+        }
+      ;
+    } catch (e) {
+        console.log("error : ", e.message)
+        throw new Error('Failed to send mail');
+    }
+}
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>Email Function for hirer's to send mail while they reject candidate via email button
+export const rejectCandidateMail = async (_body, client) => {
+    try {
+        var skillset = await client.query(queryService.getCandidateSkillSet(_body))
+
+        let adminReplacements = {
+            'candidateName':_body.candidateName,
+            'position':_body.positionName,
+            'company':_body.companyName,
+            'skills':skillset.rows[0].skills,
+        };
+        let adminPath = 'src/emailTemplates/rejectCandidateAdminText.html';
+        var ellowAdmins = await client.query(queryService.getEllowAdmins())
+        if (Array.isArray(ellowAdmins.rows)) {
+            ellowAdmins.rows.forEach(element => {
+                if (utils.notNull(element.email))
+                    emailClient.emailManagerForNoReply(element.email, config.text.rejectCandidateMailSubject, adminPath, adminReplacements);
+            })
+        }
+      ;
+    } catch (e) {
+        console.log("error : ", e.message)
         throw new Error('Failed to send mail');
     }
 }

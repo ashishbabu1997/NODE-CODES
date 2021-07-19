@@ -16,7 +16,9 @@ export default {
         "linkCandidateHireSubject": " New profile from ellow.io |  ",
         "shareAppliedCandidateSubject": " Profile shared from ellow.io |  ",
         "requestForScreeningSubject":"Freelancer Requested for Screening Process",
-        "updateAvailabilityNotificationSubject":"Candidate Availability Notification"
+        "updateAvailabilityNotificationSubject":"Candidate Availability Notification",
+        "scheduleInterviewMailSubject":"Interview requested from the Customer",
+        "rejectCandidateMailSubject":"Profile Rejected by the Customer Company"
 
 
     },

@@ -69,4 +69,7 @@ router
 .get('/emailTemplate',candidateController.getEmailTemplate)
 .post('/fileDownload',jwtAuth,setData(),setProfileAuth([1,2,3,4]),candidateController.downloadPdfController)
 .post('/sentFreelancerLoginCredentials',jwtAuth, setData(),setProfileAuth([1,2]),candidateController.sentFreelancerLoginCredentialsController)
+.post('/approveOrRejectAppliedCandidate',candidateController.approveOrRejectAppliedCandidateController)
+
+
 export default router; 

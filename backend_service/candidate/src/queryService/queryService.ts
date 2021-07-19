@@ -770,6 +770,13 @@ export const getLinkToPositionEmailDetails = (_body) => {
         values: [_body.candidateId, _body.positionId]
     }
 }
+export const insertRequestToken = (_body) => {
+    return {
+        name: 'get-request-token',
+        text: freelancerQuery.insertRequestToken,
+        values: [_body.uniqueId,_body.candidateId, _body.positionId]
+    }
+}
 
 export const getCompanyDetails = (_body) => {
     return {
@@ -978,6 +985,10 @@ export const getEllowAdmins = () => {
     }
 }
 
+
+
+
+
 export const insertAuditLog = (_body) => {
     return {
         name: 'insert-audit-log',
@@ -1023,6 +1034,17 @@ export const insertAuditLogForHiring = (_body) => {
         values: ['client hiring steps', 2, _body.auditLogComment, currentTime(), _body.employeeId]
     }
 }
+
+
+
+export const deleteRequestToken = (_body) => {
+    return {
+        name: 'delete-request-token',
+        text: candidateQuery.deleteRequestTokenQuery,
+        values: [_body.candidateId,_body.positionId]
+    }
+}
+
 
 export const positionHiringStepsQuery = (_body) => {
     return {

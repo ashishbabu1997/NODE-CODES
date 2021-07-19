@@ -6,6 +6,7 @@ export default {
     listFreelancerJobs:'select p.position_id, position_name, developer_count, job_description, experience_level, jc.job_category_id,jc.job_category_name, array_agg (skill_name) as skills from positions p left join job_category jc on jc.job_category_id = p.job_category_id left join job_skills js on p.position_id = js.position_id and js.top_rated_skill=true and js.status=true left join skills s on js.skill_id = s.skill_id where p.status = true and p.job_status = 6 and p.position_name ilike $search group by p.position_id,jc.job_category_id ',
     getellowAdmins:"select concat(firstname,' ',lastname) as name ,employee_id as employeeId from employee where status=true and user_role_id=1",
     getFreelancerCompanyId:"select company_id from company where company_type=2",
+    insertRequestToken:"update candidate_position set request_token=$1 where candidate_id=$2 and position_id=$3",
     updateRequestForScreening:'update candidate set request_for_screening=true where candidate_id=$1',
     getCandidateSkills:'select json_agg(json_build_object(\'skillName\',s.skill_name)) as skills from skills s left join candidate_skill cs on cs.skill_id=s.skill_id where cs.candidate_id =$1 and cs.preferred=true',
     updateCandidateStatus:'UPDATE candidate SET candidate_status=$4,updated_by=$2,updated_on=$3,created_on=$3 WHERE candidate_id=$1 returning candidate_first_name,candidate_last_name',

@@ -122,10 +122,9 @@ export default {
     getCandidateVettedAllocatedTo:'select candidate_vetted,allocated_to,current_ellow_stage from candidate where candidate_id=$1',
     getellowAdmins:"select concat(firstname,' ',lastname) as name ,email as email,employee_id as employeeId from employee where status=true and user_role_id=1",
     getAuditLogs:'select audit_log_id as "auditLogId",audit_name as "auditName",audit_type as "auditType",audit_log_comment as "auditLogComment",created_on as "createdOn",created_by as "createdBy" from audit_log',
-    getCandidateProfileDetails:"select concat(c.candidate_first_name,' ',c.candidate_last_name) as name,c.candidate_first_name as firstname,c.candidate_last_name as lastname,c.email_address as email,co.company_name as company from candidate c left join company co on co.company_id=c.company_id where candidate_id=$1",
+    getCandidateProfileDetails:"select initcap(c.candidate_first_name ||  \' \'  || c.candidate_last_name) as name,c.candidate_first_name as firstname,c.candidate_last_name as lastname,c.email_address as email,co.company_name as company, ca.phone_number as phone,ca.work_experience,ca.ready_to_start from candidate c left join company co on co.company_id=c.company_id where candidate_id=$1",
     fetchResourceAllocatedRecruiterDetails:'select e.email from candidate c left join employee e  on e.employee_id=c.allocated_to where c.candidate_id=$1',
-
-
+    deleteRequestTokenQuery:'update candidate_position set request_token=null where candidate_id=$1 and position_id=$2',
     // Resume parser related queries
     insertDetailResumeQuery:'update candidate set detail_resume=$2 where candidate_id=$1',
     insertExtractedCandidateDetails : "insert into candidate (company_id,candidate_first_name, candidate_last_name, cover_note, resume, phone_number, email_address, work_experience, citizenship, residence, candidate_position_name, resume_file_name, candidate_status, created_on, updated_on, created_by, updated_by,resume_data,detail_resume,html_resume,bag_of_words) values ($companyid,$firstname, $lastname, $summary, $resume, $phone, $email, $workexperience, $citizenship, $residence, $positionname,$resumefilename, $candidatestatus, $currenttime, $currenttime,$employeeid, $employeeid,$resumedata,$detailresume,$htmlresume,$bagofwords) on conflict on constraint candidate_resume_file_name_unique_key do nothing returning candidate_id",
