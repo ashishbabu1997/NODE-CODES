@@ -1126,6 +1126,16 @@ export const moveCandidateHiringStepQuery = (_body) => {
     }
 }
 
+export const updateCandidateHiringSteps = (_body) => {
+    return {
+        name: 'move-to-step-client-hiring',
+        text: hiringQuery.updateCandidateHiringStep,
+        values:[_body.assignedTo,_body.assigneeComment,currentTime(),_body.assignedTo,_body.candidateId,_body.positionId],
+    }
+}
+
+
+
 export const updateAssigneeComments = (_body) => {
     return {
         name: 'update-candidatde-client-hiring',
@@ -1174,6 +1184,16 @@ export const rejectFromHiringProcess = (_body) => {
         values: { assignedto: _body.assignedTo, candidateid: _body.candidateId, positionid: _body.positionId, id: _body.candidateClientHiringStepId, link: _body.stepLink, linktext: _body.stepLinkText, attachments: _body.attachments, comment: _body.candidateHiringStepComment, currenttime: currentTime(), employeeid: _body.employeeId },
     }
 }
+
+
+export const rejectFromHiring = (_body) => {
+    return {
+        name: 'reject-client-hiring',
+        text: hiringQuery.rejectFromHiring,
+        values: { assignedto: _body.assignedTo, candidateid: _body.candidateId, positionid: _body.positionId, currenttime: currentTime(), employeeid: _body.employeeId },
+    }
+}
+
 
 export const addNewStageForCandidate = (_body) => {
     return {

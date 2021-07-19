@@ -61,10 +61,10 @@
 *       - application/json
 *     parameters:
 *       - in: query
-*         name: jobReceivedId
+*         name: positionId
 *         schema:
 *         type: integer
-*         required: [jobReceivedId]
+*         required: [positionId]
 *     responses:
 *       200:
 *         description: Api success

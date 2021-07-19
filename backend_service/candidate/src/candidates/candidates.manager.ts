@@ -2471,21 +2471,33 @@ export const approveOrRejectAppliedCandidate = (_body) => {
                 }
                 else
                 {
-                    var results=getCandidateDetailsFromToken.rows[0]
-                    _body.candidateId=results.candidate_id,_body.positionId=results.position_id,_body.assignedTo = _body.employeeId,_body.candidateHiringStepName= "Discussion with resource"
-                    _body.candidateHiringStepOrder= 1;
-                    var positions=await client.query(queryService. getPositionName(_body));
-                    var positionName=positions.rows[0].position_name
-                    var assigneeDetails=await client.query(queryService.getAssigneeDetails(_body));
-                    _body.assignedTo=assigneeDetails.rows[0].employee_id,_body.assigneeName=assigneeDetails.rows[0].name
-                    var companyName=positions.rows[0].company_name
-                    _body.auditLogComment=`${_body.assigneeName} (${companyName}) has moved the candidate ${_body.candidateName} to ${_body.candidateHiringStepName} for the position ${positionName}`
-                    await client.query(queryService.insertAuditLogForHiring(_body))
-                    await client.query(queryService.moveCandidateHiringStepQuery(_body)); 
-                    _body.assigneeComment=`${_body.assigneeName} has moved the candidate to ${_body.candidateHiringStepName}`
-                    await client.query(queryService.updateAssigneeComments(_body));
-                    await client.query(queryService.updateCurrentStage(_body)); 
-                    resolve({ code: 200, message: "Hiring step moved successfully", data: {} });
+                  
+                        var results=getCandidateDetailsFromToken.rows[0]
+                        _body.candidateId=results.candidate_id,_body.positionId=results.position_id,_body.assignedTo = _body.employeeId,_body.candidateHiringStepName= "Discussion with resource"
+                        _body.candidateHiringStepOrder= 1,_body.candidateName=results.name
+                        var positions=await client.query(queryService. getPositionName(_body));
+                        var positionName=positions.rows[0].position_name
+                        var assigneeDetails=await client.query(queryService.getAssigneeDetails(_body));
+                        _body.assignedTo=assigneeDetails.rows[0].employee_id,_body.assigneeName=assigneeDetails.rows[0].name
+                        var companyName=positions.rows[0].company_name
+                        _body.employeeId=_body.assignedTo
+                       
+                        if(_body.status=1)
+                        {
+                            _body.auditLogComment=`${_body.assigneeName} (${companyName}) has moved the candidate ${_body.candidateName} to ${_body.candidateHiringStepName} for the position ${positionName}`
+                            _body.assigneeComment=`${_body.assigneeName} has moved the candidate to ${_body.candidateHiringStepName}`
+                            await client.query(queryService.updateCandidateHiringSteps(_body)); 
+                            await client.query(queryService.updateCurrentStage(_body)); 
+
+
+                        }
+                        else
+                        {
+                            _body.auditLogComment=`${_body.assigneeName} (${companyName}) has rejected the candidate ${_body.candidateName}  for the position ${positionName}`
+                            await client.query(queryService.rejectFromHiring(_body));
+                        }
+                        await client.query(queryService.insertAuditLogForHiring(_body))
+                        resolve({ code: 200, message: "Steps updated successfully", data: {} });
 
                 }
         

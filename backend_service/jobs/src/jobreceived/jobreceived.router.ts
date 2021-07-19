@@ -8,7 +8,7 @@ import setData from '../middlewares/setData';
 const router = express.Router();
 router
     .get('/',jwtAuth, setData(), validate(getJobReceivedSchema),getJobReceived)
-    .get('/getById',jwtAuth, setData(), validate(getJobReceivedByIdSchema),getJobReceivedById)
+    .get('/getById',jwtAuth, setData(),getJobReceivedById)
     .post('/addProfile',jwtAuth, setData(),addProfile)
     .post('/addResumeBuilderProfile',jwtAuth, setData(),addAResumeBuliderProfile)
     .put('/submitProfile',jwtAuth, setData(),submitProfile)
