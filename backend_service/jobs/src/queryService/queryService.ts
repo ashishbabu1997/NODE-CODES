@@ -29,7 +29,7 @@ export const getJobReceivedByIdQuery = (_body) => {
     return {
         name: 'get-JobReceivedByJobReceivedId',
         text: jobReceivedQuery.getJobReceivedById,
-        values: [parseInt(_body.jobReceivedId), parseInt(_body.companyId)]
+        values: [_body.positionId]
     }
 }
 export const listPrimaryEmails = (body) => {
