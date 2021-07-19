@@ -49,6 +49,8 @@ export default {
     modifyCandidateProject: `update candidate_project set candidate_id = $2, project_name = $3, company_name = $4, project_description = $5, project_link = $6, side_project = $7, skills = $8, updated_on = $9, updated_by = $10,contribution=$11,done_for=$12,role=$13 where candidate_project_id = $1`,
     insertCandidateProject:'insert into candidate_project (candidate_id, project_name,company_name, project_description, project_link, side_project, skills, created_by, updated_by, created_on, updated_on,contribution,done_for,role ) values ($1,$2,$3,$4,$5,$6,$7,$8,$8,$9,$9,$10,$11,$12) returning candidate_project_id',
     deleteCandidateProject:'update candidate_project set status = false, updated_on = $2, updated_by = $3 where candidate_project_id = $1',
+    
+    getCandidateDetailsFromTokenQuery:'select candidate_id,position_id from candidate_position where request_token=$1',
     // _body.candidateWorkExperienceId,_body.candidateId,_body.positionName,_body.companyName,_body.description,_body.logo,_body.startDate,_body.endDate,_body.stillWorking,currentTime,_body.employeeid
     modifyCandidateWorkHistory: `update candidate_work_experience set candidate_id = $2, candidate_company_name = $3, description = $4, logo = $5, start_date = $6, end_date = $7, still_working = $8, updated_on = $9,updated_by=$10,candidate_position_name=$11 where candidate_work_experience_id = $1`,
     insertCandidateWorkHistory:'insert into candidate_work_experience (candidate_id, candidate_company_name, description, logo, start_date, end_date, still_working, created_by, updated_by, created_on, updated_on,candidate_position_name) values($1,$2,$3,$4,$5,$6,$7,$8,$8,$9,$9,$10) returning candidate_work_experience_id',

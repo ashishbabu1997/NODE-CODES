@@ -2454,3 +2454,50 @@ export const downloadPdf = async (req, res) => {
     res.setHeader('Content-Length', pdf.length)
     return res.end(pdf)
 }
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> Approve or Reject applied candidate - Hirer functionality
+export const approveOrRejectAppliedCandidate = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                var getCandidateDetailsFromToken = await client.query(queryService.getCandidateDetailsFromTokenQueryService(_body));
+                if (getCandidateDetailsFromToken.rowCount==0)
+                {
+                    reject({ code: 400, message: "This request is unable to process since action already taken", data: {} });
+
+                }
+                else
+                {
+                    var results=getCandidateDetailsFromToken.rows[0]
+                    _body.candidateId=results.candidate_id,_body.positionId=results.position_id,_body.assignedTo = _body.employeeId,_body.candidateHiringStepName= "Discussion with resource"
+                    _body.candidateHiringStepOrder= 1;
+                    var positions=await client.query(queryService. getPositionName(_body));
+                    var positionName=positions.rows[0].position_name
+                    var assigneeDetails=await client.query(queryService.getAssigneeDetails(_body));
+                    _body.assignedTo=assigneeDetails.rows[0].employee_id,_body.assigneeName=assigneeDetails.rows[0].name
+                    var companyName=positions.rows[0].company_name
+                    _body.auditLogComment=`${_body.assigneeName} (${companyName}) has moved the candidate ${_body.candidateName} to ${_body.candidateHiringStepName} for the position ${positionName}`
+                    await client.query(queryService.insertAuditLogForHiring(_body))
+                    await client.query(queryService.moveCandidateHiringStepQuery(_body)); 
+                    _body.assigneeComment=`${_body.assigneeName} has moved the candidate to ${_body.candidateHiringStepName}`
+                    await client.query(queryService.updateAssigneeComments(_body));
+                    await client.query(queryService.updateCurrentStage(_body)); 
+                    resolve({ code: 200, message: "Hiring step moved successfully", data: {} });
+
+                }
+        
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again ", data: e.message })
+        })
+    })
+}

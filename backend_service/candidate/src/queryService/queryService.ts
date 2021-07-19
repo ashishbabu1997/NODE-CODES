@@ -40,6 +40,15 @@ export const companyCheck = (_body) => {
         values: [_body.candidateId],
     }
 }
+
+export const getCandidateDetailsFromTokenQueryService = (_body) => {
+    return {
+        name: 'get-details-from-token',
+        text: candidateQuery.getCandidateDetailsFromTokenQuery,
+        values: [_body.token],
+    }
+}
+
 export const addCandidateEmployee = (_body) => {
     return {
         name: 'add-candidate-employee',
@@ -1139,6 +1148,16 @@ export const getPositionName = (_body) => {
         values: [_body.positionId]
     }
 }
+
+
+export const getAssigneeDetails = (_body) => {
+    return {
+        name: 'get-hirer-assignee',
+        text: hiringQuery.getHirerAssigneeDetailsQuery,
+        values: [_body.positionId]
+    }
+}
+
 export const getCompanyName = (_body) => {
     return {
         name: 'get-company-name',
