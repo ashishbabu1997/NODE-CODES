@@ -513,3 +513,40 @@
 
 
 
+
+/**
+* @swagger
+* /reports:
+*   get:
+*     tags:
+*       - Admins
+*     name: Get all detailed reports 
+*     summary: Get all detailed reports for the recruiter 
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: fromDate
+*         schema:
+*         type: integer
+*       - in: query
+*         name: toDate
+*         schema:
+*         type: integer
+*         required: [fromDate,toDate]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
