@@ -176,7 +176,7 @@ export const addCompanyLocations = (_body) => {
     return {
         name: 'add-company-locations',
         text: locationQuery.addCompanyLocations,
-        values: [_body.userCompanyId, _body.streetAddress1, _body.streetAddress2, _body.zipCode, _body.city, _body.stateId, _body.countryId,_body.gstNumber,_body.panNumber,_body.employeeId],
+        values: [_body.userCompanyId, _body.streetAddress1, _body.streetAddress2, _body.zipCode, _body.city, _body.stateId, _body.countryId,_body.gstIn,_body.panNumber,_body.employeeId,currentTime()],
     }
 }
 

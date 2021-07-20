@@ -36,10 +36,7 @@ export const createCompanyLocations = (_body) => {
             }
             resolve({ code: 200, message: "Location added successfully", data: {} });
 
-        }).
-            catch((err) => {
-                reject({ code: 400, message: "Failed to connect to database", data: err.message });
-            })
+        })
 
     })
 }
