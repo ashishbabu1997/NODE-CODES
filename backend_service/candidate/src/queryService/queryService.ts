@@ -68,7 +68,7 @@ export const updateProviderCandidateDetails = (_body) => {
     return {
         name: 'update-provider-candidateDetails',
         text: candidateQuery.updateProviderCandidateProfileDetails,
-        values: [_body.candidateId, _body.firstName, _body.lastName, _body.phoneNumber, _body.email, currentTime(), _body.employeeId, _body.candidatePositionName, _body.companyId, _body.jobCategoryId, _body.candidateStatus, _body.locationName],
+        values: [_body.candidateId, _body.firstName, _body.lastName, _body.phoneNumber, _body.email, currentTime(), _body.employeeId, _body.candidatePositionName, _body.companyId, _body.jobCategoryId, _body.candidateStatus, _body.locationName,_body.citizenship],
     }
 }
 export const getFreelancerCompany = (_body) => {
