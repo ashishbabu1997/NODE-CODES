@@ -2091,8 +2091,8 @@ export const addProviderCandidateEllowRate = (_body) => {
 
                 if (_body.userRoleId == '1') {
                     console.log(_body)
-                    await client.query(queryService.updateProviderCandidateEllowRate(_body))
-
+                   await client.query(queryService.updateProviderCandidateEllowRate(_body))
+                   await client.query('COMMIT')
                     _body.candidates = [{
                         adminComment: _body.adminComment,
                         billingTypeId: _body.billingTypeId,

@@ -1000,7 +1000,7 @@ export const getUsersMail = (_body) => {
     return {
         name: 'get-users-mail',
         text: candidateQuery.getUserMail,
-        values: [_body.employeeId]
+        values: [parseInt(_body.employeeId)]
     }
 }
 
@@ -1104,7 +1104,7 @@ export const updateProviderCandidateEllowRate = (_body) => {
     return {
         name: 'link-provider-candidate-with-position',
         text: candidateQuery.updateEllowRate,
-        values: [_body.positionId, _body.candidateId, _body.ellowRate, _body.currencyTypeId, _body.billingTypeId, _body.adminComment, _body.employeeId, currentTime(), 1],
+        values: [_body.positionId, _body.candidateId, _body.ellowRate, _body.currencyTypeId, _body.billingTypeId, _body.adminComment, parseInt(_body.employeeId), currentTime(), 1],
     }
 }
 export const linkCandidateQuery = (element) => {

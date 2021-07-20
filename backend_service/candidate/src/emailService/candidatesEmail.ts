@@ -30,7 +30,7 @@ export const addCandidateReviewEmail = async (_body, client) => {
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>Email Function to remove a candidate from a position by admin and sending a notification email to the provider who added this candidate.
 export const removeCandidateFromPositionEmail = async (_body, client) => {
-    var jobReceivedId, candidateFirstName, candidateLastName, message, positionName, hirerName;
+    var  candidateFirstName, candidateLastName, message, positionName, hirerName;
     try {
         var candidateId = _body.candidateId;
         var positionId = _body.positionId;
@@ -71,7 +71,7 @@ export const removeCandidateFromPositionEmail = async (_body, client) => {
             emailClient.emailManagerForNoReply(hirerDetails.rows[0].email, subject, path, replacements);
         }
 
-        await createNotification({ positionId, jobReceivedId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name })
+        await createNotification({ positionId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name })
 
     } catch (e) {
         console.log(e.message)
@@ -85,7 +85,6 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
     try {
         const candidateList = _body.candidates;
         let positionName = '', hirerEmail = '', hirerCompanyId = null,
-            jobReceivedId = null,
             recruiterEmail = '', recruiterName = '',
             candidateCount = _body.count, candidateNames = '',
             cost = '';
@@ -102,7 +101,6 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
         positionName = positionResult.rows[0].positionName
         hirerEmail = positionResult.rows[0].email
         hirerCompanyId = positionResult.rows[0].companyId
-        jobReceivedId = positionResult.rows[0].jobReceivedId
 
         candidateList.forEach(async (element) => {
 
@@ -116,6 +114,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
 
             
             if (_body.userRoleId == 1) {
+                console.log("Fn   1")
                 let requiredCandidateData = []
                 if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': utils.capitalize(res.rows[0].candidate_first_name)+' '+utils.capitalize(res.rows[0].candidate_last_name) });
                 if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({ 'name': 'Total Years of Experience', 'value': work_experience });
@@ -152,7 +151,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
 
         if (_body.userRoleId != 1 && !_body.addEllowRateOnly) {
             var ellowAdmins = await client.query(queryService.getEllowAdmins());
-
+            console.log("Fn   2")
             if (Array.isArray(ellowAdmins.rows)) {
                 let replacements = { positionName: positionName, candidateNames };
                 let path = 'src/emailTemplates/addCandidatesText.html';
@@ -163,8 +162,8 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
             }
         }
         let message = candidateCount==1?`${candidateCount} candidate has been added for the position ${positionName}`:`${candidateCount} candidates has been added for the position ${positionName}`
-        createHirerNotifications({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: hirerCompanyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
-        createNotification({ positionId: _body.positionId, jobReceivedId: jobReceivedId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
+        createHirerNotifications({ positionId: _body.positionId, companyId: hirerCompanyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
+        createNotification({ positionId: _body.positionId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null })
 
     } catch (e) {
         console.log('error : ', e.message)
@@ -447,14 +446,13 @@ export const changeBlacklistedEmail = async (_body, client) => {
 export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
     try {
 
-        let positionName='',hirerEmail='',hirerCompanyId='',jobReceivedId='',recruiterEmail='',recruiterName='',cost='';        
+        let positionName='',hirerEmail='',hirerCompanyId='',recruiterEmail='',recruiterName='',cost='';        
         var positionResult = await client.query(queryService.getPositionDetails(_body));
 
         // Get position related details
         positionName = positionResult.rows[0].positionName
         hirerEmail = positionResult.rows[0].email
         hirerCompanyId = positionResult.rows[0].companyId
-        jobReceivedId = positionResult.rows[0].jobReceivedId
 
         console.log("body : ",_body);
         
@@ -524,7 +522,7 @@ export const requestForScreeningMail = async (_body, client) => {
         let adminPath = 'src/emailTemplates/requestForScreening.html';
         var ellowAdmins = await client.query(queryService.getEllowAdmins())
         var message=`A freelancer,${_body.candidateName} has requested to initiate the ellow screening process`
-        createNotification({ positionId:null, jobReceivedId: null, companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: _body.firstName, lastName: _body.lastName })
+        createNotification({ positionId:null, companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: _body.firstName, lastName: _body.lastName })
         if (Array.isArray(ellowAdmins.rows)) {
             ellowAdmins.rows.forEach(element => {
                 if (utils.notNull(element.email))
@@ -549,7 +547,7 @@ export const updateAvailabilityNotificationMails = async (_body, client) => {
         let adminPath = 'src/emailTemplates/updateAvailabilityNotificationMail.html';
         var ellowAdmins = await client.query(queryService.getEllowAdmins())
         var message=_body.availability==true?`The freelancer, ${_body.candidateName} is ready to apply for positions`:`The freelancer, ${_body.candidateName} is no longer available for any openings`
-        createNotification({ positionId:null, jobReceivedId: null, companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: _body.firstName, lastName: _body.lastName })
+        createNotification({ positionId:null, companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: _body.firstName, lastName: _body.lastName })
         if(_body.availability==true)
         {
             if (Array.isArray(ellowAdmins.rows)) {
