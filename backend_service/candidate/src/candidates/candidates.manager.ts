@@ -501,6 +501,7 @@ export const modifyProfileDetails = (_body) => {
                     await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
                 }
                 else {
+                    _body.sellerCompanyId=_body.userRoleId==1?_body.sellerCompanyId:_body.companyId
                     await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
                 }
                 resolve({ code: 200, message: "Candidate ProfileDetails updated successfully", data: {} });
