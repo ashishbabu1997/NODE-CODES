@@ -490,8 +490,6 @@ export const modifyResumeData = (_body) => {
     })
 }
 
-
-
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>> Function to update the candidate's profile details
 export const modifyProfileDetails = (_body) => {
