@@ -609,13 +609,10 @@ export const scheduleInterviewMail = async (_body, client) => {
 //>>>>>>>>>>>>>>Email Function for hirer's to send mail while they reject candidate via email button
 export const rejectCandidateMail = async (_body, client) => {
     try {
-        var skillset = await client.query(queryService.getCandidateSkillSet(_body))
-
         let adminReplacements = {
             'candidateName':_body.candidateName,
             'position':_body.positionName,
             'company':_body.companyName,
-            'skills':skillset.rows[0].skills,
         };
         let adminPath = 'src/emailTemplates/rejectCandidateAdminText.html';
         var ellowAdmins = await client.query(queryService.getEllowAdmins())
