@@ -114,7 +114,6 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
 
             
             if (_body.userRoleId == 1) {
-                console.log("Fn   1")
                 let requiredCandidateData = []
                 if (utils.notNull(name)) requiredCandidateData.push({ 'name': 'Name of the Candidate', 'value': utils.capitalize(res.rows[0].candidate_first_name)+' '+utils.capitalize(res.rows[0].candidate_last_name) });
                 if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({ 'name': 'Total Years of Experience', 'value': work_experience });
@@ -131,13 +130,16 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
                 const { signature } = recruiterSignDetails
                 element.uniqueId = nanoid();
                 await client.query(queryService.insertRequestToken(element));
+                _body.host='https://dev.ellow.io'
                 let replacements = {
                     'positionName': positionName,
                     'keys': requiredCandidateData,
                     'comments': element.adminComment ? element.adminComment : '',
                     'name': `With regards,\n ${recruiterName}`,
                     'number': signature,
-                    'filename': `${element.fileName}.pdf`
+                    'filename': `${element.fileName}.pdf`,
+                    'link':_body.host+`/approve-candidate?token=${element.uniqueId}&`,
+
                 };
 
                 let pdf = await builder.pdfBuilder(element.candidateId, _body.host);
@@ -151,7 +153,6 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
 
         if (_body.userRoleId != 1 && !_body.addEllowRateOnly) {
             var ellowAdmins = await client.query(queryService.getEllowAdmins());
-            console.log("Fn   2")
             if (Array.isArray(ellowAdmins.rows)) {
                 let replacements = { positionName: positionName, candidateNames };
                 let path = 'src/emailTemplates/addCandidatesText.html';
