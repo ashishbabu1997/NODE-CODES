@@ -2462,17 +2462,17 @@ export const downloadPdf = async (req, res) => {
 export const approveOrRejectAppliedCandidate = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
-            const client = await database().connect()
+            const client = await database()
             try {
                 var getCandidateDetailsFromToken = await client.query(queryService.getCandidateDetailsFromTokenQueryService(_body));
                 if (getCandidateDetailsFromToken.rowCount==0)
                 {
-                    reject({ code: 400, message: "This request is unable to process since action already taken", data: {} });
+                    _body.responseMessage=`Cannot process the request since this action is already taken`,_body.responseStatus=3
+                    resolve({ code: 200, message: _body.responseMessage, data: {status:_body.responseStatus} });
 
                 }
                 else
                 {
-                  
                         var results=getCandidateDetailsFromToken.rows[0]
                         _body.candidateId=results.candidate_id,_body.positionId=results.position_id,_body.assignedTo = _body.employeeId,_body.candidateHiringStepName= "Discussion with resource"
                         _body.candidateHiringStepOrder= 1,_body.candidateName=results.name
@@ -2482,32 +2482,35 @@ export const approveOrRejectAppliedCandidate = (_body) => {
                         _body.assignedTo=assigneeDetails.rows[0].employee_id,_body.assigneeName=assigneeDetails.rows[0].name
                         _body.companyName=positions.rows[0].company_name
                         _body.employeeId=_body.assignedTo
+                        console.log(_body.employeeId,_body.assignedTo,_body.positionId,_body.candidateId)
                         await client.query(queryService.updateDefaultAssigneeQuery(_body));
-                        if(_body.status=1)
+                        if(_body.status==1)
                         {
                             _body.auditLogComment=`${_body.assigneeName} (${_body.companyName}) has moved the candidate ${_body.candidateName} to ${_body.candidateHiringStepName} for the position ${_body.positionName}`
                             _body.assigneeComment=`${_body.assigneeName} has moved the candidate to ${_body.candidateHiringStepName}`
                             await client.query(queryService.updateCandidateHiringSteps(_body)); 
                             await client.query(queryService.updateCurrentStage(_body)); 
                             await emailService.scheduleInterviewMail(_body, client);
+
                         }
                         else
                         {
                             _body.auditLogComment=`${_body.assigneeName} (${_body.companyName}) has rejected the candidate ${_body.candidateName}  for the position ${_body.positionName}`
                             await client.query(queryService.rejectFromHiring(_body));
                             await emailService.rejectCandidateMail(_body, client);
+
                         }
+                        _body.responseMessage=_body.status==1?`You have successfully approved ${_body.candidateName} for discussion`:`You have rejected ${_body.candidateName} from your screening process`
+                        _body.responseStatus=_body.status==1?1:2
                         await client.query(queryService.insertAuditLogForHiring(_body))
                         await client.query(queryService.deleteRequestToken(_body))
-                        resolve({ code: 200, message: "Steps updated successfully", data: {} });
+                        resolve({ code: 200, message: _body.responseMessage, data: {status:_body.responseStatus} });
                 }
         
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            } finally {
-                client.release();
             }
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again ", data: e.message })

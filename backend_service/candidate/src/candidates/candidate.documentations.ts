@@ -2451,3 +2451,44 @@
 *       500:
 *         description: Server down
 */
+
+
+/**
+* @swagger
+* /candidates/approveOrRejectAppliedCandidate:
+*   post:
+*     tags:
+*       - Candidates
+*     name: Reject or Schedule Interview
+*     summary: Reject or schedule an interview for a candidate who have applied for a particular position
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             token:
+*               type: string            
+*             status:
+*               type: integer
+*           required:
+*             - token
+*             - status
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
