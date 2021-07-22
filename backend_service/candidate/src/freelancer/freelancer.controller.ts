@@ -8,7 +8,6 @@ export const fetchJobLists = (req, res) => {
     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
 }
 
-
 export const updateGeneralInfo = (req, res) => {
     const body = req.body;
     freelancerManager.modifyGeneralInfo(body).then((response: any) => {

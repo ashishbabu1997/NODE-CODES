@@ -1,17 +1,19 @@
 import profileQuery from './query/query';
 import database from '../common/database/database';
 import config from '../config/config';
+import * as queryService from '../queryService/queryService';
+
 
 export const getCompanyDetails = (_body) => {
     return new Promise((resolve, reject) => {
         _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
-        
+
         const query = {
             name: 'get-personal-profile',
             text: profileQuery.getProfiles,
             values: [parseInt(_body.userCompanyId)],
         }
-        
+
         database().query(query, (error, results) => {
             if (error) {
                 console.log(error)
@@ -38,7 +40,7 @@ export const getCompanyDetails = (_body) => {
                         addressLine2: element.addressLine2,
                         zipCode: element.zipCode,
                         city: element.city,
-                        country: element.countryId!==null?config.countries.find(e => e.id == element.countryId).name:""
+                        country: element.countryId !== null ? config.countries.find(e => e.id == element.countryId).name : ""
                     })
                 });
             }
@@ -47,3 +49,5 @@ export const getCompanyDetails = (_body) => {
         })
     })
 }
+
+

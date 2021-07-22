@@ -229,3 +229,55 @@ export const getSupportingDocumentQuery = (_body) => {
         values: [_body.userCompanyId]
     }
 }
+
+//-------------------------------------------------- Super Admin ---------------------------------------------------------//
+
+export const getCompanyPositions = (_body) => {
+    return {
+        name: 'get-company-positions',
+        text: companyQuery.companyPositions,
+        values: [_body.userCompanyId]
+    }
+}
+
+export const getCompanyResources = (_body) => {
+    return {
+        name: 'get-company-resources',
+        text: companyQuery.companyResources,
+        values: [_body.userCompanyId]
+    }
+}
+
+export const inactivateCompany = (_body) => {
+    return {
+        name: 'inactivate-company',
+        text: companyQuery.inactivateCompany,
+        values: [_body.userCompanyId]
+    }
+}
+
+export const inactivatePositions = (_body) => {
+    return {
+        name: 'inactivate-positions',
+        text: companyQuery.inactivatePositions,
+        values: [_body.userCompanyId]
+    }
+}
+
+export const inactivateResources = (_body) => {
+    return {
+        name: 'inactivate-resources',
+        text: companyQuery.inactivateResources,
+        values: [_body.userCompanyId]
+    }
+}
+
+export const permanentDeleteCompany = (_body) => {
+    return {
+        name: 'delete-company-permanently',
+        text: companyQuery.permanentDeleteCompany,
+        values: [_body.userCompanyId]
+    }
+}
+
+

@@ -67,3 +67,46 @@
 *       500:
 *         description: Server down
 */
+
+
+/**
+* @swagger
+* /companyProfile:
+*   delete:
+*     tags:
+*       - CompanyProfile
+*     name: Delete a company [Super Admin]
+*     summary:  Delete a company [Super Admin] use key inActivate to soft delete and permanentDelete to remove permanently either one of key is required to delete
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             inActivate:
+*               type: boolean
+*             forceRemove:
+*               type: boolean
+*             permanentDelete:
+*               type: boolean
+*             userCompanyId:
+*               type: integer
+*           required: [userCompanyId]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
