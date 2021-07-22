@@ -33,3 +33,9 @@ export const updatePreferences = (req, res) => {
         sendResponse(res, error.code, 0,402, error.message, error.data)
     })
 }
+
+export const deleteProfile = (req, res) => {
+    const body = req.body;
+    companyProfileManager.deleteCompany(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+        .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data))
+}
