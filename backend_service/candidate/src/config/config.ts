@@ -7,7 +7,7 @@ export default {
     "text": {
 
         "submitProfileSubject": "Profile Submission Notification",
-        "shareEmailSubject": "ellow Resume Share Notification",
+        "shareEmailSubject": "Resume shared from ellow",
         "newUserTextSubject": "ellow LOGIN PASSWORD",
         "newUserAdminTextSubject": "Customer Registration through Link",
         "addCandidatesTextSubject": "Applied Candidates List",
