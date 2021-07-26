@@ -130,7 +130,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
                 const { signature } = recruiterSignDetails
                 // element.uniqueId = nanoid();
                 // await client.query(queryService.insertRequestToken(element));
-                _body.host='https://dev.ellow.io'
+                // _body.host='https://dev.ellow.io'
                 let replacements = {
                     'positionName': positionName,
                     'keys': requiredCandidateData,
