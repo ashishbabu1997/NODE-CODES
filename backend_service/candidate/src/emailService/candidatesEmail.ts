@@ -128,8 +128,8 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
 
                 let recruiterSignDetails = utils.reccuiterSignatureCheck(recruiterEmail);
                 const { signature } = recruiterSignDetails
-                // element.uniqueId = nanoid();
-                // await client.query(queryService.insertRequestToken(element));
+                element.uniqueId = nanoid();
+                await client.query(queryService.insertRequestToken(element));
                 _body.host='https://dev.ellow.io'
                 let replacements = {
                     'positionName': positionName,
@@ -138,7 +138,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
                     'name': `With regards,\n ${recruiterName}`,
                     'number': signature,
                     'filename': `${element.fileName}.pdf`,
-                    // 'link':_body.host+`/approve-candidate?token=${element.uniqueId}&`,
+                    'link':_body.host+`/approve-candidate?token=${element.uniqueId}&`,
 
                 };
 
