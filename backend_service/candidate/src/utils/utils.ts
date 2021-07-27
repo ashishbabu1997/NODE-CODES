@@ -100,7 +100,7 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
          filterQuery=filterQuery+ '  and chsv."createdBy" in (select employee_id from employee where user_role_id=$createdUser and employee_id=chsv."createdBy")'
          queryValues = Object.assign({ createdUser: createdUser }, queryValues)
         }
-        if (![undefined, null, ''].includes(createdUser)) {
+        if (![undefined, null, ''].includes(jobCategoryName)) {
             filterQuery=filterQuery+ ' and chsv."jobCategoryId in (select job_category_id from job_category where job_category_name ILIKE $jobCategoryName'
             queryValues = Object.assign({ jobCategoryName: jobCategoryName }, queryValues)
            }
