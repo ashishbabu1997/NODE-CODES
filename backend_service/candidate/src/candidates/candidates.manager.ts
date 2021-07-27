@@ -92,8 +92,8 @@ export const listFreeCandidatesDetails = (_body) => {
             try {
                 queryText = selectQuery + utils.resourceTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
                 queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId }, queryValues)
+                console.log(queryText)
                 let candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
-
                 var queryCountText = totalQuery + utils.resourceTab(body) + filterQuery + searchQuery;
                 let candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
 
@@ -2553,9 +2553,14 @@ export const sendblueAPI = (_body) => {
                               "email":"ashish.babu@ellow.io",
                               "name":"John Doe"
                            }
+
                         ],
-                        "subject":"Hello",
-                        "htmlContent":"<html><head></head><body><p>Hello,</p>This is my first transactional email sent from Sendinblue.</p></body></html>"
+                        "templateId":3,
+                        "params":{  
+                            "name":"Ashish",
+                        },
+                        // "subject":"Hello",
+                        // "htmlContent":"<html><head></head><body><p>Hello,</p>This is my first transactional email sent from Sendinblue.</p></body></html>"
                      
                 };
                 
