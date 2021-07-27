@@ -8,14 +8,14 @@ import { createNotification } from './common/notifications/notifications';
 import * as emailClient from './emailService/emailService';
 import * as utils from './utils/utils'
 import * as queryService from './queryService/queryService'
+const currentTime = () => { return new Date().getTime() }
+
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>> Registration of a new employee(company)
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
         const mailId = _body.body.email
         const loweremailId = mailId.toLowerCase()
-        const currentTime = Math.floor(Date.now() / 1000);
-
         (async () => {
             const client = await database().connect()
             try {
@@ -57,7 +57,7 @@ export const createEmployee = (_body) => {
                     const createCompanyQuery = {
                         name: 'createCompany',
                         text: employeeQuery.createCompany,
-                        values: [_body.body.companyName, currentTime,domain],
+                        values: [_body.body.companyName, currentTime(),domain],
                     }
                     const result = await client.query(createCompanyQuery);
                     companyId = result.rows[0].company_id;
@@ -79,7 +79,7 @@ export const createEmployee = (_body) => {
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
-                    values: [_body.body.firstName, _body.body.lastName, loweremailId, _body.body.accountType, companyId, _body.body.telephoneNumber, currentTime, _body.userRoleId, approvalStatus, adminApproveStatus,_body.primaryEmail],
+                    values: [_body.body.firstName, _body.body.lastName, loweremailId, _body.body.accountType, companyId, _body.body.telephoneNumber, currentTime(), _body.userRoleId, approvalStatus, adminApproveStatus,_body.primaryEmail],
                 }
                 await client.query(createEmployeeQuery);
                 let message = `A new user ${_body.body.firstName + ' ' + _body.body.lastName} with company name ${_body.body.companyName} has registered with us`
@@ -114,7 +114,7 @@ export const createEmployee = (_body) => {
                 const createSettingsQuery = {
                     name: 'createSettings',
                     text: employeeQuery.createSettings,
-                    values: [companyId, currentTime],
+                    values: [companyId, currentTime()],
                 }
                 await client.query(createSettingsQuery);
                 if (approvalStatus) {
@@ -190,7 +190,6 @@ export const createEmployee = (_body) => {
 export const createEmployeeByAdmin = (_body) => {
     return new Promise((resolve, reject) => {
         const loweremailId = _body.email.toLowerCase()
-        const currentTime = Math.floor(Date.now());
 
         (async () => {
             const client = await database().connect()
@@ -224,7 +223,7 @@ export const createEmployeeByAdmin = (_body) => {
                     const createCompanyQuery = {
                         name: 'createCompany',
                         text: employeeQuery.createCompany,
-                        values: [_body.companyName, currentTime,domain],
+                        values: [_body.companyName, currentTime(),domain],
                     }
                     const result = await client.query(createCompanyQuery);
                     companyId = result.rows[0].company_id;
@@ -246,7 +245,7 @@ export const createEmployeeByAdmin = (_body) => {
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
-                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime, 2, approvalStatus, adminApproveStatus,_body.primaryEmail],
+                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime(), 2, approvalStatus, adminApproveStatus,_body.primaryEmail],
                 }
                 await client.query(createEmployeeQuery);
 
@@ -254,7 +253,7 @@ export const createEmployeeByAdmin = (_body) => {
                 const createSettingsQuery = {
                     name: 'createSettings',
                     text: employeeQuery.createSettings,
-                    values: [companyId, currentTime],
+                    values: [companyId, currentTime()],
                 }
                 await client.query(createSettingsQuery);
 
@@ -331,7 +330,6 @@ export const createEmployeeByAdmin = (_body) => {
 //>>>>>>>>>>>>>>>>>>Verifying email address of a registered user
 export const checkCompanyByWorkMail = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now() / 1000);
         
         (async () => {
             const client = await database().connect()
@@ -397,7 +395,6 @@ export const checkCompanyByWorkMail = (_body) => {
 export const createFreelancer = (_body) => {
     return new Promise((resolve, reject) => {
         const loweremailId = _body.email.toLowerCase()
-        const currentTime = Math.floor(Date.now());
 
         (async () => {
             const client = await database()
@@ -433,7 +430,7 @@ export const createFreelancer = (_body) => {
                 const createFreelancerQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createFreelancer,
-                    values: { firstname: _body.firstName, lastname: _body.lastName, email: loweremailId, yoe: _body.yoe, phone: _body.telephoneNumber, createdtime: currentTime, token: uniqueId },
+                    values: { firstname: _body.firstName, lastname: _body.lastName, email: loweremailId, yoe: _body.yoe, phone: _body.telephoneNumber, createdtime: currentTime(), token: uniqueId },
                 }
                 await client.query(createFreelancerQuery);
                 let Name = _body.firstName.charAt(0).toUpperCase() + _body.firstName.slice(1) + " " + _body.lastName.charAt(0).toUpperCase() + _body.lastName.slice(1)
@@ -510,7 +507,6 @@ export const createFreelancer = (_body) => {
 //>>>>>>>>>>>>>>>>>>Password reset for freelancer  
 export const resetFreelancerToken = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database()
             try {
@@ -562,7 +558,6 @@ export const resetFreelancerToken = (_body) => {
 //>>>>>>>>>>>>>>>>>>Password reset for freelancer  
 export const tokenCheck = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database()
             try {
@@ -599,7 +594,6 @@ export const tokenCheck = (_body) => {
 //>>>>>>>>>>>>>>>>>>Ellow recruiter signup API  
 export const ellowAdminSignup = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());
         const mailId = _body.body.email
         const loweremailId = mailId.toLowerCase()
             (async () => {
@@ -637,7 +631,7 @@ export const ellowAdminSignup = (_body) => {
                     const adminSignup = {
                         name: 'admin-signup',
                         text: employeeQuery.ellowAdminSignupQuery,
-                        values: { firstname: _body.firstName, lastname: _body.lastName, email: _body.email, telephonenumber: _body.phoneNumber, password: hashedPassword, accounttype: 3, userroleid: 1, status: true, adminapprovestatus: 1, createdon: currentTime }
+                        values: { firstname: _body.firstName, lastname: _body.lastName, email: _body.email, telephonenumber: _body.phoneNumber, password: hashedPassword, accounttype: 3, userroleid: 1, status: true, adminapprovestatus: 1, createdon: currentTime() }
                     }
 
                     await client.query(adminSignup);
@@ -661,7 +655,6 @@ export const ellowAdminSignup = (_body) => {
 //>>>>>>>>>>>>>>>>>>Ellow recruiter signup API  
 export const getAdminDetails = (_body) => {
     return new Promise((resolve, reject) => {
-        const currentTime = Math.floor(Date.now());
         (async () => {
             const client = await database()
             try {
