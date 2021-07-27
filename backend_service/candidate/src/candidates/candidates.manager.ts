@@ -16,7 +16,7 @@ import * as dotenv from "dotenv";
 import * as emailClient from '../emailManager/emailManager';
 import { nanoid } from 'nanoid';
 import * as builder from '../utils/Builder';
-
+ import * as SibApiV3Sdk from 'sib-api-v3-sdk';
 dotenv.config();
 
 // >>>>>>> FUNC. >>>>>>>
@@ -2507,6 +2507,59 @@ export const approveOrRejectAppliedCandidate = (_body) => {
                         resolve({ code: 200, message: _body.responseMessage, data: {status:_body.responseStatus} });
                 }
         
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again ", data: e.message })
+        })
+    })
+}
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> SEND BLUE
+export const sendblueAPI = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+              
+               
+                var defaultClient = SibApiV3Sdk.ApiClient.instance;
+
+                // Configure API key authorization: api-key
+                var apiKey = defaultClient.authentications['api-key'];
+                apiKey.apiKey = process.env.SIBAPIKEY;
+                
+                // Uncomment below two lines to configure authorization using: partner-key
+                // var partnerKey = defaultClient.authentications['partner-key'];
+                // partnerKey.apiKey = 'YOUR API KEY';
+                
+                var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+                
+                var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
+                
+                sendSmtpEmail = {
+                      
+                        "sender":{  
+                           "name":"Jyothis",
+                           "email":"jjoseph@ellow.io"
+                        },
+                        "to":[  
+                           {  
+                              "email":"ashish.babu@ellow.io",
+                              "name":"John Doe"
+                           }
+                        ],
+                        "subject":"Hello",
+                        "htmlContent":"<html><head></head><body><p>Hello,</p>This is my first transactional email sent from Sendinblue.</p></body></html>"
+                     
+                };
+                
+                await apiInstance.sendTransacEmail(sendSmtpEmail)
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
