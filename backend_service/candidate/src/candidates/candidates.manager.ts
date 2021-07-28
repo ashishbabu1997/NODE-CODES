@@ -2586,23 +2586,29 @@ export const sendinblueAddContact = (_body) => {
             const client = await database()
             try {
               
-                let defaultClient = SibApiV3Sdk.ApiClient.instance;
+                // let defaultClient = SibApiV3Sdk.ApiClient.instance;
 
-                let apiKey = defaultClient.authentications['api-key'];
-                apiKey.apiKey = process.env.SIBAPIKEY;
+                // let apiKey = defaultClient.authentications['api-key'];
+                // apiKey.apiKey = process.env.SIBAPIKEY;
                 
-                let apiInstance = new SibApiV3Sdk.ContactsApi();
+                // let apiInstance = new SibApiV3Sdk.ContactsApi();
                 
-                let createContact = new SibApiV3Sdk.CreateContact();
+                // let createContact = new SibApiV3Sdk.CreateContact();
                 
-                createContact.email = 'ashish.babu@ellow.io';
-                createContact.attributes={'FIRSTNAME':'Ashish','LASTNAME':'Babu'}
-                createContact.listIds = [5]
-                apiInstance.createContact(createContact).then(function() {
-                    console.log('API called successfully.');
-                  }, function(error) {
-                    console.error(error);
-                  });
+                // createContact.email = 'ashish.babu@ellow.io';
+                // createContact.attributes={'FIRSTNAME':'Ashish','LASTNAME':'Babu'}
+                // createContact.listIds = [5]
+                // apiInstance.createContact(createContact).then(function() {
+                //     console.log('API called successfully.');
+                //   }, function(error) {
+                //     console.error(error);
+                //   });
+                const token=589303
+                let path = 'src/emailTemplates/addCandidateHirerMail.html';
+                let subjectLine = 'Test'
+                let replacements={positionName:'Software Developer',keys:{name:'Nayan C',value:'nayancjose@gmail.com'},commments:'Good attitude',link:'dev.ellow.io/login' }
+        
+                emailClient.emailManagerForNoReply('ashish.babu@ellow.io',subjectLine, path, replacements);
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
