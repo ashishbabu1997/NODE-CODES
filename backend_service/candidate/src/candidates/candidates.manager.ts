@@ -2575,3 +2575,41 @@ export const sendblueAPI = (_body) => {
         })
     })
 }
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> SEND BLUE
+export const sendinblueAddContact = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+              
+               
+                var defaultClient = SibApiV3Sdk.ApiClient.instance;
+
+                // Configure API key authorization: api-key
+                var apiKey = defaultClient.authentications['api-key'];
+                apiKey.apiKey = process.env.SIBAPIKEY;
+                
+                
+                let apiInstance = new SibApiV3Sdk.ContactsApi();
+
+                let createContact = new SibApiV3Sdk.CreateContact();
+                
+                createContact.email = 'varun.v@ellow.io';
+                createContact.attributes={FNAME:"Varun",LNAME:"Sankar"};
+                createContact.listIds = [5]
+                
+                apiInstance.createContact(createContact)
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again ", data: e.message })
+        })
+    })
+}
