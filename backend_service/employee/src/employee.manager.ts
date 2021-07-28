@@ -353,7 +353,7 @@ export const checkCompanyByWorkMail = (_body) => {
                            {
                                     if (results.rows[0].admin_approve_status==0 || results.rows[0].admin_approve_status==null)
                                     {
-                                        var message=results.rows[0].admin_approve_status==0?'This company was once rejected by ellow recruiters.Please approve the company once again from All Companies page':'This company is already registered with ellow.io and is waiting for approval'
+                                        var message=results.rows[0].admin_approve_status==0?'We are unable to process your request':'The company you are trying to register is already registered with ellow.io, which is waiting for our admin approval'
                                         reject({ code: 400, message:  message, data:'Success' })
                                     }
                                     else{
