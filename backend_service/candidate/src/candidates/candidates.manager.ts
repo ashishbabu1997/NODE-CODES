@@ -2586,23 +2586,23 @@ export const sendinblueAddContact = (_body) => {
             const client = await database()
             try {
               
-               
-                var defaultClient = SibApiV3Sdk.ApiClient.instance;
+                let defaultClient = SibApiV3Sdk.ApiClient.instance;
 
-                // Configure API key authorization: api-key
-                var apiKey = defaultClient.authentications['api-key'];
+                let apiKey = defaultClient.authentications['api-key'];
                 apiKey.apiKey = process.env.SIBAPIKEY;
                 
-                
                 let apiInstance = new SibApiV3Sdk.ContactsApi();
-
+                
                 let createContact = new SibApiV3Sdk.CreateContact();
                 
-                createContact.email = 'varun.v@ellow.io';
-                createContact.attributes={FNAME:"Varun",LNAME:"Sankar"};
+                createContact.email = 'ashish.babu@ellow.io';
+                createContact.attributes={'FIRSTNAME':'Ashish','LASTNAME':'Babu'}
                 createContact.listIds = [5]
-                
-                apiInstance.createContact(createContact)
+                apiInstance.createContact(createContact).then(function() {
+                    console.log('API called successfully.');
+                  }, function(error) {
+                    console.error(error);
+                  });
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')
