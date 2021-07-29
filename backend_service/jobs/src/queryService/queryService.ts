@@ -95,6 +95,32 @@ export const getCompanyName = (_body) => {
 
     }
 }
+
+
+export const companyCheck = (_body) => {
+    return {
+        name: 'verify-freelancer-company',
+        text: jobReceivedQuery.verifyFreelancerCompany,
+        values: [_body.candidateId],
+    }
+}
+export const verifyCandidateInCandidateEmployee = (_body) => {
+    return {
+        name: 'verify-candidate-in-candidateEmployee',
+        text: jobReceivedQuery.verifyCandidateInCandidateEmployeeTable,
+        values: [_body.candidateId],
+    }
+}
+
+export const addCandidateEmployee = (_body) => {
+    return {
+        name: 'add-candidate-employee',
+        text: jobReceivedQuery.addCandidateEmployeeDetails,
+        values: [_body.candidateEmployeeId, _body.candidateId, true, currentTime(), currentTime()],
+    }
+}
+
+
 export const modifyCandidateAvailabilityQuery = (_body) => {
     return {
         name: 'modify-candidate-availability',
@@ -107,6 +133,15 @@ export const addEmployee = (_body) => {
         name: 'add-employee',
         text: jobReceivedQuery.addEmployee,
         values: [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.email, _body.phoneNumber, currentTime()]
+
+    }
+}
+
+export const addEmployeeByAdmin = (_body) => {
+    return {
+        name: 'add-employee',
+        text: jobReceivedQuery.addEmployeeByAdmin,
+        values: [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.email, _body.phoneNumber, currentTime(),_body.hashedPassword]
 
     }
 }

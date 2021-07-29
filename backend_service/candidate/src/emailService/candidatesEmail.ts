@@ -138,8 +138,8 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
                     'name': `With regards,\n ${recruiterName}`,
                     'number': signature,
                     'filename': `${element.fileName}.pdf`,
-                    // 'link':_body.host+`/approve-candidate?token=${element.uniqueId}&`,
-
+                    // 'scheduleLink':_body.host+`/approve-candidate?token=${element.uniqueId}&status=1`,
+                    // 'rejectLink':_body.host+`/approve-candidate?token=${element.uniqueId}&status=2`
                 };
 
                 let pdf = await builder.pdfBuilder(element.candidateId, _body.host);

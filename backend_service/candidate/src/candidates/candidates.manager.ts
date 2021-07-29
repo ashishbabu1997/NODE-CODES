@@ -16,7 +16,7 @@ import * as dotenv from "dotenv";
 import * as emailClient from '../emailManager/emailManager';
 import { nanoid } from 'nanoid';
 import * as builder from '../utils/Builder';
-
+ import * as SibApiV3Sdk from 'sib-api-v3-sdk';
 dotenv.config();
 
 // >>>>>>> FUNC. >>>>>>>
@@ -92,8 +92,8 @@ export const listFreeCandidatesDetails = (_body) => {
             try {
                 queryText = selectQuery + utils.resourceTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
                 queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId }, queryValues)
+                console.log(queryText)
                 let candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
-
                 var queryCountText = totalQuery + utils.resourceTab(body) + filterQuery + searchQuery;
                 let candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
 
@@ -2507,6 +2507,108 @@ export const approveOrRejectAppliedCandidate = (_body) => {
                         resolve({ code: 200, message: _body.responseMessage, data: {status:_body.responseStatus} });
                 }
         
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again ", data: e.message })
+        })
+    })
+}
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> SEND BLUE
+export const sendblueAPI = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+              
+               
+                var defaultClient = SibApiV3Sdk.ApiClient.instance;
+
+                // Configure API key authorization: api-key
+                var apiKey = defaultClient.authentications['api-key'];
+                apiKey.apiKey = process.env.SIBAPIKEY;
+                
+                // Uncomment below two lines to configure authorization using: partner-key
+                // var partnerKey = defaultClient.authentications['partner-key'];
+                // partnerKey.apiKey = 'YOUR API KEY';
+                
+                var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+                
+                var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail(); // SendSmtpEmail | Values to send a transactional email
+                
+                sendSmtpEmail = {
+                      
+                        "sender":{  
+                           "name":"Jyothis",
+                           "email":"jjoseph@ellow.io"
+                        },
+                        "to":[  
+                           {  
+                              "email":"ashish.babu@ellow.io",
+                              "name":"John Doe"
+                           }
+
+                        ],
+                        "templateId":3,
+                        "params":{  
+                            "name":"Ashish",
+                        },
+                        // "subject":"Hello",
+                        // "htmlContent":"<html><head></head><body><p>Hello,</p>This is my first transactional email sent from Sendinblue.</p></body></html>"
+                     
+                };
+                
+                await apiInstance.sendTransacEmail(sendSmtpEmail)
+            } catch (e) {
+                console.log(e)
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again ", data: e.message })
+        })
+    })
+}
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> SEND BLUE
+export const sendinblueAddContact = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+              
+                // let defaultClient = SibApiV3Sdk.ApiClient.instance;
+
+                // let apiKey = defaultClient.authentications['api-key'];
+                // apiKey.apiKey = process.env.SIBAPIKEY;
+                
+                // let apiInstance = new SibApiV3Sdk.ContactsApi();
+                
+                // let createContact = new SibApiV3Sdk.CreateContact();
+                
+                // createContact.email = 'ashish.babu@ellow.io';
+                // createContact.attributes={'FIRSTNAME':'Ashish','LASTNAME':'Babu'}
+                // createContact.listIds = [5]
+                // apiInstance.createContact(createContact).then(function() {
+                //     console.log('API called successfully.');
+                //   }, function(error) {
+                //     console.error(error);
+                //   });
+                const token=589303
+                let path = 'src/emailTemplates/addCandidateHirerMail.html';
+                let subjectLine = 'Test'
+                let replacements={positionName:'Software Developer',keys:{name:'Nayan C',value:'nayancjose@gmail.com'},commments:'Good attitude',link:'dev.ellow.io/login' }
+        
+                emailClient.emailManagerForNoReply('ashish.babu@ellow.io',subjectLine, path, replacements);
             } catch (e) {
                 console.log(e)
                 await client.query('ROLLBACK')

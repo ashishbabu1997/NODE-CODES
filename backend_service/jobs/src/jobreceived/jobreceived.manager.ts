@@ -212,6 +212,7 @@ export const saveCandidateProfile = (_body) => {
                     var companyName=companyResults.rows[0].company_name
                     if (_body.userRoleId==1 &&companyName=='Freelancer')
                     {
+                        console.log("SAVING CANDIDATE TO EMPLOYEE",companyName,_body.candidateId,_body.email,_body.sellerCompanyId )
                         var employeeResult= await client.query(queryService.addEmployee(_body))
                         const addCandidateEmployee = {
                             name: 'add-candidate-employee',
@@ -340,34 +341,44 @@ export const submitCandidateProfile = (_body) => {
                 let candidateLastName=result.rows[0].candidate_last_name;
                 _body.emailAddress=result.rows[0].email_address;
                 _body.sellerCompanyId = result.rows[0].company_id;
-                let jobReceivedId = null
                 let positionName = _body.positionName;
                 var companyResults = await client.query(queryService.getCompanyName(_body))
-                var companyName=companyResults.rows[0].company_name
+                _body.companyType=companyResults.rows[0].company_type
                 let companyId=  _body.sellerCompanyId 
                 if (_body.userRoleId==1)
                 {
                     await client.query(queryService.changeCandidateAssignee(_body));
 
-                    if(companyName=='Freelancer')
+                    if(_body.companyType==2)
                     {
-                        const password = passwordGenerator.generate({
-                            length: 10,
-                            numbers: true
-                        });
-                        _body.hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                        await client.query(queryService.updatePasswordToEmployee(_body))
-                        var userSubject="ellow.io  Login Credentials"
-                        let userPath = 'src/emailTemplates/freelancerLoginText.html';
-                        var userCredentialReplacements =  {
-                            name:candidateFirstName,
-                            user:_body.emailAddress,
-                            password:password    
-                        };
-                        
-                                emailClient.emailManagerForNoReply(_body.emailAddress,userSubject,userPath,userCredentialReplacements);
-                            
-                    }   
+                        var companyCheckResults = await client.query(queryService.companyCheck(_body));
+                        var data = companyCheckResults.rows[0]
+                        _body.firstName = data.candidate_first_name
+                        _body.lastName = data.candidate_last_name
+                        _body.sellerCompanyId = data.company_id
+                        _body.email = data.email_address
+                        _body.phoneNumber = data.phone_number
+                        var results = await client.query(queryService.verifyCandidateInCandidateEmployee(_body));
+                        if (results.rowCount == 0) {
+                                    const password = passwordGenerator.generate({
+                                        length: 10,
+                                        numbers: true
+                                    });
+                                    _body.hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                                    var employeeResult = await client.query(queryService.addEmployeeByAdmin(_body))
+                                    _body.candidateEmployeeId = employeeResult.rows[0].employee_id
+                                    await client.query(queryService.addCandidateEmployee(_body))
+                                    var userSubject = "ellow.io  Login Credentials"
+                                    let userPath = 'src/emailTemplates/freelancerAdminLoginText.html';
+                                    var userCredentialReplacements = {
+                                        name: _body.firstName,
+                                        user: _body.email,
+                                        password: password
+                                    };
+
+                                    emailClient.emailManagerForNoReply(_body.email, userSubject, userPath, userCredentialReplacements)
+                        }
+                    }
                 }
                 await client.query('COMMIT');
                 var subject='Candidate Addition Notification'
