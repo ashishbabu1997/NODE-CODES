@@ -73,6 +73,4 @@ router
 .get('/sendblue',candidateController.sendblueAPI)
 .get('/sendblueAddContact',candidateController.sendblueAddContact)
 
-
-
 export default router; 
