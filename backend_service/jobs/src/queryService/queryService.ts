@@ -140,7 +140,7 @@ export const addEmployee = (_body) => {
 export const addEmployeeByAdmin = (_body) => {
     return {
         name: 'add-employee',
-        text: jobReceivedQuery.addEmployee,
+        text: jobReceivedQuery.addEmployeeByAdmin,
         values: [_body.firstName, _body.lastName, _body.sellerCompanyId, _body.email, _body.phoneNumber, currentTime(),_body.hashedPassword]
 
     }
