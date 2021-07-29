@@ -369,7 +369,7 @@ export const submitCandidateProfile = (_body) => {
                                     _body.candidateEmployeeId = employeeResult.rows[0].employee_id
                                     await client.query(queryService.addCandidateEmployee(_body))
                                     var userSubject = "ellow.io  Login Credentials"
-                                    let userPath = 'src/emailTemplates/freelancerAdminLoginText.html';
+                                    let userPath = 'src/emailTemplates/freelancerLoginText.html';
                                     var userCredentialReplacements = {
                                         name: _body.firstName,
                                         user: _body.email,
