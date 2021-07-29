@@ -365,7 +365,7 @@ export const submitCandidateProfile = (_body) => {
                                         numbers: true
                                     });
                                     _body.hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                                    var employeeResult = await client.query(queryService.addEmployee(_body))
+                                    var employeeResult = await client.query(queryService.addEmployeeByAdmin(_body))
                                     _body.candidateEmployeeId = employeeResult.rows[0].employee_id
                                     await client.query(queryService.addCandidateEmployee(_body))
                                     var userSubject = "ellow.io  Login Credentials"

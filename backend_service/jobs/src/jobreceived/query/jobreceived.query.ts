@@ -26,6 +26,7 @@ export default {
     updatePassword:'update employee set password=$1,status=$2,admin_approve_status=$3 where email like $4',
     addCandidateEmployeeDetails:'insert into candidate_employee (employee_id,candidate_id,status,created_on,updated_on) values ($1,$2,$3,$4,$5)',
     addEmployee:'insert into employee (firstname,lastname,company_id,email,telephone_number,created_on,updated_on,account_type,user_role_id,admin_approve_status) values ($1,$2,$3,$4,$5,$6,$6,4,4,1) returning employee_id',
+    addEmployeeByAdmin:'insert into employee (firstname,lastname,company_id,email,telephone_number,created_on,updated_on,account_type,user_role_id,admin_approve_status,password) values ($1,$2,$3,$4,$5,$6,$6,4,4,1,$7) returning employee_id',
     updateCandidateStatus:'update candidate set candidate_status=3,created_on=$3,updated_by=$2,updated_on=$3 where candidate_id=$1 returning candidate_first_name,candidate_last_name,company_id,email_address;',
     fetchResourceAllocatedRecruiterDetails:'select e.email from employee e inner join candidate c on c.allocated_to=e.employee_id where c.candidate_id=$1',
     getPositionNameFromId:'select p.position_name,e.email,c.company_name from positions p inner join employee e on e.employee_id=p.allocated_to inner join company c on c.company_id=p.company_id where p.position_id=$1',
