@@ -403,6 +403,9 @@ export const sentFreelancerLoginCredentialsController = (req, res) => {
     })
 }
 
+
+
+
 export const downloadPdfController = (req, res) => {
     // const body = req.body;
     //     candidateManager.downloadPdf(body).then((response: any) => {
