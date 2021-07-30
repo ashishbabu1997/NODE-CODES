@@ -77,6 +77,48 @@
 
 /**
 * @swagger
+* /editRecruiterDetails:
+*   put:
+*     tags:
+*       - Employees
+*     name: Edit Ellow Recruiter
+*     summary: Edit Ellow Recruiter details
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             email:
+*               type: string
+*             firstName:
+*               type: string
+*             lastName :
+*               type: string 
+*             phoneNumber:
+*               type: integer
+*             recruiterId:
+*               type: integer
+*           required: [email,firstName,lastName,recruiterId]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /freelancer:
 *   post:
 *     tags:

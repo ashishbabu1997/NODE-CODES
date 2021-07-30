@@ -64,6 +64,15 @@ export const  ellowRecruiterSignup= (req, res) => {
     })
 }
 
+export const  editRecuiterDetails= (req, res) => {
+    const body = req.body;
+    employeeManager.editRecuiterDetails(body).then((response: any) => {
+        sendResponse(res, response.code, 1,202, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0,error.statusCode, error.message, error.data)
+    })
+}
+
 export const  getellowAdminsDetails= (req, res) => {
     const body = req.query;
     employeeManager.getAdminDetails(body).then((response: any) => {

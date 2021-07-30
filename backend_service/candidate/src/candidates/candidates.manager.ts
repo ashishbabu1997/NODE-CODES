@@ -2482,14 +2482,12 @@ export const approveOrRejectAppliedCandidate = (_body) => {
                         _body.assignedTo=assigneeDetails.rows[0].employee_id,_body.assigneeName=assigneeDetails.rows[0].name
                         _body.companyName=positions.rows[0].company_name
                         _body.employeeId=_body.assignedTo
-                        console.log(_body.employeeId,_body.assignedTo,_body.positionId,_body.candidateId)
                         await client.query(queryService.updateDefaultAssigneeQuery(_body));
                         if(_body.status==1)
                         {
                             _body.auditLogComment=`${_body.assigneeName} (${_body.companyName}) has moved the candidate ${_body.candidateName} to ${_body.candidateHiringStepName} for the position ${_body.positionName}`
                             _body.assigneeComment=`${_body.assigneeName} has moved the candidate to ${_body.candidateHiringStepName}`
                             await client.query(queryService.updateCandidateHiringSteps(_body)); 
-                            await client.query(queryService.updateCurrentStage(_body)); 
                             await emailService.scheduleInterviewMail(_body, client);
 
                         }
@@ -2500,6 +2498,7 @@ export const approveOrRejectAppliedCandidate = (_body) => {
                             await emailService.rejectCandidateMail(_body, client);
 
                         }
+                        await client.query(queryService.updateCurrentStage(_body)); 
                         _body.responseMessage=_body.status==1?`You have successfully approved ${_body.candidateName} for discussion`:`You have rejected ${_body.candidateName} from your screening process`
                         _body.responseStatus=_body.status==1?1:2
                         await client.query(queryService.insertAuditLogForHiring(_body))

@@ -722,3 +722,60 @@ export const getAllEmployees = (_body) => {
 
     })
 }
+
+export function editRecuiterDetails(_body: any) {
+    return new Promise((resolve, reject) => {
+        const mailId = _body.email
+        const loweremailId = mailId.toLowerCase()
+            (async () => {
+                const client = await database()
+                try {
+                    const getEmailQuery = {
+                        name: 'get-email',
+                        text: employeeQuery.getEmail,
+                        values: [loweremailId],
+                    }
+                    const getEmailResult = await client.query(getEmailQuery);
+
+                    if (getEmailResult.rowCount >= 1) {
+                        var adminStatus = getEmailResult.rows[0].admin_approve_status
+                        var emailId = getEmailResult.rows[0].email
+                        if (emailId == loweremailId) {
+                            if (adminStatus == 2 || adminStatus == null) {
+                                reject({ code: 400, statusCode: 406, message: "Your account is held for Admin approval", data: {} });
+                                return;
+                            }
+                            else if (adminStatus == 1) {
+                                reject({ code: 400, statusCode: 407, message: "You are already registered", data: {} });
+                                return;
+                            }
+                            else if (adminStatus == 0) {
+                                reject({ code: 400, statusCode: 408, message: "This account is rejected by Ellow", data: {} });
+                                return;
+                            }
+                        }
+
+                    }
+                    await client.query('BEGIN');
+                    const adminSignup = {
+                        name: 'edit-recuiter-details',
+                        text: employeeQuery.updateRecruiterDetails,
+                        values: { firstname: _body.firstName, lastname: _body.lastName, email: _body.email, telephonenumber: _body.phoneNumber, currenttime: currentTime(),employeeid:_body.employeeId,recruiterid:_body.recruiterId }
+                    }
+
+                    await client.query(adminSignup);
+                    resolve({ code: 200, message: "Success", data: {} });
+                    await client.query('COMMIT')
+                } catch (e) {
+                    console.log("Error e1: ", e);
+                    await client.query('ROLLBACK')
+                    reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+                }
+            })().catch(e => {
+                console.log("Error e2: ", e);
+                reject({ code: 400, message: "Failed. Please try again.", data: { e } })
+            })
+
+    })
+}
+
