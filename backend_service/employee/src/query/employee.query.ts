@@ -15,6 +15,6 @@ export default {
     "getellowAdmins": "select concat(firstname,' ',lastname) as name ,employee_id as employeeId,email as email from employee where status=true and user_role_id=1",
     "getEmployeesQuery": "select concat(firstname,' ',lastname) as name ,employee_id as employeeId from employee where status=true and company_id=$1",
     "getEmployeesFromPositionId": "select concat(e.firstname,' ',e.lastname) as name ,e.employee_id as employeeId from employee e  left join positions p on p.company_id=e.company_id where p.position_id=$1",
-
+    "updateRecruiterDetails":"update employee set email=$email, firstname=$firstName, lastname=$lastName, telephone_number=$phoneNumber, updated_on=$currenttime, updated_by=$employeeid where employee_id = $recruiterid"
     
 }
