@@ -2482,7 +2482,6 @@ export const approveOrRejectAppliedCandidate = (_body) => {
                         _body.assignedTo=assigneeDetails.rows[0].employee_id,_body.assigneeName=assigneeDetails.rows[0].name
                         _body.companyName=positions.rows[0].company_name
                         _body.employeeId=_body.assignedTo
-                        console.log(_body.employeeId,_body.assignedTo,_body.positionId,_body.candidateId)
                         await client.query(queryService.updateDefaultAssigneeQuery(_body));
                         if(_body.status==1)
                         {
