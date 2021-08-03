@@ -128,8 +128,8 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
 
                 let recruiterSignDetails = utils.reccuiterSignatureCheck(recruiterEmail);
                 const { signature } = recruiterSignDetails
-                // element.uniqueId = nanoid();
-                // await client.query(queryService.insertRequestToken(element));
+                element.uniqueId = nanoid();
+                await client.query(queryService.insertRequestToken(element));
                 let replacements = {
                     'positionName': positionName,
                     'keys': requiredCandidateData,
@@ -137,8 +137,8 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
                     'name': `With regards,\n ${recruiterName}`,
                     'number': signature,
                     'filename': `${element.fileName}.pdf`,
-                    // 'scheduleLink':_body.host+`/approve-candidate?token=${element.uniqueId}&status=1`,
-                    // 'rejectLink':_body.host+`/approve-candidate?token=${element.uniqueId}&status=2`
+                    'scheduleLink':_body.host+`/approve-candidate?token=${element.uniqueId}&status=1`,
+                    'rejectLink':_body.host+`/approve-candidate?token=${element.uniqueId}&status=2`
                 };
 
                 let pdf = await builder.pdfBuilder(element.candidateId, _body.host);
