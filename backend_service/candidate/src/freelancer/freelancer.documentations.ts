@@ -273,7 +273,7 @@
 *       - Candidates
 *     name: List draft freelancers
 *     summary: list available draft freelancers
-*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ] 
+*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ]
 *     consumes:
 *       - application/json
 *     security:
@@ -346,7 +346,7 @@
 *                 locations:
 *                   type: array
 *                   items:
-*                     type: string        
+*                     type: string
 *                 fromDate:
 *                   type: integer
 *                 toDate:
@@ -366,11 +366,11 @@
 *                 positionStatus:
 *                   type: array
 *                   items:
-*                     type: string  
+*                     type: string
 *                 candidateStatus:
 *                   type: array
 *                   items:
-*                     type: string              
+*                     type: string
 *     responses:
 *       200:
 *         description: Api success

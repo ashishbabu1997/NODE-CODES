@@ -239,7 +239,7 @@
 *   put:
 *     tags:
 *       - Hiring
-*     name: Reject candidate hiring 
+*     name: Reject candidate hiring
 *     summary:  Reject candidate from hiring process
 *     security:
 *       - bearerAuth: []

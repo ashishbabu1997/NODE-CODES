@@ -7,7 +7,7 @@
     "predev": "tsc -w -p src &",
     "dev": "nodemon dist/Server.js",
     "prod_stop": "pm2 stop dist/Server.js",
-    "lintbe": "tslint **/**.ts{,x}",
+    "lintbe": "tslint 'src/**/*.ts?(x)'",
     "serve": "pm2 start dist/Server.js",
     "prod": "npm run serve",
     "preprod": "tsc -p src  & pm2 stop dist/Server.js &"
@@ -47,12 +47,22 @@
     "sib-api-v3-sdk": "^8.2.1",
     "swagger-jsdoc": "^5.0.1",
     "swagger-ui-express": "^4.1.4",
+    "tslint": "^6.1.3",
     "xlsx": "^0.16.9"
   },
   "devDependencies": {
     "@types/es6-promise": "^3.3.0",
     "@types/html-docx-js": "^0.3.0",
     "@types/node": "^14.0.27",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^1.7.0",
     "typescript": "^3.9.5"
   }
 }

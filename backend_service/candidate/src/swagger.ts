@@ -1,4 +1,4 @@
-import * as swaggerJsDoc  from 'swagger-jsdoc';
+import * as swaggerJsDoc from 'swagger-jsdoc';
 import * as express from 'express';
 import AppConfig from './config/config';
 
@@ -11,7 +11,7 @@ const swaggerDefinition = {
     version: '1.0.0',
     description: 'Endpoints to test the user candidates routes',
   },
-  
+
   basePath: `/api/${AppConfig.version}/`,
   securityDefinitions: {
     bearerAuth: {
@@ -24,7 +24,7 @@ const swaggerDefinition = {
 };
 
 const options = {
-    swaggerDefinition,
-    apis:[`./src/candidates/*.ts`,`./src/freelancer/*.ts`,`./src/filter/*.ts`,`./src/hiring/*.ts`]
-  };
- export const swaggerSpec = swaggerJsDoc(options);
+  swaggerDefinition,
+  apis: [`./src/candidates/*.ts`, `./src/freelancer/*.ts`, `./src/filter/*.ts`, `./src/hiring/*.ts`],
+};
+export const swaggerSpec = swaggerJsDoc(options);
