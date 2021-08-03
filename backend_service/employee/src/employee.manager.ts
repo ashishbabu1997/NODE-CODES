@@ -14,8 +14,8 @@ const currentTime = () => { return new Date().getTime() }
 // >>>>>>>>>>>>> Registration of a new employee(company)
 export const createEmployee = (_body) => {
     return new Promise((resolve, reject) => {
-        const mailId = _body.body.email
-        const loweremailId = mailId.toLowerCase()
+        const mailId = _body.body.email;
+        const loweremailId = mailId.toLowerCase();
         (async () => {
             const client = await database().connect()
             try {
@@ -189,11 +189,15 @@ export const createEmployee = (_body) => {
 // >>>>>>>>>>>>> Registration of an employee(company) by admin  
 export const createEmployeeByAdmin = (_body) => {
     return new Promise((resolve, reject) => {
-        const loweremailId = _body.email.toLowerCase()
+        const loweremailId = _body.email.toLowerCase();
+
 
         (async () => {
-            const client = await database().connect()
+
+            const client = await database()
+
             try {
+
                 await client.query('BEGIN');
                 //Check if Email already exist reject in case exists        
                 const getEmailQuery = {
@@ -225,7 +229,9 @@ export const createEmployeeByAdmin = (_body) => {
                         text: employeeQuery.createCompany,
                         values: [_body.companyName, currentTime(),domain],
                     }
+
                     const result = await client.query(createCompanyQuery);
+
                     companyId = result.rows[0].company_id;
                     _body.primaryEmail=true
                     _body.responseMessage="Company Registration Successfull. We have sent a password to the registered mail address."
@@ -314,8 +320,6 @@ export const createEmployeeByAdmin = (_body) => {
                 console.log("Error1", e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            } finally {
-                client.release();
             }
         })().catch(e => {
             console.log("Error2", e)
@@ -594,8 +598,8 @@ export const tokenCheck = (_body) => {
 //>>>>>>>>>>>>>>>>>>Ellow recruiter signup API  
 export const ellowAdminSignup = (_body) => {
     return new Promise((resolve, reject) => {
-        const mailId = _body.body.email
-        const loweremailId = mailId.toLowerCase()
+        const mailId = _body.body.email;
+        const loweremailId = mailId.toLowerCase();
             (async () => {
                 const client = await database()
                 try {
@@ -726,7 +730,7 @@ export const getAllEmployees = (_body) => {
 export function editRecuiterDetails(_body: any) {
     return new Promise((resolve, reject) => {
         const mailId = _body.email
-        const loweremailId = mailId.toLowerCase()
+        const loweremailId = mailId.toLowerCase();
             (async () => {
                 const client = await database()
                 try {
