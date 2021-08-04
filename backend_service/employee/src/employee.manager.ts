@@ -67,15 +67,8 @@ export const createEmployee = (_body) => {
                 }
                 else {
                     _body.primaryEmail=false
-
-                    console.log("Subuser registration")
                 }
-                if (_body.body.accountType == 1) {
-                    _body.userRoleId = 2
-                }
-                else {
-                    _body.userRoleId = 3
-                }
+                _body.userRoleId=_body.body.accountType == 1?2:3
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
