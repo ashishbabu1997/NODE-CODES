@@ -36,7 +36,7 @@ export const listCandidatesDetails = (_body) => {
     }
 
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-      sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
+      sort = ` ORDER BY ${orderBy[body.sortBy]} `;
     }
 
     (async () => {

@@ -127,7 +127,12 @@ export const resourceSort = (body) => {
   if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
     if (body.sortBy == 'availability') {
       sort = ` order by availability desc,"readyToStart" ${body.sortType} `;
-    } else {
+    }
+     
+    else if (body.sortBy == 'updatedOn') {
+      sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType},chsv."candidateVetted" desc `;
+    }
+    else {
       sort = ` ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
     }
   }
