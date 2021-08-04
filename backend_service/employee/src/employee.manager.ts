@@ -67,15 +67,8 @@ export const createEmployee = (_body) => {
                 }
                 else {
                     _body.primaryEmail=false
-
-                    console.log("Subuser registration")
                 }
-                if (_body.body.accountType == 1) {
-                    _body.userRoleId = 2
-                }
-                else {
-                    _body.userRoleId = 3
-                }
+                _body.userRoleId=_body.body.accountType == 1?2:3
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
@@ -188,10 +181,20 @@ export const createEmployee = (_body) => {
 export const createEmployeeByAdmin = (_body) => {
     return new Promise((resolve, reject) => {
         const loweremailId = _body.email.toLowerCase();
+<<<<<<< HEAD
 
         (async () => {
             const client = await database()
+=======
+
+
+        (async () => {
+
+            const client = await database()
+
+>>>>>>> develop
             try {
+
                 await client.query('BEGIN');
                 //Check if Email already exist reject in case exists        
                 const getEmailQuery = {
@@ -223,7 +226,9 @@ export const createEmployeeByAdmin = (_body) => {
                         text: employeeQuery.createCompany,
                         values: [_body.companyName, currentTime(),domain],
                     }
+
                     const result = await client.query(createCompanyQuery);
+
                     companyId = result.rows[0].company_id;
                     _body.primaryEmail=true
                     _body.responseMessage="Company Registration Successfull. We have sent a password to the registered mail address."
@@ -312,7 +317,11 @@ export const createEmployeeByAdmin = (_body) => {
                 console.log("Error1", e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+<<<<<<< HEAD
             } 
+=======
+            }
+>>>>>>> develop
         })().catch(e => {
             console.log("Error2", e)
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
@@ -721,7 +730,11 @@ export const getAllEmployees = (_body) => {
 
 export function editRecuiterDetails(_body: any) {
     return new Promise((resolve, reject) => {
+<<<<<<< HEAD
         const mailId = _body.email;
+=======
+        const mailId = _body.email
+>>>>>>> develop
         const loweremailId = mailId.toLowerCase();
             (async () => {
                 const client = await database()

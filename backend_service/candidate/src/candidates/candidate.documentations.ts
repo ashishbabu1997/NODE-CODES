@@ -359,7 +359,7 @@
 *                 locations:
 *                   type: array
 *                   items:
-*                     type: string        
+*                     type: string
 *                 fromDate:
 *                   type: integer
 *                 toDate:
@@ -379,11 +379,11 @@
 *                 positionStatus:
 *                   type: array
 *                   items:
-*                     type: string  
+*                     type: string
 *                 candidateStatus:
 *                   type: array
 *                   items:
-*                     type: string       
+*                     type: string
 *     responses:
 *       200:
 *         description: Api success
@@ -405,7 +405,7 @@
 *       - Candidates
 *     name: List available candidates
 *     summary: list available candidates for applying against a position
-*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ] 
+*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ]
 *     consumes:
 *       - application/json
 *     security:
@@ -478,7 +478,7 @@
 *                 locations:
 *                   type: array
 *                   items:
-*                     type: string        
+*                     type: string
 *                 fromDate:
 *                   type: integer
 *                 toDate:
@@ -498,11 +498,11 @@
 *                 positionStatus:
 *                   type: array
 *                   items:
-*                     type: string  
+*                     type: string
 *                 candidateStatus:
 *                   type: array
 *                   items:
-*                     type: string              
+*                     type: string
 *     responses:
 *       200:
 *         description: Api success
@@ -524,7 +524,7 @@
 *       - Candidates
 *     name: List available candidates of Hirer
 *     summary: list available candidates for applying against a position
-*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ] 
+*     description: Filters <br><br> resourcesType - [ "Vetted Resources" / "Non-Vetted Resources" ] <br> skills - [ "Axios" , "Material-UI" ... ] <br> locations - ["Kochi, Kerala, India","Mahipalpur, New Delhi, Delhi, India"] <br> positionStatus - [ "Resource accepted offer" , "Make offer" ] <br> candidateStatus - [ "Vetted", "Rejected" , "Profile Screening Scheduled" ]
 *     consumes:
 *       - application/json
 *     security:
@@ -597,7 +597,7 @@
 *                 locations:
 *                   type: array
 *                   items:
-*                     type: string        
+*                     type: string
 *                 fromDate:
 *                   type: integer
 *                 toDate:
@@ -617,11 +617,11 @@
 *                 positionStatus:
 *                   type: array
 *                   items:
-*                     type: string  
+*                     type: string
 *                 candidateStatus:
 *                   type: array
 *                   items:
-*                     type: string                
+*                     type: string
 *     responses:
 *       200:
 *         description: Api success
@@ -656,7 +656,7 @@
 *           type: object
 *           properties:
 *             candidateId:
-*               type: integer            
+*               type: integer
 *             availability:
 *               type: boolean
 *           required:
@@ -696,7 +696,7 @@
 *           type: object
 *           properties:
 *             candidateId:
-*               type: integer            
+*               type: integer
 *             sharedEmails:
 *               type: array
 *               items:
@@ -738,7 +738,7 @@
 *           type: object
 *           properties:
 *             publicUrl:
-*               type: string            
+*               type: string
 *             fileName:
 *               type: string
 *           required:
@@ -778,13 +778,13 @@
 *           type: object
 *           properties:
 *             candidateId:
-*               type: integer            
+*               type: integer
 *             positionId:
 *               type: integer
 *             decisionValue:
 *               type: integer
 *             comment :
-*               type: string 
+*               type: string
 *             ellowRate:
 *               type: number
 *           required:
@@ -915,7 +915,7 @@
 *           type: object
 *           properties:
 *             candidateId:
-*               type: integer            
+*               type: integer
 *             emailList:
 *               type: array
 *               items:
@@ -1400,7 +1400,7 @@
 *   put:
 *     tags:
 *       - Candidates
-*     name: Update skills 
+*     name: Update skills
 *     description:  action ['add' ,'update' ,'delete']
 *     summary: Add or edit candidate skill details
 *     security:
@@ -1562,7 +1562,7 @@
 *     parameters:
 *       - name: body
 *         in: body
-*         description:  
+*         description:
 *         schema:
 *           type: object
 *           properties:
@@ -1757,7 +1757,6 @@
 *       500:
 *         description: Server down
 */
-
 
 
 /**
@@ -2090,8 +2089,6 @@
 */
 
 
-
-
 /**
 * @swagger
 * /candidates/providerCandidateResume:
@@ -2124,8 +2121,6 @@
 *       500:
 *         description: Server down
 */
-
-
 
 
 /**
@@ -2194,10 +2189,6 @@
 */
 
 
-
-
-
-
 /**
 * @swagger
 * /candidates/updateProviderCandidateEllowRate:
@@ -2247,8 +2238,6 @@
 */
 
 
-
-
 /**
 * @swagger
 * /candidates/approveCandidate:
@@ -2283,7 +2272,6 @@
 */
 
 
-
 /**
 * @swagger
 * /candidates/shareAppliedCandidate:
@@ -2305,7 +2293,7 @@
 *           type: object
 *           properties:
 *             candidateId:
-*               type: integer            
+*               type: integer
 *             sharedEmails:
 *               type: array
 *               items:
@@ -2335,8 +2323,6 @@
 *       500:
 *         description: Server down
 */
-
-
 
 
 /**
@@ -2373,7 +2359,6 @@
 */
 
 
-
 /**
 * @swagger
 * /candidates/sentFreelancerLoginCredentials:
@@ -2395,7 +2380,7 @@
 *           type: object
 *           properties:
 *             candidateId:
-*               type: integer            
+*               type: integer
 *           required:
 *             - candidateId
 *     responses:
@@ -2433,7 +2418,7 @@
 *           type: object
 *           properties:
 *             candidateId:
-*               type: integer            
+*               type: integer
 *             host:
 *               type: string
 *           required:
@@ -2474,7 +2459,7 @@
 *           type: object
 *           properties:
 *             token:
-*               type: string            
+*               type: string
 *             status:
 *               type: integer
 *           required:

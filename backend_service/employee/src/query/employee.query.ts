@@ -8,7 +8,7 @@ export default {
     "createSettings": "INSERT INTO settings(company_id, created_on) VALUES ($1, $2)",
     "storePassword": "UPDATE  employee SET password=$1 WHERE email=$2",
     "resetPassword": "update employee set status=true,token=null,password=$pass where token like $token returning employee_id,company_id,email,firstname,lastname",
-    "checkEmailForCompany": 'SELECT c.company_name, c.company_id, e.admin_approve_status,e.account_type FROM company c left join employee e on c.company_id = e.company_id WHERE e.email ILIKE $1 order by e.created_on LIMIT 1',
+    "checkEmailForCompany": 'SELECT c.company_name,c.company_type, c.company_id, e.admin_approve_status,e.account_type FROM company c left join employee e on c.company_id = e.company_id WHERE e.email ILIKE $1 and c.company_type!=2 order by e.created_on LIMIT 1',
     "getRegisteredEmail": "SELECT firstname,lastname,email FROM employee WHERE employee_id=$1",
     "checkTokenExistance": "SELECT employee_id,email FROM employee WHERE token like $token",
     "ellowAdminSignupQuery": " INSERT INTO employee (firstname,lastname,company_id,email,telephone_number,password,account_type,user_role_id,status,admin_approve_status,created_on) VALUES ($firstname,$lastname,(select company_id from company where company_type=0),$email,$telephonenumber,$password,$accounttype,$userroleid,$status,$adminapprovestatus,$createdon)",
