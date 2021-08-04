@@ -1,9 +1,9 @@
+/* eslint-disable max-len */
 import {nanoid} from 'nanoid';
-import * as nodeCache from 'node-cache';
+import * as NodeCache from 'node-cache';
 import * as htmlToPdf from 'html-pdf-node';
 import * as utils from './utils';
-import * as fs from 'fs';
-const myCache = new nodeCache();
+const myCache = new NodeCache();
 
 export const getCache = () => {
   return myCache;
@@ -12,7 +12,7 @@ export const getCache = () => {
 export const pdfBuilder = async (candidateId, host) => {
   const uniqueId = nanoid();
   myCache.set(uniqueId, candidateId);
-  const base64str = utils.base64_encode('./src/utils/ellow_logo.png');
+  const base64str = utils.base64Encode('./src/utils/ellow_logo.png');
 
   const options = {
     format: 'A4',

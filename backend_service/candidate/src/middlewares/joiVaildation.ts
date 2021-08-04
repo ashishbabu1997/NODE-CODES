@@ -1,11 +1,10 @@
 import sendResponse from '../common/response/response';
 export default (schema) => {
   return (req, res, next) => {
-    var body = (req.route.methods.hasOwnProperty('post') || req.route.methods.hasOwnProperty('put')) ?
-            (body = req.body) :
-            (body = req.query);
-
-    const {error, value} = schema.validate(body);
+    const hasPost = Object.prototype.hasOwnProperty.call(req.route.methods, 'post');
+    const hasPut = Object.prototype.hasOwnProperty.call(req.route.methods, 'put');
+    const body = (hasPost || hasPut) ?req.body :req.query;
+    const {error} = schema.validate(body);
 
     if (error) {
       sendResponse(res, 400, 0, 405, error.message, {});

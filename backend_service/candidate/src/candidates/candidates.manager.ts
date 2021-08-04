@@ -89,7 +89,6 @@ export const listFreeCandidatesDetails = (_body) => {
       try {
         queryText = selectQuery + utils.resourceTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
         queryValues = Object.assign({positionid: body.positionId, employeeid: body.employeeId}, queryValues);
-        console.log(queryText);
         const candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
         const queryCountText = totalQuery + utils.resourceTab(body) + filterQuery + searchQuery;
         const candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
@@ -829,7 +828,6 @@ export const modifyAward = (_body) => {
     (async () => {
       const client = await database().connect();
       _body.certifiedYear = utils.emptyStringCheck(_body.certifiedYear);
-      console.log(_body.certifiedYear);
       try {
         switch (_body.action) {
           case 'add':
@@ -1560,7 +1558,6 @@ export const changeAvailability = (_body) => {
         const candidateDetails = await client.query(queryService.getCandidateMailDetails(_body));
         const skillSets = await client.query(queryService.getCandidateSkillSet(_body));
         _body.coreSkills = skillSets.rows[0].skills;
-        console.log('SKILLS', _body.coreSkills);
         _body.firstName = utils.capitalize(candidateDetails.rows[0].candidate_first_name);
         _body.lastName = utils.capitalize(candidateDetails.rows[0].candidate_last_name);
         _body.phoneNumber = candidateDetails.rows[0].phone_number;
@@ -1614,9 +1611,7 @@ export const resumeParser = (_body) => {
     (async () => {
       try {
         let responseData = null;
-        // console.log("Start")
-        // console.log("URI : ", _body.publicUrl + encodeURIComponent(_body.fileName));
-        // console.log(_body.fileName)
+
         const jsonObject = JSON.stringify({
           'url': _body.publicUrl + encodeURIComponent(_body.fileName),
           'userkey': 'IC8Q6BQ5',
@@ -1703,8 +1698,6 @@ export const singleSignOn = (_body) => {
     (async () => {
       const client = await database();
       try {
-        console.log('body code : ', _body.code);
-
         const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=867umqszmeupfh&client_secret=n7oVJe6kbinpdPqu&code=' + _body.code, {
           method: 'POST',
           headers: {
@@ -1729,7 +1722,6 @@ export const singleSignOn = (_body) => {
         const profileResult = await profile.json();
         _body.firstName = profileResult['firstName']['localized']['en_US'];
         _body.lastName = profileResult['lastName']['localized']['en_US'];
-        console.log(_body.firstName, _body.lastName);
         const emailAddress = await fetch('https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))', {
           method: 'GET',
           headers: {

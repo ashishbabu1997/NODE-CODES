@@ -1,9 +1,5 @@
 import * as swaggerJsDoc from 'swagger-jsdoc';
-import * as express from 'express';
 import AppConfig from './config/config';
-
-
-const app = express();
 
 const swaggerDefinition = {
   info: {

@@ -1,5 +1,6 @@
+/* eslint-disable max-len */
 import config from '../config/config';
-const fs = require('fs');
+import * as fs from 'fs';
 
 export const objectToArray = (objectArray, keyName) => {
   const reqArray = [];
@@ -41,31 +42,31 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
     }
     if (![undefined, null, ''].includes(skills) && Array.isArray(skills) && skills.length) {
       filterQuery = filterQuery + ' AND skills && $skill::varchar[] ';
-      queryValues = Object.assign({ skill: objectToArray(skills, 'skillName') }, queryValues);
+      queryValues = Object.assign({skill: objectToArray(skills, 'skillName')}, queryValues);
     }
     if (![undefined, null, ''].includes(otherSkills) && Array.isArray(otherSkills) && otherSkills.length) {
       filterQuery = filterQuery + ' AND otherskills && $otherskill::varchar[] ';
-      queryValues = Object.assign({ otherskill: objectToArray(otherSkills, 'skillName') }, queryValues);
+      queryValues = Object.assign({otherskill: objectToArray(otherSkills, 'skillName')}, queryValues);
     }
 
     if (minCost >= 0 && maxCost >= 0 && ![undefined, null, ''].includes(currencyType) && ![undefined, null, ''].includes(billingTypeId)) {
       filterQuery = filterQuery + ' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtypeid AND chsv."rate" BETWEEN $cost_min and $cost_max ';
-      queryValues = Object.assign({ billingtypeid: billingTypeId, currencytype: currencyType, cost_min: minCost, cost_max: maxCost }, queryValues);
+      queryValues = Object.assign({billingtypeid: billingTypeId, currencytype: currencyType, cost_min: minCost, cost_max: maxCost}, queryValues);
     }
 
     if (![undefined, null, ''].includes(experience) && Object.keys(experience).length != 0) {
       if (experience.min >= 0 && experience.max > 0) {
         filterQuery = filterQuery + ' and chsv."workExperience" between $experience_min and $experience_max ';
-        queryValues = Object.assign({ experience_min: experience.min, experience_max: experience.max }, queryValues);
+        queryValues = Object.assign({experience_min: experience.min, experience_max: experience.max}, queryValues);
       }
     }
     if (![undefined, null, ''].includes(locations) && Array.isArray(locations) && locations.length) {
       filterQuery = filterQuery + ' and chsv."residence" = any($locations) ';
-      queryValues = Object.assign({ locations: locations }, queryValues);
+      queryValues = Object.assign({locations: locations}, queryValues);
     }
     if (![undefined, null, ''].includes(fromDate) && fromDate > 0 && ![undefined, null, ''].includes(toDate) && toDate > 0) {
       filterQuery = filterQuery + ' and chsv."createdOn" between $fromdate and $todate ';
-      queryValues = Object.assign({ fromdate: fromDate, todate: toDate }, queryValues);
+      queryValues = Object.assign({fromdate: fromDate, todate: toDate}, queryValues);
     }
 
     if (![undefined, null, ''].includes(availability)) {
@@ -75,37 +76,37 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
         filterQuery = filterQuery + ' and chsv."availability"=true';
       } else {
         filterQuery = filterQuery + ' and chsv."readyToStart" = $availability and chsv."availability"=true ';
-        queryValues = Object.assign({ availability: availability }, queryValues);
+        queryValues = Object.assign({availability: availability}, queryValues);
       }
     }
 
     if (![undefined, null, ''].includes(allocatedTo)) {
       if (allocatedTo > 0) {
         filterQuery = filterQuery + ' and chsv."allocatedTo" = $allocatedto ';
-        queryValues = Object.assign({ allocatedto: allocatedTo }, queryValues);
+        queryValues = Object.assign({allocatedto: allocatedTo}, queryValues);
       } else if (allocatedTo == -1) {
         filterQuery = filterQuery + ' and chsv."allocatedTo" is null ';
       }
     }
     if (![undefined, null, ''].includes(positionStatus) && Array.isArray(positionStatus) && positionStatus.length) {
       filterQuery = filterQuery + ' and (select case when chsv."positionStatusName" is null then \'Submitted to hirer\' else chsv."positionStatusName" end) ilike any (select concat(array_element,\'%\') from unnest($positionstatus::text[]) array_element(array_element)) and "positionId" is not null ';
-      queryValues = Object.assign({ positionstatus: positionStatus }, queryValues);
+      queryValues = Object.assign({positionstatus: positionStatus}, queryValues);
     }
     if (![undefined, null, ''].includes(candStatus) && Array.isArray(candStatus) && candStatus.length) {
       filterQuery = filterQuery + ' and chsv."stageStatusName" ilike any(select concat(array_element,\'%\') from unnest($candstatus::text[]) array_element(array_element)) ';
-      queryValues = Object.assign({ candstatus: candStatus }, queryValues);
+      queryValues = Object.assign({candstatus: candStatus}, queryValues);
     }
     if (![undefined, null, ''].includes(createdUser)) {
       filterQuery = filterQuery + '  and chsv."createdBy" in (select employee_id from employee where user_role_id=$createdUser and employee_id=chsv."createdBy")';
-      queryValues = Object.assign({ createdUser: createdUser }, queryValues);
+      queryValues = Object.assign({createdUser: createdUser}, queryValues);
     }
     if (![undefined, null, ''].includes(jobCategoryName)) {
       filterQuery = filterQuery + ' and chsv."jobCategoryId" in (select job_category_id from job_category where job_category_name ilike $jobCategoryName)';
-      queryValues = Object.assign({ jobCategoryName: jobCategoryName }, queryValues);
+      queryValues = Object.assign({jobCategoryName: jobCategoryName}, queryValues);
     }
   }
 
-  return { filterQuery, queryValues };
+  return {filterQuery, queryValues};
 };
 
 export const resourceSort = (body) => {
@@ -149,10 +150,10 @@ export const resourceSearch = (body, queryValues) => {
   if (![undefined, null, ''].includes(body.searchKey)) {
     searchKey = '%' + body.searchKey + '%';
     searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."candidatePositionName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey OR  chsv."email" ILIKE $searchkey  OR chsv."phoneNumber" ILIKE $searchkey) ';
-    queryValues = Object.assign({ searchkey: searchKey }, queryValues);
+    queryValues = Object.assign({searchkey: searchKey}, queryValues);
   }
 
-  return { searchQuery, queryValues };
+  return {searchQuery, queryValues};
 };
 
 
@@ -242,27 +243,27 @@ export const resourceRoleBased = (reqBody, queryValues) => {
   let roleBasedQuery = '';
   if (reqBody.userRoleId != '1') {
     roleBasedQuery = ' and  chsv."companyId" = $companyid ';
-    queryValues = Object.assign({ companyid: reqBody.companyId }, queryValues);
+    queryValues = Object.assign({companyid: reqBody.companyId}, queryValues);
   }
 
-  return { roleBasedQuery, queryValues };
+  return {roleBasedQuery, queryValues};
 };
 export const listFreResourceRoleBased = (reqBody, queryValues) => {
   let roleBasedQuery = '';
   if (reqBody.userRoleId != 1) {
     roleBasedQuery = ' where  chsv."companyId" = $companyid  ';
-    queryValues = Object.assign({ companyid: reqBody.companyId }, queryValues);
+    queryValues = Object.assign({companyid: reqBody.companyId}, queryValues);
   } else {
     roleBasedQuery = ' where (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid)) ';
-    queryValues = Object.assign({ employeeid: reqBody.employeeId }, queryValues);
+    queryValues = Object.assign({employeeid: reqBody.employeeId}, queryValues);
   }
 
-  return { roleBasedQuery, queryValues };
+  return {roleBasedQuery, queryValues};
 };
 
 export const stringEquals = (a, b) => {
   return typeof a === 'string' && typeof b === 'string' ?
-    a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0 :
+    a.localeCompare(b, undefined, {sensitivity: 'accent'}) === 0 :
     a === b;
 };
 
@@ -277,19 +278,16 @@ export const capitalize = (s) => {
 
 
 export const constValues = (type, value) => {
-  const crr = { 1: '₹', 2: '$' }; const bill = { 0: 'hour', 1: 'day', 2: 'month' };
-  const readytostart = { 1: 'Immediate', 2: 'In one week', 3: 'In two weeks', 4: 'In one month', 5: 'More than one month' };
+  const crr = {1: '₹', 2: '$'}; const bill = {0: 'hour', 1: 'day', 2: 'month'};
+  const readytostart = {1: 'Immediate', 2: 'In one week', 3: 'In two weeks', 4: 'In one month', 5: 'More than one month'};
 
   switch (type) {
     case 'currencyType':
       return crr[value];
-      break;
     case 'billType':
       return bill[value];
-      break;
     case 'readyToStart':
       return readytostart[value];
-      break;
     default:
       break;
   }
@@ -314,11 +312,11 @@ export const reccuiterMailCheck = (email) => {
 
 export const reccuiterSignatureCheck = (email) => {
   const data = notNull(config.mailAuth[email]) ? config.mailAuth[email] : config.mailAuth['noreplymail'];
-  return { signature: data.signature };
+  return {signature: data.signature};
 };
 
 
-export const base64_encode = (file) => {
+export const base64Encode = (file) => {
   return 'data:image/gif;base64,' + fs.readFileSync(file, 'base64');
 };
 
