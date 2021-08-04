@@ -5,9 +5,9 @@ import filterRouter from './filter/filter.route';
 import hiringRouter from './hiring/hiring.route';
 
 
-import * as Express from 'express';
+import * as express from 'express';
 
-const router = Express.router();
+const router = express.Router();
 router
     .use(`/api/${AppConfig.version}/candidates`, candidatesRouter)
     .use(`/api/${AppConfig.version}/freelancer`, freelancerRouter)
