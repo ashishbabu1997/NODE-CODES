@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable max-len */
 import config from '../config/config';
 import * as fs from 'fs';
@@ -231,7 +232,7 @@ export const emptyStringCheck = (_body) => {
   _body = _body === '' || undefined ? null : _body;
   return _body;
 };
-export const JsonStringParse = (_body) => {
+export const jsonStringParse = (_body) => {
   let parsedString = '';
   try {
     parsedString = JSON.parse(_body);

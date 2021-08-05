@@ -1,7 +1,6 @@
 import * as candidateController from './candidates.controller';
 import * as express from 'express';
 import validate from '../middlewares/joiVaildation';
-import approveRejectSchema from './schemas/approveRejectSchema';
 import interviewRequestSchema from './schemas/interviewRequestSchema';
 import candidateVettingSchema from './schemas/candidateVettingSchema';
 import addCandidateToPositionSchema from './schemas/addCandidateToPositionSchema';
@@ -10,6 +9,7 @@ import {jwtAuth} from '../middlewares/jwtAuthenticate';
 import setData from '../middlewares/setData';
 import setProfileAuth from '../middlewares/setProfileAuth';
 
+// eslint-disable-next-line new-cap
 const router = express.Router();
 router
     .get('/listCandidates', jwtAuth, setData(), setProfileAuth([1, 2, 3, 4]), candidateController.listCandidates)

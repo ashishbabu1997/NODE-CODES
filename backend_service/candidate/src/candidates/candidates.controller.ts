@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import * as candidateManager from './candidates.manager';
 import sendResponse from '../common/response/response';
 
@@ -307,7 +308,7 @@ export const sigOn = (req, res) => {
     res.writeHead(301, {Location: 'https://dev.ellow.io/candidate-login?token='+response.data.token});
     res.end();
   })
-      .catch((error: any) => {
+      .catch(() => {
         res.writeHead(301, {Location: 'https://dev.ellow.io/redirect-notification'});
         res.end();
       });
@@ -350,7 +351,6 @@ export const getHtmlResume = (req, res) => {
 };
 
 export const postHtmlResume = (req, res) => {
-  const body = req.query;
   candidateManager.getHtmlResume(req, res);
 };
 
