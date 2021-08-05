@@ -9,12 +9,11 @@ import * as express from 'express';
 
 const router = express.Router();
 router
-    .use(`/api/${AppConfig.version}/candidates`,candidatesRouter)
-    .use(`/api/${AppConfig.version}/freelancer`,freelancerRouter)
-    .use(`/api/${AppConfig.version}/filter`,filterRouter)
-    .use(`/api/${AppConfig.version}/hiring`,hiringRouter)
+    .use(`/api/${AppConfig.version}/candidates`, candidatesRouter)
+    .use(`/api/${AppConfig.version}/freelancer`, freelancerRouter)
+    .use(`/api/${AppConfig.version}/filter`, filterRouter)
+    .use(`/api/${AppConfig.version}/hiring`, hiringRouter);
 
 export default router;
-
 
 
