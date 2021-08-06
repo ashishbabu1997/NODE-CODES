@@ -171,7 +171,7 @@ export const resourceTab = (body) => {
       query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)';
       break;
     case 'vetted':
-      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false';
+      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and chsv."stageStatusName" ilike \'Verified\' ';
       break;
     case 'certified':
       query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."stageStatusName" ilike \'ellow Certified And Verified\' and chsv."blacklisted"=false';
@@ -219,7 +219,7 @@ export const resourceProviderTab = (body) => {
       query = '  and chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)';
       break;
     case 'vetted':
-      query = '  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false';
+      query = '  and chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and chsv."stageStatusName" ilike \'Verified\' ';
       break;
     case 'certified':
       query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."stageStatusName" ilike \'ellow Certified And Verified\' and chsv."blacklisted"=false';
