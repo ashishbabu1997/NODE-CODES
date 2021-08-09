@@ -1,3 +1,9 @@
+/* eslint-disable linebreak-style */
+/* eslint-disable max-len */
+/* eslint-disable prefer-promise-reject-errors */
+/* eslint-disable no-duplicate-case */
+/* eslint-disable no-var */
+/* eslint-disable linebreak-style */
 import candidateQuery from './query/candidates.query';
 import * as queryService from '../queryService/queryService';
 import database from '../common/database/database';
@@ -53,12 +59,12 @@ export const listCandidatesDetails = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: {}});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
-    })().catch(() => {
-      reject({code: 400, message: 'Failed. Please try again.', data: {}});
+    })().catch((e) => {
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -99,10 +105,10 @@ export const listFreeCandidatesDetails = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: {}});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
-    })().catch(() => {
-      reject({code: 400, message: 'Failed. Please try again.', data: {}});
+    })().catch((e) => {
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -147,10 +153,10 @@ export const listAddFromListCandidates = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: {}});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
-    })().catch(() => {
-      reject({code: 400, message: 'Failed. Please try again.', data: {}});
+    })().catch((e) => {
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -163,7 +169,7 @@ export const addCandidateReview = (_body) => {
       const client = await database();
       try {
         if (!utils.notNull(_body.assignedTo)) {
-          reject({code: 400, message: 'Candidate must be assigned to an assignee', data: {}});
+          reject(new Error({code: 400, message: 'Candidate must be assigned to an assignee', data: {}}.toString()));
         } else {
           await client.query('BEGIN');
           // Update assesment ratings about the candidate.
@@ -172,6 +178,17 @@ export const addCandidateReview = (_body) => {
           if (utils.stringEquals(_body.stageName, 'ellow Onboarding')) {
             _body.candidateId = result.rows[0].candidate_id;
             await client.query(queryService.setVettedStatus(_body));
+            if (_body.rating === 0) {
+              _body.commentHistory={
+                'verifiedDetails': {
+                  'status': 'Verified',
+                  'createdOn': new Date().getTime(),
+                  'asigneeName': _body.asigneeName,
+                  'asigneeComment': _body.assessmentComment,
+                }};
+              await client.query(queryService.updateCommentHistory(_body));
+            }
+
             await emailService.addCandidateReviewEmail(_body, client);
           }
           await client.query('COMMIT');
@@ -180,10 +197,10 @@ export const addCandidateReview = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -201,12 +218,12 @@ export const editVettingStatus = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: {}});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
-    })().catch(() => {
-      reject({code: 400, message: 'Failed. Please try again.', data: {}});
+    })().catch((e) => {
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -231,12 +248,12 @@ export const removeCandidateFromPosition = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -288,13 +305,13 @@ export const linkCandidateWithPosition = (_body) => {
       } catch (e) {
         console.log('error : ', e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
       console.log('error : ', e);
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -318,12 +335,12 @@ export const removeCandidate = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -345,12 +362,12 @@ export const modifyResumeFile = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: {}});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
-    })().catch(() => {
-      reject({code: 400, message: 'Failed. Please try again.', data: {}});
+    })().catch((e) => {
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -381,7 +398,7 @@ export const modifyResumeData = (_body) => {
           const candidateResult = await client.query(queryService.insertExtractedCandidateDetails(extractedData));
           if ([null, undefined, ''].includes(candidateResult) || [null, undefined, ''].includes(candidateResult.rows[0])) {
             console.log('error resume already uploaded');
-            return reject({code: 400, message: 'This resume is already uploaded/extracted use another resume', data: {}});
+            return reject(new Error({code: 400, message: 'This resume is already uploaded/extracted use another resume', data: {}}.toString()));
           }
 
           candidateId = candidateResult.rows[0].candidate_id;
@@ -453,17 +470,17 @@ export const modifyResumeData = (_body) => {
           return resolve({code: 200, message: 'Candidate resume file updated successfully', data: candidateId});
         } catch (error) {
           console.log('error : ', error.message);
-          reject({code: 400, message: 'Error occured during extraction ', data: error.message});
+          reject(new Error({code: 400, message: 'Error occured during extraction', data: error.message}.toString()));
         }
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -485,12 +502,12 @@ export const modifyProfileDetails = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again ', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -507,12 +524,12 @@ export const modifyCandidateAvailability = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -522,45 +539,47 @@ export const modifyCandidateAvailability = (_body) => {
 // Checks if the action is add or update.
 export const modifyLanguageProficiency = (_body) => {
   return new Promise((resolve, reject) => {
-    let candidateLanguageId;
+    let candidateLanguageId; let temp;
     (async () => {
       const client = await database().connect();
       _body.proficiency = utils.emptyStringCheck(_body.proficiency);
       try {
         switch (_body.action) {
           case 'add':
-            var results = await client.query(queryService.insertLanguageProficiencyQuery(_body));
-            candidateLanguageId = results.rows[0].candidate_language_id;
+            temp = await client.query(queryService.insertLanguageProficiencyQuery(_body));
+            candidateLanguageId = temp.rows[0].candidate_language_id;
             break;
 
           case 'update':
-          case ![null, undefined, ''].includes(_body.candidateLanguageId):
-            await client.query(queryService.modifyLanguageProficiencyQuery(_body));
-            candidateLanguageId = _body.candidateLanguageId;
+            if ( utils.notNull(_body.candidateLanguageId)) {
+              await client.query(queryService.modifyLanguageProficiencyQuery(_body));
+              candidateLanguageId = _body.candidateLanguageId;
+            }
+
             break;
 
           case 'delete':
-          case ![null, undefined, ''].includes(_body.candidateLanguageId):
-            await client.query(queryService.deleteLanguageProficiencyQuery(_body));
-            candidateLanguageId = _body.candidateLanguageId;
-
+            if (utils.notNull(_body.candidateLanguageId)) {
+              await client.query(queryService.deleteLanguageProficiencyQuery(_body));
+              candidateLanguageId = _body.candidateLanguageId;
+            }
             break;
 
           default:
-            reject({code: 400, message: 'Invalid candidateLanguageId or action ', data: {}});
+            reject(new Error({code: 400, message: 'Invalid candidateLanguageId or action ', data: {}}.toString()));
         }
         await client.query('COMMIT');
         resolve({code: 200, message: 'Candidate Language updated successfully', data: {candidateLanguageId: candidateLanguageId}});
       } catch (e) {
         console.log('error caught : ', e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
       console.log('error caught 2 : ', e);
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -578,12 +597,12 @@ export const addWorkExperience = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -617,19 +636,19 @@ export const modifyCandidateProject = (_body) => {
             break;
 
           default:
-            reject({code: 400, message: 'Invalid candidateProjectId or action ', data: {}});
+            reject(new Error({code: 400, message: 'Invalid candidateProjectId or action ', data: {}}.toString()));
         }
 
         resolve({code: 200, message: 'Candidate project updated successfully', data: {candidateProjectId: candidateProjectId}});
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -664,19 +683,19 @@ export const modifyCandidateWorkHistory = (_body) => {
             break;
 
           default:
-            reject({code: 400, message: 'Invalid candidateWorkExperienceId or action ', data: {}});
+            reject(new Error({code: 400, message: 'Invalid candidateWorkExperienceId or action ', data: {}}.toString()));
         }
         resolve({code: 200, message: 'Candidate work history updated successfully', data: {candidateWorExperienceId: candidateWorExperienceId}});
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
       console.log(e);
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -715,12 +734,12 @@ export const modifyEducation = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -743,12 +762,12 @@ export const modifyCloudProficiency = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -767,12 +786,12 @@ export const modifySocialPresence = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -895,12 +914,11 @@ export const modifySkill = (_body) => {
       } catch (e) {
         console.log('Error 1 : ', e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
-      } finally {
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
       console.log('Error 2 : ', e);
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1004,7 +1022,7 @@ export const getResume = (_body) => {
           companyType: allProfileDetails.rows[0].companyType,
           profile: profileDetails,
           requestForScreening: allProfileDetails.rows[0].requestForScreening,
-          detailResume: utils.JsonStringParse(allProfileDetails.rows[0].detailResume),
+          detailResume: utils.jsonStringParse(allProfileDetails.rows[0].detailResume),
           htmlResume: allProfileDetails.rows[0].htmlResume,
           bagOfWords: allProfileDetails.rows[0].bagOfWords,
           resume: allProfileDetails.rows[0].resume,
@@ -1041,12 +1059,12 @@ export const getResume = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1092,12 +1110,12 @@ export const addResumeShareLink = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1119,12 +1137,12 @@ export const getSharedEmails = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1163,12 +1181,12 @@ export const shareResumeSignup = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1203,12 +1221,12 @@ export const fetchResumeData = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1283,12 +1301,12 @@ export const initialSharedResumeData = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1311,10 +1329,10 @@ export const createPdfFromHtml = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1344,10 +1362,10 @@ export const fetchResumeDataForPdf = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1366,12 +1384,12 @@ export const fetchSharedEmailsForPdf = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1397,11 +1415,11 @@ export const getCandidateAssesmentDetails = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
       console.log(e);
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1421,10 +1439,10 @@ export const changeAssignee = (_body) => {
       } catch (e) {
         console.log('error : ', e.message);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1450,10 +1468,10 @@ export const changeEllowRecruitmentStage = (_body) => {
       } catch (e) {
         console.log('error : ', e.message);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1476,10 +1494,10 @@ export const rejectFromCandidateEllowRecruitment = (_body) => {
       } catch (e) {
         console.log('error : ', e.message);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1497,10 +1515,10 @@ export const getAllAuditLogs = (_body) => {
       } catch (e) {
         console.log('error : ', e.message);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1537,12 +1555,12 @@ export const listHirerResources = (_body) => {
       } catch (e) {
         console.log('error : ', e.message);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1571,12 +1589,12 @@ export const changeAvailability = (_body) => {
       } catch (e) {
         console.log('error : ', e.message);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1594,12 +1612,12 @@ export const changeBlacklisted = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1622,6 +1640,7 @@ export const resumeParser = (_body) => {
         // prepare the header
         const postheaders = {
           'Content-Type': 'application/json',
+          // eslint-disable-next-line no-undef
           'Content-Length': Buffer.byteLength(jsonObject, 'utf8'),
         };
 
@@ -1752,6 +1771,7 @@ export const singleSignOn = (_body) => {
             employeeId: employeeId.toString(),
             companyId: _body.cmpId.toString(),
             userRoleId: _body.userRoleId.toString(),
+          // eslint-disable-next-line no-undef
           }, process.env.TOKEN_SECRET, {expiresIn: '24h'});
           await client.query(queryService.insertEmployeeToken(_body));
         } else {
@@ -1763,8 +1783,8 @@ export const singleSignOn = (_body) => {
               text: candidateQuery.getLoginDetailFromEmployeeId,
               values: [_body.employeeId],
             };
-            var results = await client.query(getQuery);
-            const data = results.rows;
+            var result = await client.query(getQuery);
+            const data = result.rows;
             if (data.length > 0) {
               const value = data[0];
               if (value.status) {
@@ -1865,18 +1885,19 @@ export const listProviderResources = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
 
 
 export const getHtmlResume = (req, res) => {
+  // eslint-disable-next-line no-undef
   const fs = require('fs');
 
   const inputFile = req.files.htmlres.data;
@@ -1922,11 +1943,11 @@ export const updateProviderCandidateInfo = (_body) => {
       } catch (e) {
         console.log('Error raised from try : ', e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
       console.log('Error raised from async : ', e);
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1973,12 +1994,12 @@ export const getProviderCandidateResume = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -1996,11 +2017,11 @@ export const approveProvidersCandidates = (_body) => {
       } catch (e) {
         console.log('Error raised from try : ', e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
       console.log('Error raised from async : ', e);
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -2038,11 +2059,11 @@ export const addProviderCandidateEllowRate = (_body) => {
       } catch (e) {
         console.log('error : ', e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
       console.log('error : ', e);
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -2106,17 +2127,18 @@ export const mailers = (_body) => {
       } catch (e) {
         console.log('Error raised from try : ', e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
       console.log('Error raised from async : ', e);
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
 
 
 export const getEmailTemplate = (req, res) => {
+  // eslint-disable-next-line no-undef
   const fs = require('fs');
   const pass = req.body.pass;
   const isHtml = req.body.html; const file = req.body.file;
@@ -2162,6 +2184,7 @@ export const getEmailTemplate = (req, res) => {
 
 
 export const setEmailTemplate = (req, res) => {
+  // eslint-disable-next-line no-undef
   const fs = require('fs');
   const isJs = req.query.js;
 
@@ -2208,10 +2231,10 @@ export const shareAppliedCandidates = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -2238,11 +2261,11 @@ export const requestForScreeningManager = (_body) => {
       } catch (e) {
         console.log('error : ', e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
       console.log('error : ', e);
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -2288,7 +2311,7 @@ export const sentFreelancerLoginCredentials = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
       }
@@ -2308,15 +2331,14 @@ export const fileDownload = (_body) => {
       try {
         const pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
         // Or format the path using the `id` rest param
-        const fileName = 'report.pdf'; // The default name the browser will use
         resolve({code: 200, message: 'DOWLOADED', data: {file: pdf}});
       } catch (e) {
         console.log('error : ', e.message);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
-      reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
     });
   });
 };
@@ -2395,7 +2417,7 @@ export const approveOrRejectAppliedCandidate = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
       reject({code: 400, message: 'Failed. Please try again ', data: e.message});
@@ -2415,6 +2437,7 @@ export const sendblueAPI = (_body) => {
 
         // Configure API key authorization: api-key
         const apiKey = defaultClient.authentications['api-key'];
+        // eslint-disable-next-line no-undef
         apiKey.apiKey = process.env.SIBAPIKEY;
 
         // Uncomment below two lines to configure authorization using: partner-key
@@ -2451,7 +2474,7 @@ export const sendblueAPI = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
       reject({code: 400, message: 'Failed. Please try again ', data: e.message});
@@ -2484,7 +2507,6 @@ export const sendinblueAddContact = (_body) => {
         //   }, function(error) {
         //     console.error(error);
         //   });
-        const token = 589303;
         const path = 'src/emailTemplates/addCandidateHirerMail.html';
         const subjectLine = 'Test';
         const replacements = {positionName: 'Software Developer', keys: {name: 'Nayan C', value: 'nayancjose@gmail.com'}, commments: 'Good attitude', link: 'dev.ellow.io/login'};
@@ -2493,7 +2515,7 @@ export const sendinblueAddContact = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject({code: 400, message: 'Failed. Please try again.', data: e.message});
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
       reject({code: 400, message: 'Failed. Please try again ', data: e.message});

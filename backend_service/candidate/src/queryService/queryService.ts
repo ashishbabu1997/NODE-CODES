@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import candidateQuery from '../candidates/query/candidates.query';
 import freelancerQuery from '../freelancer/query/freelancer.query';
 import filterQuery from '../filter/query/filter.query';
@@ -692,6 +693,14 @@ export const updateEllowRecuiterReview = (_body) => {
     values: {assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments, rating: _body.rating, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
+export const updateCommentHistory = (_body) => {
+  return {
+    name: 'update-ellow-recuiter-verified-comment',
+    text: candidateQuery.updateReviewCommentHistory,
+    values: [_body.candidateAssessmentId, _body.commentHistory],
+  };
+};
+
 export const getCandidateProfileName = (_body) => {
   return {
     name: 'get-candidate-profile-name',
