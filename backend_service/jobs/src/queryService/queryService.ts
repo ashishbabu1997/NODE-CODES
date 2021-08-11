@@ -476,6 +476,14 @@ export const clientHiringCountsProvider = (_body) => {
     }
 }
 
+export const hirerProviderCountsQuery = (_body) => {
+    return {
+        name: 'hirer-provider-counts-query',
+        text: dashboardQuery.hirerProviderCounts,
+        values: []
+    }
+}
+
 export const clientHiringSideCountsHirer = (_body) => {
     return {
         name: 'client-hiring-side-counts-hirer',

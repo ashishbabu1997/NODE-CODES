@@ -51,6 +51,19 @@ export const getCounts = (_body) => {
                             clientScreeningSideCount: clientHiringSideCountsProvider.rows[0]
                         }
                         break;
+
+                    case '1000':
+                        const hirerProviderCounts = await client.query(queryService.hirerProviderCountsQuery(_body))
+                        data = {
+                            positionCounts: adminPositionCounts.rows[0],
+                            clientScreening: clientHiringCountsAdmin.rows,
+                            clientScreeningSideCount: clientHiringSideCountsAdmin.rows[0],
+                            candidateCounts: candidateVetted_NonVettedCount.rows[0],
+                            ellowScreening: ellowScreeningCount.rows,
+                            hirerCount:hirerProviderCounts.rows[0].hirerCount,
+                            providerCount:hirerProviderCounts.rows[0].providerCount
+
+                        }
                     default:
                         break;
                 }
