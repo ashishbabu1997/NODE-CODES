@@ -1212,7 +1212,7 @@ export const rejectFromHiring = (_body) => {
   return {
     name: 'reject-client-hiring',
     text: hiringQuery.rejectFromHiring,
-    values: {assignedto: _body.assignedTo, candidateid: _body.candidateId, positionid: _body.positionId, currenttime: currentTime(), employeeid: _body.employeeId},
+    values: {assignedto: _body.assignedTo, candidateid: _body.candidateId, positionid: _body.positionId, currenttime: currentTime(), employeeid: _body.employeeId,comment:_body.comment},
   };
 };
 

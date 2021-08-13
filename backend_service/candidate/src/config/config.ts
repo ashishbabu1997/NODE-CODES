@@ -122,6 +122,17 @@ export default {
     'user': 'no-reply@ellow.io',
     'password': 'fqlroidzaxmlhgml',
   },
+  'sendinblueConfigurations':{
+            'sendinblueSender':{
+              'name': 'Jyothis',
+              'email': 'jjoseph@ellow.io',
+            },
+
+            'welcomeMailTemplateId':3
+
+  },
+  
+
   'jwtSecretKey': 'elL0wA!',
   'countries': [
     {
