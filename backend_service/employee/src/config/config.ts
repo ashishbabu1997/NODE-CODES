@@ -14,7 +14,7 @@ export default {
     "jwtSecretKey": "elL0wA!",
     'sendinblueConfigurations':{
         'sendinblueSender':{
-          'name': 'Jyothis',
+          'name': 'ellow',
           'email': 'jjoseph@ellow.io',
         },
 
