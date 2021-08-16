@@ -591,7 +591,7 @@ export const scheduleInterviewMail = async (_body, client) => {
 // >>>>>>>>>>>>>>Email Function for hirer's to send mail while they reject candidate via email button
 export const rejectCandidateMail = async (_body, client) => {
   try {
-    var comment =utils.notNull(_body.comment)? `Reason for Rejection:${_body.comment}`: ``
+    var comment =utils.notNull(_body.comment)? `Reason for Rejection: ${_body.comment}`: ``
     const adminReplacements = {
       'candidateName': _body.candidateName,
       'position': _body.positionName,
