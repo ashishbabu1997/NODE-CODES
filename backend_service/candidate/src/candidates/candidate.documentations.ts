@@ -879,6 +879,10 @@
 *               type: integer
 *             assignedTo:
 *               type: integer
+*             asigneeName:
+*               type: string
+*             stageName:
+*               type: string
 *           required:
 *             - candidateAssessmentId
 *     responses:
