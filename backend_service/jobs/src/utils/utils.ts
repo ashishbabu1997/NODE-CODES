@@ -32,13 +32,19 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
         coreSkills = filter.skills,
         otherSkills = filter.otherSkills,
         positionStatus = filter.positionStatus,
-        activeStatus=filter.activeStatus
+        activeStatus=filter.activeStatus,
+        typeOfJob=filter.typeOfJob
         ; 
         
         if(![null,undefined,''].includes(startDate) && ![null,undefined,''].includes(endDate))
         {   
             filterQuery=filterQuery+' AND p.created_on BETWEEN $startdate  AND $enddate '
             queryValues = Object.assign({startdate:startDate,enddate:endDate},queryValues)
+        }
+        if(![null,undefined,''].includes(typeOfJob))
+        {   
+            filterQuery=filterQuery+' AND p.type_of_job=$typeofjob '
+            queryValues = Object.assign({typeofjob:typeOfJob},queryValues)
         }
         if(![undefined,null,''].includes(duration) && Object.keys(duration).length != 0)
         {
