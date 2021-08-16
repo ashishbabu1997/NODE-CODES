@@ -181,18 +181,12 @@ export const createEmployee = (_body) => {
 export const createEmployeeByAdmin = (_body) => {
     return new Promise((resolve, reject) => {
         const loweremailId = _body.email.toLowerCase();
-<<<<<<< HEAD
-
-        (async () => {
-            const client = await database()
-=======
 
 
         (async () => {
 
             const client = await database()
 
->>>>>>> develop
             try {
 
                 await client.query('BEGIN');
@@ -317,11 +311,7 @@ export const createEmployeeByAdmin = (_body) => {
                 console.log("Error1", e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-<<<<<<< HEAD
-            } 
-=======
             }
->>>>>>> develop
         })().catch(e => {
             console.log("Error2", e)
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
@@ -730,11 +720,7 @@ export const getAllEmployees = (_body) => {
 
 export function editRecuiterDetails(_body: any) {
     return new Promise((resolve, reject) => {
-<<<<<<< HEAD
         const mailId = _body.email;
-=======
-        const mailId = _body.email
->>>>>>> develop
         const loweremailId = mailId.toLowerCase();
             (async () => {
                 const client = await database()
