@@ -2469,7 +2469,7 @@ export const sendblueAPI = (_body) => {
           // "htmlContent":"<html><head></head><body><p>Hello,</p>This is my first transactional email sent from Sendinblue.</p></body></html>"
 
         };
-        console.log("Send")
+        console.log('Send');
         await apiInstance.sendTransacEmail(sendSmtpEmail);
       } catch (e) {
         console.log(e);
@@ -2504,7 +2504,7 @@ export const sendinblueAddContact = (_body) => {
             const createContact = new SibApiV3Sdk.CreateContact();
             createContact.email = element.email_address;
             createContact.attributes={'FIRSTNAME': element.candidate_first_name, 'LASTNAME': element.candidate_last_name, 'PHONE': element.phone_number};
-            createContact.listIds = [10];
+            createContact.listIds = [12];
             promise.push(await apiInstance.createContact(createContact));
           });
         }
