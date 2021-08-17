@@ -309,7 +309,7 @@ export const createEmployeeByAdmin = (_body) => {
                 console.log("Error1", e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            } 
+            }
         })().catch(e => {
             console.log("Error2", e)
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
