@@ -9,6 +9,7 @@ import * as emailClient from './emailService/emailService';
 import * as utils from './utils/utils'
 import * as queryService from './queryService/queryService'
 const currentTime = () => { return new Date().getTime() }
+import * as sendinblueService from './sendinblueServices/freelancerSendinblueMails'
 
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>> Registration of a new employee(company)
@@ -425,13 +426,14 @@ export const createFreelancer = (_body) => {
                     values: { firstname: _body.firstName, lastname: _body.lastName, email: loweremailId, yoe: _body.yoe, phone: _body.telephoneNumber, createdtime: currentTime(), token: uniqueId },
                 }
                 await client.query(createFreelancerQuery);
-                let Name = _body.firstName.charAt(0).toUpperCase() + _body.firstName.slice(1) + " " + _body.lastName.charAt(0).toUpperCase() + _body.lastName.slice(1)
+                _body.name = _body.firstName.charAt(0).toUpperCase() + _body.firstName.slice(1) + " " + _body.lastName.charAt(0).toUpperCase() + _body.lastName.slice(1)
                 let companyName = "Freelancer"
                 let emailAddress = _body.email
                 let number = ![null, undefined].includes(_body.telephoneNumber) ? _body.telephoneNumber : ""
                 let verificationLink = _body.host + '/create-password/' + uniqueId;
+                await sendinblueService.customWelcomeMail(_body);
 
-                let adminReplacement = { applicantName: Name, company: companyName, email: emailAddress, phoneNumber: number };
+                let adminReplacement = { applicantName: _body.name, company: companyName, email: emailAddress, phoneNumber: number };
                 let path = 'src/emailTemplates/freelancerApplicationText.html';
                 const message = `A freelancer, ${_body.firstName + ' ' + _body.lastName}  has been registered with us`
                 const freelancer = {
@@ -454,12 +456,8 @@ export const createFreelancer = (_body) => {
                 if (Array.isArray(ellowAdmins.rows)) {
 
                     ellowAdmins.rows.forEach(element => {
-                        if (element.email != null || '' || undefined) {
                             emailClient.emailManager(element.email, config.text.freelancerSubject, path, adminReplacement);
-                        }
-                        else {
-                            console.log("Email Recipient is empty")
-                        }
+                       
                     })
 
                 }
@@ -468,17 +466,12 @@ export const createFreelancer = (_body) => {
                 }
 
                 let freelancerReplacements = {
-                    applicantName: Name,
+                    applicantName: _body.name,
                     link: verificationLink,
                 };
 
                 path = 'src/emailTemplates/sendLinkText.html';
-                if (loweremailId != null || '' || undefined) {
-                    emailClient.emailManagerForNoReply(loweremailId, config.text.userSubject, path, freelancerReplacements);
-                }
-                else {
-                    console.log("Email Recipient is empty")
-                }
+                emailClient.emailManagerForNoReply(loweremailId, config.text.userSubject, path, freelancerReplacements);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {

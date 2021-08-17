@@ -2408,7 +2408,7 @@ export const approveOrRejectAppliedCandidate = (_body) => {
             await emailService.rejectCandidateMail(_body, client);
           }
           await client.query(queryService.updateCurrentStage(_body));
-          _body.responseMessage = _body.status == 1 ? `You have successfully approved ${_body.candidateName} for discussion` : `You have rejected ${_body.candidateName} from your screening process`;
+          _body.responseMessage = _body.status == 1 ? `Our recruiters will immediately inform ${_body.candidateName} about the interview` : `You have rejected ${_body.candidateName} from your screening process`;
           _body.responseStatus = _body.status == 1 ? 1 : 2;
           await client.query(queryService.insertAuditLogForHiring(_body));
           await client.query(queryService.deleteRequestToken(_body));
@@ -2456,7 +2456,7 @@ export const sendblueAPI = (_body) => {
           },
           'to': [
             {
-              'email': 'ashish.babu@ellow.io',
+              'email': 'ashishpallikkunnel97@gmail.com',
               'name': 'John Doe',
             },
 
@@ -2469,7 +2469,7 @@ export const sendblueAPI = (_body) => {
           // "htmlContent":"<html><head></head><body><p>Hello,</p>This is my first transactional email sent from Sendinblue.</p></body></html>"
 
         };
-
+        console.log("Send")
         await apiInstance.sendTransacEmail(sendSmtpEmail);
       } catch (e) {
         console.log(e);

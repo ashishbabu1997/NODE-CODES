@@ -16,6 +16,8 @@
   "license": "ISC",
   "dependencies": {
     "@hapi/joi": "^17.1.1",
+    "@sentry/node": "^6.11.0",
+    "@sentry/tracing": "^6.11.0",
     "@types/node": "^14.11.2",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
@@ -32,6 +34,7 @@
     "passport-jwt": "^4.0.0",
     "pg": "^8.2.1",
     "pm2": "^4.4.0",
+    "sib-api-v3-sdk": "^8.2.1",
     "swagger-jsdoc": "^5.0.0",
     "swagger-ui-express": "^4.1.4"
   },

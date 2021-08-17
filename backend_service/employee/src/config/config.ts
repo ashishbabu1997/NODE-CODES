@@ -12,6 +12,15 @@ export default {
         "port": 5432
     },
     "jwtSecretKey": "elL0wA!",
+    'sendinblueConfigurations':{
+        'sendinblueSender':{
+          'name': 'ellow',
+          'email': 'jjoseph@ellow.io',
+        },
+
+        'welcomeMailTemplateId':3
+
+},
 
     "mail": {
         "service": "gmail",

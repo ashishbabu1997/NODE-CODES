@@ -14,9 +14,7 @@ export const listDesignations = () => {
         if (error) {
             reject ({ code: 400, message: "Failed. Please try again.", data: {} });
         }
-   
-                        resolve({ code: 200, message: "Designations listed succesfully", data: {designations:results.rows[0].designations}});   
-
+        resolve({ code: 200, message: "Designations listed succesfully", data: {designations:results.rows[0].json_agg}});   
     })
 })
 
