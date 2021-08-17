@@ -2490,28 +2490,33 @@ export const sendinblueAddContact = (_body) => {
     (async () => {
       const client = await database();
       try {
-        // let defaultClient = SibApiV3Sdk.ApiClient.instance;
+        const defaultClient = SibApiV3Sdk.ApiClient.instance;
 
-        // let apiKey = defaultClient.authentications['api-key'];
-        // apiKey.apiKey = process.env.SIBAPIKEY;
+        const apiKey = defaultClient.authentications['api-key'];
+        // eslint-disable-next-line no-undef
+        apiKey.apiKey = process.env.SIBAPIKEY;
+        const results = await client.query(queryService.getContactDetails());
+        const promise = [];
 
-        // let apiInstance = new SibApiV3Sdk.ContactsApi();
+        const apiInstance = new SibApiV3Sdk.ContactsApi();
+        if (Array.isArray(results.rows) && results.rowCount>0) {
+          results.rows.forEach(async (element) => {
+            const createContact = new SibApiV3Sdk.CreateContact();
+            createContact.email = element.email_address;
+            createContact.attributes={'FIRSTNAME': element.candidate_first_name, 'LASTNAME': element.candidate_last_name, 'PHONE': element.phone_number};
+            createContact.listIds = [10];
+            promise.push(await apiInstance.createContact(createContact));
+          });
+        }
 
-        // let createContact = new SibApiV3Sdk.CreateContact();
+        await Promise.all(promise);
+        resolve({code: 200, message: 'Added successfully', data: {}});
 
-        // createContact.email = 'ashish.babu@ellow.io';
-        // createContact.attributes={'FIRSTNAME':'Ashish','LASTNAME':'Babu'}
-        // createContact.listIds = [5]
-        // apiInstance.createContact(createContact).then(function() {
-        //     console.log('API called successfully.');
-        //   }, function(error) {
-        //     console.error(error);
-        //   });
-        const path = 'src/emailTemplates/addCandidateHirerMail.html';
-        const subjectLine = 'Test';
-        const replacements = {positionName: 'Software Developer', keys: {name: 'Nayan C', value: 'nayancjose@gmail.com'}, commments: 'Good attitude', link: 'dev.ellow.io/login'};
+        // const path = 'src/emailTemplates/addCandidateHirerMail.html';
+        // const subjectLine = 'Test';
+        // const replacements = {positionName: 'Software Developer', keys: {name: 'Nayan C', value: 'nayancjose@gmail.com'}, commments: 'Good attitude', link: 'dev.ellow.io/login'};
 
-        emailClient.emailManagerForNoReply('ashish.babu@ellow.io', subjectLine, path, replacements);
+        // emailClient.emailManagerForNoReply('ashish.babu@ellow.io', subjectLine, path, replacements);
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');

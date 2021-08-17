@@ -148,5 +148,6 @@ export default {
   getResumeData: 'select candidate_id,resume_data from candidate where resume_data is not null',
   updateHtmlResume: 'UPDATE candidate SET bag_of_words = $1 WHERE candidate_id = $2',
   getUserMail: 'select email,concat(firstname,\' \',lastname) as name,telephone_number from employee where employee_id=$1',
+  getContactDetails: 'select distinct email_address, candidate_first_name, candidate_last_name, phone_number from candidate where company_id = (select company_id from company where company_type = 2) and email_address is not null ',
 
 };
