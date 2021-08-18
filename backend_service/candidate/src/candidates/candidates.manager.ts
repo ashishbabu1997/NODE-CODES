@@ -2504,7 +2504,7 @@ export const sendinblueAddContact = (_body) => {
             const createContact = new SibApiV3Sdk.CreateContact();
             createContact.email = element.email_address;
             createContact.attributes={'FIRSTNAME': element.candidate_first_name, 'LASTNAME': element.candidate_last_name, 'PHONE': element.phone_number};
-            createContact.listIds = [12];
+            createContact.listIds = 12;
             promise.push(apiInstance.createContact(createContact));
           });
         }
