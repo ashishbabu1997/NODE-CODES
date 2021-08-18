@@ -2494,7 +2494,7 @@ export const sendinblueAddContact = (_body) => {
 
         const apiKey = defaultClient.authentications['api-key'];
         // eslint-disable-next-line no-undef
-        apiKey.apiKey = process.env.SIBAPIKEY;
+        apiKey.apiKey = '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';
         const results = await client.query(queryService.getContactDetails());
         const promise = [];
 
