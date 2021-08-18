@@ -15,5 +15,4 @@ router
     .put('/editSkills',jwtAuth, setData(),skillEdits)
     .get('/profile',jwtAuth, setData(), getProfile)
  
-
 export default router;
