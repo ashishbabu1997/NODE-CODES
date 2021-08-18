@@ -14,7 +14,6 @@ export const addCandidateReviewEmail = async (_body, client) => {
     const candidateDetailResults = await client.query(queryService.getCandidateProfileName(_body));
 
     const subject = 'Congrats! You have successfully completed ellow Certification.';
-    const path = 'src/emailTemplates/ellowVettedText.html';
     const replacements = {
       name: candidateDetailResults.rows[0].name,
     };
@@ -460,7 +459,7 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
     const res = await client.query(queryService.getLinkToPositionEmailDetails(_body));
     const billingDetails=await client.query(queryService.getCandidateBillingDetails(_body));
     const {ellowRate, billingTypeId, currencyTypeId}=billingDetails.rows[0];
-    const {work_experience, name, ready_to_start, relevantExperience, email_address} = res.rows[0];
+    const {work_experience, name, ready_to_start, relevantExperience} = res.rows[0];
     const availability=utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
     cost = positionResult.rows[0].isellowRate == false ? '' : ellowRate > 0 ? `${utils.constValues('currencyType', currencyTypeId)} ${ellowRate} / ${utils.constValues('billType', billingTypeId)}\n` : '';
 
@@ -592,10 +591,12 @@ export const scheduleInterviewMail = async (_body, client) => {
 // >>>>>>>>>>>>>>Email Function for hirer's to send mail while they reject candidate via email button
 export const rejectCandidateMail = async (_body, client) => {
   try {
+    var comment =utils.notNull(_body.comment)? `Reason for Rejection: ${_body.comment}`: ``
     const adminReplacements = {
       'candidateName': _body.candidateName,
       'position': _body.positionName,
       'company': _body.companyName,
+      'comment':comment
     };
     const adminPath = 'src/emailTemplates/rejectCandidateAdminText.html';
     const ellowAdmins = await client.query(queryService.getEllowAdmins());

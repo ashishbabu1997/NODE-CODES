@@ -9,7 +9,6 @@ const opts: StrategyOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer'),
     secretOrKey: process.env.TOKEN_SECRET
 }
-
 export default () => {
     passport.use(new Strategy(opts, (jwt_payload, done) => {
         return done(null, jwt_payload);

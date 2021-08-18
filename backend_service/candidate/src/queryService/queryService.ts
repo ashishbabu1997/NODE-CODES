@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import candidateQuery from '../candidates/query/candidates.query';
 import freelancerQuery from '../freelancer/query/freelancer.query';
 import filterQuery from '../filter/query/filter.query';
@@ -692,6 +693,14 @@ export const updateEllowRecuiterReview = (_body) => {
     values: {assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments, rating: _body.rating, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
+export const updateCommentHistory = (_body) => {
+  return {
+    name: 'update-ellow-recuiter-verified-comment',
+    text: candidateQuery.updateReviewCommentHistory,
+    values: [_body.candidateAssessmentId, _body.commentHistory],
+  };
+};
+
 export const getCandidateProfileName = (_body) => {
   return {
     name: 'get-candidate-profile-name',
@@ -1203,7 +1212,7 @@ export const rejectFromHiring = (_body) => {
   return {
     name: 'reject-client-hiring',
     text: hiringQuery.rejectFromHiring,
-    values: {assignedto: _body.assignedTo, candidateid: _body.candidateId, positionid: _body.positionId, currenttime: currentTime(), employeeid: _body.employeeId},
+    values: {assignedto: _body.assignedTo, candidateid: _body.candidateId, positionid: _body.positionId, currenttime: currentTime(), employeeid: _body.employeeId,comment:_body.comment},
   };
 };
 
@@ -1264,7 +1273,7 @@ export const insertExtractedCandidateDetails = (data) => {
   return {
     name: 'insert-extracted-candidate-details',
     text: candidateQuery.insertExtractedCandidateDetails,
-    values: {firstname: data.firstName, lastname: data.lastName, summary: data.summary, phone: data.phone, email: data.email, workexperience: data.overallWorkExperience, citizenship: data.citizenship, residence: data.city, positionname: data.designation, resumefilename: data.resumeFileName, resume: data.resume, candidatestatus: 4, currenttime: currentTime(), employeeid: data.employeeId, resumedata: data.resumeData, companyid: data.companyId, detailresume: data.detailResume, htmlresume: data.htmlResume, bagofwords: data.bagOfWords,typeOfAvailability:1,readyToStart:1},
+    values: {firstname: data.firstName, lastname: data.lastName, summary: data.summary, phone: data.phone, email: data.email, workexperience: data.overallWorkExperience, citizenship: data.citizenship, residence: data.city, positionname: data.designation, resumefilename: data.resumeFileName, resume: data.resume, candidatestatus: 4, currenttime: currentTime(), employeeid: data.employeeId, resumedata: data.resumeData, companyid: data.companyId, detailresume: data.detailResume, htmlresume: data.htmlResume, bagofwords: data.bagOfWords, typeOfAvailability: 1, readyToStart: 1},
   };
 };
 
@@ -1272,7 +1281,7 @@ export const updateExtractedCandidateDetails = (data) => {
   return {
     name: 'update-extracted-candidate-details',
     text: candidateQuery.updateExtractedCandidateDetails,
-    values: {candidateid: data.candidateId, firstname: data.firstName, lastname: data.lastName, summary: data.summary, phone: data.phone, email: data.email, workexperience: data.overallWorkExperience, citizenship: data.citizenship, residence: data.city, positionname: data.designation, resumefilename: data.resumeFileName, resume: data.resume, candidatestatus: 4, currenttime: currentTime(), employeeid: data.employeeId, resumedata: data.resumeData, detailresume: data.detailResume, htmlresume: data.htmlResume, bagofwords: data.bagOfWords,typeOfAvailability:1,readyToStart:1},
+    values: {candidateid: data.candidateId, firstname: data.firstName, lastname: data.lastName, summary: data.summary, phone: data.phone, email: data.email, workexperience: data.overallWorkExperience, citizenship: data.citizenship, residence: data.city, positionname: data.designation, resumefilename: data.resumeFileName, resume: data.resume, candidatestatus: 4, currenttime: currentTime(), employeeid: data.employeeId, resumedata: data.resumeData, detailresume: data.detailResume, htmlresume: data.htmlResume, bagofwords: data.bagOfWords, typeOfAvailability: 1, readyToStart: 1},
   };
 };
 export const insertDetailResume = (_body) => {
@@ -1305,5 +1314,14 @@ export const insertExtractedLanguagesQuery = (_body) => {
     name: 'insert-extracted-candidate-language',
     text: candidateQuery.insertExtractedLanguagesQuery,
     values: [_body.candidateId, _body.languages, _body.employeeId, currentTime()],
+  };
+};
+
+
+// -------------------------------------------------- Sendinblue ------------------------------------------//
+export const getContactDetails = () => {
+  return {
+    name: 'fetch-contact-details',
+    text: candidateQuery.getContactDetails,
   };
 };
