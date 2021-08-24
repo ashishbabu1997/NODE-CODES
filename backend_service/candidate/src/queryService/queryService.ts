@@ -28,6 +28,13 @@ export const modifyFreelancerProfileDetailsQuery = (_body) => {
   };
 };
 
+// export const addBasicProfileDetailsQueryService = (_body) => {
+//   return {
+//     name: 'add-freelancer-basicProfileDetails',
+//     text: candidateQuery.addBasicProfileDetailsQuery,
+//     values: [_body.candidateId, _body.firstName, _body.lastName, _body.description, _body.image, _body.citizenship, _body.residence, _body.phoneNumber, _body.email, currentTime(), _body.employeeId, _body.candidatePositionName, _body.jobCategoryId, _body.timezone],
+//   };
+// };
 export const verifyCandidateInCandidateEmployee = (_body) => {
   return {
     name: 'verify-candidate-in-candidateEmployee',
