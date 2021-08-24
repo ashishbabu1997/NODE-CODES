@@ -47,7 +47,7 @@ export const modifyGeneralInfo = (_body) => {
         await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
         await client.query(queryService.modifyCandidateAvailabilityQuery(_body));
         await client.query(queryService.addWorkExperiences(_body));
-        await client.query(queryService.insertCandidateSkillQuery(_body));
+        // await client.query(queryService.insertCandidateSkillQuery(_body));
 
         resolve({code: 200, message: 'Freelancer General info updated successfully', data: {}});
       } catch (e) {
