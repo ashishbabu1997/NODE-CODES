@@ -52,6 +52,7 @@ export const modifyGeneralInfo = (_body) => {
           _body.skills.forEach(async (element)  => {
             if (utils.notNull(element.skillId)) {
               element.candidateId=_body.candidateId,element.employeeId=_body.employeeId;
+              console.log(element.candidateId,element)
               await client.query(queryService.insertCandidateSkillQuery(element));
              }
           });
