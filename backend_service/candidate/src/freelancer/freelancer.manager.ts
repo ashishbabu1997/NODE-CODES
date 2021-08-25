@@ -48,18 +48,25 @@ export const modifyGeneralInfo = (_body) => {
         await client.query(queryService.modifyCandidateAvailabilityQuery(_body));
         await client.query(queryService.addWorkExperiences(_body));
         await client.query(queryService.modifySocialProfileAndStatusUpdate(_body));
-        if (Array.isArray(_body.skills)) {
-          _body.skills.forEach(async (element)  => {
-            if (utils.notNull(element.skillId)) {
-              element.candidateId=_body.candidateId,element.employeeId=_body.employeeId;
-              console.log(element.candidateId,element)
-              await client.query(queryService.insertCandidateSkillQuery(element));
-             }
-          });
-          resolve({code: 200, message: 'Mail Send', data: {}});
-        }
 
-        // await client.query(queryService.insertCandidateSkillQuery(_body));
+
+        _body.skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];
+        await client.query(queryService.deleteCandidateSkillsQuery(_body))
+        if (Array.isArray(_body.skills))
+        {
+          let promise=[];
+
+                    _body.skills.forEach(async element => { 
+                        _body.competency=element.competency=== '' ? null :element.competency
+                        _body.preffered=element.preferred
+                        _body.skillId=element.skill["skillId"]
+                        _body.yearsOfExperience=element.yoe=== '' ? null :element.yoe
+                        _body.skillVersion = element.skillVersion=== ''? null :element.skillVersion
+                        promise.push(client.query(queryService.addCandidateSkills(_body)))
+                    });
+                    await Promise.all(promise);
+
+          }
 
         resolve({code: 200, message: 'Freelancer General info updated successfully', data: {}});
       } catch (e) {
@@ -90,7 +97,7 @@ export const modifyOtherInfoAndSubmit = (_body) => {
           await client.query(queryService.insertCandidateCloudQuery(_body));
         }
 
-        await client.query(queryService.modifySocialProfileAndStatusUpdate(_body));
+        // await client.query(queryService.modifySocialProfileAndStatusUpdate(_body));
         await client.query(queryService.candidateStatusUpdate(_body));
         await client.query('COMMIT');
 

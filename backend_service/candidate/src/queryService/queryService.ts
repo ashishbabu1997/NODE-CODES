@@ -299,7 +299,23 @@ export const insertCandidateSkillQuery = (_body) => {
     values: {candidateid: _body.candidateId, skillid: _body.skillId, preferred: _body.preferred, competency: _body.competency, yoe: _body.yoe, skillversion: _body.skillVersion, currenttime: currentTime(), employeeid: _body.employeeId},
   };
 };
+export const deleteCandidateSkillsQuery = (_body) => {
+  return {
+      name: 'delete-candidate-skills',
+      text: candidateQuery.deleteCandidateSkills,
+      values: [_body.candidateId, _body.skillSet],
 
+  }
+}
+
+export const addCandidateSkills = (_body) => {
+  return {
+      name: 'add-candidate-skills',
+      text: candidateQuery.addCandidateSkills,
+      values: [_body.candidateId, _body.skillId,_body.competency,_body.preffered,_body.yearsOfExperience,_body.skillVersion,currentTime(),_body.employeeId,true],
+
+  }
+}
 export const modifyCandidateSkillQuery = (_body) => {
   return {
     name: 'modify-candidate-skill',
