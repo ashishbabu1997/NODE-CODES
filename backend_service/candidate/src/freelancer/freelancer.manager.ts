@@ -47,6 +47,17 @@ export const modifyGeneralInfo = (_body) => {
         await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
         await client.query(queryService.modifyCandidateAvailabilityQuery(_body));
         await client.query(queryService.addWorkExperiences(_body));
+        await client.query(queryService.modifySocialProfileAndStatusUpdate(_body));
+        if (Array.isArray(_body.skills)) {
+          _body.skills.forEach(async (element)  => {
+            if (utils.notNull(element.skillId)) {
+              element.candidateId=_body.candidateId,element.employeeId=_body.employeeId;
+              await client.query(queryService.insertCandidateSkillQuery(element));
+             }
+          });
+          resolve({code: 200, message: 'Mail Send', data: {}});
+        }
+
         // await client.query(queryService.insertCandidateSkillQuery(_body));
 
         resolve({code: 200, message: 'Freelancer General info updated successfully', data: {}});
