@@ -431,7 +431,6 @@ export const createFreelancer = (_body) => {
                 let emailAddress = _body.email
                 let number = ![null, undefined].includes(_body.telephoneNumber) ? _body.telephoneNumber : ""
                 let verificationLink = _body.host + '/create-password/' + uniqueId;
-                await sendinblueService.customWelcomeMail(_body);
 
                 let adminReplacement = { applicantName: _body.name, company: companyName, email: emailAddress, phoneNumber: number };
                 let path = 'src/emailTemplates/freelancerApplicationText.html';
