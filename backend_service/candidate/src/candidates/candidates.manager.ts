@@ -2224,9 +2224,9 @@ export const shareAppliedCandidates = (_body) => {
       const client = await database();
       try {
         _body.sharedEmails = _body.sharedEmails.filter((elements) => elements != null);
+        await client.query(queryService.saveSharedEmailsForpdf(_body));
         emailService.shareAppliedCandidatesPdfEmails(_body, client);
         await client.query('COMMIT');
-
         resolve({code: 200, message: 'Resume in PDF format has been shared successfully', data: {}});
       } catch (e) {
         console.log(e);
