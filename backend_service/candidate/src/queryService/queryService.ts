@@ -92,7 +92,7 @@ export const modifyCandidateAvailabilityQuery = (_body) => {
   return {
     name: 'modify-candidate-availability',
     text: candidateQuery.modifyCandidateAvailability,
-    values: [_body.candidateId, _body.availability, _body.typeOfAvailability, _body.readyToStart, currentTime(), _body.employeeId],
+    values: [_body.candidateId, _body.availability, _body.typeOfAvailability, _body.readyToStart, currentTime(), _body.employeeId,_body.timeOfAvailability],
   };
 };
 
