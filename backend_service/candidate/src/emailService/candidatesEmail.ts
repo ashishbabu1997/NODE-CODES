@@ -490,6 +490,7 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
           const sharePath = 'src/emailTemplates/shareAppliedCandidates.html';
           const subjectLine = config.text.shareAppliedCandidateSubject + positionName;
           if (utils.notNull(element)) {
+            console.log("SharedEmails",element)
             emailClient.emailManagerWithAttachmentsOnly(element, subjectLine, sharePath, replacements, pdf, recruiterEmail);
           }
         });
