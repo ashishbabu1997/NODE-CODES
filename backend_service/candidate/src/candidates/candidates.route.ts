@@ -71,6 +71,6 @@ router
     .post('/sentFreelancerLoginCredentials', jwtAuth, setData(), setProfileAuth([1, 2]), candidateController.sentFreelancerLoginCredentialsController)
     .post('/approveOrRejectAppliedCandidate', candidateController.approveOrRejectAppliedCandidateController)
     .get('/sendblue', candidateController.sendblueAPI)
-    .get('/sendblueAddContact', candidateController.sendblueAddContact);
-
+    .get('/sendblueAddContact', candidateController.sendblueAddContact)
+    .post('/checkAction', candidateController.checkActionTaken);
 export default router;

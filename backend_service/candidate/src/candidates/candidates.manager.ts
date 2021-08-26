@@ -2527,3 +2527,29 @@ export const sendinblueAddContact = (_body) => {
     });
   });
 };
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> Check action is already taken for reject and schedule interview for candidates applied to a position
+export const checkAction = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        const getCandidateDetailsFromToken = await client.query(queryService.getCandidateDetailsFromTokenQueryService(_body));
+        if (getCandidateDetailsFromToken.rowCount == 0) {
+          resolve({code: 200, message:config.actionTaken.alreadyTaken, data: {actionTaken: true}});
+        } else {
+          resolve({code: 200, message: config.actionTaken.freshAction, data: {actionTaken: false}});
+        }
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+      }
+    })().catch((e) => {
+      reject({code: 400, message: 'Failed. Please try again ', data: e.message});
+    });
+  });
+};
