@@ -4,6 +4,11 @@ export default {
   'http': {
     'port': 4005,
   },
+  'actionTaken':{
+    'alreadyTaken':'This action is already taken',
+    'freshAction':''
+
+  },
   'text': {
 
     'submitProfileSubject': 'Profile Submission Notification',
