@@ -512,6 +512,8 @@ export const resetFreelancerToken = (_body) => {
                     let emailAddress = result.rows[0].email
                     let firstName = result.rows[0].firstname
                     let lastName = result.rows[0].lastname
+                    _body.email=result.rows[0].email,_body.name=result.rows[0].firstname
+                    await sendinblueService.customWelcomeMail(_body);
                     let replacements = {
                     };
                     let path = 'src/emailTemplates/resetConfirmationText.html';
