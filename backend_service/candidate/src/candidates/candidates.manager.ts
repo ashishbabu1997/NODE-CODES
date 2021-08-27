@@ -1014,6 +1014,7 @@ export const getResume = (_body) => {
           availability: allProfileDetails.rows[0].availability,
           typeOfAvailability: allProfileDetails.rows[0].typeOfAvailability,
           readyToStart: allProfileDetails.rows[0].readyToStart,
+          timeOfAvailability: allProfileDetails.rows[0].timeOfAvailability
         };
 
         // let tempD = {"dstOffset":0,"rawOffset":19800,"status":"OK","timeZoneId":"Asia/Kolkata","timeZoneName":"India Standard Time"}
