@@ -431,7 +431,6 @@ export const createFreelancer = (_body) => {
                 let emailAddress = _body.email
                 let number = ![null, undefined].includes(_body.telephoneNumber) ? _body.telephoneNumber : ""
                 let verificationLink = _body.host + '/create-password/' + uniqueId;
-                await sendinblueService.customWelcomeMail(_body);
 
                 let adminReplacement = { applicantName: _body.name, company: companyName, email: emailAddress, phoneNumber: number };
                 let path = 'src/emailTemplates/freelancerApplicationText.html';
@@ -512,6 +511,8 @@ export const resetFreelancerToken = (_body) => {
                     let emailAddress = result.rows[0].email
                     let firstName = result.rows[0].firstname
                     let lastName = result.rows[0].lastname
+                    _body.email=result.rows[0].email,_body.name=result.rows[0].firstname
+                    await sendinblueService.customWelcomeMail(_body);
                     let replacements = {
                     };
                     let path = 'src/emailTemplates/resetConfirmationText.html';

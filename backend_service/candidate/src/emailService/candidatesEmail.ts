@@ -486,7 +486,7 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
       const pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
 
       if (Array.isArray(_body.sharedEmails)) {
-        _body.sharedEmails.forEach((element) => {
+        _body.sharedEmails.forEach( (element) => {
           const sharePath = 'src/emailTemplates/shareAppliedCandidates.html';
           const subjectLine = config.text.shareAppliedCandidateSubject + positionName;
           if (utils.notNull(element)) {
