@@ -35,14 +35,14 @@ export const listCandidatesDetails = (_body) => {
     const body = _body.query; let sort = '';
 
     // Sorting keys to add with the query
-    const orderBy = {'updatedOn': `chsv."updatedOn"`};
+    const orderBy = {'updatedOn': `cp.updated_on`};
 
     if (body.userRoleId != '1') {
       adminApproveQuery = ` AND chsv."adminApproveStatus" = 1`;
     }
 
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-      sort = ` ORDER BY ${orderBy[body.sortBy]} `;
+      sort = ` ORDER BY ${orderBy[body.sortBy]} desc `;
     }
 
     (async () => {
@@ -50,6 +50,7 @@ export const listCandidatesDetails = (_body) => {
       try {
         await client.query('BEGIN');
         queryText = selectQuery + adminApproveQuery + sort;
+        console.log(queryText)
         queryValues = Object.assign({positionid: body.positionId}, queryValues);
 
         const candidatesResult = await client.query(queryService.listCandidates(queryText, queryValues));
