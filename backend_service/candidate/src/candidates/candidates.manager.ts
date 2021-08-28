@@ -174,9 +174,10 @@ export const addCandidateReview = (_body) => {
         } else {
           await client.query('BEGIN');
           // Update assesment ratings about the candidate.
+          _body.ellowRecruitmentStatus=(_body.reviewStepsId==1 && _body.rating == 1)?config.ellowRecruitmentStatus.partial:config.ellowRecruitmentStatus.complete
           const result = await client.query(queryService.updateEllowRecuiterReview(_body));
 
-          if (utils.stringEquals(_body.stageName, 'ellow Onboarding')) {
+          if (utils.stringEquals(_body.stageName,config.ellowRecruitmentStatus.verifiedStage)) {
             _body.candidateId = result.rows[0].candidate_id;
             await client.query(queryService.setVettedStatus(_body));
             if (_body.rating === 0) {

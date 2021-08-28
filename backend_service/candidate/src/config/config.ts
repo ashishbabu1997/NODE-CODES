@@ -9,6 +9,11 @@ export default {
     'freshAction':''
 
   },
+  'ellowRecruitmentStatus':{
+      'partial':'PARTIALLY_COMPLETED',
+      'complete':'COMPLETED',
+      'verifiedStage':'ellow Screening and Verification'
+  },
   'text': {
 
     'submitProfileSubject': 'Profile Submission Notification',

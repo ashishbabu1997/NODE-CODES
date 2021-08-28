@@ -709,11 +709,19 @@ export const getCompanyId = (_body) => {
 
 // *******************************************************************************************************************************//
 // -------------------------------------------Assesment traits realted queries-------------------------------------------------//
+// export const updateEllowRecuiterReview = (_body) => {
+//   return {
+//     name: 'update-ellow-recuiter-review',
+//     text: candidateQuery.updateEllowRecuiterReview,
+//     values: {assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments, rating: _body.rating, employeeid: _body.employeeId, currenttime: currentTime()},
+//   };
+// };
+
 export const updateEllowRecuiterReview = (_body) => {
   return {
     name: 'update-ellow-recuiter-review',
     text: candidateQuery.updateEllowRecuiterReview,
-    values: {assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments, rating: _body.rating, employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {reviewstepsid:_body.reviewStepsId,ellowstatus:_body.ellowRecruitmentStatus,assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments,employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
 export const updateCommentHistory = (_body) => {
@@ -854,19 +862,34 @@ export const changeCandidateAssignee = (_body) => {
   };
 };
 
+// export const changeEllowRecruitmentStage = (_body) => {
+//   return {
+//     name: 'change-candidate-ellow-hiring-stage',
+//     text: candidateQuery.changeEllowRecruitmentStage,
+//     values: {candidateid: _body.candidateId, stagename: _body.stageName, employeeid: _body.employeeId, currenttime: currentTime()},
+//   };
+// };
+
 export const changeEllowRecruitmentStage = (_body) => {
   return {
     name: 'change-candidate-ellow-hiring-stage',
     text: candidateQuery.changeEllowRecruitmentStage,
-    values: {candidateid: _body.candidateId, stagename: _body.stageName, employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {candidateid: _body.candidateId,reviewstepsid:_body.reviewStepsId, stagename: _body.stageName, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
 
+// export const updateEllowStageStatus = (_body) => {
+//   return {
+//     name: 'update-candidate-ellow-stage-status',
+//     text: candidateQuery.ellowStageStatusUpdate,
+//     values: {candidateid: _body.candidateId, assessmentid: _body.candidateAssessmentId, employeeid: _body.employeeId, currenttime: currentTime()},
+//   };
+// };
 export const updateEllowStageStatus = (_body) => {
   return {
     name: 'update-candidate-ellow-stage-status',
     text: candidateQuery.ellowStageStatusUpdate,
-    values: {candidateid: _body.candidateId, assessmentid: _body.candidateAssessmentId, employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {candidateid: _body.candidateId, assessmentid: _body.candidateAssessmentId,reviewstepsid:_body.reviewStepsId,employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
 
@@ -878,11 +901,18 @@ export const updateAssigneeComment = (_body) => {
   };
 };
 
+// export const rejectFromCandidateEllowRecruitment = (_body) => {
+//   return {
+//     name: 'reject-candidate-ellow-hiring',
+//     text: candidateQuery.rejectFromCandidateEllowRecruitment,
+//     values: {assessmentid: _body.candidateAssessmentId, assignedto: _body.assignedTo, comment: _body.assessmentComment, rating: _body.assessmentRating, link: _body.assessmentLink, linktext: _body.assessmentLinkText, employeeid: _body.employeeId, currenttime: currentTime()},
+//   };
+// };
 export const rejectFromCandidateEllowRecruitment = (_body) => {
   return {
     name: 'reject-candidate-ellow-hiring',
     text: candidateQuery.rejectFromCandidateEllowRecruitment,
-    values: {assessmentid: _body.candidateAssessmentId, assignedto: _body.assignedTo, comment: _body.assessmentComment, rating: _body.assessmentRating, link: _body.assessmentLink, linktext: _body.assessmentLinkText, employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {reviewstepsid:_body.reviewStepsId,assessmentid: _body.candidateAssessmentId, assignedto: _body.assignedTo, comment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
 export const getAuditLogs = (_body) => {
