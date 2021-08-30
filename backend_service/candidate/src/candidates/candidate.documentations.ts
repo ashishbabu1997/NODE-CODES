@@ -883,6 +883,8 @@
 *               type: string
 *             stageName:
 *               type: string
+*             reviewStepsId:
+*               type: integer
 *           required:
 *             - candidateAssessmentId
 *     responses:
@@ -1886,6 +1888,8 @@
 *               type: string
 *             candidateName:
 *               type: string
+*             reviewStepsId:
+*               type: integer
 *           required:
 *             - candidateId
 *             - stageName
@@ -1940,6 +1944,8 @@
 *               type: string
 *             candidateName:
 *               type: string
+*             reviewStepsId:
+*               type: integer
 *           required:
 *             - candidateAssessmentId
 *     responses:
