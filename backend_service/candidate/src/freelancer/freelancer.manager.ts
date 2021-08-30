@@ -44,11 +44,17 @@ export const modifyGeneralInfo = (_body) => {
     (async () => {
       const client = await database().connect();
       try {
+        console.log("1")
         await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
+        console.log("2")
         await client.query(queryService.modifyCandidateAvailabilityQuery(_body));
+        console.log("3")
         await client.query(queryService.addWorkExperiences(_body));
+        console.log("4")
+
         await client.query(queryService.modifySocialProfileAndStatusUpdate(_body));
 
+        console.log("5")
 
         _body.skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];
         await client.query(queryService.deleteCandidateSkillsQuery(_body))

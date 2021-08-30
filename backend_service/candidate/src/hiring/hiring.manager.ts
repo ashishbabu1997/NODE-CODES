@@ -123,6 +123,8 @@ export const updateHiringStepDetails = (_body) => {
           const positions=await client.query(queryService. getPositionName(_body));
           const assignee=await client.query(queryService. getAssigneeName(_body));
           const imageResults=await client.query(queryService.getCandidateMailDetails(_body));
+
+          
           if (candidateClientHiringStepName=='Negotiation/Close position') {
             await client.query(queryService.updateMakeOfferValue(_body));
 
@@ -137,27 +139,16 @@ export const updateHiringStepDetails = (_body) => {
                 cName: positions.rows[0].company_name,
                 pName: positions.rows[0].position_name,
               };
-              if (resourceAllocatedRecruiter.rows[0].email!=null || '' || undefined) {
-                emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email, subj, path, adminReplacements);
-              } else {
-                console.log('Email Recipient is empty');
-              }
-              if (positions.rows[0].email!=null || '' || undefined) {
-                emailClient.emailManager(positions.rows[0].email, subj, path, adminReplacements);
-              } else {
-                console.log('Email Recipient is empty');
-              }
+              emailClient.emailManager(resourceAllocatedRecruiter.rows[0].email, subj, path, adminReplacements);
+              emailClient.emailManager(positions.rows[0].email, subj, path, adminReplacements);
+              
               const assigneePath = 'src/emailTemplates/resourceAcceptionAssigneeMailText.html';
               const assigneeReplacements = {
                 fName: imageResults.rows[0].candidate_first_name,
                 lName: imageResults.rows[0].candidate_last_name,
                 pName: positions.rows[0].position_name,
               };
-              if (assignee.rows[0].email!=null || '' || undefined) {
-                emailClient.emailManager(assignee.rows[0].email, subj, assigneePath, assigneeReplacements);
-              } else {
-                console.log('Email Recipient is empty');
-              }
+              emailClient.emailManager(assignee.rows[0].email, subj, assigneePath, assigneeReplacements);
               await client.query(queryService.updateAvailabilityOfCandidate(_body));
               const updatedResourceCounts=await client.query(queryService.updateClosedCount(_body));
               if (updatedResourceCounts.rows[0].developer_count>=updatedResourceCounts.rows[0].close_count) {
