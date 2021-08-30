@@ -709,28 +709,28 @@ export const getCompanyId = (_body) => {
 
 // *******************************************************************************************************************************//
 // -------------------------------------------Assesment traits realted queries-------------------------------------------------//
-// export const updateEllowRecuiterReview = (_body) => {
-//   return {
-//     name: 'update-ellow-recuiter-review',
-//     text: candidateQuery.updateEllowRecuiterReview,
-//     values: {assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments, rating: _body.rating, employeeid: _body.employeeId, currenttime: currentTime()},
-//   };
-// };
-
 export const updateEllowRecuiterReview = (_body) => {
   return {
     name: 'update-ellow-recuiter-review',
     text: candidateQuery.updateEllowRecuiterReview,
-    values: {reviewstepsid:_body.reviewStepsId,ellowstatus:_body.ellowRecruitmentStatus,assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments,employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments, rating: _body.rating, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
-export const updateCommentHistory = (_body) => {
-  return {
-    name: 'update-ellow-recuiter-verified-comment',
-    text: candidateQuery.updateReviewCommentHistory,
-    values: [_body.candidateAssessmentId, _body.commentHistory],
-  };
-};
+
+// export const updateEllowRecuiterReview = (_body) => {
+//   return {
+//     name: 'update-ellow-recuiter-review',
+//     text: candidateQuery.updateEllowRecuiterReview,
+//     values: {assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments,employeeid: _body.employeeId, currenttime: currentTime()},
+//   };
+// };
+// export const updateCommentHistory = (_body) => {
+//   return {
+//     name: 'update-ellow-recuiter-verified-comment',
+//     text: candidateQuery.updateReviewCommentHistory,
+//     values: [_body.candidateAssessmentId, _body.commentHistory],
+//   };
+// };
 
 export const getCandidateProfileName = (_body) => {
   return {
@@ -739,11 +739,18 @@ export const getCandidateProfileName = (_body) => {
     values: [_body.candidateId],
   };
 };
+export const updateEllowRecruitmentStatus = (_body) => {
+  return {
+    name: 'update-recruitment-status',
+    text: candidateQuery.updateEllowScreeningStatus,
+    values: {candidateid:_body.candidateId,reviewstepsid:_body.reviewStepsId,completion:_body.ellowRecruitmentStatus},
+  };
+};
 export const setVettedStatus = (_body) => {
   return {
     name: 'set-vetted-status',
     text: candidateQuery.setVettedStatus,
-    values: {candidateid: _body.candidateId, employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {reviewstepsid:_body.reviewStepsId,candidateid: _body.candidateId, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
 
@@ -878,20 +885,22 @@ export const changeEllowRecruitmentStage = (_body) => {
   };
 };
 
-// export const updateEllowStageStatus = (_body) => {
-//   return {
-//     name: 'update-candidate-ellow-stage-status',
-//     text: candidateQuery.ellowStageStatusUpdate,
-//     values: {candidateid: _body.candidateId, assessmentid: _body.candidateAssessmentId, employeeid: _body.employeeId, currenttime: currentTime()},
-//   };
-// };
 export const updateEllowStageStatus = (_body) => {
   return {
     name: 'update-candidate-ellow-stage-status',
     text: candidateQuery.ellowStageStatusUpdate,
-    values: {candidateid: _body.candidateId, assessmentid: _body.candidateAssessmentId,reviewstepsid:_body.reviewStepsId,employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {candidateid: _body.candidateId, assessmentid: _body.candidateAssessmentId, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
+
+
+// export const updateEllowStageStatus = (_body) => {
+//   return {
+//     name: 'update-candidate-ellow-stage-status',
+//     text: candidateQuery.ellowStageStatusUpdate,
+//     values: {candidateid: _body.candidateId, assessmentid: _body.candidateAssessmentId,reviewstepsid:_body.reviewStepsId,employeeid: _body.employeeId, currenttime: currentTime()},
+//   };
+// };
 
 export const updateAssigneeComment = (_body) => {
   return {

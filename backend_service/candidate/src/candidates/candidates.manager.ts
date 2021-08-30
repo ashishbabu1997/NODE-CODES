@@ -176,20 +176,11 @@ export const addCandidateReview = (_body) => {
           // Update assesment ratings about the candidate.
           _body.ellowRecruitmentStatus=(_body.reviewStepsId==1 && _body.rating == 1)?config.ellowRecruitmentStatus.partial:config.ellowRecruitmentStatus.complete
           const result = await client.query(queryService.updateEllowRecuiterReview(_body));
-
-          if (utils.stringEquals(_body.stageName,config.ellowRecruitmentStatus.verifiedStage)) {
+          await client.query(queryService.updateEllowRecruitmentStatus(_body));
+          if (_body.assessmentType==1) {
             _body.candidateId = result.rows[0].candidate_id;
             await client.query(queryService.setVettedStatus(_body));
-            if (_body.rating === 0) {
-              _body.commentHistory={
-                'verifiedDetails': {
-                  'status': 'Verified',
-                  'createdOn': new Date().getTime(),
-                  'asigneeName': _body.asigneeName,
-                  'asigneeComment': _body.assessmentComment,
-                }};
-              await client.query(queryService.updateCommentHistory(_body));
-            }
+            
 
             await emailService.addCandidateReviewEmail(_body, client);
           }
