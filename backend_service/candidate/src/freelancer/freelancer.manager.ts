@@ -264,6 +264,7 @@ export const getFreelancerAppliedJobs = (_body) => {
     (async () => {
       const client = await database();
       try {
+        console.log(_body)
         var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body))
         _body.candidateId=candidateResult.rows[0].candidate_id
         const upcomingInterviews = await client.query(queryService.getFreelancerAppliedJobsDetails(_body));

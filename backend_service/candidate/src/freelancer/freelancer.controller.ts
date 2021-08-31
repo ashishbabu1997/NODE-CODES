@@ -63,7 +63,7 @@ export const listDraftFreelancers = (req, res) => {
 };
 
 export const getFreelancerAppliedJobsController = (req, res) => {
-  const body = req.body;
+  const body = req.query;
   freelancerManager.getFreelancerAppliedJobs(body).then((response: any) => {
     sendResponse(res, response.code, 1, 201, response.message, response.data);
   }).catch((error) => {
@@ -72,7 +72,7 @@ export const getFreelancerAppliedJobsController = (req, res) => {
 };
 
 export const getFreelancerContractDetailsController = (req, res) => {
-  const body = req.body;
+  const body = req.query;
   freelancerManager.getFreelancerContractDetails(body).then((response: any) => {
     sendResponse(res, response.code, 1, 201, response.message, response.data);
   }).catch((error) => {
