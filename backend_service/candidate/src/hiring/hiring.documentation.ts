@@ -153,6 +153,10 @@
 *               type: integer
 *             assignedTo:
 *               type: integer
+*             contractStartDate:
+*               type: integer
+*             contractEndDate:
+*               type: integer
 *             hiringAssesmentValue:
 *               type: integer
 *             candidateHiringStepComment:
