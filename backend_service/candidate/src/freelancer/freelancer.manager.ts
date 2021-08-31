@@ -256,3 +256,49 @@ export const listDraftFreelancersDetails = (_body) => {
 };
 
 
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> Get freelancer applied Jobs
+export const getFreelancerAppliedJobs = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body))
+        _body.candidateId=candidateResult.rows[0].candidate_id
+        const upcomingInterviews = await client.query(queryService.getFreelancerAppliedJobsDetails(_body));
+        resolve({code: 200, message:'Successs', data: upcomingInterviews.rows });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+      }
+    })().catch((e) => {
+      reject({code: 400, message: 'Failed. Please try again ', data: e.message});
+    });
+  });
+};
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> Get candidate contract details
+export const getFreelancerContractDetails = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body))
+        _body.candidateId=candidateResult.rows[0].candidate_id
+        const contractDetails = await client.query(queryService.getFreelancerContactDetails(_body));
+        resolve({code: 200, message:'Successs', data: contractDetails.rows });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+      }
+    })().catch((e) => {
+      reject({code: 400, message: 'Failed. Please try again ', data: e.message});
+    });
+  });
+};
+

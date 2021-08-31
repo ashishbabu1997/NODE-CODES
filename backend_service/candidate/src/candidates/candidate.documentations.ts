@@ -2525,3 +2525,49 @@
 *       500:
 *         description: Server down
 */
+
+
+
+
+/**
+* @swagger
+* /candidates/updateStartAndEndDate:
+*   post:
+*     tags:
+*       - Candidates
+*     name: updateStartAndEndDate
+*     summary: Update contract start and end date for a candidate who has applied for a position
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer
+*             positionId:
+*               type: integer
+*             contractStartDate:
+*               type: integer
+*             contractEndDate:
+*               type: integer
+*           required:
+*             - token
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

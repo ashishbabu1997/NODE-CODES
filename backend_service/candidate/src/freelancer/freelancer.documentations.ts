@@ -383,3 +383,61 @@
 *       500:
 *         description: Server down
 */
+
+
+/**
+* @swagger
+* /freelancer/getFreelancerContractDetails:
+*   get:
+*     tags:
+*       - Freelancer
+*     name: getFreelancerContractDetails
+*     summary: Get freelancer contract details
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+
+
+/**
+* @swagger
+* /freelancer/freelancerAppliedJobs:
+*   get:
+*     tags:
+*       - Freelancer
+*     name: freelancerAppliedJobs
+*     summary: Get freelancer applied jobs
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

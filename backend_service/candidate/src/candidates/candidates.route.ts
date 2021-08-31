@@ -72,5 +72,10 @@ router
     .post('/approveOrRejectAppliedCandidate', candidateController.approveOrRejectAppliedCandidateController)
     .get('/sendblue', candidateController.sendblueAPI)
     .get('/sendblueAddContact', candidateController.sendblueAddContact)
-    .post('/checkAction', candidateController.checkActionTaken);
+    .post('/checkAction', candidateController.checkActionTaken)
+    .post('/updateStartAndEndDate', candidateController.updateStartAndEndDateController)
+
+
+
+    
 export default router;

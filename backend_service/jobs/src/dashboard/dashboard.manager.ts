@@ -102,6 +102,11 @@ export const getUpcomingInterviews = (_body) => {
                     case '3':
                         interviewLists = await client.query(queryService.upcomingInterviewsForProvider(_body, utils.upcomingInterviewSort(_body)));
                         break;
+                    case '4':
+                        var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body))
+                        _body.candidateId=candidateResult.rows[0].candidate_id
+                        interviewLists = await client.query(queryService.upcomingInterviewsForCandidate(_body, utils.upcomingInterviewSort(_body)));
+                        break;
                     default:
                         interviewLists['rows'] = null;
                         break;

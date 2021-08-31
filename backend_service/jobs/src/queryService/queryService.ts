@@ -558,6 +558,20 @@ export const upcomingInterviewsForProvider = (_body, sort) => {
     }
 }
 
+export const upcomingInterviewsForCandidate = (_body, sort) => {
+    return {
+        name: 'candidate-interview-list',
+        text: dashboardQuery.fetchCandidateInterviewList + sort,
+        values: [_body.candidateId]
+    }
+}
+export const getCandidateIdFromEmployeeId = (_body) => {
+    return {
+        name: 'get-candidate-id',
+        text: dashboardQuery.getCandidateIdFromEmployeeIdQuery,
+        values: [_body.employeeId]
+    }
+}
 export const getActivePositions = (_body, sort) => {
     return {
         name: 'recruiter-active-positions',

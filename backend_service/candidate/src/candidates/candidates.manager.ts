@@ -2547,3 +2547,27 @@ export const checkAction = (_body) => {
     });
   });
 };
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> Update candidate contract start and end date
+export const updateStartAndEndDate = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        const getCandidateDetailsFromToken = await client.query(queryService.getCandidateDetailsFromTokenQueryService(_body));
+          resolve({code: 200, message:'Success', data: {}});
+        
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+      }
+    })().catch((e) => {
+      reject({code: 400, message: 'Failed. Please try again ', data: e.message});
+    });
+  });
+};
+

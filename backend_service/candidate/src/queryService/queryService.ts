@@ -58,6 +58,36 @@ export const getCandidateDetailsFromTokenQueryService = (_body) => {
   };
 };
 
+
+export const updateContractStartAndEndDate = (_body) => {
+  return {
+    name: 'update-contract-start-end-date',
+    text: candidateQuery.updateCandidateContractStartEndDate,
+    values: [_body.candidateId,_body.positionId,_body.contractStartDate,_body.contractEndDate],
+  };
+};
+export const getFreelancerAppliedJobsDetails = (_body) => {
+  return {
+    name: 'get-details-for-applied-jobs',
+    text: candidateQuery.getFreelancerAppliedJobsQuery,
+    values: [_body.candidateId],
+  };
+};
+
+export const getFreelancerContactDetails = (_body) => {
+  return {
+    name: 'get-details-for-contract-jobs',
+    text: candidateQuery.getFreelancerContractDetailsQuery,
+    values: [_body.candidateId],
+  };
+};
+export const getCandidateIdFromEmployeeId = (_body) => {
+  return {
+      name: 'get-candidate-id',
+      text: candidateQuery.getCandidateIdFromEmployeeIdQuery,
+      values: [_body.employeeId]
+  }
+}
 export const addCandidateEmployee = (_body) => {
   return {
     name: 'add-candidate-employee',
@@ -1316,6 +1346,21 @@ export const updateAvailabilityOfCandidate = (_body) => {
     name: 'update-candidate-availability',
     text: hiringQuery.updateCandidateAvailability,
     values: [_body.candidateId, false],
+  };
+};
+
+export const updateContractDetails = (_body) => {
+  return {
+    name: 'update-candidate-contract-details',
+    text: hiringQuery.insertContractDetails,
+    values: [_body.candidateId,_body.positionId,_body.contractStartDate,_body.contractEndDate,currentTime(),_body.employeeId,true],
+  };
+};
+export const setIncontractToFalse = (_body) => {
+  return {
+    name: 'set-candidate-contract-false',
+    text: hiringQuery.setContractFalse,
+    values: [_body.candidateId],
   };
 };
 export const getCandidateDetails = (_body) => {
