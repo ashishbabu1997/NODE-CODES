@@ -441,3 +441,31 @@
 *       500:
 *         description: Server down
 */
+
+
+/**
+* @swagger
+* /freelancer/getCandidateAssesmentLink:
+*   get:
+*     tags:
+*       - Freelancer
+*     name: getCandidateAssesmentLink
+*     summary: Get candidate assessment test links
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

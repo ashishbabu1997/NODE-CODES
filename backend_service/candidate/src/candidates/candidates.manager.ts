@@ -199,6 +199,34 @@ export const addCandidateReview = (_body) => {
 };
 
 // >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Function to add code/algorithm test link by ellow recruiter
+export const addTestLink = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        
+          await client.query('BEGIN');
+       
+          await client.query(queryService.updateAssessmentTestLink(_body));
+            
+          await client.query('COMMIT');
+          resolve({code: 200, message: 'Candidate Assesment Updated successfully', data: {}});
+        
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+    });
+  });
+};
+
+
+
+// >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>>>Function to edit the vetting status of the candidate.
 export const editVettingStatus = (_body) => {
   return new Promise((resolve, reject) => {

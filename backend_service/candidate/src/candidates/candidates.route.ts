@@ -74,7 +74,9 @@ router
     .get('/sendblueAddContact', candidateController.sendblueAddContact)
     .post('/checkAction', candidateController.checkActionTaken)
     .post('/updateStartAndEndDate', candidateController.updateStartAndEndDateController)
+    .post('/addTestLink', candidateController.addTestLinkController)
 
+    
 
 
     

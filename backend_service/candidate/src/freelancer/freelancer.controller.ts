@@ -79,3 +79,12 @@ export const getFreelancerContractDetailsController = (req, res) => {
     sendResponse(res, error.code, 0, 401, error.message, error.data);
   });
 };
+
+export const getCandidateAssesmentLinkController = (req, res) => {
+  const body = req.query;
+  freelancerManager.getCandidateAssesmentLink(body).then((response: any) => {
+    sendResponse(res, response.code, 1, 201, response.message, response.data);
+  }).catch((error) => {
+    sendResponse(res, error.code, 0, 401, error.message, error.data);
+  });
+};

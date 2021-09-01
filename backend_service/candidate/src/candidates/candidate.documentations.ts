@@ -2571,3 +2571,49 @@
 *       500:
 *         description: Server down
 */
+
+
+
+
+
+
+/**
+* @swagger
+* /candidates/addTestLink:
+*   post:
+*     tags:
+*       - Candidates
+*     name: addTestLink
+*     summary: To add assessment test link
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateAssessmentId:
+*               type: integer
+*             assessmentLink:
+*               type: string
+*             assessmentLinkText:
+*               type: string
+*           required:
+*             - candidateAssessmentId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

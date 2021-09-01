@@ -81,6 +81,13 @@ export const getFreelancerContactDetails = (_body) => {
     values: [_body.candidateId],
   };
 };
+export const getCandidateAssessmentLinks = (_body) => {
+  return {
+    name: 'get-details-for-assessment-links',
+    text: candidateQuery.getCandidateAssessmentLinksQuery,
+    values: [_body.candidateId],
+  };
+};
 export const getCandidateIdFromEmployeeId = (_body) => {
   return {
       name: 'get-candidate-id',
@@ -747,6 +754,15 @@ export const updateEllowRecuiterReview = (_body) => {
   };
 };
 
+
+
+export const updateAssessmentTestLink = (_body) => {
+  return {
+    name: 'update-assessment-test-link',
+    text: candidateQuery.updateAssessmentTestLinkQuery,
+    values: { assessmentid: _body.candidateAssessmentId, link: _body.assessmentLink, linktext: _body.assessmentLinkText, employeeid: _body.employeeId, currenttime: currentTime()},
+  };
+};
 // export const updateEllowRecuiterReview = (_body) => {
 //   return {
 //     name: 'update-ellow-recuiter-review',
