@@ -613,6 +613,8 @@ export const addWorkExperience = (_body) => {
       const client = await database().connect();
       try {
                 _body.remoteWorkExperience === '' ? null : _body.remoteWorkExperience;
+                _body.currencyTypeId== null? 1:_body.currencyTypeId
+                _body.billingTypeId== null? 2:_body.billingTypeId
                 await client.query(queryService.addWorkExperiences(_body));
                 resolve({code: 200, message: 'Candidate overall work experience updated successfully', data: {}});
       } catch (e) {
