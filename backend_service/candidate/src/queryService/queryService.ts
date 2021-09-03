@@ -1011,7 +1011,7 @@ export const rejectFromCandidateEllowRecruitment = (_body) => {
   return {
     name: 'reject-candidate-ellow-hiring',
     text: candidateQuery.rejectFromCandidateEllowRecruitment,
-    values: {reviewstepsid:_body.reviewStepsId,assessmentid: _body.candidateAssessmentId, assignedto: _body.assignedTo, comment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {reviewstepsid:_body.reviewStepsId,assessmentid: _body.candidateAssessmentId,rating:_body.rating, assignedto: _body.assignedTo, comment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
 export const getAuditLogs = (_body) => {
