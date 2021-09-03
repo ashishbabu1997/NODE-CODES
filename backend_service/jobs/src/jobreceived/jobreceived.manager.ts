@@ -375,7 +375,6 @@ export const submitCandidateProfile = (_body) => {
                                         user: _body.email,
                                         password: password
                                     };
-
                                     emailClient.emailManagerForNoReply(_body.email, userSubject, userPath, userCredentialReplacements)
                         }
                     }
