@@ -2706,10 +2706,18 @@ export const modifyFullProfileResumeData = (_body) => {
         extractedData['resume'] = _body.resume;
         extractedData['candidateId'] = _body.candidateId;
         await client.query(queryService.updateFullProfileResumeDetails(extractedData));
-        
+        let candidateExperienceResult =await client.query(queryService.getCandidateWorkExperience(extractedData));
+        let candidateProjectResult =await client.query(queryService.getCandidateProjects(extractedData));
+        let candidateEducationResult =await client.query(queryService.getCandidateEducation(extractedData));
+        let candidateAwardResult =await client.query(queryService.getCandidateAwards(extractedData));
+        let candidatePublicationsResult =await client.query(queryService.getCandidatePublications(extractedData));
+        let candidateLanguagesResult =await client.query(queryService.getCandidateLanguages(extractedData));
         await client.query('COMMIT');
         try {
           let promises = [];
+
+          if(candidateExperienceResult.rowCount==0)
+          {
 
           extractedData['workHistory'].map((data) => {
             data['candidateId'] = _body.candidateId;
@@ -2718,43 +2726,64 @@ export const modifyFullProfileResumeData = (_body) => {
           });
 
           await Promise.all(promises);
+          }
+          
+          if (candidateProjectResult.rowCount==0)
+          {
+                promises = [];
+              extractedData['projects'].map((data) => {
+                data['candidateId'] =_body.candidateId;
+                data['employeeId'] = _body.employeeId;
+                promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
+              });
 
-          promises = [];
-          extractedData['projects'].map((data) => {
-            data['candidateId'] =_body.candidateId;
-            data['employeeId'] = _body.employeeId;
-            promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
-          });
+              await Promise.all(promises);
+          }
+          
 
-          await Promise.all(promises);
+          if(candidateEducationResult.rowCount==0)
+          {
 
-          promises = [];
-          extractedData['education'].map((data) => {
-            data['candidateId'] = _body.candidateId;
-            data['employeeId'] = _body.employeeId;
-            promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
-          });
+                promises = [];
+              extractedData['education'].map((data) => {
+                data['candidateId'] = _body.candidateId;
+                data['employeeId'] = _body.employeeId;
+                promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
+              });
 
-          await Promise.all(promises);
+              await Promise.all(promises);
+          }
 
-          promises = [];
-          extractedData['certifications'].map((data) => {
-            data['candidateId'] = _body.candidateId;
-            data['employeeId'] = _body.employeeId;
-            promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
-          });
+          if(candidateAwardResult.rowCount==0)
+          {
+            promises = [];
+            extractedData['certifications'].map((data) => {
+              data['candidateId'] = _body.candidateId;
+              data['employeeId'] = _body.employeeId;
+              promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
+            });
+            await Promise.all(promises);
 
-          await Promise.all(promises);
+          }
 
-          promises = [];
-          extractedData['publications'].map((data) => {
-            data['candidateId'] =_body.candidateId;
-            data['employeeId'] = _body.employeeId;
-            promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
-          });
+          if (candidatePublicationsResult.rowCount==0)
+          {
 
-          await Promise.all(promises);
-          await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
+            promises = [];
+            extractedData['publications'].map((data) => {
+              data['candidateId'] =_body.candidateId;
+              data['employeeId'] = _body.employeeId;
+              promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
+            });
+  
+            await Promise.all(promises);
+          }
+
+          if(candidateLanguagesResult.rowCount==0)
+          {
+            await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
+
+          }
           await client.query('COMMIT');
 
           return resolve({code: 200, message: 'Candidate resume file updated successfully', data: candidateId});

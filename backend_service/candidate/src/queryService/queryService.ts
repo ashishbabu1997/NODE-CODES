@@ -211,6 +211,50 @@ export const insertCandidateWorkHistoryQuery = (_body) => {
   };
 };
 
+
+export const getCandidateWorkExperience = (_body) => {
+  return {
+    name: 'get-candidate-work-history',
+    text: candidateQuery.getCandidateWorkExperience,
+    values: [_body.candidateId],
+  };
+};
+
+export const getCandidateProjects = (_body) => {
+  return {
+    name: 'get-candidate-project-history',
+    text: candidateQuery.getCandidateProject,
+    values: [_body.candidateId],
+  };
+};
+export const getCandidateEducation = (_body) => {
+  return {
+    name: 'get-candidate-education-history',
+    text: candidateQuery.getCandidateEducation,
+    values: [_body.candidateId],
+  };
+};
+export const getCandidateAwards = (_body) => {
+  return {
+    name: 'get-candidate-awards-history',
+    text: candidateQuery.getCandidateAwards,
+    values: [_body.candidateId],
+  };
+};
+export const getCandidatePublications = (_body) => {
+  return {
+    name: 'get-candidate-publications-history',
+    text: candidateQuery.getCandidatePublications,
+    values: [_body.candidateId],
+  };
+};
+export const getCandidateLanguages = (_body) => {
+  return {
+    name: 'get-candidate-language-history',
+    text: candidateQuery.getCandidateLanguages,
+    values: [_body.candidateId],
+  };
+};
 export const modifyCandidateWorkHistoryQuery = (_body) => {
   return {
     name: 'modify-candidate-work-history',
