@@ -1407,6 +1407,15 @@ export const updateExtractedCandidateDetails = (data) => {
     values: {candidateid: data.candidateId, firstname: data.firstName, lastname: data.lastName, summary: data.summary, phone: data.phone, email: data.email, workexperience: data.overallWorkExperience, citizenship: data.citizenship, residence: data.city, positionname: data.designation, resumefilename: data.resumeFileName, resume: data.resume, candidatestatus: 4, currenttime: currentTime(), employeeid: data.employeeId, resumedata: data.resumeData, detailresume: data.detailResume, htmlresume: data.htmlResume, bagofwords: data.bagOfWords, typeOfAvailability: 1, readyToStart: 1},
   };
 };
+
+
+export const updateFullProfileResumeDetails = (data) => {
+  return {
+    name: 'update-full-profile-candidate-details',
+    text: candidateQuery.updateFullProfileResumeDetails,
+    values: {candidateid: data.candidateId, resumefilename: data.resumeFileName, resume: data.resume,currenttime: currentTime(), employeeid: data.employeeId, resumedata: data.resumeData, detailresume: data.detailResume, htmlresume: data.htmlResume, bagofwords: data.bagOfWords},
+  };
+};
 export const insertDetailResume = (_body) => {
   return {
     name: 'insert-detail-resume',

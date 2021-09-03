@@ -51,6 +51,7 @@ router
     .post('/listFreeCandidatesOfProvider', jwtAuth, setData(), candidateController.listResourcesOfProvider)
     .post('/updateCandidateAvailability', jwtAuth, setData(), setProfileAuth([1, 2, 3, 4]), candidateController.changeCandidateAvailability)
     .post('/resumeParser', jwtAuth, setData(), setProfileAuth([1, 2, 3, 4]), candidateController.resumeParser)
+    .post('/fullProfileResumeParser', jwtAuth, setData(), setProfileAuth([1, 2, 3, 4]), candidateController.fullProfileResumeParserController)
     .post('/userSignup', candidateController.newUserSignup)
     .post('/updateBlacklisted', candidateController.updateBlacklisted)
     .post('/userSignup', candidateController.newUserSignup)

@@ -2601,3 +2601,176 @@ export const updateStartAndEndDate = (_body) => {
   });
 };
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+// Extract resume data and parse content from response
+export const fullProfileResumeParser = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      try {
+        let responseData = null;
+
+        const jsonObject = JSON.stringify({
+          'url': _body.publicUrl + encodeURIComponent(_body.fileName),
+          'userkey': 'IC8Q6BQ5',
+          'version': '8.0.0',
+          'subuserid': 'Deena Sasidhar',
+        });
+
+        // prepare the header
+        const postheaders = {
+          'Content-Type': 'application/json',
+          // eslint-disable-next-line no-undef
+          'Content-Length': Buffer.byteLength(jsonObject, 'utf8'),
+        };
+
+        // the post options
+        const optionspost = {
+          host: 'rest.rchilli.com',
+          port: 80,
+          path: '/RChilliParser/Rchilli/parseResume',
+          method: 'POST',
+          headers: postheaders,
+        };
+
+        console.info('Options prepared:');
+        console.info(optionspost);
+        console.info('Do the POST call');
+
+        // do the POST call
+        const reqPost = https.request(optionspost, function(res) {
+          // uncomment it for header details
+          //  console.log("headers: ", res.headers);
+          let data = '';
+          res.on('data', function(d) {
+            console.info('POST result:\n');
+            data += d;
+            console.info('\n\nPOST completed');
+          });
+
+          res.on('end', async () => {
+            // process.stdout.write(data);
+            responseData = JSON.parse(data);
+            if (responseData['error'] !== undefined) {
+              reject({code: 400, message: 'Failed Please try again, parser error ', data: responseData['error']});
+            } else {
+              responseData['employeeId'] = _body.employeeId;
+              responseData['resume'] = _body.fileName;
+              responseData['candidateId'] = _body.candidateId;
+              responseData['userRoleId'] = _body.userRoleId;
+              responseData['companyId'] = _body.companyId;
+              responseData['ResumeParserData']['ResumeFileName'] = _body.fileName.substring(36);
+
+              const resp = await modifyFullProfileResumeData(responseData).catch((e) => {
+                console.log('error data received : ', e);
+
+                reject({code: 400, message: 'Failed Please try again, parser error ', data: e.data});
+              });
+              resolve({code: 200, message: 'Resume parsed successfully', data: {candidateId: resp['data']}});
+            }
+          });
+        }).on('error', (err) => {
+          console.log('Error: ', err.message);
+          reject({code: 400, message: 'Error from parser', data: err.message});
+        });
+        // write the json data
+        reqPost.write(jsonObject);
+        reqPost.end();
+        reqPost.on('error', function(e) {
+          responseData = e.message;
+        });
+      } catch (e) {
+        console.log(e);
+        reject({code: 400, message: 'Failed. Please try again ', data: e.message});
+      }
+    })().catch((e) => {
+      reject({code: 400, message: 'Failed. Please try again', data: e.message});
+    });
+  });
+};
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>> Update resume data
+export const modifyFullProfileResumeData = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        const extractedData = rchilliExtractor.rchilliExtractor(_body); let candidateId = null;
+        extractedData['employeeId'] = _body.employeeId;
+        extractedData['resume'] = _body.resume;
+        extractedData['candidateId'] = _body.candidateId;
+        await client.query(queryService.updateFullProfileResumeDetails(extractedData));
+        
+        await client.query('COMMIT');
+        try {
+          let promises = [];
+
+          extractedData['workHistory'].map((data) => {
+            data['candidateId'] = _body.candidateId;
+            data['employeeId'] = _body.employeeId;
+            promises.push(client.query(queryService.insertCandidateWorkHistoryQuery(data)));
+          });
+
+          await Promise.all(promises);
+
+          promises = [];
+          extractedData['projects'].map((data) => {
+            data['candidateId'] =_body.candidateId;
+            data['employeeId'] = _body.employeeId;
+            promises.push(client.query(queryService.insertExtractedCandidateProjectsQuery(data)));
+          });
+
+          await Promise.all(promises);
+
+          promises = [];
+          extractedData['education'].map((data) => {
+            data['candidateId'] = _body.candidateId;
+            data['employeeId'] = _body.employeeId;
+            promises.push(client.query(queryService.insertCandidateEducationQuery(data)));
+          });
+
+          await Promise.all(promises);
+
+          promises = [];
+          extractedData['certifications'].map((data) => {
+            data['candidateId'] = _body.candidateId;
+            data['employeeId'] = _body.employeeId;
+            promises.push(client.query(queryService.insertCandidateAwardQuery(data)));
+          });
+
+          await Promise.all(promises);
+
+          promises = [];
+          extractedData['publications'].map((data) => {
+            data['candidateId'] =_body.candidateId;
+            data['employeeId'] = _body.employeeId;
+            promises.push(client.query(queryService.insertCandidatePublicationQuery(data)));
+          });
+
+          await Promise.all(promises);
+          await client.query(queryService.insertExtractedLanguagesQuery(extractedData));
+          await client.query('COMMIT');
+
+          return resolve({code: 200, message: 'Candidate resume file updated successfully', data: candidateId});
+        } catch (error) {
+          console.log('error : ', error.message);
+          reject(new Error({code: 400, message: 'Error occured during extraction', data: error.message}.toString()));
+        }
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+      } finally {
+        client.release();
+      }
+    })().catch((e) => {
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+    });
+  });
+};
