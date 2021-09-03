@@ -23,7 +23,7 @@ router
     .delete('/deleteSkills',jwtAuth,setData(), adminController.removeSkills)
 
     .get('/allSkills',  jwtAuth,setData(), adminController.allSkills)
-    .get('/reports',checkJwt, adminController.reports)
+    .get('/reports',checkJwt(), adminController.reports)
 export default router;
 
 // Admin@ellow123 
