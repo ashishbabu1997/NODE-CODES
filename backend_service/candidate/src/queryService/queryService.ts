@@ -1413,7 +1413,7 @@ export const updateContractDetails = (_body) => {
   return {
     name: 'update-candidate-contract-details',
     text: hiringQuery.insertContractDetails,
-    values: [_body.candidateId,_body.positionId,_body.startDate,_body.endndDate,currentTime(),_body.employeeId,true],
+    values: [_body.candidateId,_body.positionId,_body.startDate,_body.endDate,currentTime(),_body.employeeId,true],
   };
 };
 export const setIncontractToFalse = (_body) => {

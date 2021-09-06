@@ -131,9 +131,6 @@ export const updateHiringStepDetails = (_body) => {
             if (_body.hiringAssesmentValue==0) {
               const message=`${imageResults.rows[0].candidate_first_name +' '+imageResults.rows[0].candidate_last_name} has accepted the offer by ${positions.rows[0].company_name}`;
               await createNotification({positionId: null, companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name});
-              await client.query(queryService.setIncontractToFalse(_body));
-              await client.query('COMMIT');
-              await client.query(queryService.updateContractDetails(_body));
               const subj = 'Resource Acceptance Notification';
               const path = 'src/emailTemplates/resourceAcceptionMailText.html';
               const adminReplacements = {
