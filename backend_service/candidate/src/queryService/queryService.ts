@@ -63,7 +63,7 @@ export const updateContractStartAndEndDate = (_body) => {
   return {
     name: 'update-contract-start-end-date',
     text: candidateQuery.updateCandidateContractStartEndDate,
-    values: [_body.candidateId,_body.positionId,_body.contractStartDate,_body.contractEndDate],
+    values: [_body.candidateId,_body.positionId,_body.startDate,_body.endDate],
   };
 };
 export const getFreelancerAppliedJobsDetails = (_body) => {
@@ -1413,7 +1413,7 @@ export const updateContractDetails = (_body) => {
   return {
     name: 'update-candidate-contract-details',
     text: hiringQuery.insertContractDetails,
-    values: [_body.candidateId,_body.positionId,_body.contractStartDate,_body.contractEndDate,currentTime(),_body.employeeId,true],
+    values: [_body.candidateId,_body.positionId,_body.startDate,_body.endndDate,currentTime(),_body.employeeId,true],
   };
 };
 export const setIncontractToFalse = (_body) => {

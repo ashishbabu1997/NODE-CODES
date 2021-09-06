@@ -2587,7 +2587,22 @@ export const updateStartAndEndDate = (_body) => {
     (async () => {
       const client = await database();
       try {
-        const getCandidateDetailsFromToken = await client.query(queryService.getCandidateDetailsFromTokenQueryService(_body));
+        switch(_body.action)
+        {
+          case 'add':
+                await client.query(queryService.setIncontractToFalse(_body));
+                await client.query('COMMIT');
+                await client.query(queryService.updateContractDetails(_body));     
+                break;
+
+          case 'update':
+                await client.query(queryService.updateContractStartAndEndDate(_body));
+                break;
+
+            default:
+             reject(new Error({code: 400, message: 'Invalid action', data: {}}.toString()));
+
+        }
           resolve({code: 200, message:'Success', data: {}});
         
       } catch (e) {
