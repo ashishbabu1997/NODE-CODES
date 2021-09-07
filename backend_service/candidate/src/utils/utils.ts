@@ -177,7 +177,7 @@ export const resourceTab = (body) => {
       query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and chsv."stageStatusName" ilike \'Verified\' ';
       break;
     case 'certified':
-      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."stageStatusName" ilike \'ellow Certified And Verified\' and chsv."blacklisted"=false';
+      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."stageStatusName" ilike \'Certified\' and chsv."blacklisted"=false';
       break;
     case 'blacklisted':
       query = '  where chsv."blacklisted"=true';

@@ -176,12 +176,10 @@ export const addCandidateReview = (_body) => {
           // Update assesment ratings about the candidate.
           _body.ellowRecruitmentStatus=(_body.reviewStepsId==1 && _body.rating == 1)?config.ellowRecruitmentStatus.partial:config.ellowRecruitmentStatus.complete
           const result = await client.query(queryService.updateEllowRecuiterReview(_body));
+          _body.candidateId = result.rows[0].candidate_id;
           await client.query(queryService.updateEllowRecruitmentStatus(_body));
-          if (_body.assessmentType==1) {
-            _body.candidateId = result.rows[0].candidate_id;
+          if (_body.stageName==config.ellowRecruitmentStatus.verifiedStage) {
             await client.query(queryService.setVettedStatus(_body));
-            
-
             await emailService.addCandidateReviewEmail(_body, client);
           }
           await client.query('COMMIT');
@@ -1482,6 +1480,7 @@ export const changeEllowRecruitmentStage = (_body) => {
         if ([undefined, null, ''].includes(_body.assignedTo)) {
           reject({code: 400, message: 'Candidate must be assigned to an assignee', data: {}});
         } else {
+          _body.vetted=_body.stageName==config.ellowRecruitmentStatus.vettedStage?6:1
           await client.query(queryService.changeEllowRecruitmentStage(_body));
           await client.query(queryService.updateEllowStageStatus(_body));
           await emailService.changeEllowRecruitmentStageEmail(_body, client);

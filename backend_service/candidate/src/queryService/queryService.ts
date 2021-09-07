@@ -971,7 +971,7 @@ export const changeEllowRecruitmentStage = (_body) => {
   return {
     name: 'change-candidate-ellow-hiring-stage',
     text: candidateQuery.changeEllowRecruitmentStage,
-    values: {candidateid: _body.candidateId,reviewstepsid:_body.reviewStepsId, stagename: _body.stageName, employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {vetted:_body.vetted,candidateid: _body.candidateId,reviewstepsid:_body.reviewStepsId, stagename: _body.stageName, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
 
