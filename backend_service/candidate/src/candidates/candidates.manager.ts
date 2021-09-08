@@ -178,7 +178,8 @@ export const addCandidateReview = (_body) => {
           const result = await client.query(queryService.updateEllowRecuiterReview(_body));
           _body.candidateId = result.rows[0].candidate_id;
           _body.currentEllowStage=_body.reviewStepsId==5?6:_body.reviewStepsId
-          await client.query(queryService.updateEllowRecruitmentStatus(_body));
+          var updateResult=await client.query(queryService.updateEllowRecruitmentStatus(_body));
+          _body.ellowstatusId=updateResult.rows[0].ellow_status_id
           if (_body.stageName==config.ellowRecruitmentStatus.verifiedStage) {
             await client.query(queryService.setVettedStatus(_body));
             await emailService.addCandidateReviewEmail(_body, client);
@@ -207,7 +208,12 @@ export const addTestLink = (_body) => {
         
           await client.query('BEGIN');
        
-          await client.query(queryService.updateAssessmentTestLink(_body));
+          var query=await client.query(queryService.updateAssessmentTestLink(_body));
+          await client.query('COMMIT');
+
+          var result=query.rows[0]
+          _body.candidateId=result.candidate_id,_body.reviewStepsId=result.review_steps_id,_body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.partial,_body.currentEllowStage=result.review_steps_id;
+          await client.query(queryService.updateEllowRecruitmentStatus(_body));
             
           await client.query('COMMIT');
           resolve({code: 200, message: 'Candidate Assesment Updated successfully', data: {}});
