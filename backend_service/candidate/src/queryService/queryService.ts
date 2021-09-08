@@ -833,14 +833,14 @@ export const updateEllowRecruitmentStatus = (_body) => {
   return {
     name: 'update-recruitment-status',
     text: candidateQuery.updateEllowScreeningStatus,
-    values: {candidateid:_body.candidateId,reviewstepsid:_body.reviewStepsId,completion:_body.ellowRecruitmentStatus},
+    values: {candidateid:_body.candidateId,reviewstepsid:_body.reviewStepsId,completion:_body.ellowRecruitmentStatus,currentellowstage: _body.currentEllowStage},
   };
 };
 export const setVettedStatus = (_body) => {
   return {
     name: 'set-vetted-status',
     text: candidateQuery.setVettedStatus,
-    values: {reviewstepsid:_body.reviewStepsId,currentstage:_body.currentEllowStage,candidateid: _body.candidateId, employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {reviewstepsid:_body.reviewStepsId,candidateid: _body.candidateId, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
 

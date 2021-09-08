@@ -18,7 +18,7 @@ export default {
   // updateReviewCommentHistory: 'update candidate_assesement set comment_history=$2::jsonb where candidate_assesment_id=$1 ',
   updateAssessmentTestLinkQuery:'update candidate_assesement SET assessment_link=$link,assessment_link_text=$linktext, updated_by=$employeeid, updated_on=$currenttime where candidate_assesment_id=$assessmentid returning candidate_id',
   setVettedStatus: 'update candidate set candidate_vetted=6,current_ellow_stage=$reviewstepsid,updated_by=$employeeid,updated_on=$currenttime where candidate_id=$candidateid',
-  updateEllowScreeningStatus:'update candidate set ellow_status_id=(select ellow_recuitment_status_id from ellow_recuitment_status where review_steps_id=$reviewstepsid and stage_completion=$completion) where candidate_id=$candidateid',
+  updateEllowScreeningStatus:'update candidate set current_ellow_stage=$currentellowstage, ellow_status_id=(select ellow_recuitment_status_id from ellow_recuitment_status where review_steps_id=$reviewstepsid and stage_completion=$completion) where candidate_id=$candidateid',
   updateCandidateAssesment: `update candidate_assesement set assesment_rating=$2,updated_by=$3,updated_on=$4 where candidate_assesment_id=$1`,
   updateAssessmentComment: 'UPDATE candidate set assessment_comment=$2,code_test_link=$3,interview_test_link=$4,updated_by = $5, updated_on = $6 where candidate_id=$1',
   getAssessmentTraits: `select candidate_assesment_id as "assesmentId",assesement_trait as "reviewName",assesment_rating as "adminRating" from candidate_assesement where candidate_id=$1 and status=true`,
