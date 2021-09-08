@@ -840,7 +840,7 @@ export const setVettedStatus = (_body) => {
   return {
     name: 'set-vetted-status',
     text: candidateQuery.setVettedStatus,
-    values: {reviewstepsid:_body.reviewStepsId,candidateid: _body.candidateId, employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {reviewstepsid:_body.reviewStepsId,currentstage:_body.currentEllowStage,candidateid: _body.candidateId, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
 
