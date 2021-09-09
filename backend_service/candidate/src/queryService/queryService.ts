@@ -724,6 +724,7 @@ export const updateCandidateStatus = (_body) => {
 };
 
 
+
 export const removeCandidateFromPositionQuery = (_body) => {
   return {
     name: 'delete-candidate-from-position',
@@ -794,7 +795,7 @@ export const updateEllowRecuiterReview = (_body) => {
   return {
     name: 'update-ellow-recuiter-review',
     text: candidateQuery.updateEllowRecuiterReview,
-    values: {assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments, rating: _body.rating, employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {commenthistory:_body.commentHistory,assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments, rating: _body.rating, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
 

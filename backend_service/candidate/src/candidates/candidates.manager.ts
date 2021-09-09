@@ -175,7 +175,22 @@ export const addCandidateReview = (_body) => {
           await client.query('BEGIN');
           // Update assesment ratings about the candidate.
           _body.ellowRecruitmentStatus=(_body.reviewStepsId==1 && _body.rating == 1)?config.ellowRecruitmentStatus.partial:config.ellowRecruitmentStatus.complete
-          const result = await client.query(queryService.updateEllowRecuiterReview(_body));
+          if (_body.reviewStepsId==1 && _body.rating == 1)
+          {
+                  var employee= await client.query(queryService.getAssigneeName(_body));
+                _body.commentHistory={
+                  'history': {
+                    'status': 'Basic Profile Submitted',
+                    'createdOn': new Date().getTime(),
+                    'asigneeName': employee.rows[0].name,
+                    'asigneeComment': _body.assessmentComment,
+                  }};
+          }
+          else{
+            _body.commentHistory=null
+          }
+          
+          var result = await client.query(queryService.updateEllowRecuiterReview(_body));
           _body.candidateId = result.rows[0].candidate_id;
           _body.currentEllowStage=_body.reviewStepsId==5?6:_body.reviewStepsId
           var updateResult=await client.query(queryService.updateEllowRecruitmentStatus(_body));
