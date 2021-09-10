@@ -165,6 +165,8 @@ export const getPositionDetails = (_body) => {
     (async () => {
       const client = await database().connect();
       try {
+        var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body));
+        _body.candidateId=candidateResult.rows[0].candidate_id
         const result=await client.query(queryService.getDetailsPosition(_body));
         resolve({code: 200, message: 'Candidate positions details listed successfully', data: result.rows});
       } catch (e) {
