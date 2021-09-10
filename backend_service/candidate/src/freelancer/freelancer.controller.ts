@@ -50,8 +50,7 @@ export const getCandidatePositionDetails = (req, res) => {
   }).catch((error) => {
     sendResponse(res, error.code, 0, 401, error.message, error.data);
   });
-};
-
+}
 
 export const listDraftFreelancers = (req, res) => {
   const body = req;
