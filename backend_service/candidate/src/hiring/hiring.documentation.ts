@@ -83,12 +83,6 @@
 *       - bearerAuth: []
 *     produces:
 *       - application/json
-*     parameters:
-*       - in: query
-*         name: candidateId
-*         schema:
-*         required:
-*           type: integer
 *     responses:
 *       200:
 *         description: Api success
