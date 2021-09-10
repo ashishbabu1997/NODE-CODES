@@ -308,7 +308,8 @@ export const getCandidateAssesmentLink = (_body) => {
         var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body))
         _body.candidateId=candidateResult.rows[0].candidate_id
         const assessmentDetails = await client.query(queryService.getCandidateAssessmentLinks(_body));
-        resolve({code: 200, message:'Successs', data: assessmentDetails.rows[0] });
+        _body.response=assessmentDetails.rowCount==0? {assessmentLink: null, assessmentLinkText: null}:assessmentDetails.rows[0]
+        resolve({code: 200, message:'Successs', data:_body.response });
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
