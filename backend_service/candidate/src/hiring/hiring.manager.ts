@@ -61,7 +61,12 @@ export const getAllCandidateHiringSteps = (_body) => {
     (async () => {
       const client = await database().connect();
       try {
-        if (_body.userRoleId==1 || _body.userRoleId==3) {
+        if (_body.userRoleId==1 || _body.userRoleId==3|| _body.userRoleId==4) {
+          if (_body.userRoleId==4)
+          {
+            var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body));
+            _body.candidateId=candidateResult.rows[0].candidate_id
+          }
           const result=await client.query(queryService.candidateAllPositionHiringStepsQuery(_body));
           resolve({code: 200, message: 'Candidate client hiring steps for all positions listed successfully', data: result.rows});
         } else {
