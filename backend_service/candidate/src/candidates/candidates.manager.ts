@@ -1590,6 +1590,7 @@ export const listHirerResources = (_body) => {
       const client = await database();
       try {
         queryText = selectQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
+        console.log(queryText)
         const queryCountText = totalQuery + utils.resourceHirerTab(body) + filterQuery + searchQuery;
         queryValues = Object.assign({hirercompanyid: Number(_body.body.companyId)}, queryValues);
 
