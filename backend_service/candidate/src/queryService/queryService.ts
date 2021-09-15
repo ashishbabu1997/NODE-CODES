@@ -795,10 +795,18 @@ export const updateEllowRecuiterReview = (_body) => {
   return {
     name: 'update-ellow-recuiter-review',
     text: candidateQuery.updateEllowRecuiterReview,
-    values: {commenthistory:_body.commentHistory,assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments, rating: _body.rating, employeeid: _body.employeeId, currenttime: currentTime()},
+    values: {assignedto: _body.assignedTo, assessmentid: _body.candidateAssessmentId, assessmentcomment: _body.assessmentComment, link: _body.assessmentLink, linktext: _body.assessmentLinkText, attachments: _body.attachments, rating: _body.rating, employeeid: _body.employeeId, currenttime: currentTime()},
   };
 };
 
+
+export const updateProfileReview = (_body) => {
+  return {
+    name: 'update-basic-profile-review',
+    text: candidateQuery.updateProfileReview,
+    values: {candidateid:_body.candidateId,employeeid: _body.employeeId, currenttime: currentTime(),reviewstepsid:_body.reviewStepsId},
+  };
+};
 
 
 export const updateAssessmentTestLink = (_body) => {

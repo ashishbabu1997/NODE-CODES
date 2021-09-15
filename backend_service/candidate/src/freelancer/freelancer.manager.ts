@@ -44,7 +44,6 @@ export const modifyGeneralInfo = (_body) => {
     (async () => {
       const client = await database().connect();
       try {
-        console.log("1")
         await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
         _body.availability=_body.readyToStart==0?false:true
         await client.query(queryService.modifyCandidateAvailabilityQuery(_body));
@@ -67,15 +66,19 @@ export const modifyGeneralInfo = (_body) => {
                     await Promise.all(promise);
 
           }
+          await client.query(queryService.addDefaultTraits(_body));
+          await client.query('COMMIT');
+          _body.currentEllowStage=_body.reviewStepsId=1
+          _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
+          await client.query(queryService.updateProfileReview(_body));
+          await client.query(queryService.updateEllowRecruitmentStatus(_body));
 
         resolve({code: 200, message: 'Freelancer General info updated successfully', data: {}});
       } catch (e) {
         console.log('Error raised from try : ', e);
         await client.query('ROLLBACK');
         reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
-      } finally {
-        client.release();
-      }
+      } 
     })().catch((e) => {
       console.log('Error raised from async : ', e);
       reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
@@ -123,6 +126,11 @@ export const submitFreelancerProfile = (_body) => {
         await client.query('BEGIN');
         _body.candidateStatus = config.integerReferences.profileSubmissionStatusValue;
         await client.query(queryService.addDefaultTraits(_body));
+        await client.query('COMMIT');
+       _body.currentEllowStage=_body.reviewStepsId=6
+        _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
+        await client.query(queryService.updateProfileReview(_body));
+        await client.query(queryService.updateEllowRecruitmentStatus(_body));
         await emailService.submitFreelancerProfileEmail(_body, client);
         resolve({code: 200, message: 'Freelancer submitted successfully', data: {}});
       } catch (e) {

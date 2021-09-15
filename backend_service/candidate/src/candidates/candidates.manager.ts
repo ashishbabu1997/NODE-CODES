@@ -174,25 +174,10 @@ export const addCandidateReview = (_body) => {
         } else {
           await client.query('BEGIN');
           // Update assesment ratings about the candidate.
-          _body.ellowRecruitmentStatus=(_body.reviewStepsId==1 && _body.rating == 1)?config.ellowRecruitmentStatus.partial:config.ellowRecruitmentStatus.complete
-          if (_body.reviewStepsId==1 && _body.rating == 1)
-          {
-                  var employee= await client.query(queryService.getAssigneeName(_body));
-                _body.commentHistory={
-                  'history': {
-                    'status': 'Basic Profile Submitted',
-                    'createdOn': new Date().getTime(),
-                    'asigneeName': employee.rows[0].name,
-                    'asigneeComment': _body.assessmentComment,
-                  }};
-          }
-          else{
-            _body.commentHistory=null
-          }
-          
+          _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
           var result = await client.query(queryService.updateEllowRecuiterReview(_body));
           _body.candidateId = result.rows[0].candidate_id;
-          _body.currentEllowStage=_body.reviewStepsId==5?6:_body.reviewStepsId
+          _body.currentEllowStage=_body.reviewStepsId==6?6:_body.reviewStepsId
           var updateResult=await client.query(queryService.updateEllowRecruitmentStatus(_body));
           _body.ellowstatusId=updateResult.rows[0].ellow_status_id
           if (_body.stageName==config.ellowRecruitmentStatus.verifiedStage) {
@@ -2834,6 +2819,39 @@ export const modifyFullProfileResumeData = (_body) => {
         reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       } finally {
         client.release();
+      }
+    })().catch((e) => {
+      reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+    });
+  });
+};
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Function to add code/algorithm test link by ellow recruiter
+export const getElloStage = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        
+          await client.query('BEGIN');
+       
+          var query=await client.query(queryService.updateAssessmentTestLink(_body));
+          await client.query('COMMIT');
+
+          var result=query.rows[0]
+          _body.candidateId=result.candidate_id,_body.reviewStepsId=result.review_steps_id,_body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.partial,_body.currentEllowStage=result.review_steps_id;
+          await client.query(queryService.updateEllowRecruitmentStatus(_body));
+            
+          await client.query('COMMIT');
+          resolve({code: 200, message: 'Candidate Assesment Updated successfully', data: {}});
+        
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
       }
     })().catch((e) => {
       reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
