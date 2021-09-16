@@ -74,6 +74,15 @@ export const getFreelancerAppliedJobsDetails = (_body) => {
   };
 };
 
+
+export const getFreelancerEllowStages = (_body) => {
+  return {
+    name: 'get-freelancer-ellow-stages',
+    text: candidateQuery.getFreelancerEllowStagesQuery,
+    values: [_body.candidateId],
+  };
+};
+
 export const getFreelancerContactDetails = (_body) => {
   return {
     name: 'get-details-for-contract-jobs',

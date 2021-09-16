@@ -2837,14 +2837,10 @@ export const getElloStage = (_body) => {
       try {
         
           await client.query('BEGIN');
-       
-          var query=await client.query(queryService.updateAssessmentTestLink(_body));
-          await client.query('COMMIT');
-
-          var result=query.rows[0]
-          _body.candidateId=result.candidate_id,_body.reviewStepsId=result.review_steps_id,_body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.partial,_body.currentEllowStage=result.review_steps_id;
-          await client.query(queryService.updateEllowRecruitmentStatus(_body));
-            
+          var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body));
+          _body.candidateId=candidateResult.rows[0].candidate_id
+          await client.query(queryService.getFreelancerEllowStages(_body));
+          
           await client.query('COMMIT');
           resolve({code: 200, message: 'Candidate Assesment Updated successfully', data: {}});
         
