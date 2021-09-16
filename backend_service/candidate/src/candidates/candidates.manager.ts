@@ -177,7 +177,7 @@ export const addCandidateReview = (_body) => {
           _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
           var result = await client.query(queryService.updateEllowRecuiterReview(_body));
           _body.candidateId = result.rows[0].candidate_id;
-          _body.currentEllowStage=_body.reviewStepsId==6?6:_body.reviewStepsId
+          _body.currentEllowStage=_body.reviewStepsId==5?6:_body.reviewStepsId
           var updateResult=await client.query(queryService.updateEllowRecruitmentStatus(_body));
           _body.ellowstatusId=updateResult.rows[0].ellow_status_id
           if (_body.stageName==config.ellowRecruitmentStatus.verifiedStage) {

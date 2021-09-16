@@ -851,7 +851,7 @@ export const updateEllowRecruitmentStatus = (_body) => {
   return {
     name: 'update-recruitment-status',
     text: candidateQuery.updateEllowScreeningStatus,
-    values: {candidateid:_body.candidateId,reviewstepsid:_body.reviewStepsId,completion:_body.ellowRecruitmentStatus,currentellowstage: _body.currentEllowStage},
+    values: {candidateid:_body.candidateId,reviewstepsid:_body.reviewStepsId,completion:_body.ellowRecruitmentStatus},
   };
 };
 export const setVettedStatus = (_body) => {
