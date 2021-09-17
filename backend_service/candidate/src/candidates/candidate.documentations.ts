@@ -2657,3 +2657,32 @@
 *       500:
 *         description: Server down
 */
+
+
+
+/**
+* @swagger
+* /candidates/getEllowStages:
+*   get:
+*     tags:
+*       - Candidates
+*     name: List ellow stages
+*     summary: list ellow stages and status of freelancer
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

@@ -13,6 +13,12 @@ export const listCandidates = (req, res) => {
   candidateManager.listCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
       .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
 };
+export const getFreelancerEllowStages = (req, res) => {
+  const body = req;
+  candidateManager.getElloStage(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+      .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};
+
 export const listFreeCandidates = (req, res) => {
   const body = req;
   candidateManager.listFreeCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))

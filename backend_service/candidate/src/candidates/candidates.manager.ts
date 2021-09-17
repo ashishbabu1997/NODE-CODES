@@ -2829,7 +2829,7 @@ export const modifyFullProfileResumeData = (_body) => {
 
 
 // >>>>>>> FUNC. >>>>>>>
-// >>>>>>>>>>>>>> Function to add code/algorithm test link by ellow recruiter
+// >>>>>>>>>>>>>> Function to get freelancer ellow stages
 export const getElloStage = (_body) => {
   return new Promise((resolve, reject) => {
     (async () => {

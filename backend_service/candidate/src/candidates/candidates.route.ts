@@ -76,6 +76,9 @@ router
     .post('/checkAction', candidateController.checkActionTaken)
     .post('/updateStartAndEndDate', candidateController.updateStartAndEndDateController)
     .post('/addTestLink', candidateController.addTestLinkController)
+    .get('/getEllowStages', candidateController.getFreelancerEllowStages)
+
+    
 
     
 
