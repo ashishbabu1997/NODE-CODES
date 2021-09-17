@@ -125,7 +125,6 @@ export const submitFreelancerProfile = (_body) => {
       try {
         await client.query('BEGIN');
         _body.candidateStatus = config.integerReferences.profileSubmissionStatusValue;
-        await client.query(queryService.addDefaultTraits(_body));
         await client.query('COMMIT');
        _body.currentEllowStage=2,_body.reviewStepsId=6;
         _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
