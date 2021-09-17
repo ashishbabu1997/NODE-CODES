@@ -81,6 +81,20 @@ export const checkEMailExistenceQuery = (_body) => {
         values: [_body.email],
     }
 }
+export const updateProfileReview = (_body) => {
+    return {
+      name: 'update-basic-profile-review',
+      text: jobReceivedQuery.updateProfileReview,
+      values: {candidateid:_body.candidateId,employeeid: _body.employeeId, currenttime: currentTime(),reviewstepsid:_body.reviewStepsId},
+    };
+  };
+  export const updateEllowRecruitmentStatus = (_body) => {
+    return {
+      name: 'update-recruitment-status',
+      text: jobReceivedQuery.updateEllowScreeningStatus,
+      values: {candidateid:_body.candidateId,reviewstepsid:_body.reviewStepsId,completion:_body.ellowRecruitmentStatus},
+    };
+  };
 export const saveCandidateQuery = (_body) => {
     return {
         name: 'add-Profile',

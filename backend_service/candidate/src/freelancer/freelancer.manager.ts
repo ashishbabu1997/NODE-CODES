@@ -136,8 +136,6 @@ export const submitFreelancerProfile = (_body) => {
         console.log(e);
         await client.query('ROLLBACK');
         reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
-      } finally {
-        client.release();
       }
     })().catch((e) => {
       reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));

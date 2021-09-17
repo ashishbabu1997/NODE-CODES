@@ -4,6 +4,12 @@ export default {
     "http": {
         "port": 4003
     },
+    'ellowRecruitmentStatus':{
+        'partial':'PARTIALLY_COMPLETED',
+        'complete':'COMPLETED',
+        'verifiedStage':'ellow Screening and Verification',
+        'vettedStage':'Certification'
+    },
     "jwtSecretKey": "elL0wA!",
     "adminEmail":"jjoseph@ellow.io",
     "db": {
