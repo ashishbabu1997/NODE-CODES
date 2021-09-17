@@ -42,7 +42,7 @@ export const listJobs = (_body) => {
 export const modifyGeneralInfo = (_body) => {
   return new Promise((resolve, reject) => {
     (async () => {
-      const client = await database().connect();
+      const client = await database();
       try {
         await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
         _body.availability=_body.readyToStart==0?false:true
@@ -127,7 +127,7 @@ export const submitFreelancerProfile = (_body) => {
         _body.candidateStatus = config.integerReferences.profileSubmissionStatusValue;
         await client.query(queryService.addDefaultTraits(_body));
         await client.query('COMMIT');
-       _body.currentEllowStage=_body.reviewStepsId=6
+       _body.currentEllowStage=2,_body.reviewStepsId=6;
         _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
         await client.query(queryService.updateProfileReview(_body));
         await client.query(queryService.updateEllowRecruitmentStatus(_body));
