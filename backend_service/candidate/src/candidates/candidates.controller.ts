@@ -14,7 +14,7 @@ export const listCandidates = (req, res) => {
       .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
 };
 export const getFreelancerEllowStages = (req, res) => {
-  const body = req;
+  const body = req.query;
   candidateManager.getElloStage(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
       .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
 };

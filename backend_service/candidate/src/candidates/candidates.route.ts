@@ -78,10 +78,5 @@ router
     .post('/addTestLink', candidateController.addTestLinkController)
     .get('/getEllowStages', jwtAuth, setData(),candidateController.getFreelancerEllowStages)
 
-    
 
-    
-
-
-    
 export default router;

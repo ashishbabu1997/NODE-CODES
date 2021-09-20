@@ -2837,12 +2837,13 @@ export const getElloStage = (_body) => {
       try {
         
           await client.query('BEGIN');
+          console.log(_body.employeeId)
           var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body));
           _body.candidateId=candidateResult.rows[0].candidate_id
-          await client.query(queryService.getFreelancerEllowStages(_body));
+          var stageResult=await client.query(queryService.getFreelancerEllowStages(_body));
           
           await client.query('COMMIT');
-          resolve({code: 200, message: 'Candidate Assesment Updated successfully', data: {}});
+          resolve({code: 200, message: 'Candidate Assesment Updated successfully', data: {stages:stageResult.rows}});
         
       } catch (e) {
         console.log(e);
