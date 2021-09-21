@@ -171,13 +171,13 @@ export const resourceTab = (body) => {
         query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false  and chsv."candidateVetted"=0';
         break;
     case 'nonVetted':
-      query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)';
+      query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted" not in (0,6) or chsv."candidateVetted" is null)';
       break;
     case 'vetted':
-      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and chsv."stageStatusName" ilike \'Verified\' ';
+      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and chsv."ellowStatusId" in (12,14) ';
       break;
     case 'certified':
-      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."stageStatusName" ilike \'Certified\' and chsv."blacklisted"=false';
+      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."ellowStatusId"=15 and chsv."blacklisted"=false ';
       break;
     case 'blacklisted':
       query = '  where chsv."blacklisted"=true';
