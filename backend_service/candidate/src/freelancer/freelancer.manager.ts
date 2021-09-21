@@ -42,20 +42,43 @@ export const listJobs = (_body) => {
 export const modifyGeneralInfo = (_body) => {
   return new Promise((resolve, reject) => {
     (async () => {
-      const client = await database().connect();
+      const client = await database();
       try {
         await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
+        _body.availability=_body.readyToStart==0?false:true
         await client.query(queryService.modifyCandidateAvailabilityQuery(_body));
         await client.query(queryService.addWorkExperiences(_body));
+        await client.query(queryService.modifySocialProfileAndStatusUpdate(_body));
+        _body.skillSet = ![undefined, null].includes(_body.skills) ? _body.skills.map(a => a.skill.skillId) :[];
+        await client.query(queryService.deleteCandidateSkillsQuery(_body))
+        if (Array.isArray(_body.skills))
+        {
+          let promise=[];
+
+                    _body.skills.forEach(async element => { 
+                        _body.competency=element.competency=== '' ? null :element.competency
+                        _body.preffered=element.preferred
+                        _body.skillId=element.skill["skillId"]
+                        _body.yearsOfExperience=element.yoe=== '' ? null :element.yoe
+                        _body.skillVersion = element.skillVersion=== ''? null :element.skillVersion
+                        promise.push(client.query(queryService.addCandidateSkills(_body)))
+                    });
+                    await Promise.all(promise);
+
+          }
+          await client.query(queryService.addDefaultTraits(_body));
+          await client.query('COMMIT');
+          _body.currentEllowStage=_body.reviewStepsId=1
+          _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
+          await client.query(queryService.updateProfileReview(_body));
+          await client.query(queryService.updateEllowRecruitmentStatus(_body));
 
         resolve({code: 200, message: 'Freelancer General info updated successfully', data: {}});
       } catch (e) {
         console.log('Error raised from try : ', e);
         await client.query('ROLLBACK');
         reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
-      } finally {
-        client.release();
-      }
+      } 
     })().catch((e) => {
       console.log('Error raised from async : ', e);
       reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
@@ -77,7 +100,7 @@ export const modifyOtherInfoAndSubmit = (_body) => {
           await client.query(queryService.insertCandidateCloudQuery(_body));
         }
 
-        await client.query(queryService.modifySocialProfileAndStatusUpdate(_body));
+        // await client.query(queryService.modifySocialProfileAndStatusUpdate(_body));
         await client.query(queryService.candidateStatusUpdate(_body));
         await client.query('COMMIT');
 
@@ -102,15 +125,17 @@ export const submitFreelancerProfile = (_body) => {
       try {
         await client.query('BEGIN');
         _body.candidateStatus = config.integerReferences.profileSubmissionStatusValue;
-        await client.query(queryService.addDefaultTraits(_body));
+        await client.query('COMMIT');
+       _body.currentEllowStage=2,_body.reviewStepsId=6;
+        _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
+        await client.query(queryService.updateProfileReview(_body));
+        await client.query(queryService.updateEllowRecruitmentStatus(_body));
         await emailService.submitFreelancerProfileEmail(_body, client);
         resolve({code: 200, message: 'Freelancer submitted successfully', data: {}});
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
         reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
-      } finally {
-        client.release();
       }
     })().catch((e) => {
       reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
@@ -145,6 +170,8 @@ export const getPositionDetails = (_body) => {
     (async () => {
       const client = await database().connect();
       try {
+        var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body));
+        _body.candidateId=candidateResult.rows[0].candidate_id
         const result=await client.query(queryService.getDetailsPosition(_body));
         resolve({code: 200, message: 'Candidate positions details listed successfully', data: result.rows});
       } catch (e) {
@@ -225,6 +252,78 @@ export const listDraftFreelancersDetails = (_body) => {
     })().catch((e) => {
       console.error(e.message);
       reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+    });
+  });
+};
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> Get freelancer applied Jobs
+export const getFreelancerAppliedJobs = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        console.log(_body)
+        var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body))
+        _body.candidateId=candidateResult.rows[0].candidate_id
+        const upcomingInterviews = await client.query(queryService.getFreelancerAppliedJobsDetails(_body));
+        resolve({code: 200, message:'Successs', data: upcomingInterviews.rows });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+      }
+    })().catch((e) => {
+      reject({code: 400, message: 'Failed. Please try again ', data: e.message});
+    });
+  });
+};
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> Get candidate contract details
+export const getFreelancerContractDetails = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body))
+        _body.candidateId=candidateResult.rows[0].candidate_id
+        const contractDetails = await client.query(queryService.getFreelancerContactDetails(_body));
+        resolve({code: 200, message:'Successs', data: contractDetails.rows });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+      }
+    })().catch((e) => {
+      reject({code: 400, message: 'Failed. Please try again ', data: e.message});
+    });
+  });
+};
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> Get candidate assessment link
+export const getCandidateAssesmentLink = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        var candidateResult=await client.query(queryService.getCandidateIdFromEmployeeId(_body))
+        _body.candidateId=candidateResult.rows[0].candidate_id
+        const assessmentDetails = await client.query(queryService.getCandidateAssessmentLinks(_body));
+        _body.response=assessmentDetails.rowCount==0? {assessmentLink: null, assessmentLinkText: null}:assessmentDetails.rows[0]
+        resolve({code: 200, message:'Successs', data:_body.response });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({code: 400, message: 'Failed. Please try again.', data: e.message}.toString()));
+      }
+    })().catch((e) => {
+      reject({code: 400, message: 'Failed. Please try again ', data: e.message});
     });
   });
 };

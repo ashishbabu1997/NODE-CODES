@@ -771,6 +771,7 @@ export const reports = (_body) => {
 
             } catch (e) {
                 await client.query('ROLLBACK')
+                console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             }
         })().catch(e => {

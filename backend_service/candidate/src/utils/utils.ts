@@ -167,14 +167,17 @@ export const resourceTab = (body) => {
     case 'allResources':
       query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false ';
       break;
+      case 'rejected':
+        query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false  and chsv."candidateVetted"=0';
+        break;
     case 'nonVetted':
-      query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=6 or chsv."candidateVetted" is null)';
+      query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted" not in (0,6) or chsv."candidateVetted" is null)';
       break;
     case 'vetted':
-      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and chsv."stageStatusName" ilike \'Verified\' ';
+      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and chsv."ellowStatusId" in (12,14) ';
       break;
     case 'certified':
-      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."stageStatusName" ilike \'ellow Certified And Verified\' and chsv."blacklisted"=false';
+      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."ellowStatusId"=15 and chsv."blacklisted"=false ';
       break;
     case 'blacklisted':
       query = '  where chsv."blacklisted"=true';
@@ -188,6 +191,9 @@ export const resourceTab = (body) => {
     case 'provider':
       query = `  where chsv."companyId" not in (select company_id from company where company_type=2) and chsv."candidateStatus"=9`;
       break;
+      case 'incontract':
+        query = '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 ';
+        break;
     default:
       break;
   }

@@ -50,8 +50,7 @@ export const getCandidatePositionDetails = (req, res) => {
   }).catch((error) => {
     sendResponse(res, error.code, 0, 401, error.message, error.data);
   });
-};
-
+}
 
 export const listDraftFreelancers = (req, res) => {
   const body = req;
@@ -62,3 +61,29 @@ export const listDraftFreelancers = (req, res) => {
   });
 };
 
+export const getFreelancerAppliedJobsController = (req, res) => {
+  const body = req.query;
+  freelancerManager.getFreelancerAppliedJobs(body).then((response: any) => {
+    sendResponse(res, response.code, 1, 201, response.message, response.data);
+  }).catch((error) => {
+    sendResponse(res, error.code, 0, 401, error.message, error.data);
+  });
+};
+
+export const getFreelancerContractDetailsController = (req, res) => {
+  const body = req.query;
+  freelancerManager.getFreelancerContractDetails(body).then((response: any) => {
+    sendResponse(res, response.code, 1, 201, response.message, response.data);
+  }).catch((error) => {
+    sendResponse(res, error.code, 0, 401, error.message, error.data);
+  });
+};
+
+export const getCandidateAssesmentLinkController = (req, res) => {
+  const body = req.query;
+  freelancerManager.getCandidateAssesmentLink(body).then((response: any) => {
+    sendResponse(res, response.code, 1, 201, response.message, response.data);
+  }).catch((error) => {
+    sendResponse(res, error.code, 0, 401, error.message, error.data);
+  });
+};

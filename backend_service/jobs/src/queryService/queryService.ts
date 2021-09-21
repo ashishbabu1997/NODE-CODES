@@ -81,6 +81,20 @@ export const checkEMailExistenceQuery = (_body) => {
         values: [_body.email],
     }
 }
+export const updateProfileReview = (_body) => {
+    return {
+      name: 'update-basic-profile-review',
+      text: jobReceivedQuery.updateProfileReview,
+      values: {candidateid:_body.candidateId,employeeid: _body.employeeId, currenttime: currentTime(),reviewstepsid:_body.reviewStepsId},
+    };
+  };
+  export const updateEllowRecruitmentStatus = (_body) => {
+    return {
+      name: 'update-recruitment-status',
+      text: jobReceivedQuery.updateEllowScreeningStatus,
+      values: {candidateid:_body.candidateId,reviewstepsid:_body.reviewStepsId,completion:_body.ellowRecruitmentStatus},
+    };
+  };
 export const saveCandidateQuery = (_body) => {
     return {
         name: 'add-Profile',
@@ -558,6 +572,20 @@ export const upcomingInterviewsForProvider = (_body, sort) => {
     }
 }
 
+export const upcomingInterviewsForCandidate = (_body, sort) => {
+    return {
+        name: 'candidate-interview-list',
+        text: dashboardQuery.fetchCandidateInterviewList + sort,
+        values: [_body.candidateId]
+    }
+}
+export const getCandidateIdFromEmployeeId = (_body) => {
+    return {
+        name: 'get-candidate-id',
+        text: dashboardQuery.getCandidateIdFromEmployeeIdQuery,
+        values: [_body.employeeId]
+    }
+}
 export const getActivePositions = (_body, sort) => {
     return {
         name: 'recruiter-active-positions',

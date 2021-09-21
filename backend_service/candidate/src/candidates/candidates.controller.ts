@@ -13,6 +13,12 @@ export const listCandidates = (req, res) => {
   candidateManager.listCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
       .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
 };
+export const getFreelancerEllowStages = (req, res) => {
+  const body = req.query;
+  candidateManager.getElloStage(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+      .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};
+
 export const listFreeCandidates = (req, res) => {
   const body = req;
   candidateManager.listFreeCandidatesDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
@@ -450,3 +456,27 @@ export const checkActionTaken = (req, res) => {
   });
 };
 
+
+export const updateStartAndEndDateController = (req, res) => {
+  const body = req.body;
+  candidateManager.updateStartAndEndDate(body).then((response: any) => {
+    sendResponse(res, response.code, 1, 201, response.message, response.data);
+  }).catch((error) => {
+    sendResponse(res, error.code, 0, 401, error.message, error.data);
+  });
+};
+
+export const addTestLinkController = (req, res) => {
+  const body = req.body;
+  candidateManager.addTestLink(body).then((response: any) => {
+    sendResponse(res, response.code, 1, 201, response.message, response.data);
+  }).catch((error) => {
+    sendResponse(res, error.code, 0, 401, error.message, error.data);
+  });
+};
+
+export const fullProfileResumeParserController = (req, res) => {
+  const body = req.body;
+  candidateManager.fullProfileResumeParser(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+      .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};

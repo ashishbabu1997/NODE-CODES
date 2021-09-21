@@ -10,7 +10,7 @@ router
     .get('/defaultHiringSteps', jwtAuth, setData(), hiringController.defaultHiringSteps)
     .get('/getPositionHiringSteps', jwtAuth, setData(), validate(hiringSchema.positionIdSchema), hiringController.getPositionHiringSteps)
     .get('/getCandidateHiringSteps', jwtAuth, setData(), validate(hiringSchema.candidateIdPositionIdSchema), hiringController.getCandidateHiringSteps)
-    .get('/getAllCandidateHiringSteps', jwtAuth, setData(), validate(hiringSchema.candidateIdSchema), hiringController.getAllCandidateHiringSteps)
+    .get('/getAllCandidateHiringSteps', jwtAuth, setData(), hiringController.getAllCandidateHiringSteps)
     .put('/updateCandidateHiringDetails', jwtAuth, setData(), hiringController.updateHiringStepDetails)
     .put('/moveCandidateHiringStep', jwtAuth, setData(), hiringController.moveCandidateHiringStep)
     .put('/rejectCandidateHiring', jwtAuth, setData(), hiringController.rejectFromHiringProcess)
