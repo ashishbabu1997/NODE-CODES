@@ -192,7 +192,7 @@ export const resourceTab = (body) => {
       query = `  where chsv."companyId" not in (select company_id from company where company_type=2) and chsv."candidateStatus"=9`;
       break;
       case 'incontract':
-        query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and chsv."makeOffer"=0 ';
+        query = '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 ';
         break;
     default:
       break;
