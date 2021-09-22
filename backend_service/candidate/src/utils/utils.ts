@@ -165,7 +165,7 @@ export const resourceTab = (body) => {
 
   switch (body.tabValue) {
     case 'allResources':
-      query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false ';
+      query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and chsv."candidateVetted"!=0';
       break;
       case 'rejected':
         query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false  and chsv."candidateVetted"=0';
