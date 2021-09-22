@@ -874,7 +874,7 @@ export const getDetailsPosition = (_body) => {
   return {
     name: 'get-position-details',
     text: freelancerQuery.getPositionsDetails,
-    values: [_body.candidateId],
+    values: [],
   };
 };
 
