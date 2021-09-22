@@ -284,9 +284,9 @@ export const changeAssigneeEmail = async (_body, client) => {
 // >>>>>>>> set corresponding stage values and flags in candidate related db
 export const changeEllowRecruitmentStageEmail = async (_body, client) => {
   try {
-    _body.auditType = 1;
+    _body.auditType = 1,_body.assignedTo=_body.employeeId;
     const names = await client.query(queryService.getAssigneeName(_body));
-    const assigneeName = names.rows[0].firstname;
+    const assigneeName = names.rows[0].name;
     _body.auditLogComment = `Candidate ${_body.candidateName} have been moved to ${_body.stageName} by ${assigneeName}`;
     await client.query(queryService.insertAuditLog(_body));
     _body.assigneeComment = `${assigneeName} scheduled ${_body.stageName}`;

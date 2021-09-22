@@ -883,6 +883,8 @@
 *               type: string
 *             stageName:
 *               type: string
+*             reviewStepsId:
+*               type: integer
 *           required:
 *             - candidateAssessmentId
 *     responses:
@@ -1886,6 +1888,8 @@
 *               type: string
 *             candidateName:
 *               type: string
+*             reviewStepsId:
+*               type: integer
 *           required:
 *             - candidateId
 *             - stageName
@@ -1940,6 +1944,8 @@
 *               type: string
 *             candidateName:
 *               type: string
+*             reviewStepsId:
+*               type: integer
 *           required:
 *             - candidateAssessmentId
 *     responses:
@@ -2483,8 +2489,6 @@
 */
 
 
-
-
 /**
 * @swagger
 * /candidates/checkAction:
@@ -2509,6 +2513,167 @@
 *               type: string
 *           required:
 *             - token
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+
+
+/**
+* @swagger
+* /candidates/updateStartAndEndDate:
+*   post:
+*     tags:
+*       - Candidates
+*     name: updateStartAndEndDate
+*     summary: Update contract start and end date for a candidate who has applied for a position
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer
+*             positionId:
+*               type: integer
+*             contractStartDate:
+*               type: integer
+*             contractEndDate:
+*               type: integer
+*           required:
+*             - token
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+
+
+
+
+/**
+* @swagger
+* /candidates/addTestLink:
+*   post:
+*     tags:
+*       - Candidates
+*     name: addTestLink
+*     summary: To add assessment test link
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             candidateAssessmentId:
+*               type: integer
+*             assessmentLink:
+*               type: string
+*             assessmentLinkText:
+*               type: string
+*           required:
+*             - candidateAssessmentId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /candidates/fullProfileResumeParser:
+*   post:
+*     tags:
+*       - Candidates
+*     name: Parse resume and extract data
+*     summary: Parse resume and extract data
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             publicUrl:
+*               type: string
+*             fileName:
+*               type: string
+*           required:
+*             - publicUrl
+*             - fileName
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+
+/**
+* @swagger
+* /candidates/getEllowStages:
+*   get:
+*     tags:
+*       - Candidates
+*     name: List ellow stages
+*     summary: list ellow stages and status of freelancer
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
 *     responses:
 *       200:
 *         description: Api success

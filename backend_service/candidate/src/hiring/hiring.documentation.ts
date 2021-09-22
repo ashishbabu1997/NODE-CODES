@@ -83,12 +83,6 @@
 *       - bearerAuth: []
 *     produces:
 *       - application/json
-*     parameters:
-*       - in: query
-*         name: candidateId
-*         schema:
-*         required:
-*           type: integer
 *     responses:
 *       200:
 *         description: Api success
@@ -152,6 +146,10 @@
 *             candidateClientHiringStepId:
 *               type: integer
 *             assignedTo:
+*               type: integer
+*             contractStartDate:
+*               type: integer
+*             contractEndDate:
 *               type: integer
 *             hiringAssesmentValue:
 *               type: integer

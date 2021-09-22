@@ -129,6 +129,7 @@ export const freelancerSchema = Joi.object().keys({
             }
         });
         return errors;
+        // Phone Number
     })
 }).unknown(true);
 

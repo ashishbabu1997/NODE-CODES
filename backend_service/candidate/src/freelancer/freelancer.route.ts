@@ -12,5 +12,12 @@ router
     .get('/getCandidateStatuses', jwtAuth, setData(), validate(freelancerSchema.candidateIdSchema), freelancerController.candidateStatus)
     .put('/submitFreelancerProfile', jwtAuth, setData(), freelancerController.submitProfile)
     .get('/getCandidatePositionDetails', jwtAuth, setData(), freelancerController.getCandidatePositionDetails)
-    .post('/getDraftFreelancers', jwtAuth, setData(), freelancerController.listDraftFreelancers);
+    .post('/getDraftFreelancers', jwtAuth, setData(), freelancerController.listDraftFreelancers)
+    .get('/freelancerAppliedJobs',jwtAuth, setData(), freelancerController.getFreelancerAppliedJobsController)
+    .get('/getFreelancerContractDetails',jwtAuth, setData(), freelancerController.getFreelancerContractDetailsController)
+    .get('/getCandidateAssesmentLink',jwtAuth, setData(), freelancerController.getCandidateAssesmentLinkController);
+
+
+    
+
 export default router;
