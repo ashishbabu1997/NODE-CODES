@@ -1,5 +1,8 @@
 import { employeeLoginMethod } from "./EmployeeLoginManager"
 import sendResponse from '../common/response/response';
+import * as fs from 'fs';
+
+
 // Employee login
 export const employeeLogin = (req, res) => {
     const body = req.body;

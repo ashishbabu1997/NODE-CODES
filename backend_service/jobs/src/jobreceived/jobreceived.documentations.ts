@@ -16,22 +16,22 @@
 *       - in: query
 *         name: positionId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [positionId]
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum: [position,positionName,companyName,createdOn,candidateCount,resourceCount,duration,startDate]
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *       - in: query
 *         name: filter
 *         schema:
-*           type: string
+*         type: string
 *     responses:
 *       200:
 *         description: Api success
@@ -61,10 +61,10 @@
 *       - application/json
 *     parameters:
 *       - in: query
-*         name: jobReceivedId
+*         name: positionId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [positionId]
 *     responses:
 *       200:
 *         description: Api success
@@ -96,17 +96,17 @@
 *       - in: query
 *         name: positionId
 *         schema:
-*         required:
-*           type: integer
+*         type: integer
+*         required: [positionId]
 *       - in: query
 *         name: sortBy
 *         schema:
-*           type: string
+*         type: string
 *         enum: [candidateFirstName]
 *       - in: query
 *         name: sortType
 *         schema:
-*           type: string
+*         type: string
 *         enum: [asc,desc]
 *     responses:
 *       200:
@@ -305,6 +305,85 @@
 *                     type: string
 *           required:
 *             - candidateId
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+
+
+/**
+* @swagger
+* /jobreceived/addResumeBuilderProfile:
+*   post:
+*     tags:
+*       - Jobreceieved
+*     name: Add new candidate
+*     summary: Add a new candidate against a position / free candidate (seller / ellow recruiter)
+*     security:
+*       - bearerAuth: []
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             sellerCompanyId:
+*               type: integer      
+*               description: sellerCompanyId (null for provider, on behalf of companyId for ellow recruiter)
+*             positionId:
+*               type: integer
+*               description: positionId will be null for free candidates
+*             firstName:
+*               type: string
+*             lastName:
+*               type: string
+*             jobReceivedId:
+*               type: integer 
+*             description:
+*               type: string
+*             email:
+*               type: string
+*             phoneNumber:
+*               type: integer
+*             image:
+*               type: string
+*             citizenship:
+*               type: integer
+*             residence:
+*               type: integer
+*             workExperience:
+*               type: number
+*             remoteWorkExperience:
+*               type: number
+*             candidatePositionName:
+*               type: string
+*             cost:
+*               type: number
+*             billingTypeId:
+*               type: integer
+*             currencyTypeId:
+*               type: integer
+*               description: currencyTypeId will be null for free candidates
+*             availability:
+*               type: integer
+*             typeOfAvailability:
+*               type: integer
+*             readyToStart:
+*               type: boolean
 *     responses:
 *       200:
 *         description: Api success

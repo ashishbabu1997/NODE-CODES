@@ -24,10 +24,15 @@ export const addNewPassword = (_body) => {
             // If there is password in the field, and the password does not match the current;returns rejection.
             
             database().query(query, (error, results) => {
+            console.log(results.rows)
             if (error || results.rows[0]===undefined) {
                 console.log(error)
                 reject({ code: 400, message: "Your current password  is incorrect", data: {} });
                 return;
+            }
+            if (_body.currentPassword==_body.newPassword)
+            {
+              reject({ code: 400, message: "You are using the same password! Please enter a new password.", data:{} });
             }
             if (_body.newPassword == _body.confirmPassword)
                       {   

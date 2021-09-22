@@ -12,17 +12,34 @@ export default {
         "port": 5432
     },
     "jwtSecretKey": "elL0wA!",
+    'sendinblueConfigurations':{
+        'sendinblueSender':{
+          'name': 'ellow',
+          'email': 'jjoseph@ellow.io',
+        },
+
+        'welcomeMailTemplateId':3
+
+},
 
     "mail": {
         "service": "gmail",
-        "user": "sales@ellow.io",
-        "password": "yteinevvuuchtmvb"
+        "user": "cs@ellow.io",
+        "password": "ricggklkmqeaxbxx"
+    },
+    "noreplymail": {
+        "service": "gmail",
+        "user": "no-reply@ellow.io",
+        "password": "fqlroidzaxmlhgml"
     },
     "text": {
     
-        "subject":"Customer Registration Notification",
-        "userSubject":"Customer Verification Link",
-        "resetConfirmSubject":" ellow Confirmation Mail"
+        "subject":"Company Registration Notification",
+        "newCompanySubject":"New Company Registration Notification",
+        "newSubUserSubject":"Sub User Registration Notification",
+        "freelancerSubject":"Candidate Registration Notification",
+        "userSubject":"Candidate Verification Link",
+        "resetConfirmSubject":" ellow Password Confirmation Mail"
     },
     "defaultHiringStep": {
         "hiringStepName": "ellow hiring step",
@@ -37,6 +54,6 @@ export default {
         ]
     },
     "nextLine": "<br>",
-    "adminEmail":"deena.s@ellow.io",
+    "adminEmail":"jjoseph@ellow.io",
     "colon":":"
 };

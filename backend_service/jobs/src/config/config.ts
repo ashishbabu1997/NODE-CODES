@@ -4,8 +4,14 @@ export default {
     "http": {
         "port": 4003
     },
+    'ellowRecruitmentStatus':{
+        'partial':'PARTIALLY_COMPLETED',
+        'complete':'COMPLETED',
+        'verifiedStage':'ellow Screening and Verification',
+        'vettedStage':'Certification'
+    },
     "jwtSecretKey": "elL0wA!",
-    "adminEmail":"deena.s@ellow.io",
+    "adminEmail":"jjoseph@ellow.io",
     "db": {
         "user": "devdb_user",
         "host": "52.66.51.51",
@@ -15,12 +21,18 @@ export default {
     },
     "mail": {
         "service": "gmail",
-        "user": "sales@ellow.io",
-        "password": "yteinevvuuchtmvb"
+        "user": "cs@ellow.io",
+        "password": "ricggklkmqeaxbxx"
+    }, 
+    "noreplymail": {
+        "service": "gmail",
+        "user": "no-reply@ellow.io",
+        "password": "fqlroidzaxmlhgml"
     },
    
     "PositionText": {
-        "subject":"Position Deletion Alert"
+        "subject":"Position Deletion Alert",
+        "providersSubject":"New job posts from ellow.io"
     },
     "nextLine": "<br>",
     "colon":":"

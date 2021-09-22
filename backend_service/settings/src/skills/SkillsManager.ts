@@ -4,46 +4,82 @@ import database from '../common/database/database';
 
 
 
- // >>>>>>> FUNC. >>>>>>> 
+// >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Get skills added by the company
 export const getCompanySkills = (_body) => {
     return new Promise((resolve, reject) => {
-        if (_body.jobCategoryId)
-        {
-        const query = {
-            name: 'fetch-skills',
-            text: skillsQuery.getSkills,
-            values: [_body.jobCategoryId],
-        }
-        database().query(query, (error, results) => {
-            if (error) {
-                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                return;
+        if (_body.jobCategoryId) {
+            const query = {
+                name: 'fetch-skills',
+                text: skillsQuery.getSkills,
+                values: [_body.jobCategoryId],
             }
-            resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
-        })
-    }
-    else{
-                        const queryWithJobCategoryId = {
-                            name: 'fetch-skills',
-                            text: skillsQuery.getSkillsWithoutId,
-                            values: [],
-                        }
-                        database().query(queryWithJobCategoryId, (error, results) => {
-                            if (error) {
-                                reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                                return;
-                            }
-                            resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
-                        })
-                        
-    }
+            database().query(query, (error, results) => {
+                if (error) {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    return;
+                }
+                resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
+            })
+        }
+        else {
+            const queryWithJobCategoryId = {
+                name: 'fetch-skills',
+                text: skillsQuery.getSkillsWithoutId,
+                values: [],
+            }
+            database().query(queryWithJobCategoryId, (error, results) => {
+                if (error) {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    return;
+                }
+                resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
+            })
+
+        }
     });
 }
 
 
 
- // >>>>>>> FUNC. >>>>>>> 
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get skills added by the company with skills under a particular job category first
+export const getCompanySkillsOrdered = (_body) => {
+    return new Promise((resolve, reject) => {
+        if (_body.jobCategoryId) {
+            const query = {
+                name: 'fetch-skills-by-jobcategory',
+                text: skillsQuery.getOrderedSkills,
+                values: [_body.jobCategoryId],
+            }
+            database().query(query, (error, results) => {
+                if (error) {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    return;
+                }
+                resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
+            })
+        }
+        else {
+            const queryWithJobCategoryId = {
+                name: 'fetch-skills',
+                text: skillsQuery.getSkillsWithoutId,
+                values: [],
+            }
+            database().query(queryWithJobCategoryId, (error, results) => {
+                if (error) {
+                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                    return;
+                }
+                resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
+            })
+
+        }
+    });
+}
+
+
+// >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Create  new skill for a company
 export const createNewSkills = (_body) => {
     return new Promise((resolve, reject) => {
@@ -83,7 +119,7 @@ export const createNewSkills = (_body) => {
 
 
 
- // >>>>>>> FUNC. >>>>>>> 
+// >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Update skills added by the company
 export const updateComppanySkills = (_body) => {
     return new Promise((resolve, reject) => {
@@ -105,7 +141,7 @@ export const updateComppanySkills = (_body) => {
 
 
 
- // >>>>>>> FUNC. >>>>>>> 
+// >>>>>>> FUNC. >>>>>>> 
 //>>>>>>>>>>>>>>>>>>Delete company skills added by the user
 export const deleteCompanySkills = (_body) => {
     return new Promise((resolve, reject) => {
@@ -121,6 +157,25 @@ export const deleteCompanySkills = (_body) => {
                 return;
             }
             resolve({ code: 200, message: "Skills deleted successfully", data: {} });
+        })
+    })
+}
+// >>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>>>>>>>>>>Get skill names as key
+export const getSKillNamesAsKeyManager = (_body) => {
+    return new Promise((resolve, reject) => {
+        const currentTime = Math.floor(Date.now() / 1000);
+        const query = {
+            name: 'get-skillname-as-key',
+            text: skillsQuery.getSkillNames,
+            values: [],
+        }
+        database().query(query, (error, results) => {
+            if (error) {
+                reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                return;
+            }
+            resolve({ code: 200, message: "Skills listed successfully", data: results.rows[0].skills });
         })
     })
 }

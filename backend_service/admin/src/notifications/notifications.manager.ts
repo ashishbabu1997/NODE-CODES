@@ -1,14 +1,14 @@
-import notificationsQuery from './query/notifications.query';
 import database from '../common/database/database';
+import * as queryService from '../queryService/queryService';
+
+// socket;
 
 // FUNC. Notifications to the admin. 
 export const getNotifications = (_body) => {
     return new Promise((resolve, reject) => {
-        const listquery = {
-            name: 'list-notifications',
-            text: notificationsQuery.listNotifications
-        }
-        database().query(listquery, (error, results) => {
+        
+        
+        database().query(queryService.listNotifications(), (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Database Error", data: {} });
                 return;

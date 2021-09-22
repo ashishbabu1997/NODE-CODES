@@ -1,16 +1,23 @@
 {
   "compilerOptions": {
+    "lib": [
+      "es6",
+      "dom",
+      "es2017"
+    ],
     "target": "es6",
     "module": "commonjs",
     "outDir": "../dist/",
     "sourceMap": true,
     "allowJs": true,
-    "resolveJsonModule": true  },
+    "resolveJsonModule": true
+  },
   "include": [
-    "*.ts", "candidates/candidates.route.ts", "candidates/candidates.controller.ts"
+    "*.ts",
+    "candidates/candidates.route.ts",
+    "candidates/candidates.controller.ts"
   ],
   "exclude": [
     "node_modules"
   ]
 }
-

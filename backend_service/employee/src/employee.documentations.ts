@@ -77,6 +77,48 @@
 
 /**
 * @swagger
+* /editRecruiterDetails:
+*   put:
+*     tags:
+*       - Employees
+*     name: Edit Ellow Recruiter
+*     summary: Edit Ellow Recruiter details
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             email:
+*               type: string
+*             firstName:
+*               type: string
+*             lastName :
+*               type: string 
+*             phoneNumber:
+*               type: integer
+*             recruiterId:
+*               type: integer
+*           required: [email,firstName,lastName,recruiterId]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /freelancer:
 *   post:
 *     tags:
@@ -224,6 +266,134 @@
 *         format: token
 *         required:
 *           type: string
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /getEmployees:
+*   get:
+*     tags:
+*       - Employees
+*     name: get employees
+*     summary: get employee names from database.If logged in as ellow recruiter,hirerCompanyId is used to get all employee details;else , companyId is used to fetch the employee details.
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query 
+*         name: hirerCompanyId
+*         schema:
+*           type: integer
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /getAllAdmins:
+*   get:
+*     tags:
+*       - Employees
+*     name: get admins
+*     summary: get admin names from database
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+
+/**
+* @swagger
+* /updateActiveStatus:
+*   put:
+*     tags:
+*       - Employees
+*     name: Update active status of an employee
+*     summary: Update active status of an employee (set an employee active/inactive)
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             userId:
+*               type: integer
+*             userCompanyId:
+*               type: integer
+*           required: [userCompanyId,userId]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
+* /setPrimaryContact:
+*   put:
+*     tags:
+*       - Employees
+*     name: Update primary contact
+*     summary: Set this employee as primary contact which will be considered while sending emails and notifications
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     parameters:
+*       - name: body
+*         in: body
+*         schema:
+*           type: object
+*           properties:
+*             userId:
+*               type: integer
+*             userCompanyId:
+*               type: integer
+*           required: [userCompanyId,userId]
 *     responses:
 *       200:
 *         description: Api success

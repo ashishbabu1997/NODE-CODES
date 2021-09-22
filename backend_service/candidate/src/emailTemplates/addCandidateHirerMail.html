@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title></title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+        table,
+        tr,
+        td,
+        p,
+        h1 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        a,
+        .ii a[href] {
+            color: #000000;
+            text-decoration: none;
+        }
+        button{
+            border: 1px solid #1890FF;
+            background-color: #1890FF;
+            color: #ffffff;
+            padding: 6px 15px;
+            font-size: 13px !important;
+            font-weight: 600;
+            font-family: 'Hind Siliguri', sans-serif !important;
+            margin-right: 8px;
+            box-shadow: none;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td style="padding: 20px 0 30px 0;font-family: 'Poppins', sans-serif;">
+
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="600"
+                    style="border-collapse: collapse; border: 1px solid #E1E1E1;background-color: #F9F9F9;">
+                    <tr>
+                        <td align="left" style="padding: 30px;">
+                            <a href="https://ellow.io/" target="_blank">
+                                <img src="https://ellow-dev-file-upload.s3.ap-south-1.amazonaws.com/867eb830-09b9-498f-8fbd-885b0ecf9e89__ellow_logo.png"
+                                    width="112" alt="ellow.io" style="display: block;" />
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 40px 30px 40px 30px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%"
+                                style="border-collapse: collapse;">
+                                <tr>
+                                    <td style="color: #000000; ">
+                                        <h1
+                                            style="color: #000000;text-align: left; margin:0;font-size: 32px; font-weight: 600;margin: 0px;">
+                                        </h1>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="color: #000000; font-size: 18px; line-height: 25px; padding: 20px 0 0px 0;">
+                                        <p
+                                            style="color:#000000;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
+                                            Hi, <br /><br />
+                                            ellow has shortlisted the below profile for your job
+                                            post,<b>{{positionName}}</b><br /><br />
+                                            Please find the details and the resume in PDF format
+                                            <br /><br />
+
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="color: #000000;  font-size: 18px; line-height: 25px; padding: 20px 0 0px 0;">
+                                        <p
+                                            style="color:#000000;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
+                                        <ul>
+                                            {{#keys}}
+                                            <li style="color:#000000;">
+                                                {{name}} : <b>{{value}}</b>
+                                            </li>
+                                            {{/keys}}
+                                        </ul>
+                                        <br />
+                                        {{comments}}
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="{{scheduleLink}}"  rel="noopener noreferrer"  target="_blank" style="color: #3aa057; font-weight: 520;font-size: 18px; line-height: 25px; padding: 20px 0 0px 0;"
+                                        > Schedule Interview </a>
+                                    
+                                        &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+                                    
+                                        <a href="{{rejectLink}}"  rel="noopener noreferrer"  target="_blank" style="color: #ff384c; font-weight: 520;font-size: 18px;line-height: 25px; padding: 20px 0 0px 0;"
+                                        > Reject Profile </a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p style="color:#000000; font-size: 18px;line-height: 25px;"> <span
+                                                style="font-size: 18px;color:#000000;">Please <a
+                                                    href="https://ellow.io/" target="_blank"
+                                                    style="font-size: 18px;color:#1890FF;font-weight: bold;">click
+                                                    here</a></span> to track the profile
+                                        </p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p
+                                            style="color:#000000;font-size: 16px;text-align: justify;line-height:25px;margin-top: 30px;white-space:pre-line;">
+                                            {{name}}
+                                            {{number}}
+                                        </p>
+                                    </td>
+                                </tr>
+                                
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 30px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%"
+                                style="border-collapse: collapse;">
+                                <tr>
+                                    <td style="color: #ffffff; font-size: 14px;">
+
+                                        <p style="margin-top:100px;color: #4A4A4A;font-size: 12px;">© 2021 ellow.io</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>

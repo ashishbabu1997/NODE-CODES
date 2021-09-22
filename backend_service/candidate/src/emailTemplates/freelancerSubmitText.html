@@ -1,48 +1,96 @@
 <html>
 
-<body>
-    <div align="center" style="font-family: Arial, Helvetica, sans-serif;">
-        <div style="max-width: 680px; min-width: 500px; border-radius:5px;height: 100%;">
-            <div>
-                <div style="margin: 10px 10px 0;background-color: #1159ba;padding: 0px 0 1px;">
-                    <div>
-                        <a href="https://ellow.io/" target="_blank">
-                            <img src="http://outlineinfo.com/email/bc.png" width="100%" alt="ellow.io" />
-                        </a>
-                    </div>
-                    <div style="background-color: #fff;    margin: 0px 10px 10px 10px;">
-                        <h1 style="
-                        color: #334350;
-                        text-align: center;padding: 30px 0 10px;margin:0;font-size: 24px;
-                    "></h1>
-                        <p style="padding: 0px 30px 40px;color:#52697c;font-size: 16px;text-align: justify;line-height: 25px;">
-                             Hello!,
-                            <br>
-                             <b>{{fName}}</b>  <b>{{lName}}</b>,a freelancer has submitted profile for reference.
-                             <br>
-                            <br>
-                            <br>
-                            <b>with regards,</b>
-                            <br>
-                            <b>Team ellow.io</b>
+<head>
+    <title>Profile Submission Notification</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+        table, tr, td, p, h1{
+            font-family: 'Poppins', sans-serif;
+        }
+        a, .ii a[href]{
+            color: #000000;
+            text-decoration: none;
+        }
+        </style>
 
-                        </p>
-                    </div>
+</head>
 
+<body style="margin: 0; padding: 0;">
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td style="padding: 20px 0 30px 0;font-family: 'Poppins', sans-serif;">
 
-                </div>
-                <div style="background-color: #1159ba;margin: 0px 10px 0;padding: 0 0 10px;text-align: center;">
-                    <a href="https://www.google.com" target="_blank"> <img src="http://outlineinfo.com/email/fb.png" style="width: 40px;"
-                            alt="fb" /></a>
-                    <a href="https://www.google.com" target="_blank"> <img src="http://outlineinfo.com/email/tw.png" style="width: 40px;"
-                            alt="twitter" /></a>
-                    <a href="https://www.google.com" target="_blank"> <img src="http://outlineinfo.com/email/in.png" style="width: 40px;"
-                            alt="instagram" /></a>
-                    <a href="https://www.google.com" target="_blank"> <img src="http://outlineinfo.com/email/ln.png" style="width: 40px;"
-                            alt="linkedin" /></a>
-                </div>
-            </div>
-    
-        </div>
+                <table align="center" border="0" cellpadding="0" cellspacing="0" width="600"
+                    style="border-collapse: collapse; border: 1px solid #E1E1E1;background-color: #F9F9F9;">
+                    <tr>
+                        <td align="left" style="padding: 30px;">
+                            <a href="https://ellow.io/" target="_blank">
+                                <img src="https://ellow-dev-file-upload.s3.ap-south-1.amazonaws.com/867eb830-09b9-498f-8fbd-885b0ecf9e89__ellow_logo.png" width="112"
+                                    alt="ellow.io" style="display: block;" />
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 40px 30px 40px 30px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%"
+                                style="border-collapse: collapse;">
+                                <tr>
+                                    <td style="color: #000000; font-family: Poppins;">
+                                        <h1
+                                            style="color: #000000;text-align: left; margin:0;font-size: 32px; font-weight: 600;margin: 0px;">
+                                            Profile Submission Notification</h1>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        style="color: #000000; font-family: Poppins; font-size: 18px; line-height: 25px; padding: 20px 0 0px 0;">
+                                        <p
+                                            style="color:#000000;font-size: 18px;text-align: left;line-height: 25px;margin: 0px;">
+                                            Hello!,<br/><br/><br/>
+                                            <b>{{fName}}</b>  <b>{{lName}}</b>,a freelancer has submitted profile for reference.
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p style="color:#000000; font-size: 18px;line-height: 25px;"> <span
+                                                style="font-size: 18px;color:#000000;"><br> Login  <a
+                                                    href="https://apps.ellow.io/login" target="_blank"
+                                                    style="font-size: 18px;color:#1890FF;font-weight: bold;">here</a> to track the profile</span>
+                                        </p>
+
+                                    </td>
+                                </tr>   
+                                <tr>
+                                    <td>
+                                        <p
+                                            style="color:#000000;font-size: 16px;text-align: justify;line-height: 25px;margin-top: 30px;">
+                                            With regards, <br />
+                                            Team <b style="color:#000000">ellow.io</b>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 30px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%"
+                                style="border-collapse: collapse;">
+                                <tr>
+                                    <td style="color: #ffffff; font-size: 14px;">
+
+                                        <p style="margin-top:100px;color: #4A4A4A;font-size: 12px;">© 2021 ellow.io</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+    </table>
+</body>
 
 </html>
