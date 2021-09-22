@@ -1236,7 +1236,7 @@ export const candidateAllPositionHiringStepsQuery = (_body) => {
   return {
     name: 'get-all-positions-candidate-client-hiring-steps',
     text: hiringQuery.candidateAllPositionsHiringStepsQuery,
-    values: [],
+    values: [_body.candidateId],
   };
 };
 export const candidateAllPositionHiringStepsOfHirerQuery = (_body) => {
