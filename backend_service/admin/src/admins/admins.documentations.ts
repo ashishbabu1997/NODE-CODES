@@ -290,6 +290,43 @@
 
 /**
 * @swagger
+* /reports:
+*   get:
+*     tags:
+*       - Admins
+*     name: Get all detailed reports 
+*     summary: Get all detailed reports for the recruiter 
+*     consumes:
+*       - application/json
+*     security:
+*       - bearerAuth: []
+*     produces:
+*       - application/json
+*     parameters:
+*       - in: query
+*         name: fromDate
+*         schema:
+*         type: integer
+*       - in: query
+*         name: toDate
+*         schema:
+*         type: integer
+*         required: [fromDate,toDate]
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/
+
+/**
+* @swagger
 * /updateJobCategoryName:
 *   put:
 *     tags:
@@ -511,17 +548,14 @@
 *         description: Server down
 */
 
-
-
-
 /**
 * @swagger
-* /reports:
-*   get:
+* /deleteResource:
+*   delete:
 *     tags:
 *       - Admins
-*     name: Get all detailed reports 
-*     summary: Get all detailed reports for the recruiter 
+*     name: Delete a freelancer resource
+*     summary: delete a freelancer resource (Note - related login of the freelancer will be removed)
 *     consumes:
 *       - application/json
 *     security:
@@ -529,15 +563,16 @@
 *     produces:
 *       - application/json
 *     parameters:
-*       - in: query
-*         name: fromDate
+*       - in: body
 *         schema:
-*         type: integer
-*       - in: query
-*         name: toDate
-*         schema:
-*         type: integer
-*         required: [fromDate,toDate]
+*           type: object
+*           properties:
+*             candidateId:
+*               type: integer
+*             forceRemove:
+*               type: boolean
+*               default: false
+*               desciption: default false used only in case where resource needs to be force removed
 *     responses:
 *       200:
 *         description: Api success

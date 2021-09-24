@@ -152,3 +152,19 @@ export const getSkillCandidateLinks = (_body) => {
         values: [_body.skillId]
     }
 }
+
+export const removeResource = (_body) => {
+    return {
+        name: 'remove-resource',
+        text: adminQuery.removeResource,
+        values: [_body.candidateId]
+    }
+}
+
+export const getResourcePositionLinks = (_body) => {
+    return {
+        name: 'get-resource-position-links',
+        text: adminQuery.getResourcePositionLinks,
+        values: [_body.candidateId]
+    }
+}

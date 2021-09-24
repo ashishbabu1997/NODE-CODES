@@ -512,7 +512,7 @@ export const removeSkillsFromJobCategory = (_body) => {
 }
 
 //>>>>>>> FUNC. >>>>>>> 
-//>>>>>>>>>> Add new job category
+//>>>>>>>>>> Remove skills
 export const removeSkills = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
@@ -773,6 +773,52 @@ export const reports = (_body) => {
                 await client.query('ROLLBACK')
                 console.log(e)
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            reject({ code: 400, message: "Failed. Please try again.", data: e.message })
+        })
+    })
+}
+
+
+
+
+//>>>>>>> FUNC. >>>>>>> 
+//>>>>>>>>>> Add new job category
+export const deleteResource = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database().connect()
+            try {
+                await client.query('BEGIN');
+
+                if (utils.notNull(_body.candidateId)) {
+                    if (utils.notNull(_body.forceRemove) && _body.forceRemove)
+                        await client.query(queryService.removeResource(_body));
+
+                    else {
+                        let pLinks = await client.query(queryService.getResourcePositionLinks(_body));
+                        if (pLinks.rowCount > 0) {
+                            reject({ code: 400, message: "There are some positions  this resource is linked to", data: { positionLinks: pLinks.rows } });
+                        }
+                        else {
+                            await client.query(queryService.removeSkill(_body));
+                            resolve({ code: 200, message: "Resource removed successfully", data: {} });
+                        }
+
+                    }
+
+                    await client.query('COMMIT');
+                    resolve({ code: 200, message: "Removed Resource successfully", data: {} });
+                }
+                else {
+                    reject({ code: 400, message: "Failed. Please try again.", data: "Provide valid canidate id" });
+                }
+            } catch (e) {
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            } finally {
+                client.release();
             }
         })().catch(e => {
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
