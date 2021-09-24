@@ -336,10 +336,6 @@ export const submitCandidateProfile = (_body) => {
                 await client.query('BEGIN');
                 let candidateId = _body.candidateId;
                 let result =  await client.query(queryService.updateCandidateStatus(_body))
-                _body.currentEllowStage=2,_body.reviewStepsId=6;
-                _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
-                await client.query(queryService.updateProfileReview(_body));
-                await client.query(queryService.updateEllowRecruitmentStatus(_body));
                 let candidateFirstName=result.rows[0].candidate_first_name;
                 let candidateLastName=result.rows[0].candidate_last_name;
                 _body.emailAddress=result.rows[0].email_address;
@@ -351,6 +347,21 @@ export const submitCandidateProfile = (_body) => {
                 if (_body.userRoleId==1)
                 {
                     await client.query(queryService.changeCandidateAssignee(_body));
+                    var checkAssessment=await client.query(queryService.checkAssessment(_body));
+                    _body.currentEllowStage=2,_body.reviewStepsId=6;
+                    _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
+
+                    if (checkAssessment.rowCount==0)
+                    {
+                        await client.query(queryService.addDefaultTraits(_body));
+                        await client.query(queryService.updateProfileReviewByAdmin(_body));
+
+                    }
+                    else
+                    {
+                        await client.query(queryService.updateProfileReview(_body));
+                    }
+                    await client.query(queryService.updateEllowRecruitmentStatus(_body));
 
                     if(_body.companyType==2)
                     {

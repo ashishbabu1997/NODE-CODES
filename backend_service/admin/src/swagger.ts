@@ -1,7 +1,6 @@
-import * as swaggerJsDoc  from 'swagger-jsdoc';
+import * as swaggerJsDoc from 'swagger-jsdoc';
 import * as express from 'express';
 import AppConfig from './config/config';
-
 
 const app = express();
 
@@ -23,7 +22,7 @@ const swaggerDefinition = {
 };
 
 const options = {
-    swaggerDefinition,
-    apis:[`./src/admins/*.ts`]
-  };
- export const swaggerSpec = swaggerJsDoc(options);
+  swaggerDefinition,
+  apis: [`./src/admins/*.ts`],
+};
+export const swaggerSpec = swaggerJsDoc(options);
