@@ -88,6 +88,14 @@ export const updateProfileReview = (_body) => {
       values: {candidateid:_body.candidateId,employeeid: _body.employeeId, currenttime: currentTime(),reviewstepsid:_body.reviewStepsId},
     };
   };
+
+  export const updateProfileReviewByAdmin = (_body) => {
+    return {
+      name: 'update-profile-review-admin',
+      text: jobReceivedQuery.updateEllowStage,
+      values: {candidateid:_body.candidateId,employeeid: _body.employeeId, currenttime: currentTime()},
+    };
+  };
   export const updateEllowRecruitmentStatus = (_body) => {
     return {
       name: 'update-recruitment-status',
@@ -462,6 +470,14 @@ export const changeCandidateAssignee = (_body) => {
         name: 'change-candidate-assignee',
         text: jobreceivedQuery.changeAssignee,
         values: { candidateid: _body.candidateId, assigneeid: _body.employeeId, employeeid: _body.employeeId, currenttime: currentTime() }
+    }
+}
+
+export const checkAssessment = (_body) => {
+    return {
+        name: 'check-candidate-ellow-assessment',
+        text: jobreceivedQuery.checkCandidateEllowAssessment,
+        values: [_body.candidateId]
     }
 }
 
