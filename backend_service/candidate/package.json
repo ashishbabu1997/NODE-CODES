@@ -10,7 +10,9 @@
     "lintbe": "eslint . --ext .ts --fix",
     "serve": "pm2 start dist/Server.js",
     "prod": "npm run serve",
-    "preprod": "tsc -p src  & pm2 stop dist/Server.js &"
+    "preprod": "tsc -p src  & pm2 stop dist/Server.js &",
+    "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts)\" --write"
+
   },
   "author": "Ashish Babu",
   "license": "ISC",
@@ -22,6 +24,7 @@
     "cors": "^2.8.5",
     "dom-parser": "^0.1.6",
     "dotenv": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
     "fs": "0.0.1-security",
