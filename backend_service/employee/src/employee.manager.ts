@@ -545,7 +545,7 @@ export const resetFreelancerToken = (_body) => {
 export const tokenCheck = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
-            const client = await database()
+            const client = await database();
             try {
                 await client.query('BEGIN');
                 const checkToken = {
@@ -555,6 +555,7 @@ export const tokenCheck = (_body) => {
                 }
 
                 let result = await client.query(checkToken);
+                await client.query('COMMIT')
                 if (result.rowCount == 1) {
                     resolve({ code: 200, message: "Success", data: { email: result.rows[0].email } });
                 }
@@ -562,7 +563,6 @@ export const tokenCheck = (_body) => {
                     reject({ code: 400, message: "Password already updated", data: {} })
                 }
 
-                await client.query('COMMIT')
             } catch (e) {
                 console.log("Error e1: ", e);
                 await client.query('ROLLBACK')
