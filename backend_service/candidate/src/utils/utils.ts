@@ -356,3 +356,7 @@ export const extractGmt = (data) => {
     return '';
   }
 };
+
+export const checkResume = (data) => {
+ 
+};
