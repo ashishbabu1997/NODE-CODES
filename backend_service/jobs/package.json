@@ -10,7 +10,9 @@
     "lintbe": "tslint **/**.ts{,x}",
     "serve": "pm2 start dist/Server.js",
     "prod": "npm run serve",
-    "preprod": "tsc -p src  & pm2 stop dist/Server.js &"
+    "preprod": "tsc -p src  & pm2 stop dist/Server.js &",
+    "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts)\" --write"
+
   },
   "author": "Joe Davis",
   "license": "ISC",
@@ -21,6 +23,7 @@
     "@types/node": "^14.14.8",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "eslint-config-prettier": "^8.3.0",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "generate-password": "^1.6.0",

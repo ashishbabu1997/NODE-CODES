@@ -8,6 +8,8 @@ import {swaggerSpec} from './swagger';
 import * as swaggerUi from 'swagger-ui-express';
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -21,7 +23,6 @@ configurePassport();
 app.use('/', router);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-
 Sentry.init({
   dsn: 'https://04823e79eb4a4e6fb5eef08ac88a5309@o950107.ingest.sentry.io/5898778',
   integrations: [
@@ -30,6 +31,7 @@ Sentry.init({
     // enable Express.js middleware tracing
     new Tracing.Integrations.Express({app}),
   ],
+  environment: process.env.ENVIRONMENT,
 
   // Set tracesSampleRate to 1.0 to capture 100%
   // of transactions for performance monitoring.
@@ -57,6 +59,8 @@ app.use(function onError(err, req, res, next) {
   res.statusCode = 500;
   res.end(res.sentry + '\n');
 });
+
+
 app.listen(AppConfig.http.port, () => {
   console.log('Listening on port ' + AppConfig.http.port);
 });

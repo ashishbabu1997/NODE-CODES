@@ -4,6 +4,7 @@ export default {
   'http': {
     'port': 4005,
   },
+  'environment':'development',
   'actionTaken':{
     'alreadyTaken':'This action is already taken',
     'freshAction':''

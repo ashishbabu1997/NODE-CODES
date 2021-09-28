@@ -668,6 +668,13 @@ export const insertLinkedinToCandidate = (_body) => {
     values: [_body.firstName, _body.lastName, _body.email, 4, currentTime()],
   };
 };
+export const checkResumeExistance = (_body) => {
+  return {
+    name: 'check-resume-already-exists',
+    text: candidateQuery.checkResumeExists,
+    values: [_body.fileName],
+  };
+};
 export const insertLinkedinToCandidateEmployee = (_body) => {
   return {
     name: 'insert-in-candidate-employee',
