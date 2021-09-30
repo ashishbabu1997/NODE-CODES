@@ -11,7 +11,7 @@ export const getSkills = (req, res) => {
     })
 }
 
-// Fetch the skills
+// Fetch the skills ordered by job category
 export const getOrderedSkills = (req, res) => {
 
     getCompanySkillsOrdered(req.query).then((response: any) => {
