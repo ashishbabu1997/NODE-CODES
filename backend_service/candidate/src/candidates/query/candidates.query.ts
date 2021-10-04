@@ -165,7 +165,7 @@ export default {
   employeeLogin: `SELECT employee_id,password,linkedin_token from employee where email = $1`,
   insertIntoEmployee: 'insert into employee (firstname,lastname,email,company_id,user_role_id,account_type,status,admin_approve_status) values($1,$2,$3,$4,$5,$5,$6,$7) returning employee_id',
   getCompanyDetails: 'select * from company where company_name=$1',
-  checkResumeExists:'select candidate_id from candidate where resume ilike $1',
+  checkResumeExists:'select candidate_id from candidate where resume_file_name ilike $1',
   insertIntoCandidate: 'insert into candidate (candidate_first_name, candidate_last_name,email_address,candidate_status,created_on,updated_on) values ($1,$2,$3,$4,$5,$5) returning candidate_id ',
   insertIntoCandidateEmployee: 'insert into candidate_employee (employee_id,candidate_id,created_on,updated_on) values ($1,$2,$3,$3)',
   insertEmployeeToken: 'update employee set linkedin_token=$1 where employee_id=$2 returning employee_id',

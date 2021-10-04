@@ -672,7 +672,7 @@ export const checkResumeExistance = (_body) => {
   return {
     name: 'check-resume-already-exists',
     text: candidateQuery.checkResumeExists,
-    values: [_body.fileName],
+    values: [_body.fileName.substring(36)],
   };
 };
 export const insertLinkedinToCandidateEmployee = (_body) => {

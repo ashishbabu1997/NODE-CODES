@@ -1661,6 +1661,7 @@ export const resumeParser = (_body) => {
       const client = await database();
       try {
               var resumeCheck=await client.query(queryService.checkResumeExistance(_body));
+              console.log("ROWCOUNT",resumeCheck.rowCount)
               if (resumeCheck.rowCount==0)
               {  
                       let responseData = null;
