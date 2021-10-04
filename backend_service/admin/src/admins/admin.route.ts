@@ -24,7 +24,7 @@ router
 
   .get('/allSkills', jwtAuth, setData(), adminController.allSkills)
   .get('/reports', checkJwt(), adminController.reports)
-  .delete('/deleteResource', jwtAuth, setProfileAuth([1, 1000]), setData(), adminController.deleteResource);
+  .delete('/deleteResource', jwtAuth,setData(), setProfileAuth([1,2,1000]), adminController.deleteResource);
 export default router;
 
 // Admin@ellow123

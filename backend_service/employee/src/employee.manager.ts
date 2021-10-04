@@ -556,7 +556,6 @@ export const tokenCheck = (_body) => {
 
                 let result = await client.query(checkToken);
                 await client.query('COMMIT')
-
                 if (result.rowCount == 1) {
                     resolve({ code: 200, message: "Success", data: { email: result.rows[0].email } });
                 }
