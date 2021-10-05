@@ -160,10 +160,16 @@ export const positionTab = (body) =>{
     
     switch (body.tabValue) {
         
-        case '0':
+        case 'all':
         vettedQuery='  and (p.job_status = 6 or p.job_status=8)   '
         break;
-        case '1':
+        case 'active':
+        vettedQuery='  and (p.job_status = 6)   '
+        break;
+        case 'closed':
+        vettedQuery='  and (p.job_status=8)   '
+        break;
+        case 'draft':
         vettedQuery=' and p.job_status = 5 and p.created_by = $employeeid'
         break;
         default:
