@@ -771,7 +771,7 @@ export const deleteResource = (_body) => {
             if (pLinks.rowCount > 0) {
               reject({ code: 400, message: 'There are some positions  this resource is linked to', data: { positionLinks: pLinks.rows } });
             } else {
-              await client.query(queryService.removeSkill(_body));
+              await client.query(queryService.removeResource(_body));
               resolve({ code: 200, message: 'Resource removed successfully', data: {} });
             }
           }
