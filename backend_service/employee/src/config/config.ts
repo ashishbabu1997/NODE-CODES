@@ -32,6 +32,11 @@ export default {
         "user": "no-reply@ellow.io",
         "password": "fqlroidzaxmlhgml"
     },
+    "teamMail": {
+        "service": "gmail",
+        "user": "team@ellow.io",
+        "password": "stxpmszeuiwlsbnq"
+    },
     "text": {
     
         "subject":"Company Registration Notification",

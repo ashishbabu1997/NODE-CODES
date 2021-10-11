@@ -13,7 +13,7 @@ export default {
   'ellowRecruitmentStatus':{
       'partial':'PARTIALLY_COMPLETED',
       'complete':'COMPLETED',
-      'verifiedStage':'ellow Screening and Verification',
+      'verifiedStage':'ellow Screening',
       'vettedStage':'Certification'
   },
   'text': {

@@ -19,6 +19,15 @@ const noreplyTransporter = nodemailer.createTransport({
         pass: config.noreplymail.password
     }
 })
+const teamTransporter = nodemailer.createTransport({
+    service:config.teamMail.service,
+    host:"smtp.gmail.com",
+    port: 465,
+    auth: {
+        user: config.teamMail.user,
+        pass: config.teamMail.password
+    }
+})
 export const sendMail = (email, subject, html, callback) => {
     const mailOptions = {
         from: `"ellow Alert" <${config.noreplymail.user}>`, 
@@ -44,6 +53,22 @@ export const sendUserMail = (email, subject, html, callback) => {
     };
     
     noreplyTransporter.sendMail(mailOptions, function (err, data) {
+        if (err) {
+            return callback(err, null);
+        }
+        return callback(null, data);
+    });
+}
+
+export const sendFromteam = (email, subject, html, callback) => {
+    const mailOptions = {
+        from: `"Team@ellow" <${config.teamMail.user}>`, 
+        to: email, 
+        subject,
+        html
+    };
+    
+    teamTransporter.sendMail(mailOptions, function (err, data) {
         if (err) {
             return callback(err, null);
         }
