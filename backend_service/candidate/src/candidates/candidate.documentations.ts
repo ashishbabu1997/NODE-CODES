@@ -2557,6 +2557,12 @@
 *               type: integer
 *             contractEndDate:
 *               type: integer
+*             ellowRate:
+*               type: number
+*             currencyTypeId:
+*               type: integer
+*             billingTypeId:
+*               type: integer
 *           required:
 *             - token
 *     responses:
