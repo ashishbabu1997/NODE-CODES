@@ -91,7 +91,7 @@ export const updateContractStartAndEndDate = (_body) => {
   return {
     name: 'update-contract-start-end-date',
     text: candidateQuery.updateCandidateContractStartEndDate,
-    values: [_body.candidateId, _body.positionId, _body.startDate, _body.endDate],
+    values: [_body.candidateId, _body.positionId, _body.startDate, _body.endDate, _body.contractRate.amount, _body.contractRate.currencyTypeId, _body.contractRate.billingTypeId],
   };
 };
 export const updateEllowRate = (_body) => {
@@ -102,8 +102,8 @@ export const updateEllowRate = (_body) => {
       candidateid: _body.candidateId,
       positionid: _body.positionId,
       ellowrate: _body.ellowRate,
-      currencytypeid: _body.currencyTypeId,
-      billingtypeid: _body.billingTypeId,
+      currencytypeid: _body.ellowRate.currencyTypeId,
+      billingtypeid: _body.ellowRate.billingTypeId,
       employeeid: _body.employeeId,
       currenttime: currentTime(),
     },
@@ -1591,7 +1591,18 @@ export const updateContractDetails = (_body) => {
   return {
     name: 'update-candidate-contract-details',
     text: hiringQuery.insertContractDetails,
-    values: [_body.candidateId, _body.positionId, _body.startDate, _body.endDate, currentTime(), _body.employeeId, true],
+    values: [
+      _body.candidateId,
+      _body.positionId,
+      _body.startDate,
+      _body.endDate,
+      currentTime(),
+      _body.employeeId,
+      true,
+      _body.contractRate.amount,
+      _body.contractRate.currencyTypeId,
+      _body.contractRate.billingTypeId,
+    ],
   };
 };
 export const setIncontractToFalse = (_body) => {

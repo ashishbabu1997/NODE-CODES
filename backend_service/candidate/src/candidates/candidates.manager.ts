@@ -2634,26 +2634,29 @@ export const updateStartAndEndDate = (_body) => {
     (async () => {
       const client = await database();
       try {
-        switch (_body.action) {
-          case 'add':
-            await client.query(queryService.setIncontractToFalse(_body));
-            await client.query('COMMIT');
-            await client.query(queryService.updateContractDetails(_body));
-            break;
+        if (utils.checkRate(_body.contractRate)) {
+          switch (_body.action) {
+            case 'add':
+              await client.query(queryService.setIncontractToFalse(_body));
+              await client.query('COMMIT');
+              await client.query(queryService.updateContractDetails(_body));
+              break;
 
-          case 'update':
-            await client.query(queryService.updateContractStartAndEndDate(_body));
-            break;
-            
-          default:
-            reject(new Error({ code: 400, message: 'Invalid action', data: {} }.toString()));
+            case 'update':
+              await client.query(queryService.updateContractStartAndEndDate(_body));
+              break;
+
+            default:
+              reject(new Error({ code: 400, message: 'Invalid action', data: {} }.toString()));
+          }
+
+          if (utils.checkRate(_body.ellowRate)) {
+            client.query(queryService.updateEllowRate(_body));
+          }
+          resolve({ code: 200, message: 'Success', data: {} });
+        } else {
+          reject(new Error({ code: 402, message: 'Malformed rate values, please check contract rate send' }.toString()));
         }
-
-        if (utils.notNull(_body.ellowRate) && utils.notNull(_body.currencyTypeId) && utils.notNull(_body.billingTypeId)) {
-          client.query(queryService.updateEllowRate(_body));
-        }
-
-        resolve({ code: 200, message: 'Success', data: {} });
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
