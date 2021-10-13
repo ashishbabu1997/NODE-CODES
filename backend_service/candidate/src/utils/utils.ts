@@ -196,11 +196,11 @@ export const resourceTab = (body) => {
       break;
     case 'activeIncontract':
       query =
-        '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 where extract((epoch from now()))*1000<(select contract_end_date from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId") ';
+        '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 and $currenttime <(select contract_end_date from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId") ';
       break;
     case 'closedIncontract':
       query =
-        '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 where extract((epoch from now()))*1000>(select contract_end_date from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId") ';
+        '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 and $currenttime > (select contract_end_date from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId") ';
       break;
     default:
       break;

@@ -101,8 +101,10 @@ export const listFreeCandidatesDetails = (_body) => {
     (async () => {
       const client = await database();
       try {
+        const currentTime = Math.floor(Date.now());
+
         queryText = selectQuery + utils.resourceTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
-        queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId }, queryValues);
+        queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId, currenttime: currentTime }, queryValues);
         const candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
         const queryCountText = totalQuery + utils.resourceTab(body) + filterQuery + searchQuery;
         const candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
@@ -113,10 +115,10 @@ export const listFreeCandidatesDetails = (_body) => {
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+        reject(new Error({ code: 500, message: 'Failed. Please try again.', data: e.message }.toString()));
       }
     })().catch((e) => {
-      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      reject(new Error({ code: 500, message: 'Failed. Please try again.', data: e.message }.toString()));
     });
   });
 };
