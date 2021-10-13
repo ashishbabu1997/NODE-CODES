@@ -59,7 +59,7 @@ export const getAllCandidateHiringSteps = (_body) => {
     (async () => {
       const client = await database().connect();
       try {
-        if ([1, 3, 4].includes(_body.userRoleId)) {
+        if (['1', '3', '4','1000'].includes(_body.userRoleId)) {
           if (_body.userRoleId == 4) {
             var candidateResult = await client.query(queryService.getCandidateIdFromEmployeeId(_body));
             _body.candidateId = candidateResult.rows[0].candidate_id;
