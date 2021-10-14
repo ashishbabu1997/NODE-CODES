@@ -74,7 +74,7 @@ router
     .get('/sendblue', candidateController.sendblueAPI)
     .get('/sendblueAddContact', candidateController.sendblueAddContact)
     .post('/checkAction', candidateController.checkActionTaken)
-    .post('/updateStartAndEndDate', candidateController.updateStartAndEndDateController)
+    .post('/updateStartAndEndDate',jwtAuth, setData(), candidateController.updateStartAndEndDateController)
     .post('/addTestLink', candidateController.addTestLinkController)
     .get('/getEllowStages', jwtAuth, setData(),candidateController.getFreelancerEllowStages)
 
