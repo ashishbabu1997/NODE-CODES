@@ -20,6 +20,7 @@
     "@sentry/node": "^6.11.0",
     "@sentry/tracing": "^6.11.0",
     "@types/node": "^14.14.8",
+    "console": "^0.7.2",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "eslint-config-prettier": "^8.3.0",
