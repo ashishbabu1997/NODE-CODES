@@ -311,11 +311,11 @@ export const updateBlacklisted = (req, res) => {
 export const sigOn = (req, res) => {
   const body = req.query;
   candidateManager.singleSignOn(body).then((response: any) => {
-    res.writeHead(301, {Location: 'https://apps.ellow.io/candidate-login?token='+response.data.token});
+    res.writeHead(301, {Location: 'https://dev.ellow.io/candidate-login?token='+response.data.token});
     res.end();
   })
       .catch(() => {
-        res.writeHead(301, {Location: 'https://apps.ellow.io/redirect-notification'});
+        res.writeHead(301, {Location: 'https://dev.ellow.io/redirect-notification'});
         res.end();
       });
 };
@@ -445,6 +445,7 @@ export const sendblueAddContact = (req, res) => {
     sendResponse(res, error.code, 0, 401, error.message, error.data);
   });
 };
+
 
 
 export const checkActionTaken = (req, res) => {
