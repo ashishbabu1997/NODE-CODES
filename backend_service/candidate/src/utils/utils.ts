@@ -295,7 +295,7 @@ export const notNull = (val) => {
 export const checkRate = (val) => {
   const props = ['amount', 'currencyTypeId', 'billingTypeId'];
 
-  return [undefined, null, '', ' '].includes(val) ? false : props.every((prop) => val.ellowRate.hasOwnProperty(prop));
+  return [undefined, null, '', ' '].includes(val) ? false : props.every((prop) => val.hasOwnProperty(prop)); 
 };
 
 export const capitalize = (s) => {
