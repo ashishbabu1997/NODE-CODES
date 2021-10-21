@@ -174,7 +174,7 @@ export const resourceTab = (body) => {
       break;
     case 'vetted':
       query =
-        '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and (chsv."ellowStatusId" in (12,14) or ((chsv."candidateVetted"=6) and chsv."ellowStatusId"!=15)) ';
+        '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and (chsv."ellowStatusId" in (12,14,15) or chsv."candidateVetted"=6) ';
       break;
     case 'certified':
       query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."ellowStatusId"=15 and chsv."blacklisted"=false ';
@@ -198,6 +198,10 @@ export const resourceTab = (body) => {
       query =
         '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 and $currenttime <(select contract_end_date from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId") ';
       break;
+      case 'permanent':
+        query =
+          '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."availabilityType"=2 and chsv."makeOffer"=0 ';
+        break;
     case 'closedIncontract':
       query =
         '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 and $currenttime > (select contract_end_date from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId") ';

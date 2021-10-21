@@ -470,7 +470,7 @@ export const createFreelancer = (_body) => {
                 };
 
                 path = 'src/emailTemplates/sendLinkText.html';
-                emailClient.emailManagerForTeam(loweremailId, config.text.userSubject, path, freelancerReplacements);
+                emailClient.emailManagerForNoReply(loweremailId, config.text.userSubject, path, freelancerReplacements);
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
