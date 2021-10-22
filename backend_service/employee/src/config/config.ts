@@ -35,7 +35,7 @@ export default {
     "teamMail": {
         "service": "gmail",
         "user": "team@ellow.io",
-        "password": "stxpmszeuiwlsbnq"
+        "password": "gvcxjwjwlezbpenh"
     },
     "text": {
     
