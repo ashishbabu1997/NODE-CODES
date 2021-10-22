@@ -30,6 +30,7 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
     const otherSkills = filter.otherSkills;
     const createdUser = filter.createdUser;
     const jobCategoryName = filter.jobCategoryName;
+    const typeOfAvailability=filter.typeOfAvailability
     if (![undefined, null, ''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length) {
       if (resourcesType.includes('Vetted Resources')) {
         filterQuery = filterQuery + ' AND chsv."candidateVetted" = 6 ';
@@ -104,6 +105,11 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
     if (![undefined, null, ''].includes(jobCategoryName)) {
       filterQuery = filterQuery + ' and chsv."jobCategoryId" in (select job_category_id from job_category where job_category_name ilike $jobCategoryName)';
       queryValues = Object.assign({ jobCategoryName: jobCategoryName }, queryValues);
+    }
+    if (![undefined, null, ''].includes(typeOfAvailability)) {
+      filterQuery = filterQuery + ' and chsv."availabilityType" = $availability and chsv."availability"=true ';
+      queryValues = Object.assign({ availability: typeOfAvailability }, queryValues);
+     
     }
   }
 
