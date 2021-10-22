@@ -196,7 +196,7 @@ export const resourceTab = (body) => {
       break;
     case 'activeIncontract':
       query =
-        '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 and $currenttime <(select contract_end_date from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId") ';
+        '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."candidateId" in (select candidate_id from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId" and in_contract=true) ';
       break;
       case 'permanent':
         query =
@@ -204,7 +204,7 @@ export const resourceTab = (body) => {
         break;
     case 'closedIncontract':
       query =
-        '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 and $currenttime > (select contract_end_date from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId") ';
+        '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."candidateId" in (select candidate_id from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId" and in_contract=false) ';
       break;
     default:
       break;
