@@ -125,6 +125,56 @@ export const listFreeCandidatesDetails = (_body) => {
   });
 };
 
+export const listIncontractResources = (_body) => {
+  return new Promise((resolve, reject) => {
+    const selectQuery = candidateQuery.listIncontractResources;
+    const totalQuery = candidateQuery.listIncontractResourcesCount;
+    let queryText = '';
+    let searchQuery = '';
+    let queryValues = {};
+    let filterQuery = '';
+    const filter = _body.body != undefined ? _body.body.filter : '';
+    const body = _body.query;
+    const reqBody = _body.body;
+    body.employeeId = reqBody.employeeId;
+
+    // Search for filters in the body
+    const filterResult = utils.resourceFilter(filter, filterQuery, queryValues);
+    filterQuery = filterResult.filterQuery;
+    queryValues = filterResult.queryValues;
+
+    // Search for company name / candidate name
+    const searchResult = utils.resourceSearch(body, queryValues);
+    searchQuery = searchResult.searchQuery;
+    queryValues = searchResult.queryValues;
+
+    (async () => {
+      const client = await database();
+      try {
+        const currentTime = Math.floor(Date.now());
+        let incontract = body.tabValue == 'activeIncontract'?true:false;
+
+        queryText = selectQuery + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
+        queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId, currenttime: currentTime,incontract:incontract }, queryValues);
+        const candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
+        const queryCountText = totalQuery + filterQuery + searchQuery;
+        const candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
+
+        const candidates = candidateList.rows;
+        const totalCount = candidateTotal.rows[0].totalCount;
+        resolve({ code: 200, message: 'Candidate Listed successfully', data: { candidates, totalCount } });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 500, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 500, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
+
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>Listing required candidates for add from list from the candidates list.
 export const listAddFromListCandidates = (_body) => {

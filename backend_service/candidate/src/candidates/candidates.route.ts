@@ -14,6 +14,7 @@ const router = express.Router();
 router
     .get('/listCandidates', jwtAuth, setData(), setProfileAuth([1, 2, 3, 4]), candidateController.listCandidates)
     .post('/listFreeCandidates', jwtAuth, setData(), candidateController.listFreeCandidates)
+    .post('/listIncontractResources', jwtAuth, setData(), candidateController.listIncontractResources)
     .post('/listForAddFromListCandidates', jwtAuth, setData(), candidateController.listForAddFromListCandidates)
     .post('/review', jwtAuth, setData(), setProfileAuth([1, 2]), candidateController.candidateReview)
     .put('/candidateVettingStatus', jwtAuth, setData(), setProfileAuth([1]), validate(candidateVettingSchema), candidateController.candidateVettingStatus)

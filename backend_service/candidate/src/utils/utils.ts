@@ -30,7 +30,7 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
     const otherSkills = filter.otherSkills;
     const createdUser = filter.createdUser;
     const jobCategoryName = filter.jobCategoryName;
-    const typeOfAvailability=filter.typeOfAvailability
+    const typeOfAvailability = filter.typeOfAvailability;
     if (![undefined, null, ''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length) {
       if (resourcesType.includes('Vetted Resources')) {
         filterQuery = filterQuery + ' AND chsv."candidateVetted" = 6 ';
@@ -109,7 +109,6 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
     if (![undefined, null, ''].includes(typeOfAvailability)) {
       filterQuery = filterQuery + ' and chsv."availabilityType" = $availability and chsv."availability"=true ';
       queryValues = Object.assign({ availability: typeOfAvailability }, queryValues);
-     
     }
   }
 
@@ -129,6 +128,11 @@ export const resourceSort = (body) => {
     createdOn: 'chsv."createdOn"',
     experience: 'chsv."workExperience"',
     email: 'chsv."email"',
+    ellowRate: 'chsv."ellowRate"',
+    contractRate : 'ccd.contract_rate',
+    contractStartDate : 'ccd.contract_start_date',
+    contractEndDate : 'ccd.contract_end_date'
+
   };
   if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
     if (body.sortBy == 'availability') {
@@ -179,8 +183,7 @@ export const resourceTab = (body) => {
       query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted" not in (0,6) or chsv."candidateVetted" is null)';
       break;
     case 'vetted':
-      query =
-        '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and (chsv."ellowStatusId" in (12,14,15) or chsv."candidateVetted"=6) ';
+      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and (chsv."ellowStatusId" in (12,14,15) or chsv."candidateVetted"=6) ';
       break;
     case 'certified':
       query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."ellowStatusId"=15 and chsv."blacklisted"=false ';
@@ -204,10 +207,9 @@ export const resourceTab = (body) => {
       query =
         '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."candidateId" in (select candidate_id from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId" and in_contract=true) ';
       break;
-      case 'permanent':
-        query =
-          '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."availabilityType"=2 and chsv."makeOffer"=0 ';
-        break;
+    case 'permanent':
+      query = '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."availabilityType"=2 and chsv."makeOffer"=0 ';
+      break;
     case 'closedIncontract':
       query =
         '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."candidateId" in (select candidate_id from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId" and in_contract=false) ';
@@ -218,6 +220,7 @@ export const resourceTab = (body) => {
 
   return query;
 };
+
 
 export const resourceHirerTab = (body) => {
   let query = '';
@@ -305,7 +308,7 @@ export const notNull = (val) => {
 export const checkRate = (val) => {
   const props = ['amount', 'currencyTypeId', 'billingTypeId'];
 
-  return [undefined, null, '', ' '].includes(val) ? false : props.every((prop) => val.hasOwnProperty(prop)); 
+  return [undefined, null, '', ' '].includes(val) ? false : props.every((prop) => val.hasOwnProperty(prop));
 };
 
 export const capitalize = (s) => {
