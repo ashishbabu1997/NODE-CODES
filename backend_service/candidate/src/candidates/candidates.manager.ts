@@ -23,6 +23,8 @@ import * as emailClient from '../emailManager/emailManager';
 import { nanoid } from 'nanoid';
 import * as builder from '../utils/Builder';
 import * as SibApiV3Sdk from 'sib-api-v3-sdk';
+import { google } from "googleapis";
+
 dotenv.config();
 
 // >>>>>>> FUNC. >>>>>>>
@@ -1820,7 +1822,7 @@ export const singleSignOn = (_body) => {
         const emailAddressResult = await emailAddress.json();
         _body.email = emailAddressResult.elements[0]['handle~']['emailAddress'];
         console.log(_body.email);
-        var results = await client.query(queryService.linkedinLoginMailCheck(_body));
+        var results = await client.query(queryService.loginMailCheck(_body));
         _body.companyName = 'Freelancer';
         const companyResults = await client.query(queryService.getCompanyDetailsFromName(_body));
         _body.cmpId = companyResults.rows[0].company_id;
@@ -1828,11 +1830,11 @@ export const singleSignOn = (_body) => {
         if (results.rowCount == 0) {
           const employeeResult = await client.query(queryService.insertLinkedinToEmployee(_body));
           employeeId = employeeResult.rows[0].employee_id;
-          const candidateResult = await client.query(queryService.insertLinkedinToCandidate(_body));
+          const candidateResult = await client.query(queryService.insertIntoCandidate(_body));
           candidateId = candidateResult.rows[0].candidate_id;
           _body.employeeId = employeeId;
           _body.candidateId = candidateId;
-          await client.query(queryService.insertLinkedinToCandidateEmployee(_body));
+          await client.query(queryService.insertInToCandidateEmployee(_body));
           _body.token = jwt.sign(
             {
               employeeId: employeeId.toString(),
@@ -2887,6 +2889,81 @@ export const getElloStage = (_body) => {
       }
     })().catch((e) => {
       reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>>>Function to edit the vetting status of the candidate.
+export const googleSignIn = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+
+
+        // Accessing users token for google
+        const tokenResponse = await fetch(
+          'https://accounts.google.com/o/oauth2/token?redirect_uri=http%3A%2F%2Flocalhost%3A4005%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
+          {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              Host: 'accounts.google.com',
+            'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: JSON.stringify({ a: 1, b: 'Textual content' }),
+          },
+        );
+        const content = await tokenResponse.json();
+        let oauth2Client = new google.auth.OAuth2();
+        oauth2Client.setCredentials({access_token: content.access_token});    // use the new auth client with the access_token
+        let oauth2 = google.oauth2({
+          auth: oauth2Client,
+          version: 'v2'
+        });
+        let { data } = await oauth2.userinfo.get();
+
+        
+        // Data Check from database
+        _body.email=data.email,_body.firstName=data.given_name,_body.lastName=data.family_name;
+        let employeeCheck = await client.query(queryService.getEmail(_body));
+        if (employeeCheck.rowCount==1)
+        {
+          _body.employeeId=employeeCheck.rows[0].employee_id
+          _body.companyId=employeeCheck.rows[0].company_id
+          _body.userRoleId=employeeCheck.rows[0].user_role_id
+        }
+        else
+        {
+          let employeeEntry = await client.query(queryService.googleSSOEmployeeInsertion(_body));
+          let candidateEntry = await client.query(queryService.insertIntoCandidate(_body));
+          _body.employeeId = employeeEntry.rows[0].employee_id;
+          _body.companyId=employeeEntry.rows[0].company_id
+          _body.userRoleId=employeeEntry.rows[0].user_role_id
+          _body.candidateId = candidateEntry.rows[0].candidate_id;
+          await client.query(queryService.insertInToCandidateEmployee(_body));
+        }
+        _body.token = jwt.sign(
+          {
+            employeeId: _body.employeeId.toString(),
+            companyId: _body.companyId.toString(),
+            userRoleId: _body.userRoleId.toString(),
+          },
+          process.env.TOKEN_SECRET,
+          { expiresIn: '24h' },
+        );
+        await client.query('COMMIT');
+        resolve({ code: 200, message: 'Candidate SSO successfull', data: { token: _body.token } });
+      } catch (e) {
+        await client.query('ROLLBACK');
+        console.log(e);
+        reject({ code: 400, message: 'Failed. Please try again.', data: {} });
+      }
+    })().catch(() => {
+      reject({ code: 400, message: 'Failed. Please try again.', data: {} });
     });
   });
 };

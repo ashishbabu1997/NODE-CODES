@@ -77,6 +77,8 @@ router
     .post('/updateStartAndEndDate',jwtAuth, setData(), candidateController.updateStartAndEndDateController)
     .post('/addTestLink', candidateController.addTestLinkController)
     .get('/getEllowStages', jwtAuth, setData(),candidateController.getFreelancerEllowStages)
+    .get('/googleSign', candidateController.googleSignon)
+
 
 
 export default router;

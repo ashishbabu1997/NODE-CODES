@@ -107,7 +107,7 @@ export const getDefaultHiringSteps = (_body) => {
 
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for updating hiring step details for an applied candidate
-export const updateHiringStepDetails = (_body) => {
+export const   updateHiringStepDetails = (_body) => {
   return new Promise((resolve, reject) => {
     (async () => {
       const client = await database();
@@ -161,7 +161,7 @@ export const updateHiringStepDetails = (_body) => {
               emailClient.emailManager(assignee.rows[0].email, subj, assigneePath, assigneeReplacements);
               await client.query(queryService.updateAvailabilityOfCandidate(_body));
               const updatedResourceCounts = await client.query(queryService.updateClosedCount(_body));
-              if (updatedResourceCounts.rows[0].developer_count >= updatedResourceCounts.rows[0].close_count) {
+              if (updatedResourceCounts.rows[0].developer_count <= updatedResourceCounts.rows[0].close_count) {
                 await client.query(queryService.updateJobStatus(_body));
               }
             } else if (_body.hiringAssesmentValue == 1) {

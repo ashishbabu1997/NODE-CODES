@@ -319,6 +319,17 @@ export const sigOn = (req, res) => {
         res.end();
       });
 };
+export const googleSignon = (req, res) => {
+  const body = req.query;
+  candidateManager.googleSignIn(body).then((response: any) => {
+    res.writeHead(301, {Location: 'https://dev.ellow.io/candidate-login?token='+response.data.token});
+    res.end();
+  })
+      .catch(() => {
+        res.writeHead(301, {Location: 'https://dev.ellow.io/redirect-notification'});
+        res.end();
+      });
+};
 export const getEmployeeDetailsFromLinkedin = (req, res) => {
   const body = req.body;
   candidateManager.getLinkedinEmployeeLoginDetails(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
