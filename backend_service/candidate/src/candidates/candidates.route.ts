@@ -14,6 +14,7 @@ const router = express.Router();
 router
     .get('/listCandidates', jwtAuth, setData(), setProfileAuth([1, 2, 3, 4]), candidateController.listCandidates)
     .post('/listFreeCandidates', jwtAuth, setData(), candidateController.listFreeCandidates)
+    .post('/listIncontractResources', jwtAuth, setData(), candidateController.listIncontractResources)
     .post('/listForAddFromListCandidates', jwtAuth, setData(), candidateController.listForAddFromListCandidates)
     .post('/review', jwtAuth, setData(), setProfileAuth([1, 2]), candidateController.candidateReview)
     .put('/candidateVettingStatus', jwtAuth, setData(), setProfileAuth([1]), validate(candidateVettingSchema), candidateController.candidateVettingStatus)
@@ -77,6 +78,8 @@ router
     .post('/updateStartAndEndDate',jwtAuth, setData(), candidateController.updateStartAndEndDateController)
     .post('/addTestLink', candidateController.addTestLinkController)
     .get('/getEllowStages', jwtAuth, setData(),candidateController.getFreelancerEllowStages)
+    .get('/googleSign', candidateController.googleSignon)
+
 
 
 export default router;

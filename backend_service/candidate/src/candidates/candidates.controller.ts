@@ -25,6 +25,14 @@ export const listFreeCandidates = (req, res) => {
       .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
 };
 
+
+export const listIncontractResources = (req, res) => {
+  const body = req;
+  candidateManager.listIncontractResources(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+      .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};
+
+
 export const listForAddFromListCandidates = (req, res) => {
   const body = req;
   candidateManager.listAddFromListCandidates(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
@@ -311,6 +319,17 @@ export const updateBlacklisted = (req, res) => {
 export const sigOn = (req, res) => {
   const body = req.query;
   candidateManager.singleSignOn(body).then((response: any) => {
+    res.writeHead(301, {Location: 'https://dev.ellow.io/candidate-login?token='+response.data.token});
+    res.end();
+  })
+      .catch(() => {
+        res.writeHead(301, {Location: 'https://dev.ellow.io/redirect-notification'});
+        res.end();
+      });
+};
+export const googleSignon = (req, res) => {
+  const body = req.query;
+  candidateManager.googleSignIn(body).then((response: any) => {
     res.writeHead(301, {Location: 'https://dev.ellow.io/candidate-login?token='+response.data.token});
     res.end();
   })

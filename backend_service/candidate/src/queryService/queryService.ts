@@ -772,14 +772,14 @@ export const changeBlacklistedOfCandidate = (_body) => {
     values: [_body.candidateId, currentTime(), _body.employeeId, _body.blacklisted],
   };
 };
-export const linkedinLoginMailCheck = (_body) => {
+export const loginMailCheck = (_body) => {
   return {
     name: 'linkedin-email-check',
     text: candidateQuery.employeeLogin,
     values: [_body.email],
   };
 };
-export const insertLinkedinToCandidate = (_body) => {
+export const insertIntoCandidate = (_body) => {
   return {
     name: 'insert-in-candidate',
     text: candidateQuery.insertIntoCandidate,
@@ -793,7 +793,7 @@ export const checkResumeExistance = (_body) => {
     values: [_body.fileName.substring(36)],
   };
 };
-export const insertLinkedinToCandidateEmployee = (_body) => {
+export const insertInToCandidateEmployee = (_body) => {
   return {
     name: 'insert-in-candidate-employee',
     text: candidateQuery.insertIntoCandidateEmployee,
@@ -822,6 +822,14 @@ export const insertLinkedinToEmployee = (_body) => {
   };
 };
 
+
+export const googleSSOEmployeeInsertion = (_body) => {
+  return {
+    name: 'insert-into-employee',
+    text: candidateQuery.employeeInsertion,
+    values: [_body.firstName, _body.lastName, _body.email, 4, true, 1],
+  };
+};
 // *******************************************************************************************************************************//
 // -------------------------------------------Freelancer submit profile-------------------------------------------------//
 
