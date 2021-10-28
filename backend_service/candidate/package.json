@@ -11,8 +11,8 @@
     "serve": "pm2 start dist/Server.js",
     "prod": "npm run serve",
     "preprod": "tsc -p src  & pm2 stop dist/Server.js &",
-    "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts)\" --write"
-
+    "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts)\" --write",
+    "debug": "nodemon src/Server.ts"
   },
   "author": "Ashish Babu",
   "license": "ISC",

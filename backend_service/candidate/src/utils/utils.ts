@@ -29,9 +29,8 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
     const currencyType = filter.currencyType;
     const otherSkills = filter.otherSkills;
     const createdUser = filter.createdUser;
-    const jobCategoryName = filter.jobCategoryName
-      ;
-
+    const jobCategoryName = filter.jobCategoryName;
+    const typeOfAvailability = filter.typeOfAvailability;
     if (![undefined, null, ''].includes(resourcesType) && Array.isArray(resourcesType) && resourcesType.length) {
       if (resourcesType.includes('Vetted Resources')) {
         filterQuery = filterQuery + ' AND chsv."candidateVetted" = 6 ';
@@ -43,31 +42,31 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
     }
     if (![undefined, null, ''].includes(skills) && Array.isArray(skills) && skills.length) {
       filterQuery = filterQuery + ' AND skills && $skill::varchar[] ';
-      queryValues = Object.assign({skill: objectToArray(skills, 'skillName')}, queryValues);
+      queryValues = Object.assign({ skill: objectToArray(skills, 'skillName') }, queryValues);
     }
     if (![undefined, null, ''].includes(otherSkills) && Array.isArray(otherSkills) && otherSkills.length) {
       filterQuery = filterQuery + ' AND otherskills && $otherskill::varchar[] ';
-      queryValues = Object.assign({otherskill: objectToArray(otherSkills, 'skillName')}, queryValues);
+      queryValues = Object.assign({ otherskill: objectToArray(otherSkills, 'skillName') }, queryValues);
     }
 
     if (minCost >= 0 && maxCost >= 0 && ![undefined, null, ''].includes(currencyType) && ![undefined, null, ''].includes(billingTypeId)) {
       filterQuery = filterQuery + ' AND chsv."currencyTypeId" = $currencytype AND chsv."billingTypeId" = $billingtypeid AND chsv."rate" BETWEEN $cost_min and $cost_max ';
-      queryValues = Object.assign({billingtypeid: billingTypeId, currencytype: currencyType, cost_min: minCost, cost_max: maxCost}, queryValues);
+      queryValues = Object.assign({ billingtypeid: billingTypeId, currencytype: currencyType, cost_min: minCost, cost_max: maxCost }, queryValues);
     }
 
     if (![undefined, null, ''].includes(experience) && Object.keys(experience).length != 0) {
       if (experience.min >= 0 && experience.max > 0) {
         filterQuery = filterQuery + ' and chsv."workExperience" between $experience_min and $experience_max ';
-        queryValues = Object.assign({experience_min: experience.min, experience_max: experience.max}, queryValues);
+        queryValues = Object.assign({ experience_min: experience.min, experience_max: experience.max }, queryValues);
       }
     }
     if (![undefined, null, ''].includes(locations) && Array.isArray(locations) && locations.length) {
       filterQuery = filterQuery + ' and chsv."residence" = any($locations) ';
-      queryValues = Object.assign({locations: locations}, queryValues);
+      queryValues = Object.assign({ locations: locations }, queryValues);
     }
     if (![undefined, null, ''].includes(fromDate) && fromDate > 0 && ![undefined, null, ''].includes(toDate) && toDate > 0) {
       filterQuery = filterQuery + ' and chsv."createdOn" between $fromdate and $todate ';
-      queryValues = Object.assign({fromdate: fromDate, todate: toDate}, queryValues);
+      queryValues = Object.assign({ fromdate: fromDate, todate: toDate }, queryValues);
     }
 
     if (![undefined, null, ''].includes(availability)) {
@@ -77,52 +76,62 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
         filterQuery = filterQuery + ' and chsv."availability"=true';
       } else {
         filterQuery = filterQuery + ' and chsv."readyToStart" = $availability and chsv."availability"=true ';
-        queryValues = Object.assign({availability: availability}, queryValues);
+        queryValues = Object.assign({ availability: availability }, queryValues);
       }
     }
 
     if (![undefined, null, ''].includes(allocatedTo)) {
       if (allocatedTo > 0) {
         filterQuery = filterQuery + ' and chsv."allocatedTo" = $allocatedto ';
-        queryValues = Object.assign({allocatedto: allocatedTo}, queryValues);
+        queryValues = Object.assign({ allocatedto: allocatedTo }, queryValues);
       } else if (allocatedTo == -1) {
         filterQuery = filterQuery + ' and chsv."allocatedTo" is null ';
       }
     }
     if (![undefined, null, ''].includes(positionStatus) && Array.isArray(positionStatus) && positionStatus.length) {
-      filterQuery = filterQuery + ' and (select case when chsv."positionStatusName" is null then \'Submitted to hirer\' else chsv."positionStatusName" end) ilike any (select concat(array_element,\'%\') from unnest($positionstatus::text[]) array_element(array_element)) and "positionId" is not null ';
-      queryValues = Object.assign({positionstatus: positionStatus}, queryValues);
+      filterQuery =
+        filterQuery +
+        ' and (select case when chsv."positionStatusName" is null then \'Submitted to hirer\' else chsv."positionStatusName" end) ilike any (select concat(array_element,\'%\') from unnest($positionstatus::text[]) array_element(array_element)) and "positionId" is not null ';
+      queryValues = Object.assign({ positionstatus: positionStatus }, queryValues);
     }
     if (![undefined, null, ''].includes(candStatus) && Array.isArray(candStatus) && candStatus.length) {
       filterQuery = filterQuery + ' and chsv."stageStatusName" ilike any(select concat(array_element,\'%\') from unnest($candstatus::text[]) array_element(array_element)) ';
-      queryValues = Object.assign({candstatus: candStatus}, queryValues);
+      queryValues = Object.assign({ candstatus: candStatus }, queryValues);
     }
     if (![undefined, null, ''].includes(createdUser)) {
       filterQuery = filterQuery + '  and chsv."createdBy" in (select employee_id from employee where user_role_id=$createdUser and employee_id=chsv."createdBy")';
-      queryValues = Object.assign({createdUser: createdUser}, queryValues);
+      queryValues = Object.assign({ createdUser: createdUser }, queryValues);
     }
     if (![undefined, null, ''].includes(jobCategoryName)) {
       filterQuery = filterQuery + ' and chsv."jobCategoryId" in (select job_category_id from job_category where job_category_name ilike $jobCategoryName)';
-      queryValues = Object.assign({jobCategoryName: jobCategoryName}, queryValues);
+      queryValues = Object.assign({ jobCategoryName: jobCategoryName }, queryValues);
+    }
+    if (![undefined, null, ''].includes(typeOfAvailability)) {
+      filterQuery = filterQuery + ' and chsv."availabilityType" = $availability and chsv."availability"=true ';
+      queryValues = Object.assign({ availability: typeOfAvailability }, queryValues);
     }
   }
 
-  return {filterQuery, queryValues};
+  return { filterQuery, queryValues };
 };
 
 export const resourceSort = (body) => {
   let sort = '';
   // Sorting keys with values
   const orderBy = {
-    'candidateId': 'chsv."candidateId"',
-    'candidateFirstName': 'chsv."candidateFirstName"',
-    'candidatelastName': 'chsv."candidateLastName"',
-    'companyName': 'chsv."companyName"',
-    'updatedOn': 'chsv."updatedOn"',
-    'availability': 'chsv."availability"',
-    'createdOn': 'chsv."createdOn"',
-    'experience': 'chsv."workExperience"',
-    'email': 'chsv."email"',
+    candidateId: 'chsv."candidateId"',
+    candidateFirstName: 'chsv."candidateFirstName"',
+    candidatelastName: 'chsv."candidateLastName"',
+    companyName: 'chsv."companyName"',
+    updatedOn: 'chsv."updatedOn"',
+    availability: 'chsv."availability"',
+    createdOn: 'chsv."createdOn"',
+    experience: 'chsv."workExperience"',
+    email: 'chsv."email"',
+    ellowRate: 'chsv."ellowRate"',
+    contractRate : 'ccd.contract_rate',
+    contractStartDate : 'ccd.contract_start_date',
+    contractEndDate : 'ccd.contract_end_date'
 
   };
   if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
@@ -146,19 +155,19 @@ export const resourcePagination = (body) => {
   return pagination;
 };
 
-
 export const resourceSearch = (body, queryValues) => {
-  let searchKey = '%%'; let searchQuery = '';
+  let searchKey = '%%';
+  let searchQuery = '';
 
   if (![undefined, null, ''].includes(body.searchKey)) {
     searchKey = '%' + body.searchKey + '%';
-    searchQuery = ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."candidatePositionName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey OR  chsv."email" ILIKE $searchkey  OR chsv."phoneNumber" ILIKE $searchkey) ';
-    queryValues = Object.assign({searchkey: searchKey}, queryValues);
+    searchQuery =
+      ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."candidatePositionName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey OR  chsv."email" ILIKE $searchkey  OR chsv."phoneNumber" ILIKE $searchkey) ';
+    queryValues = Object.assign({ searchkey: searchKey }, queryValues);
   }
 
-  return {searchQuery, queryValues};
+  return { searchQuery, queryValues };
 };
-
 
 export const resourceTab = (body) => {
   let query = '';
@@ -167,14 +176,14 @@ export const resourceTab = (body) => {
     case 'allResources':
       query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted"!=0 or chsv."candidateVetted" is null)';
       break;
-      case 'rejected':
-        query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false  and chsv."candidateVetted"=0';
-        break;
+    case 'rejected':
+      query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false  and chsv."candidateVetted"=0';
+      break;
     case 'nonVetted':
       query = '  where chsv."candidateStatus"=3 and chsv."blacklisted"=false and (chsv."candidateVetted" not in (0,6) or chsv."candidateVetted" is null)';
       break;
     case 'vetted':
-      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and (chsv."ellowStatusId" in (12,14) or ((chsv."candidateVetted"=6) and chsv."ellowStatusId"!=15)) ';
+      query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."blacklisted"=false and (chsv."ellowStatusId" in (12,14,15) or chsv."candidateVetted"=6) ';
       break;
     case 'certified':
       query = '  where chsv."candidateStatus"=3 and chsv."candidateVetted"=6 and chsv."ellowStatusId"=15 and chsv."blacklisted"=false ';
@@ -191,9 +200,20 @@ export const resourceTab = (body) => {
     case 'provider':
       query = `  where chsv."companyId" not in (select company_id from company where company_type=2) and chsv."candidateStatus"=9`;
       break;
-      case 'incontract':
-        query = '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 ';
-        break;
+    case 'incontract':
+      query = '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."makeOffer"=0 ';
+      break;
+    case 'activeIncontract':
+      query =
+        '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."candidateId" in (select candidate_id from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId" and in_contract=true) ';
+      break;
+    case 'permanent':
+      query = '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."availabilityType"=2 and chsv."makeOffer"=0 ';
+      break;
+    case 'closedIncontract':
+      query =
+        '  where chsv."candidateStatus"=3 and chsv."pStatus"=true and chsv."blacklisted"=false and chsv."candidateId" in (select candidate_id from candidate_contract_details where candidate_id=chsv."candidateId" and position_id=chsv."positionId" and in_contract=false) ';
+      break;
     default:
       break;
   }
@@ -259,32 +279,36 @@ export const resourceRoleBased = (reqBody, queryValues) => {
   let roleBasedQuery = '';
   if (reqBody.userRoleId != '1') {
     roleBasedQuery = ' and  chsv."companyId" = $companyid ';
-    queryValues = Object.assign({companyid: reqBody.companyId}, queryValues);
+    queryValues = Object.assign({ companyid: reqBody.companyId }, queryValues);
   }
 
-  return {roleBasedQuery, queryValues};
+  return { roleBasedQuery, queryValues };
 };
 export const listFreResourceRoleBased = (reqBody, queryValues) => {
   let roleBasedQuery = '';
   if (reqBody.userRoleId != 1) {
     roleBasedQuery = ' where  chsv."companyId" = $companyid  ';
-    queryValues = Object.assign({companyid: reqBody.companyId}, queryValues);
+    queryValues = Object.assign({ companyid: reqBody.companyId }, queryValues);
   } else {
     roleBasedQuery = ' where (chsv."candidateStatus" = 3 or (chsv."candidateStatus" = 4 and chsv."createdBy" = $employeeid)) ';
-    queryValues = Object.assign({employeeid: reqBody.employeeId}, queryValues);
+    queryValues = Object.assign({ employeeid: reqBody.employeeId }, queryValues);
   }
 
-  return {roleBasedQuery, queryValues};
+  return { roleBasedQuery, queryValues };
 };
 
 export const stringEquals = (a, b) => {
-  return typeof a === 'string' && typeof b === 'string' ?
-    a.localeCompare(b, undefined, {sensitivity: 'accent'}) === 0 :
-    a === b;
+  return typeof a === 'string' && typeof b === 'string' ? a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0 : a === b;
 };
 
 export const notNull = (val) => {
   return [undefined, null, '', ' '].includes(val) ? false : true;
+};
+
+export const checkRate = (val) => {
+  const props = ['amount', 'currencyTypeId', 'billingTypeId'];
+
+  return [undefined, null, '', ' '].includes(val) ? false : props.every((prop) => val.hasOwnProperty(prop));
 };
 
 export const capitalize = (s) => {
@@ -292,10 +316,10 @@ export const capitalize = (s) => {
   return s.charAt(0).toUpperCase() + s.slice(1).toLocaleLowerCase();
 };
 
-
 export const constValues = (type, value) => {
-  const crr = {1: '₹', 2: '$'}; const bill = {0: 'hour', 1: 'day', 2: 'month'};
-  const readytostart = {1: 'Immediate', 2: 'In one week', 3: 'In two weeks', 4: 'In one month', 5: 'More than one month'};
+  const crr = { 1: '₹', 2: '$' };
+  const bill = { 0: 'hour', 1: 'day', 2: 'month' };
+  const readytostart = { 1: 'Immediate', 2: 'In one week', 3: 'In two weeks', 4: 'In one month', 5: 'More than one month' };
 
   switch (type) {
     case 'currencyType':
@@ -316,7 +340,6 @@ export const shortNameForPdf = (name) => {
   return firstName + '.' + lastName + '.pdf';
 };
 
-
 export const reccuiterMailCheck = (email) => {
   const data = notNull(config.mailAuth[email]) ? config.mailAuth[email] : config.mailAuth['noreplymail'];
   return {
@@ -328,9 +351,8 @@ export const reccuiterMailCheck = (email) => {
 
 export const reccuiterSignatureCheck = (email) => {
   const data = notNull(config.mailAuth[email]) ? config.mailAuth[email] : config.mailAuth['noreplymail'];
-  return {signature: data.signature};
+  return { signature: data.signature };
 };
-
 
 export const base64Encode = (file) => {
   return 'data:image/gif;base64,' + fs.readFileSync(file, 'base64');
@@ -339,7 +361,7 @@ export const base64Encode = (file) => {
 export const secondsToHms = (d) => {
   const da = Math.abs(Number(d));
   const h = Math.floor(da / 3600);
-  const m = Math.floor(da % 3600 / 60);
+  const m = Math.floor((da % 3600) / 60);
   const sign = d > 0 ? '+' : '-';
   return `GMT${sign}${h}:${m}`;
 };
@@ -358,6 +380,4 @@ export const extractGmt = (data) => {
   }
 };
 
-export const checkResume = (data) => {
- 
-};
+export const checkResume = (data) => {};

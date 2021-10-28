@@ -118,3 +118,4 @@ dist
 # Package lock
 package-lock.json
 backend_service/admin/package-lock.json
+.vscode/launch.json
