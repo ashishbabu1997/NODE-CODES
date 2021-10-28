@@ -4,6 +4,7 @@ import hiringQuery from './query/hiring.query';
 import * as emailClient from '../emailManager/emailManager';
 import { createNotification } from '../common/notifications/notifications';
 import config from '../config/config';
+import * as utils from '../utils/utils'
 
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for listing all position hiring steps
@@ -126,7 +127,11 @@ export const   updateHiringStepDetails = (_body) => {
 
           if (candidateClientHiringStepName == 'Negotiation/Close position') {
             await client.query(queryService.updateMakeOfferValue(_body));
+            if (['', undefined, null].includes(_body.hiringAssesmentValue) )
+            {
+              reject({ code: 400, message: 'Please select a dropdown value', data: {} });
 
+            }
             if (_body.hiringAssesmentValue == 0) {
               const message = `${imageResults.rows[0].candidate_first_name + ' ' + imageResults.rows[0].candidate_last_name} has accepted the offer by ${positions.rows[0].company_name}`;
               await createNotification({
