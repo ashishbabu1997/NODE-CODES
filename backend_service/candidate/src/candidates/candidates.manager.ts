@@ -2952,11 +2952,9 @@ export const googleSignIn = (_body) => {
     (async () => {
       const client = await database();
       try {
-
-
         // Accessing users token for google
         const tokenResponse = await fetch(
-          'https://accounts.google.com/o/oauth2/token?redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
+          'https://accounts.google.com/o/oauth2/token?redirect_uri=http%3A%2F%2Flocalhost%3A4005%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
           {
             method: 'POST',
             headers: {
@@ -2968,6 +2966,8 @@ export const googleSignIn = (_body) => {
           },
         );
         const content = await tokenResponse.json();
+        console.log(content)
+ // get tokens
         let oauth2Client = new google.auth.OAuth2();
         oauth2Client.setCredentials({access_token: content.access_token});    // use the new auth client with the access_token
         let oauth2 = google.oauth2({
