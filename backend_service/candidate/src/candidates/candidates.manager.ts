@@ -1958,7 +1958,7 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
               code: 200,
               message: 'Login successful',
               data: {
-                token: `Bearer ${_body.token}`,
+                token: `Bearer ${_body.tokens}`,
                 companyName: value.companyName,
                 companyLogo: value.companyLogo,
                 candidateId: value.candidateId,
