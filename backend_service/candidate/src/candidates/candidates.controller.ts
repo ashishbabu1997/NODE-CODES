@@ -330,6 +330,7 @@ export const sigOn = (req, res) => {
 export const googleSignon = (req, res) => {
   const body = req.query;
   candidateManager.googleSignIn(body).then((response: any) => {
+    console.log(response.data.token)
     res.writeHead(301, {Location: 'https://dev.ellow.io/candidate-login?googleToken='+response.data.token});
     res.end();
   })

@@ -1941,13 +1941,13 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
       try {
         await client.query('BEGIN');
 
-        // Inserting the integer representing the vetting status value.
-        _body.token=_body.hasOwnProperty('token')?_body.token:_body.google_token
+        // Inserting the integer representing the vetting status value
+        _body.tokens=_body.hasOwnProperty('token')?_body.token:_body.googleToken.slice(0, -1)
         _body.query=_body.hasOwnProperty('token')?candidateQuery.getDetailsUsingLinkedinToken:candidateQuery.getDetailsUsingGoogleToken
         const getQuery = {
           name: 'get-employee-details',
           text: _body.query,
-          values: [_body.token],
+          values: [_body.tokens],
         };
         const results = await client.query(getQuery);
         const data = results.rows;
@@ -2959,7 +2959,7 @@ export const googleSignIn = (_body) => {
 
         // Accessing users token for google
         const tokenResponse = await fetch(
-          'https://accounts.google.com/o/oauth2/token?redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
+          'https://accounts.google.com/o/oauth2/token?redirect_uri=http%3A%2F%2Flocalhost%3A4005%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
           {
             method: 'POST',
             headers: {
@@ -3009,9 +3009,10 @@ export const googleSignIn = (_body) => {
           { expiresIn: '24h' },
 
         );
-        await client.query(queryService.insertEmployeeToken(_body));
+        await client.query(queryService.insertEmployeeGoogleToken(_body));
         await client.query('COMMIT');
-        resolve({ code: 200, message: 'Candidate SSO successfull', data: { token: _body.token } });
+
+        resolve({ code: 200, message: 'Candidate SSO successfull', data: { token: _body.token} });
       } catch (e) {
         await client.query('ROLLBACK');
         console.log(e);

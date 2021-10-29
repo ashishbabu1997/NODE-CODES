@@ -807,6 +807,13 @@ export const insertEmployeeToken = (_body) => {
     values: [_body.token, _body.employeeId],
   };
 };
+export const insertEmployeeGoogleToken = (_body) => {
+  return {
+    name: 'insert-employee-google-token',
+    text: candidateQuery.insertEmployeeGoogleToken,
+    values: [_body.token, _body.employeeId],
+  };
+};
 export const getCompanyDetailsFromName = (_body) => {
   return {
     name: 'get-company-details',
