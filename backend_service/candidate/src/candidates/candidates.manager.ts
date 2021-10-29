@@ -1942,10 +1942,11 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
         await client.query('BEGIN');
 
         // Inserting the integer representing the vetting status value.
-        _body.token=_body.hasOwnProperty('token')?_body.token:_body.googleToken;
+        _body.token=_body.hasOwnProperty('token')?_body.token:_body.google_token
+        _body.query=_body.hasOwnProperty('token')?candidateQuery.getDetailsUsingLinkedinToken:candidateQuery.getDetailsUsingGoogleToken
         const getQuery = {
           name: 'get-employee-details',
-          text: candidateQuery.getDetailsUsingLinkedinToken,
+          text: _body.query,
           values: [_body.token],
         };
         const results = await client.query(getQuery);
