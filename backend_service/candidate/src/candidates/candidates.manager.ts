@@ -162,6 +162,7 @@ export const listIncontractResources = (_body) => {
 
         const candidates = candidateList.rows;
         const totalCount = candidateTotal.rows[0].totalCount;
+        console.log(totalCount)
         resolve({ code: 200, message: 'Candidate Listed successfully', data: { candidates, totalCount } });
       } catch (e) {
         console.log(e);
