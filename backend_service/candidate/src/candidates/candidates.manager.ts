@@ -2521,6 +2521,7 @@ export const approveOrRejectAppliedCandidate = (_body) => {
         const getCandidateDetailsFromToken = await client.query(queryService.getCandidateDetailsFromTokenQueryService(_body));
         if (getCandidateDetailsFromToken.rowCount == 0) {
           (_body.responseMessage = `Cannot process the request since this action is already taken`), (_body.responseStatus = 3);
+          console.log("Action Taken")
           resolve({ code: 200, message: _body.responseMessage, data: { status: _body.responseStatus } });
         } else {
           const results = getCandidateDetailsFromToken.rows[0];
@@ -2971,6 +2972,7 @@ export const googleSignIn = (_body) => {
           },
         );
         const content = await tokenResponse.json();
+        console.log(content)
         let oauth2Client = new google.auth.OAuth2();
         oauth2Client.setCredentials({access_token: content.access_token});    // use the new auth client with the access_token
         let oauth2 = google.oauth2({
@@ -2983,6 +2985,7 @@ export const googleSignIn = (_body) => {
         // Data Check from database
         _body.email=data.email,_body.firstName=data.given_name,_body.lastName=data.family_name;
         let employeeCheck = await client.query(queryService.getEmail(_body));
+        console.log("Start");
         if (employeeCheck.rowCount==1)
         {
           _body.employeeId=employeeCheck.rows[0].employee_id
