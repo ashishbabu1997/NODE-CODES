@@ -25,6 +25,7 @@ import * as builder from '../utils/Builder';
 import * as SibApiV3Sdk from 'sib-api-v3-sdk';
 import { google } from "googleapis";
 import { hasOwnProperty } from 'tslint/lib/utils';
+import { Console } from 'console';
 
 dotenv.config();
 
@@ -148,13 +149,11 @@ export const listIncontractResources = (_body) => {
     const searchResult = utils.resourceSearch(body, queryValues);
     searchQuery = searchResult.searchQuery;
     queryValues = searchResult.queryValues;
-
     (async () => {
       const client = await database();
       try {
         const currentTime = Math.floor(Date.now());
         let incontract = body.tabValue == 'activeIncontract'?true:false;
-
         queryText = selectQuery + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
         queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId, currenttime: currentTime,incontract:incontract }, queryValues);
         const candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
