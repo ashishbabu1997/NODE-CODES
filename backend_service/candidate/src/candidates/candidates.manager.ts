@@ -2980,12 +2980,10 @@ export const googleSignIn = (_body) => {
           version: 'v2'
         });
         let { data } = await oauth2.userinfo.get();
-
         
         // Data Check from database
         _body.email=data.email,_body.firstName=data.given_name,_body.lastName=data.family_name;
         let employeeCheck = await client.query(queryService.getEmail(_body));
-        console.log("Start");
         if (employeeCheck.rowCount==1)
         {
           _body.employeeId=employeeCheck.rows[0].employee_id
