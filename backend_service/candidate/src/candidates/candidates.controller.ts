@@ -330,7 +330,8 @@ export const sigOn = (req, res) => {
 export const googleSignon = (req, res) => {
   const body = req.query;
   candidateManager.googleSignIn(body).then((response: any) => {
-    res.writeHead(301, {Location: 'https://dev.ellow.io/candidate-login?token='+response.data.token});
+    console.log(response.data.token)
+    res.writeHead(301, {Location: 'https://dev.ellow.io/candidate-login?googleToken='+response.data.token});
     res.end();
   })
       .catch(() => {
@@ -464,6 +465,16 @@ export const sendblueAddContact = (req, res) => {
     sendResponse(res, error.code, 0, 401, error.message, error.data);
   });
 };
+
+export const sendblueAddCertifiedContact = (req, res) => {
+  const body = req.body;
+  candidateManager.devSendinblueCertifiedList(body).then((response: any) => {
+    sendResponse(res, response.code, 1, 201, response.message, response.data);
+  }).catch((error) => {
+    sendResponse(res, error.code, 0, 401, error.message, error.data);
+  });
+};
+
 
 
 export const checkActionTaken = (req, res) => {

@@ -74,6 +74,7 @@ router
     .post('/approveOrRejectAppliedCandidate', candidateController.approveOrRejectAppliedCandidateController)
     .get('/sendblue', candidateController.sendblueAPI)
     .get('/sendblueAddContact', candidateController.sendblueAddContact)
+    .get('/sendblueAddCertifiedContact', candidateController.sendblueAddCertifiedContact)
     .post('/checkAction', candidateController.checkActionTaken)
     .post('/updateStartAndEndDate',jwtAuth, setData(), candidateController.updateStartAndEndDateController)
     .post('/addTestLink', candidateController.addTestLinkController)
