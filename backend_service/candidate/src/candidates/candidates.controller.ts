@@ -466,6 +466,16 @@ export const sendblueAddContact = (req, res) => {
   });
 };
 
+export const sendblueAddCertifiedContact = (req, res) => {
+  const body = req.body;
+  candidateManager.devSendinblueCertifiedList(body).then((response: any) => {
+    sendResponse(res, response.code, 1, 201, response.message, response.data);
+  }).catch((error) => {
+    sendResponse(res, error.code, 0, 401, error.message, error.data);
+  });
+};
+
+
 
 
 export const checkActionTaken = (req, res) => {

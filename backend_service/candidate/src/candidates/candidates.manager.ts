@@ -3024,3 +3024,45 @@ export const googleSignIn = (_body) => {
     });
   });
 };
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> SEND BLUE CERTIFIED LIST
+export const devSendinblueCertifiedList = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        const defaultClient = SibApiV3Sdk.ApiClient.instance;
+
+        const apiKey = defaultClient.authentications['api-key'];
+        // eslint-disable-next-line no-undef
+        apiKey.apiKey = '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';
+        const results = await client.query(queryService.getCertifiedContactDetails());
+        const promise = [];
+
+        const apiInstance = new SibApiV3Sdk.ContactsApi();
+        if (Array.isArray(results.rows) && results.rowCount > 0) {
+          results.rows.forEach(async (element) => {
+            const createContact = new SibApiV3Sdk.CreateContact();
+            createContact.email = element.email_address;
+            createContact.attributes = { FIRSTNAME: element.candidate_first_name, LASTNAME: element.candidate_last_name, PHONE: element.phone_number };
+            createContact.listIds = [4];
+            promise.push(await apiInstance.createContact(createContact));
+          });
+        }
+
+        await Promise.all(promise);
+        resolve({ code: 200, message: 'Added successfully', data: {} });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject({ code: 400, message: 'Failed. Please try again ', data: e.message });
+    });
+  });
+};

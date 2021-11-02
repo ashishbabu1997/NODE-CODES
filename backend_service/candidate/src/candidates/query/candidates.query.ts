@@ -181,8 +181,7 @@ export default {
   updateHtmlResume: 'UPDATE candidate SET bag_of_words = $1 WHERE candidate_id = $2',
   getUserMail: 'select email,concat(firstname,\' \',lastname) as name,telephone_number from employee where employee_id=$1',
   getContactDetails: 'select distinct email_address, candidate_first_name, candidate_last_name, phone_number from candidate where company_id = (select company_id from company where company_type = 2) and email_address is not null ',
-
-
+  getCertifiedContactDetails :'select distinct email_address, candidate_first_name, candidate_last_name, phone_number from candidate where  email_address is not null and candidate_vetted=6 and ellow_status_id=15',
   //Google signin queries
   employeeInsertion: 'insert into employee (firstname,lastname,email,company_id,user_role_id,account_type,status,admin_approve_status) values($1,$2,$3,(select company_id from company where company_type=2),$4,$4,$5,$6) returning employee_id,company_id,user_role_id',
 

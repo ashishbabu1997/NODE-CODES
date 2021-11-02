@@ -783,7 +783,7 @@ export const insertIntoCandidate = (_body) => {
   return {
     name: 'insert-in-candidate',
     text: candidateQuery.insertIntoCandidate,
-    values: [_body.firstName, _body.lastName, _body.email, 4, currentTime()],
+    values: [_body.firstName, _body.lastName, _body.email, null, currentTime()],
   };
 };
 export const checkResumeExistance = (_body) => {
@@ -1762,5 +1762,12 @@ export const getContactDetails = () => {
   return {
     name: 'fetch-contact-details',
     text: candidateQuery.getContactDetails,
+  };
+};
+
+export const getCertifiedContactDetails = () => {
+  return {
+    name: 'fetch-certified-contact-details',
+    text: candidateQuery.getCertifiedContactDetails,
   };
 };
