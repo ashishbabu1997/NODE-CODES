@@ -24,6 +24,8 @@ import { nanoid } from 'nanoid';
 import * as builder from '../utils/Builder';
 import * as SibApiV3Sdk from 'sib-api-v3-sdk';
 import { google } from "googleapis";
+import { hasOwnProperty } from 'tslint/lib/utils';
+import { Console } from 'console';
 
 dotenv.config();
 
@@ -147,13 +149,11 @@ export const listIncontractResources = (_body) => {
     const searchResult = utils.resourceSearch(body, queryValues);
     searchQuery = searchResult.searchQuery;
     queryValues = searchResult.queryValues;
-
     (async () => {
       const client = await database();
       try {
         const currentTime = Math.floor(Date.now());
         let incontract = body.tabValue == 'activeIncontract'?true:false;
-
         queryText = selectQuery + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
         queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId, currenttime: currentTime,incontract:incontract }, queryValues);
         const candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
@@ -162,6 +162,7 @@ export const listIncontractResources = (_body) => {
 
         const candidates = candidateList.rows;
         const totalCount = candidateTotal.rows[0].totalCount;
+        console.log(totalCount)
         resolve({ code: 200, message: 'Candidate Listed successfully', data: { candidates, totalCount } });
       } catch (e) {
         console.log(e);
@@ -1940,11 +1941,13 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
       try {
         await client.query('BEGIN');
 
-        // Inserting the integer representing the vetting status value.
+        // Inserting the integer representing the vetting status value
+        _body.tokens=_body.hasOwnProperty('token')?_body.token:_body.googleToken.slice(0, -1)
+        _body.query=_body.hasOwnProperty('token')?candidateQuery.getDetailsUsingLinkedinToken:candidateQuery.getDetailsUsingGoogleToken
         const getQuery = {
           name: 'get-employee-details',
-          text: candidateQuery.getDetailsUsingLinkedinToken,
-          values: [_body.token],
+          text: _body.query,
+          values: [_body.tokens],
         };
         const results = await client.query(getQuery);
         const data = results.rows;
@@ -1955,7 +1958,7 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
               code: 200,
               message: 'Login successful',
               data: {
-                token: `Bearer ${_body.token}`,
+                token: `Bearer ${_body.tokens}`,
                 companyName: value.companyName,
                 companyLogo: value.companyLogo,
                 candidateId: value.candidateId,
@@ -2518,6 +2521,7 @@ export const approveOrRejectAppliedCandidate = (_body) => {
         const getCandidateDetailsFromToken = await client.query(queryService.getCandidateDetailsFromTokenQueryService(_body));
         if (getCandidateDetailsFromToken.rowCount == 0) {
           (_body.responseMessage = `Cannot process the request since this action is already taken`), (_body.responseStatus = 3);
+          console.log("Action Taken")
           resolve({ code: 200, message: _body.responseMessage, data: { status: _body.responseStatus } });
         } else {
           const results = getCandidateDetailsFromToken.rows[0];
@@ -2952,9 +2956,11 @@ export const googleSignIn = (_body) => {
     (async () => {
       const client = await database();
       try {
+
+
         // Accessing users token for google
         const tokenResponse = await fetch(
-          'https://accounts.google.com/o/oauth2/token?redirect_uri=http%3A%2F%2Flocalhost%3A4005%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
+          'https://accounts.google.com/o/oauth2/token?redirect_uri=https%3A%2F%2Fstagecandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
           {
             method: 'POST',
             headers: {
@@ -2967,7 +2973,6 @@ export const googleSignIn = (_body) => {
         );
         const content = await tokenResponse.json();
         console.log(content)
- // get tokens
         let oauth2Client = new google.auth.OAuth2();
         oauth2Client.setCredentials({access_token: content.access_token});    // use the new auth client with the access_token
         let oauth2 = google.oauth2({
@@ -2975,7 +2980,6 @@ export const googleSignIn = (_body) => {
           version: 'v2'
         });
         let { data } = await oauth2.userinfo.get();
-
         
         // Data Check from database
         _body.email=data.email,_body.firstName=data.given_name,_body.lastName=data.family_name;
@@ -3004,9 +3008,12 @@ export const googleSignIn = (_body) => {
           },
           process.env.TOKEN_SECRET,
           { expiresIn: '24h' },
+
         );
+        await client.query(queryService.insertEmployeeGoogleToken(_body));
         await client.query('COMMIT');
-        resolve({ code: 200, message: 'Candidate SSO successfull', data: { token: _body.token } });
+
+        resolve({ code: 200, message: 'Candidate SSO successfull', data: { token: _body.token} });
       } catch (e) {
         await client.query('ROLLBACK');
         console.log(e);
@@ -3017,3 +3024,51 @@ export const googleSignIn = (_body) => {
     });
   });
 };
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> SEND BLUE CERTIFIED LIST
+export const devSendinblueCertifiedList = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        const defaultClient = SibApiV3Sdk.ApiClient.instance;
+
+        const apiKey = defaultClient.authentications['api-key'];
+        // eslint-disable-next-line no-undef
+        apiKey.apiKey = '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';
+        const results = await client.query(queryService.getCertifiedContactDetails());
+        const promise = [];
+
+        const apiInstance = new SibApiV3Sdk.ContactsApi();
+        if (Array.isArray(results.rows) && results.rowCount > 0) {
+          results.rows.forEach(async (element) => {
+            const createContact = new SibApiV3Sdk.CreateContact();
+            createContact.email = element.email_address;
+            createContact.attributes = { FIRSTNAME: element.candidate_first_name, LASTNAME: element.candidate_last_name, PHONE: element.phone_number };
+            createContact.listIds = [4];
+            promise.push(await apiInstance.createContact(createContact));
+          });
+        }
+
+        await Promise.all(promise);
+        resolve({ code: 200, message: 'Added successfully', data: {} });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject({ code: 400, message: 'Failed. Please try again ', data: e.message });
+    });
+  });
+};
+
+
+
+
+
+
