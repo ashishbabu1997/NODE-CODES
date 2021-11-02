@@ -2956,7 +2956,7 @@ export const googleSignIn = (_body) => {
 
         // Accessing users token for google
         const tokenResponse = await fetch(
-          'https://accounts.google.com/o/oauth2/token?redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
+          'https://accounts.google.com/o/oauth2/token?redirect_uri=https%3A%2F%2Fstagecandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
           {
             method: 'POST',
             headers: {
