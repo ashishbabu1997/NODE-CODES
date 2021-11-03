@@ -60,5 +60,9 @@ export default {
     },
     "nextLine": "<br>",
     "adminEmail":"jjoseph@ellow.io",
-    "colon":":"
+    "colon":":",
+    "sendinblue":{
+        "allResourcesListId":6,
+        "certifiedListId":4,
+    }
 };

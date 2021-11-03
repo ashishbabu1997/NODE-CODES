@@ -144,7 +144,10 @@ export default {
 
   },
   
-
+  "sendinblue":{
+    "allResourcesListId":6,
+    "certifiedListId":4,
+},
   'jwtSecretKey': 'elL0wA!',
   'countries': [
     {
