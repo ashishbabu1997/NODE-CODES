@@ -3039,7 +3039,7 @@ export const devSendinblueCertifiedList = (_body) => {
 
         const apiKey = defaultClient.authentications['api-key'];
         // eslint-disable-next-line no-undef
-        apiKey.apiKey = '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';
+        apiKey.apiKey = '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';
         const results = await client.query(queryService.getCertifiedContactDetails());
         const promise = [];
 
@@ -3049,7 +3049,7 @@ export const devSendinblueCertifiedList = (_body) => {
             const createContact = new SibApiV3Sdk.CreateContact();
             createContact.email = element.email_address;
             createContact.attributes = { FIRSTNAME: element.candidate_first_name, LASTNAME: element.candidate_last_name, PHONE: element.phone_number };
-            createContact.listIds = [4];
+            createContact.listIds = [17];
             promise.push(await apiInstance.createContact(createContact));
           });
         }
