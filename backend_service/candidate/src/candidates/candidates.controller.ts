@@ -331,11 +331,11 @@ export const googleSignon = (req, res) => {
   const body = req.query;
   candidateManager.googleSignIn(body).then((response: any) => {
     console.log(response.data.token)
-    res.writeHead(301, {Location: 'https://stage.ellow.io/candidate-login?googleToken='+response.data.token});
+    res.writeHead(301, {Location: 'https://apps.ellow.io/candidate-login?googleToken='+response.data.token});
     res.end();
   })
       .catch(() => {
-        res.writeHead(301, {Location: 'https://stage.ellow.io/redirect-notification'});
+        res.writeHead(301, {Location: 'https://apps.ellow.io/redirect-notification'});
         res.end();
       });
 };
