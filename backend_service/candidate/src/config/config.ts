@@ -127,6 +127,18 @@ export default {
       'appPass': 'cvsbksxtrmawcfrv',
       'signature': `Recruitment Specialist ellow.io\nEmail: jithin.s@ellow.io\nMob: +91 8606464037`,
     },
+    'feeba@ellow.io': {
+      'email': 'feeba@ellow.io',
+      'name': 'Feeba Jacob',
+      'appPass': 'idvarezsjgudedqs',
+      'signature': `Recruitment Specialist ellow.io\nEmail: feeba@ellow.io\nMob: +91 9656747427`,
+    },
+    'ejas@ellow.io': {
+      'email': 'ejas@ellow.io',
+      'name': 'Ejas Mohammed',
+      'appPass': 'wvyzdbhxbrqocbex',
+      'signature': `Recruitment Specialist ellow.io\nEmail: ejas@ellow.io\nMob: +91 9496599340`,
+    },
   },
 
   'noreplymail': {
@@ -145,8 +157,8 @@ export default {
   },
   
   "sendinblue":{
-    "allResourcesListId":6,
-    "certifiedListId":4,
+    "allResourcesListId":16,
+    "certifiedListId":17,
 },
   'jwtSecretKey': 'elL0wA!',
   'countries': [
