@@ -185,4 +185,5 @@ export default {
   //Google signin queries
   employeeInsertion: 'insert into employee (firstname,lastname,email,company_id,user_role_id,account_type,status,admin_approve_status) values($1,$2,$3,(select company_id from company where company_type=2),$4,$4,$5,$6) returning employee_id,company_id,user_role_id',
 
+  getCandidate:'select candidate_first_name,candidate_last_name,phone_number,email_address from candidate where candidate_id=$1',
 };

@@ -26,6 +26,7 @@ import * as SibApiV3Sdk from 'sib-api-v3-sdk';
 import { google } from "googleapis";
 import { hasOwnProperty } from 'tslint/lib/utils';
 import { Console } from 'console';
+import * as sendinblueService from '../sendinblueServices/freelancerSendinblueMails'
 
 dotenv.config();
 
@@ -1557,11 +1558,17 @@ export const changeEllowRecruitmentStage = (_body) => {
         if ([undefined, null, ''].includes(_body.assignedTo)) {
           reject({ code: 400, message: 'Candidate must be assigned to an assignee', data: {} });
         } else {
-          _body.vetted = _body.stageName == config.ellowRecruitmentStatus.vettedStage ||  _body.stageName == config.ellowRecruitmentStatus.verifiedStage ? 6 : 1;
+          _body.vetted = (_body.stageName == config.ellowRecruitmentStatus.vettedStage ||  _body.stageName == config.ellowRecruitmentStatus.verifiedStage) ? 6 : 1;
           await client.query(queryService.changeEllowRecruitmentStage(_body));
           await client.query(queryService.updateEllowStageStatus(_body));
           await emailService.changeEllowRecruitmentStageEmail(_body, client);
-
+          if(_body.stageName == config.ellowRecruitmentStatus.vettedStage)
+          {
+            let results=await client.query(queryService.getCandidatesProfile(_body));
+            let data=results.rows[0];
+            _body.firstName=data.candidate_first_name,_body.lastName=data.candidate_last_name,_body.email=data.email_address,_body.telephoneNumber=data.phone_number,_body.listId=config.sendinblue.certifiedListId;
+            sendinblueService.sendinblueAddResources(_body)
+          }
           await client.query('COMMIT');
           resolve({ code: 200, message: 'Moved to stage successfully', data: {} });
         }
