@@ -91,7 +91,7 @@ export const updateContractStartAndEndDate = (_body) => {
   return {
     name: 'update-contract-start-end-date',
     text: candidateQuery.updateCandidateContractStartEndDate,
-    values: [_body.candidateId, _body.positionId, _body.startDate, _body.endDate, _body.contractRate.amount, _body.contractRate.currencyTypeId, _body.contractRate.billingTypeId],
+    values: [_body.candidateId, _body.positionId, _body.startDate, _body.endDate, _body.contractRate.amount, _body.contractRate.currencyTypeId, _body.contractRate.billingTypeId,_body.closedby],
   };
 };
 export const updateEllowRate = (_body) => {
@@ -1158,6 +1158,14 @@ export const updateAssigneeComment = (_body) => {
     name: 'change-candidate-assignee-comment',
     text: candidateQuery.updateAssigneeComments,
     values: [_body.candidateAssessmentId, _body.assigneeComment, currentTime()],
+  };
+};
+
+export const getCandidatesProfile = (_body) => {
+  return {
+    name: 'get-candidate-profile',
+    text: candidateQuery.getCandidate,
+    values: [_body.candidateId],
   };
 };
 

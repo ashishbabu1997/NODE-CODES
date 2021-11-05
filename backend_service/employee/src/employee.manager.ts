@@ -471,6 +471,8 @@ export const createFreelancer = (_body) => {
 
                 path = 'src/emailTemplates/sendLinkText.html';
                 emailClient.emailManagerForTeam(loweremailId, config.text.userSubject, path, freelancerReplacements);
+                _body.listId=config.sendinblue.allResourcesListId
+                sendinblueService.sendinblueAddResources(_body)
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
