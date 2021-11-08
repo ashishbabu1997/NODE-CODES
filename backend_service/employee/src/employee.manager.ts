@@ -473,6 +473,8 @@ export const createFreelancer = (_body) => {
                 emailClient.emailManagerForTeam(loweremailId, config.text.userSubject, path, freelancerReplacements);
                 _body.listId=config.sendinblue.allResourcesListId
                 sendinblueService.sendinblueAddResources(_body)
+                _body.listId=config.sendinblue.signUpListId
+                sendinblueService.sendinblueSignUp(_body)
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {

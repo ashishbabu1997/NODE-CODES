@@ -4,6 +4,7 @@ import config from '../config/config';
 import freelancerQuery from './query/freelancer.query';
 import * as utils from '../utils/utils';
 import * as emailService from '../emailService/freelancerEmail';
+import * as sendinblueService from '../sendinblueServices/freelancerSendinblueMails'
 
 
 export const listJobs = (_body) => {
@@ -72,6 +73,11 @@ export const modifyGeneralInfo = (_body) => {
           _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
           await client.query(queryService.updateProfileReview(_body));
           await client.query(queryService.updateEllowRecruitmentStatus(_body));
+          let results=await client.query(queryService.getCandidatesProfile(_body));
+          let data=results.rows[0];
+          _body.firstName=data.candidate_first_name,_body.lastName=data.candidate_last_name,_body.email=data.email_address,_body.telephoneNumber=data.phone_number,_body.listId=config.sendinblue.certifiedListId;
+          _body.listId=config.sendinblue.signupList
+          sendinblueService.sendinblueDeleteContact(_body)
 
         resolve({code: 200, message: 'Freelancer General info updated successfully', data: {}});
       } catch (e) {

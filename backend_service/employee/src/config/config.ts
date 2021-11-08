@@ -64,5 +64,6 @@ export default {
     "sendinblue":{
         "allResourcesListId":6,
         "certifiedListId":4,
+        "signUpListId":7
     }
 };
