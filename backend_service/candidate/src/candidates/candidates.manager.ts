@@ -155,7 +155,7 @@ export const listIncontractResources = (_body) => {
       try {
         const currentTime = Math.floor(Date.now());
         let incontract = body.tabValue == 'activeIncontract'?true:false;
-        queryText = selectQuery + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
+        queryText = selectQuery + filterQuery + searchQuery + utils.incontractResourceSort(body) + utils.resourcePagination(body);
         queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId, currenttime: currentTime,incontract:incontract }, queryValues);
         const candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
         const queryCountText = totalQuery + filterQuery + searchQuery;

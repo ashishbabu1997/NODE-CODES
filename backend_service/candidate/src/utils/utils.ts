@@ -115,6 +115,37 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
   return { filterQuery, queryValues };
 };
 
+
+export const incontractResourceSort = (body) => {
+  let sort = '';
+  // Sorting keys with values
+  const orderBy = {
+    candidateId: 'chsv."candidateId"',
+    candidateFirstName: 'chsv."candidateFirstName"',
+    candidatelastName: 'chsv."candidateLastName"',
+    companyName: 'chsv."companyName"',
+    updatedOn: 'ccd.contract_end_date',
+    availability: 'chsv."availability"',
+    createdOn: 'chsv."createdOn"',
+    experience: 'chsv."workExperience"',
+    email: 'chsv."email"',
+    ellowRate: 'chsv."ellowRate"',
+    contractRate : 'ccd.contract_rate',
+    contractStartDate : 'ccd.contract_start_date',
+    contractEndDate : 'ccd.contract_end_date'
+
+  };
+  if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+    if (body.sortBy == 'availability') {
+      sort = `  order by availability desc,"readyToStart" ${body.sortType} `;
+    } else if (body.sortBy == 'updatedOn') {
+      sort = `  ORDER BY ${orderBy[body.sortBy]} ${body.sortType},ccd.contract_end_date asc `;
+    } else {
+      sort = `  ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
+    }
+  }
+  return sort;
+};
 export const resourceSort = (body) => {
   let sort = '';
   // Sorting keys with values
