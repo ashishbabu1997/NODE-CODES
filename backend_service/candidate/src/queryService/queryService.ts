@@ -1169,6 +1169,16 @@ export const getCandidatesProfile = (_body) => {
   };
 };
 
+
+export const getStageStatus = (_body) => {
+  return {
+    name: 'get-stage-status',
+    text: candidateQuery.getStageStatusQuery,
+    values: [_body.candidateId,_body.stepId],
+  };
+};
+
+
 // export const rejectFromCandidateEllowRecruitment = (_body) => {
 //   return {
 //     name: 'reject-candidate-ellow-hiring',

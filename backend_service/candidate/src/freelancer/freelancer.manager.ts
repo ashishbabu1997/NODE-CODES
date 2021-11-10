@@ -78,6 +78,8 @@ export const modifyGeneralInfo = (_body) => {
           _body.firstName=data.candidate_first_name,_body.lastName=data.candidate_last_name,_body.email=data.email_address,_body.telephoneNumber=data.phone_number,_body.listId=config.sendinblue.certifiedListId;
           _body.listId=config.sendinblue.signupList
           sendinblueService.sendinblueDeleteContact(_body)
+          _body.listId=config.sendinblue.basicProfileList
+          sendinblueService.sendinblueAddResources(_body)
 
         resolve({code: 200, message: 'Freelancer General info updated successfully', data: {}});
       } catch (e) {
@@ -133,7 +135,20 @@ export const submitFreelancerProfile = (_body) => {
         _body.candidateStatus = config.integerReferences.profileSubmissionStatusValue;
         await client.query('COMMIT');
        _body.currentEllowStage=2,_body.reviewStepsId=6;
-        _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete      
+        _body.ellowRecruitmentStatus=config.ellowRecruitmentStatus.complete
+        let results=await client.query(queryService.getCandidatesProfile(_body));
+        let data=results.rows[0];
+        _body.firstName=data.candidate_first_name,_body.lastName=data.candidate_last_name,_body.email=data.email_address,_body.telephoneNumber=data.phone_number,_body.listId=config.sendinblue.certifiedListId;
+        _body.listId=config.sendinblue.basicProfileList
+        sendinblueService.sendinblueDeleteContact(_body)
+        _body.stepId=2
+        let stageStatusResult=await client.query(queryService.getStageStatus(_body));
+        if (stageStatusResult.rows[0].stage_status==2)
+        {
+              _body.listId=config.sendinblue.fullProfileList
+              sendinblueService.sendinblueDeleteContact(_body)
+        }
+     
         await client.query(queryService.updateProfileReview(_body));
         await client.query(queryService.updateEllowRecruitmentStatus(_body));
         await emailService.submitFreelancerProfileEmail(_body, client);

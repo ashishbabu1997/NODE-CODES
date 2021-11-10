@@ -1562,11 +1562,24 @@ export const changeEllowRecruitmentStage = (_body) => {
           await client.query(queryService.changeEllowRecruitmentStage(_body));
           await client.query(queryService.updateEllowStageStatus(_body));
           await emailService.changeEllowRecruitmentStageEmail(_body, client);
+          let results=await client.query(queryService.getCandidatesProfile(_body));
+          let data=results.rows[0];
+          _body.firstName=data.candidate_first_name,_body.lastName=data.candidate_last_name,_body.email=data.email_address,_body.telephoneNumber=data.phone_number;
+          if(_body.stageName==config.ellowRecruitmentStatus.TechnicalAssessmentStage)
+          {
+            _body.stepId=6
+            let stageStatusResult=await client.query(queryService.getStageStatus(_body));
+            if (stageStatusResult.rows[0].stage_status==null)
+            {
+              _body.listId=config.sendinblue.fullProfileList
+              sendinblueService.sendinblueAddResources(_body)
+
+            }
+
+          }
           if(_body.stageName == config.ellowRecruitmentStatus.vettedStage)
           {
-            let results=await client.query(queryService.getCandidatesProfile(_body));
-            let data=results.rows[0];
-            _body.firstName=data.candidate_first_name,_body.lastName=data.candidate_last_name,_body.email=data.email_address,_body.telephoneNumber=data.phone_number,_body.listId=config.sendinblue.certifiedListId;
+            _body.listId=config.sendinblue.certifiedListId
             sendinblueService.sendinblueAddResources(_body)
           }
           await client.query('COMMIT');

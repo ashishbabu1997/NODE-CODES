@@ -14,7 +14,8 @@ export default {
       'partial':'PARTIALLY_COMPLETED',
       'complete':'COMPLETED',
       'verifiedStage':'ellow Screening',
-      'vettedStage':'Certification'
+      'vettedStage':'Certification',
+      'TechnicalAssessmentStage':'ellow Technical Assessment'
   },
   'text': {
 
@@ -159,7 +160,9 @@ export default {
   "sendinblue":{
     "allResourcesListId":6,
     "certifiedListId":4,
-    "signupList":7
+    "signupList":7,
+    "basicProfileList":10,
+    "fullProfileList":11
 },
   'jwtSecretKey': 'elL0wA!',
   'countries': [

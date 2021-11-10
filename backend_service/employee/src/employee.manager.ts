@@ -159,7 +159,9 @@ export const createEmployee = (_body) => {
                 else {
                     console.log("Waiting for admin approval")
                 }
-
+                _body.body.listId=_body.body.accountType==1?config.sendinblue.hirerListId:config.sendinblue.providerListId
+                var list=_body.body;
+                sendinblueService.sendinblueAddResources(list)
 
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
