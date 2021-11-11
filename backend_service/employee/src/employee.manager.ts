@@ -389,13 +389,14 @@ export const checkCompanyByWorkMail = (_body) => {
 // >>>>>>>>>>>>>>>>>>Registration of a freelance employee,email verification
 export const createFreelancer = (_body) => {
     return new Promise((resolve, reject) => {
-        const loweremailId = _body.email.toLowerCase();
+        const loweremailId = _body.email.toLowerCase().trim();
 
         (async () => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                // Check if Email already exist reject in case exists        
+                // Check if Email already exist reject in case exists
+                   
                 const getEmailQuery = {
                     name: 'get-email',
                     text: employeeQuery.getEmail,
@@ -420,7 +421,14 @@ export const createFreelancer = (_body) => {
                 }
 
                 // If email does not exist allow registration
-
+                if (_body.token)
+                {
+                    var referralResults=await client.query(queryService.getDetailsFromReferralToken(_body));
+                    if(referralResults.rowCount!=0)
+                    {
+                        await client.query(queryService.updateCandidateReferralStatus(_body));
+                    }
+                }  
                 let uniqueId = nanoid();
                 const createFreelancerQuery = {
                     name: 'createEmployee',
