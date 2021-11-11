@@ -3088,6 +3088,49 @@ export const devSendinblueCertifiedList = (_body) => {
 };
 
 
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Function to add referrals by candidate
+export const addReferral = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var candidateResult = await client.query(queryService.getCandidateIdFromEmployeeId(_body));
+        _body.candidateId = candidateResult.rows[0].candidate_id;
+        _body.referralList=[]
+        _body.nonReferralList=[]
+        // Verifying and Saving candidate's details
+        _body.candidateList.forEach(async (element) => {
+              element.emailAddress=element.emailAddress.trim()
+              var results=await client.query(queryService.getReferalDetailsFromEmail(_body));
+              if (results.rowCount==0)
+              {
+                element.token= nanoid(),element.candidateId=_body.candidateId,element.candidateName=candidateResult.rows[0].name,element.candidateEmail=candidateResult.rows[0].email,element.name=`${element.candidateFirstName}+' '+${element.candidateLastName}`;
+                var referralesult=await client.query(queryService.candidateReferralInsertion(element));
+                await emailService.referralCandidateWelcomeMail(_body, client);
+                await emailService.referalCandidateThanksMail(_body, client);
+                _body.referralList.push({'referralId':referralesult.rows[0].candidate_referral_id,'name':element.name,'emailAddress':element.emailAddress,'phoneNumber':element.phoneNumber})
+              }
+              else
+              {
+                _body.nonReferralList.push({'name':element.name,'emailAddress':element.emailAddress,'phoneNumber':element.phoneNumber})
+              }
+
+        });
+        await client.query('COMMIT');
+        resolve({ code: 200, message: 'Candidate Assesment Updated successfully', data: { referredList:_body.referralList,nonReferredList:_body.nonReferralList} });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
 
 
 

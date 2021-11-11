@@ -80,6 +80,9 @@ router
     .post('/addTestLink', candidateController.addTestLinkController)
     .get('/getEllowStages', jwtAuth, setData(),candidateController.getFreelancerEllowStages)
     .get('/googleSign', candidateController.googleSignon)
+    .post('/addReferral', jwtAuth, setData(),candidateController.addReferralController)
+
+
 
 
 

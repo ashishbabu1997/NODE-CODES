@@ -612,3 +612,44 @@ export const rejectCandidateMail = async (_body, client) => {
     throw new Error('Failed to send mail');
   }
 };
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Welcome mail for refered candidate
+export const referralCandidateWelcomeMail = async (_body, client) => {
+  try {
+    const subject = 'ellow.io Referral email';
+    const replacements = {
+      name: _body.candidateName,
+      link:`https://dev.ellow.io/candidate_signup?email=${_body.emailAddress}&token=${_body.token}`
+    };
+
+    if (utils.notNull(_body.emailAddress)) {
+      emailClient.emailManagerForNoReply(_body.emailAddress, subject, constants.emailPath.REFERRAL_WELCOME_MAIL, replacements);
+    }
+  } catch (e) {
+    console.log('error : ', e.message);
+    throw new Error('Failed to send mail');
+  }
+};
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Thanks giving mail for refered candidate
+export const referalCandidateThanksMail = async (_body, client) => {
+  try {
+    const subject = 'ellow Thank you Note';
+    const replacements = {
+      name: _body.name,
+    };
+
+    if (utils.notNull(_body.emailAddress)) {
+      emailClient.emailManagerForNoReply(_body.emailAddress, subject, constants.emailPath.REFERRAL_THANKS_MAIL, replacements);
+    }
+  } catch (e) {
+    console.log('error : ', e.message);
+    throw new Error('Failed to send mail');
+  }
+};

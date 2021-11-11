@@ -147,6 +147,21 @@ export const getCandidateIdFromEmployeeId = (_body) => {
     values: [_body.employeeId],
   };
 };
+export const getReferalDetailsFromEmail = (_body) => {
+  return {
+    name: 'get-referral-details',
+    text: candidateQuery.getReferralDetailsQuery,
+    values: [_body.emailAddress],
+  };
+};
+
+export const candidateReferralInsertion = (_body) => {
+  return {
+    name: 'insert-into-referral',
+    text: candidateQuery.insertIntoCandidateReferral,
+    values: [_body.candidate_id,_body.emailAddress,_body.telephoneNumber,currentTime(),_body.employeeId,_body.token],
+  };
+};
 export const addCandidateEmployee = (_body) => {
   return {
     name: 'add-candidate-employee',
