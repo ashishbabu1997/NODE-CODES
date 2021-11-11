@@ -81,6 +81,13 @@ router
     .get('/getEllowStages', jwtAuth, setData(),candidateController.getFreelancerEllowStages)
     .get('/googleSign', candidateController.googleSignon)
     .post('/addReferral', jwtAuth, setData(),candidateController.addReferralController)
+    .post('/checkReferralMail', jwtAuth, setData(),candidateController.checkReferralMailController)
+    .get('/candidateReferralList', jwtAuth, setData(),candidateController.candidateReferralListController)
+
+    
+
+    
+    
 
 
 

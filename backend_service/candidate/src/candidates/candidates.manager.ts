@@ -3119,7 +3119,7 @@ export const addReferral = (_body) => {
 
         });
         await client.query('COMMIT');
-        resolve({ code: 200, message: 'Candidate Assesment Updated successfully', data: { referredList:_body.referralList,nonReferredList:_body.nonReferralList} });
+        resolve({ code: 200, message: 'Referral Added successfully', data: { referredList:_body.referralList,nonReferredList:_body.nonReferralList} });
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
@@ -3135,3 +3135,60 @@ export const addReferral = (_body) => {
 
 
 
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Function to check referral mails by candidate
+export const checkReferralMail = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        // Verifying and Saving candidate's details
+        var results=await client.query(queryService.getReferalDetailsFromEmail(_body));
+        if (results.rowCount==0)
+        {
+          resolve({ code: 200, message: 'Success', data:'Success' });
+
+        }
+        else
+        {
+          reject({ code: 400, message: 'Failed ', data: 'Success' });
+        }
+        await client.query('COMMIT');
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Candidate Referral List
+export const candidateReferralList = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var candidateResult = await client.query(queryService.getCandidateIdFromEmployeeId(_body));
+        _body.candidateId = candidateResult.rows[0].candidate_id;
+        var referralList = await client.query(queryService.getCandidateReferalList(_body));
+        await client.query('COMMIT');
+        resolve({ code: 200, message: 'Referral Added successfully', data:{referralList:referralList.rows} });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};

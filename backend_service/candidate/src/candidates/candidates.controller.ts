@@ -517,3 +517,13 @@ export const addReferralController = (req, res) => {
   candidateManager.addReferral(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
       .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
 };
+export const checkReferralMailController = (req, res) => {
+  const body = req.body;
+  candidateManager.checkReferralMail(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+      .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};
+export const candidateReferralListController = (req, res) => {
+  const body = req.body;
+  candidateManager.candidateReferralList(body).then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+      .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};
