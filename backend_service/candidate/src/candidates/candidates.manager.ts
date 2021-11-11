@@ -3106,7 +3106,7 @@ export const addReferral = (_body) => {
               var results=await client.query(queryService.getReferalDetailsFromEmail(_body));
               if (results.rowCount==0)
               {
-                element.token= nanoid(),element.candidateId=_body.candidateId,element.candidateName=candidateResult.rows[0].name,element.candidateEmail=candidateResult.rows[0].email,element.name=`${element.candidateFirstName}+' '+${element.candidateLastName}`;
+                element.token= nanoid(),element.candidateId=_body.candidateId,element.candidateName=candidateResult.rows[0].name,element.candidateEmail=candidateResult.rows[0].email;
                 var referralesult=await client.query(queryService.candidateReferralInsertion(element));
                 await emailService.referralCandidateWelcomeMail(_body, client);
                 await emailService.referalCandidateThanksMail(_body, client);
