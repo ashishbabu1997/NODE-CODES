@@ -1204,6 +1204,13 @@ export const listCandidates = (queryText, queryValues) => {
   };
 };
 
+export const getCandidatesProfile = (_body) => {
+  return {
+    name: 'get-candidate-profile',
+    text: candidateQuery.getCandidate,
+    values: [_body.candidateId],
+  };
+};
 export const listCandidatesTotal = (queryText, queryValues) => {
   return {
     name: 'get-free-candidates-total',
