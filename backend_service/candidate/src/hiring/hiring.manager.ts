@@ -4,7 +4,7 @@ import hiringQuery from './query/hiring.query';
 import * as emailClient from '../emailManager/emailManager';
 import { createNotification } from '../common/notifications/notifications';
 import config from '../config/config';
-import * as utils from '../utils/utils'
+import * as utils from '../utils/utils';
 
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for listing all position hiring steps
@@ -60,7 +60,7 @@ export const getAllCandidateHiringSteps = (_body) => {
     (async () => {
       const client = await database().connect();
       try {
-        if (['1', '3', '4','1000'].includes(_body.userRoleId)) {
+        if (['1', '3', '4', '1000'].includes(_body.userRoleId)) {
           if (_body.userRoleId == 4) {
             var candidateResult = await client.query(queryService.getCandidateIdFromEmployeeId(_body));
             _body.candidateId = candidateResult.rows[0].candidate_id;
@@ -108,7 +108,7 @@ export const getDefaultHiringSteps = (_body) => {
 
 // >>>>>>> FUNC. >>>>>>>
 // />>>>>>>> FUnction for updating hiring step details for an applied candidate
-export const   updateHiringStepDetails = (_body) => {
+export const updateHiringStepDetails = (_body) => {
   return new Promise((resolve, reject) => {
     (async () => {
       const client = await database();
@@ -127,10 +127,8 @@ export const   updateHiringStepDetails = (_body) => {
 
           if (candidateClientHiringStepName == 'Negotiation/Close position') {
             await client.query(queryService.updateMakeOfferValue(_body));
-            if (['', undefined, null].includes(_body.hiringAssesmentValue) )
-            {
+            if (['', undefined, null].includes(_body.hiringAssesmentValue)) {
               reject({ code: 400, message: 'Please select a dropdown value', data: {} });
-
             }
             if (_body.hiringAssesmentValue == 0) {
               const message = `${imageResults.rows[0].candidate_first_name + ' ' + imageResults.rows[0].candidate_last_name} has accepted the offer by ${positions.rows[0].company_name}`;

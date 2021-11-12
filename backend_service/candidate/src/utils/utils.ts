@@ -115,7 +115,6 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
   return { filterQuery, queryValues };
 };
 
-
 export const incontractResourceSort = (body) => {
   let sort = '';
   // Sorting keys with values
@@ -130,10 +129,9 @@ export const incontractResourceSort = (body) => {
     experience: 'chsv."workExperience"',
     email: 'chsv."email"',
     ellowRate: 'chsv."ellowRate"',
-    contractRate : 'ccd.contract_rate',
-    contractStartDate : 'ccd.contract_start_date',
-    contractEndDate : 'ccd.contract_end_date'
-
+    contractRate: 'ccd.contract_rate',
+    contractStartDate: 'ccd.contract_start_date',
+    contractEndDate: 'ccd.contract_end_date',
   };
   if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
     if (body.sortBy == 'availability') {
@@ -160,10 +158,9 @@ export const resourceSort = (body) => {
     experience: 'chsv."workExperience"',
     email: 'chsv."email"',
     ellowRate: 'chsv."ellowRate"',
-    contractRate : 'ccd.contract_rate',
-    contractStartDate : 'ccd.contract_start_date',
-    contractEndDate : 'ccd.contract_end_date'
-
+    contractRate: 'ccd.contract_rate',
+    contractStartDate: 'ccd.contract_start_date',
+    contractEndDate: 'ccd.contract_end_date',
   };
   if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
     if (body.sortBy == 'availability') {
@@ -251,7 +248,6 @@ export const resourceTab = (body) => {
 
   return query;
 };
-
 
 export const resourceHirerTab = (body) => {
   let query = '';

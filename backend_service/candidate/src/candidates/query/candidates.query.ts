@@ -1,5 +1,6 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable max-len */
+/* prettier-ignore */
 
 export default {
   deleteCandidateSkills : 'delete from candidate_skill WHERE candidate_id = $1 AND status = true AND skill_id <> ALL ($2)',

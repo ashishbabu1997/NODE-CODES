@@ -2793,8 +2793,6 @@
  *         description: Server down
  */
 
-
-
 /**
  * @swagger
  * /candidates/addReferral:
@@ -2838,7 +2836,6 @@
  *         description: Server down
  */
 
-
 /**
  * @swagger
  * /candidates/checkReferralMail:
@@ -2876,7 +2873,6 @@
  *         description: Server down
  */
 
-
 /**
  * @swagger
  * /candidates/candidateReferralList:
@@ -2903,9 +2899,6 @@
  *       500:
  *         description: Server down
  */
-
-
-
 
 /**
  * @swagger
