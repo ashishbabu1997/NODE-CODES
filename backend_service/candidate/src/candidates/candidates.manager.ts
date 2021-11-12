@@ -3103,13 +3103,14 @@ export const addReferral = (_body) => {
         // Verifying and Saving candidate's details
         _body.candidateList.forEach(async (element) => {
               element.emailAddress=element.emailAddress.trim()
-              var results=await client.query(queryService.getReferalDetailsFromEmail(_body));
+              var results= await client.query(queryService.getReferalDetailsFromEmail(_body));
               if (results.rowCount==0)
               {
                 element.token= nanoid(),element.candidateId=_body.candidateId,element.candidateName=candidateResult.rows[0].name,element.candidateEmail=candidateResult.rows[0].email;
                 var referralesult=await client.query(queryService.candidateReferralInsertion(element));
-                await emailService.referralCandidateWelcomeMail(_body, client);
-                await emailService.referalCandidateThanksMail(_body, client);
+                await client.query('COMMIT');
+                await emailService.referralCandidateWelcomeMail(element);
+                await emailService.referalCandidateThanksMail(element);
                 _body.referralList.push({'referralId':referralesult.rows[0].candidate_referral_id,'name':element.name,'emailAddress':element.emailAddress,'phoneNumber':element.phoneNumber})
               }
               else
@@ -3182,6 +3183,38 @@ export const candidateReferralList = (_body) => {
         var referralList = await client.query(queryService.getCandidateReferalList(_body));
         await client.query('COMMIT');
         resolve({ code: 200, message: 'Referral Added successfully', data:{referralList:referralList.rows} });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Candidate Referral List
+export const getEmailAddressFromReferralToken = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var result = await client.query(queryService.getEmailFromReferralToken(_body));
+        if (result.rowCount==0)
+        {
+          reject({ code: 400, message: 'Email Address not found ', data: 'No Email Address Found' });
+
+        }
+        else
+        {
+          resolve({ code: 200, message: 'Referral Added successfully', data:result.rows[0].email_address });
+        }
+        await client.query('COMMIT');
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');

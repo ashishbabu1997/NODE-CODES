@@ -618,16 +618,18 @@ export const rejectCandidateMail = async (_body, client) => {
 
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>> Welcome mail for refered candidate
-export const referralCandidateWelcomeMail = async (_body, client) => {
+export const referralCandidateWelcomeMail = async (_body) => {
   try {
     const subject = 'ellow.io Referral email';
     const replacements = {
       name: _body.candidateName,
-      link:`https://dev.ellow.io/candidate_signup?email=${_body.emailAddress}&token=${_body.token}`
+      link:`https://dev.ellow.io/candidate_signup?token=${_body.token}`
     };
 
     if (utils.notNull(_body.emailAddress)) {
       emailClient.emailManagerForNoReply(_body.emailAddress, subject, constants.emailPath.REFERRAL_WELCOME_MAIL, replacements);
+      console.log("3")
+
     }
   } catch (e) {
     console.log('error : ', e.message);
@@ -638,7 +640,7 @@ export const referralCandidateWelcomeMail = async (_body, client) => {
 
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>> Thanks giving mail for refered candidate
-export const referalCandidateThanksMail = async (_body, client) => {
+export const referalCandidateThanksMail = async (_body) => {
   try {
     const subject = 'ellow Thank you Note';
     const replacements = {
