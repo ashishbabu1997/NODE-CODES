@@ -27,6 +27,7 @@ import { google } from 'googleapis';
 import { hasOwnProperty } from 'tslint/lib/utils';
 import { Console } from 'console';
 import * as sendinblueService from '../sendinblueServices/freelancerSendinblueMails';
+import { Exception } from 'handlebars';
 
 dotenv.config();
 
@@ -1668,7 +1669,6 @@ export const listHirerResources = (_body) => {
         queryValues = Object.assign({ hirercompanyid: Number(_body.body.companyId) }, queryValues);
 
         const candidatesResult = await client.query(queryService.listCandidatesOfHirer(queryText, queryValues));
-        console.log(candidatesResult.rows);
         const totalCount = await client.query(queryService.listCandidatesOfHirerCount(queryCountText, queryValues));
         resolve({ code: 200, message: 'Candidate Listed successfully', data: { candidates: candidatesResult.rows, totalCount: totalCount.rows[0].totalCount } });
       } catch (e) {
@@ -3148,16 +3148,34 @@ export const candidateReferralList = (_body) => {
         await client.query('BEGIN');
         var candidateResult = await client.query(queryService.getCandidateIdFromEmployeeId(_body));
         _body.candidateId = candidateResult.rows[0].candidate_id;
-        var referralList = await client.query(queryService.getCandidateReferalList(_body));
+        const selectQuery = candidateQuery.candidateReferralList;
+        const totalQuery = candidateQuery.candidateReferralListTotalCount;
+
+        let queryText = '';
+        let searchQuery = '';
+        let queryValues = {};
+
+        const searchResult = utils.referralSearch(_body, queryValues);
+        searchQuery = searchResult.searchQuery;
+        queryValues = searchResult.queryValues;
+
+        queryText = selectQuery + searchQuery + utils.referralSort(_body) + utils.resourcePagination(_body);
+        queryValues = Object.assign({ candidateid: _body.candidateId }, queryValues);
+
+        const queryCountText = totalQuery + searchQuery;
+
+        var referralList = await client.query(queryService.getCandidateReferalList(queryText,queryValues));
+        const totalCount = await client.query(queryService.getCandidateReferalList(queryCountText, queryValues));
+
         await client.query('COMMIT');
-        resolve({ code: 200, message: 'Referral Added successfully', data: { referralList: referralList.rows } });
+        resolve({ code: 200, message: 'Referral Added successfully', data: { referralList: referralList.rows, totalCount: totalCount.rows[0].totalCount } });
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
-        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+        reject(new Exception({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
       }
     })().catch((e) => {
-      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      reject(new Exception({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
     });
   });
 };

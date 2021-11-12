@@ -156,13 +156,14 @@ export const getEmailFromReferralToken = (_body) => {
   };
 };
 
-export const getCandidateReferalList = (_body) => {
+export const getCandidateReferalList = (queryText,queryValues) => {
   return {
     name: 'get-candidate-referral',
-    text: candidateQuery.candidateReferralList,
-    values: [_body.candidateId],
+    text: queryText,
+    values: queryValues,
   };
 };
+
 export const getReferalDetailsFromEmail = (_body) => {
   return {
     name: 'get-referral-details',
