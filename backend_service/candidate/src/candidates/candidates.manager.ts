@@ -3197,7 +3197,7 @@ export const candidateReferralList = (_body) => {
 
 
 // >>>>>>> FUNC. >>>>>>>
-// >>>>>>>>>>>>>> Candidate Referral List
+// >>>>>>>>>>>>>> Get Email Address from Token
 export const getEmailAddressFromReferralToken = (_body) => {
   return new Promise((resolve, reject) => {
     (async () => {
@@ -3212,7 +3212,7 @@ export const getEmailAddressFromReferralToken = (_body) => {
         }
         else
         {
-          resolve({ code: 200, message: 'Referral Added successfully', data:result.rows[0].email_address });
+          resolve({ code: 200, message: 'Referral Added successfully', data:{email: result.rows[0].email_address, firstName: "", lastName: "", telephoneNumber: ""} });
         }
         await client.query('COMMIT');
       } catch (e) {
