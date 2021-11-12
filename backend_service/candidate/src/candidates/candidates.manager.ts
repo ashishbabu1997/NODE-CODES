@@ -3165,7 +3165,7 @@ export const candidateReferralList = (_body) => {
         const queryCountText = totalQuery + searchQuery;
 
         var referralList = await client.query(queryService.getCandidateReferalList(queryText,queryValues));
-        const totalCount = await client.query(queryService.getCandidateReferalList(queryCountText, queryValues));
+        const totalCount = await client.query(queryService.getCandidateReferalListTotalCount(queryCountText, queryValues));
 
         await client.query('COMMIT');
         resolve({ code: 200, message: 'Referral Added successfully', data: { referralList: referralList.rows, totalCount: totalCount.rows[0].totalCount } });
