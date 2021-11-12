@@ -75,7 +75,7 @@ export const updateEmployee = (_body) => {
     return {
         name: 'update-employee-details',
         text: employeeQuery.updateEmployee,
-        values: [_body.empId, _body.firstName, _body.lastName, _body.roleId, _body.phoneNumber,currentTime(),_body.employeeId]
+        values: [_body.empId, _body.firstName, _body.lastName, _body.roleId, _body.phoneNumber,currentTime(),_body.employeeId,_body.email]
     }
 }
 

@@ -88,10 +88,37 @@ export const createEmployee = (_body) => {
 export const updateUser = (_body) => {
     return new Promise((resolve, reject) => {
         (async () => {
-            const client = await database().connect()
+            const client = await database();
+            let message='';
             try {
                 await client.query('BEGIN');
-                await client.query(queryService.updateEmployee(_body));
+                const getEmailResult = await client.query(queryService.checkEmailExistance(_body.email));
+                    
+                if (getEmailResult.rowCount >= 1) {
+                            var adminStatus = getEmailResult.rows[0].admin_approve_status
+                            message = adminStatus === null ? "EmailId is held for approval of Ellow recruiter"
+                            : adminStatus == 1 ? "Email already registered"
+                                : "This account is rejected by Ellow";
+
+                reject({ code: 400, statusCode: 406, message: message, data: {} });
+            
+                }
+                else{
+                    _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
+                    var companyResults=await client.query(queryService.getProfile(_body));
+                    var companyDomain=companyResults.rows[0].domain
+                    _body.accType=companyResults.rows[0].account_type;
+                    _body.urId=companyResults.rows[0].user_role_id;
+                    if(utils.domainExtractor(_body.email) == companyDomain)
+                    {
+                        await client.query(queryService.updateEmployee(_body));
+
+                    }
+                    else{
+                        reject({ code: 400, message: "Email address does'nt belong to your company domain.", data: {} });
+
+                    }
+                }
 
                 await client.query('COMMIT');
                 resolve({ code: 200, message: "Employee details updated successfully", data: {} });
