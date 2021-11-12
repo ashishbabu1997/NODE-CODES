@@ -164,6 +164,14 @@ export const getCandidateReferalList = (queryText,queryValues) => {
   };
 };
 
+export const getCandidateReferalListTotalCount = (queryText,queryValues) => {
+  return {
+    name: 'get-candidate-referral-total-count',
+    text: queryText,
+    values: queryValues,
+  };
+};
+
 export const getReferalDetailsFromEmail = (_body) => {
   return {
     name: 'get-referral-details',
