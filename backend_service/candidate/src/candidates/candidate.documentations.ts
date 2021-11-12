@@ -2793,8 +2793,6 @@
  *         description: Server down
  */
 
-
-
 /**
  * @swagger
  * /candidates/addReferral:
@@ -2838,7 +2836,6 @@
  *         description: Server down
  */
 
-
 /**
  * @swagger
  * /candidates/checkReferralMail:
@@ -2876,7 +2873,6 @@
  *         description: Server down
  */
 
-
 /**
  * @swagger
  * /candidates/candidateReferralList:
@@ -2891,6 +2887,32 @@
  *       - application/json
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *         type: string
+ *         enum: [name,email,createdOn]
+ *       - in: query
+ *         name: sortType
+ *         schema:
+ *         type: string
+ *         enum: [asc,desc]
+ *         example: asc
+ *       - in: query
+ *         name: searchKey
+ *         schema:
+ *         type: string
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *         type: integer
+ *         enum: [10,20,50,100]
+ *       - in: query
+ *         name: pageNumber
+ *         schema:
+ *         type: integer
+ *         enum: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
  *     responses:
  *       200:
  *         description: Api success
@@ -2903,9 +2925,6 @@
  *       500:
  *         description: Server down
  */
-
-
-
 
 /**
  * @swagger

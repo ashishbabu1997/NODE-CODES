@@ -91,7 +91,7 @@ export const updateContractStartAndEndDate = (_body) => {
   return {
     name: 'update-contract-start-end-date',
     text: candidateQuery.updateCandidateContractStartEndDate,
-    values: [_body.candidateId, _body.positionId, _body.startDate, _body.endDate, _body.contractRate.amount, _body.contractRate.currencyTypeId, _body.contractRate.billingTypeId,_body.closedby],
+    values: [_body.candidateId, _body.positionId, _body.startDate, _body.endDate, _body.contractRate.amount, _body.contractRate.currencyTypeId, _body.contractRate.billingTypeId, _body.closedby],
   };
 };
 export const updateEllowRate = (_body) => {
@@ -156,13 +156,14 @@ export const getEmailFromReferralToken = (_body) => {
   };
 };
 
-export const getCandidateReferalList = (_body) => {
+export const getCandidateReferalList = (queryText,queryValues) => {
   return {
     name: 'get-candidate-referral',
-    text: candidateQuery.candidateReferralList,
-    values: [_body.candidateId],
+    text: queryText,
+    values: queryValues,
   };
 };
+
 export const getReferalDetailsFromEmail = (_body) => {
   return {
     name: 'get-referral-details',
@@ -175,7 +176,7 @@ export const candidateReferralInsertion = (_body) => {
   return {
     name: 'insert-into-referral',
     text: candidateQuery.insertIntoCandidateReferral,
-    values: [_body.candidateId,_body.emailAddress,_body.phoneNumber,null,currentTime(),_body.employeeId,_body.token,_body.name],
+    values: [_body.candidateId, _body.emailAddress, _body.phoneNumber, null, currentTime(), _body.employeeId, _body.token, _body.name],
   };
 };
 export const addCandidateEmployee = (_body) => {
@@ -860,7 +861,6 @@ export const insertLinkedinToEmployee = (_body) => {
   };
 };
 
-
 export const googleSSOEmployeeInsertion = (_body) => {
   return {
     name: 'insert-into-employee',
@@ -1200,15 +1200,13 @@ export const getCandidatesProfile = (_body) => {
   };
 };
 
-
 export const getStageStatus = (_body) => {
   return {
     name: 'get-stage-status',
     text: candidateQuery.getStageStatusQuery,
-    values: [_body.candidateId,_body.stepId],
+    values: [_body.candidateId, _body.stepId],
   };
 };
-
 
 // export const rejectFromCandidateEllowRecruitment = (_body) => {
 //   return {

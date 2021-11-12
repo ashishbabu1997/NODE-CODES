@@ -115,7 +115,6 @@ export const resourceFilter = (filter, filterQuery, queryValues) => {
   return { filterQuery, queryValues };
 };
 
-
 export const incontractResourceSort = (body) => {
   let sort = '';
   // Sorting keys with values
@@ -130,10 +129,9 @@ export const incontractResourceSort = (body) => {
     experience: 'chsv."workExperience"',
     email: 'chsv."email"',
     ellowRate: 'chsv."ellowRate"',
-    contractRate : 'ccd.contract_rate',
-    contractStartDate : 'ccd.contract_start_date',
-    contractEndDate : 'ccd.contract_end_date'
-
+    contractRate: 'ccd.contract_rate',
+    contractStartDate: 'ccd.contract_start_date',
+    contractEndDate: 'ccd.contract_end_date',
   };
   if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
     if (body.sortBy == 'availability') {
@@ -160,10 +158,9 @@ export const resourceSort = (body) => {
     experience: 'chsv."workExperience"',
     email: 'chsv."email"',
     ellowRate: 'chsv."ellowRate"',
-    contractRate : 'ccd.contract_rate',
-    contractStartDate : 'ccd.contract_start_date',
-    contractEndDate : 'ccd.contract_end_date'
-
+    contractRate: 'ccd.contract_rate',
+    contractStartDate: 'ccd.contract_start_date',
+    contractEndDate: 'ccd.contract_end_date',
   };
   if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
     if (body.sortBy == 'availability') {
@@ -194,6 +191,34 @@ export const resourceSearch = (body, queryValues) => {
     searchKey = '%' + body.searchKey + '%';
     searchQuery =
       ' AND (chsv."candidateFirstName" ILIKE $searchkey OR chsv."candidateLastName" ILIKE $searchkey OR chsv."candidatePositionName" ILIKE $searchkey OR chsv."companyName" ILIKE $searchkey OR  chsv."email" ILIKE $searchkey  OR chsv."phoneNumber" ILIKE $searchkey) ';
+    queryValues = Object.assign({ searchkey: searchKey }, queryValues);
+  }
+
+  return { searchQuery, queryValues };
+};
+
+export const referralSort = (body) => {
+  let sort = '';
+  // Sorting keys with values
+  const orderBy = {
+    name: 'name',
+    emailAddress: 'email_address',
+    createdOn: 'created_on'
+  };
+  if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
+      sort = `  ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
+    }
+  return sort;
+};
+
+export const referralSearch = (body, queryValues) => {
+  let searchKey = '%%';
+  let searchQuery = '';
+
+  if (![undefined, null, ''].includes(body.searchKey)) {
+    searchKey = '%' + body.searchKey + '%';
+    searchQuery =
+      ' AND (name ILIKE $searchkey OR email_address ILIKE $searchkey)';
     queryValues = Object.assign({ searchkey: searchKey }, queryValues);
   }
 
@@ -251,7 +276,6 @@ export const resourceTab = (body) => {
 
   return query;
 };
-
 
 export const resourceHirerTab = (body) => {
   let query = '';

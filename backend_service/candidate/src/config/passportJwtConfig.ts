@@ -1,5 +1,5 @@
 import * as passport from 'passport';
-import {Strategy, ExtractJwt, StrategyOptions} from 'passport-jwt';
+import { Strategy, ExtractJwt, StrategyOptions } from 'passport-jwt';
 import jwtConfig from './config';
 
 const dotenv = require('dotenv');
@@ -11,7 +11,9 @@ const opts: StrategyOptions = {
 };
 
 export default () => {
-  passport.use(new Strategy(opts, (jwt_payload, done) => {
-    return done(null, jwt_payload);
-  }));
+  passport.use(
+    new Strategy(opts, (jwt_payload, done) => {
+      return done(null, jwt_payload);
+    }),
+  );
 };
