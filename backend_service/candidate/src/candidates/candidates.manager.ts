@@ -3216,8 +3216,6 @@ export const candidateAdminReferralList = (_body) => {
       const client = await database();
       try {
         await client.query('BEGIN');
-        var candidateResult = await client.query(queryService.getCandidateIdFromEmployeeId(_body));
-        _body.candidateId = candidateResult.rows[0].candidate_id;
         const selectQuery = candidateQuery.candidateAdminReferralList;
         const totalQuery = candidateQuery.candidateAdminReferralListTotalCount;
 
