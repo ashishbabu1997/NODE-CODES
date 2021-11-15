@@ -3205,3 +3205,47 @@ export const getEmailAddressFromReferralToken = (_body) => {
     });
   });
 };
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Candidate Referral List
+export const candidateAdminReferralList = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var candidateResult = await client.query(queryService.getCandidateIdFromEmployeeId(_body));
+        _body.candidateId = candidateResult.rows[0].candidate_id;
+        const selectQuery = candidateQuery.candidateAdminReferralList;
+        const totalQuery = candidateQuery.candidateAdminReferralListTotalCount;
+
+        let queryText = '';
+        let searchQuery = '';
+        let queryValues = {};
+
+        const searchResult = utils.referralSearch(_body, queryValues);
+        searchQuery = searchResult.searchQuery;
+        queryValues = searchResult.queryValues;
+
+        queryText = selectQuery + searchQuery + utils.referralSort(_body) + utils.resourcePagination(_body);
+        queryValues = Object.assign( queryValues);
+
+        const queryCountText = totalQuery + searchQuery;
+
+        var referralList = await client.query(queryService.getCandidateReferalList(queryText,queryValues));
+        const totalCount = await client.query(queryService.getCandidateReferalListTotalCount(queryCountText, queryValues));
+
+        await client.query('COMMIT');
+        resolve({ code: 200, message: 'Referral Added successfully', data: { referralList: referralList.rows, totalCount: totalCount.rows[0].totalCount } });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Exception({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Exception({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
