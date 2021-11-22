@@ -421,12 +421,26 @@ export const createFreelancer = (_body) => {
                 }
 
                 // If email does not exist allow registration
+                _body.name = _body.firstName.charAt(0).toUpperCase() + _body.firstName.slice(1) + " " + _body.lastName.charAt(0).toUpperCase() + _body.lastName.slice(1)
                 if (_body.token)
                 {
                     var referralResults=await client.query(queryService.getDetailsFromReferralToken(_body));
                     if(referralResults.rowCount!=0)
                     {
                         await client.query(queryService.updateCandidateReferralStatus(_body));
+                        const message = `A freelancer,${_body.name} has registered with us using referral link`;
+                        createNotification({
+                        positionId: null,
+                        companyId: _body.companyId,
+                        message: message,
+                        candidateId: null,
+                        notificationType: 'candidate',
+                        userRoleId: _body.userRoleId,
+                        employeeId: _body.employeeId,
+                        image: null,
+                        firstName: _body.firstName,
+                        lastName: _body.lastName,
+                        });
                     }
                 }  
                 let uniqueId = nanoid();
@@ -436,7 +450,6 @@ export const createFreelancer = (_body) => {
                     values: { firstname: _body.firstName, lastname: _body.lastName, email: loweremailId, yoe: _body.yoe, phone: _body.telephoneNumber, createdtime: currentTime(), token: uniqueId },
                 }
                 await client.query(createFreelancerQuery);
-                _body.name = _body.firstName.charAt(0).toUpperCase() + _body.firstName.slice(1) + " " + _body.lastName.charAt(0).toUpperCase() + _body.lastName.slice(1)
                 let companyName = "Freelancer"
                 let emailAddress = _body.email
                 let number = ![null, undefined].includes(_body.telephoneNumber) ? _body.telephoneNumber : ""
