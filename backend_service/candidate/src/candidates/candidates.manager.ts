@@ -28,6 +28,7 @@ import { hasOwnProperty } from 'tslint/lib/utils';
 import { Console } from 'console';
 import * as sendinblueService from '../sendinblueServices/freelancerSendinblueMails';
 import { Exception } from 'handlebars';
+import { isElementAccessChain } from 'typescript';
 
 dotenv.config();
 
@@ -1749,7 +1750,6 @@ export const resumeParser = (_body) => {
       const client = await database();
       try {
         var resumeCheck = await client.query(queryService.checkResumeExistance(_body));
-        console.log('ROWCOUNT', resumeCheck.rowCount);
         if (resumeCheck.rowCount == 0) {
           let responseData = null;
 
@@ -2947,7 +2947,13 @@ export const getElloStage = (_body) => {
         var candidateResult = await client.query(queryService.getCandidateIdFromEmployeeId(_body));
         _body.candidateId = candidateResult.rows[0].candidate_id;
         var stageResult = await client.query(queryService.getFreelancerEllowStages(_body));
-
+        stageResult.rows.forEach((element) => {
+          if (element.stageName=='Basic Profile Submission')  element['icon']='profile_icon.svg';
+          else if (element.stageName=='Full Profile Submission') element['icon']='profile_submission_icon.svg';
+          else if (element.stageName=='ellow Technical Assessment') element['icon']='technical assessment_icon.svg';
+          else if (element.stageName=='Certification') element['icon']='ellow_certification_icon.svg';
+          else  element['icon']='';
+        });
         await client.query('COMMIT');
         resolve({ code: 200, message: 'Candidate Assesment Updated successfully', data: { stages: stageResult.rows } });
       } catch (e) {
