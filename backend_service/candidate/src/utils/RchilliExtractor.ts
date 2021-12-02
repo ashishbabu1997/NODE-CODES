@@ -1,5 +1,5 @@
 import config from '../config/config';
-import {notNull} from './utils';
+import { notNull } from './utils';
 
 export const rchilliExtractor = (data) => {
   const extractedData = {};
@@ -10,10 +10,10 @@ export const rchilliExtractor = (data) => {
     extractedData['resumeData'] = data;
 
     extractedData['resumeFileName'] = resumeData['ResumeFileName'];
-    extractedData['firstName'] = resumeData['Name']['FirstName']+ ' ' + resumeData['Name']['MiddleName'];
+    extractedData['firstName'] = resumeData['Name']['FirstName'] + ' ' + resumeData['Name']['MiddleName'];
     extractedData['lastName'] = resumeData['Name']['LastName'];
     extractedData['middleName'] = resumeData['Name']['MiddleName'];
-    extractedData['email'] = notNull(resumeData['Email'][0]['EmailAddress'])?resumeData['Email'][0]['EmailAddress']:null;
+    extractedData['email'] = notNull(resumeData['Email'][0]['EmailAddress']) ? resumeData['Email'][0]['EmailAddress'] : null;
     extractedData['city'] = resumeData['Address'][0]['City'];
     extractedData['Address'] = resumeData['Address'][0];
     extractedData['designation'] = resumeData['SubCategory'];
@@ -65,7 +65,6 @@ const extractOverallWorkExperience = (data) => {
   return null;
 };
 
-
 const extractCitizenship = (data) => {
   if (![null, undefined, ''].includes(data)) {
     const iso3 = data['CountryCode']['IsoAlpha3'];
@@ -90,7 +89,6 @@ const extractWorkHistory = (data) => {
 
   return experience;
 };
-
 
 const extractProjects = (data) => {
   const projects = [];
@@ -126,7 +124,6 @@ const extractEducation = (data) => {
   console.log('EDUCATION', education);
   return education;
 };
-
 
 const extractCertification = (data) => {
   const certifications = [];
@@ -202,18 +199,17 @@ const extractDetailResume = (data) => {
 };
 
 const extractBagOfWords = (data) => {
-  let bow =[];
-  const replaceRegex =/[^a-zA-Z\n@. ]/g;
+  let bow = [];
+  const replaceRegex = /[^a-zA-Z\n@. ]/g;
   const splitRegex = /[\s\n]+/;
   const filterRegex = /^[^a-zA-Z0-9]+$/;
   data = data.replace(replaceRegex, '');
   bow = data.split(splitRegex);
   const uniqueChars = [...Array.from(new Set(bow.sort()))];
-  const filterUniqueChars = uniqueChars.filter((ele:string)=> !filterRegex.test(ele));
+  const filterUniqueChars = uniqueChars.filter((ele: string) => !filterRegex.test(ele));
 
   return filterUniqueChars;
 };
-
 
 const dateToMillisec = (dateString) => {
   try {

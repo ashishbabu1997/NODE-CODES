@@ -2792,3 +2792,225 @@
  *       500:
  *         description: Server down
  */
+
+/**
+ * @swagger
+ * /candidates/addReferral:
+ *   post:
+ *     tags:
+ *       - Candidates
+ *     name: Add referred candidate
+ *     summary: Add referred candidate
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             candidateFirstName:
+ *               type: string
+ *             candidateLasttName:
+ *               type: string
+ *             emailAddress:
+ *               type: string
+ *             phoneNumber:
+ *               type: string
+ *           required:
+ *             - emailAddress
+ *     responses:
+ *       200:
+ *         description: Api success
+ *       400:
+ *         description: Api Failed
+ *       401:
+ *         description: Unauthorised access
+ *       403:
+ *         description: Permission denied
+ *       500:
+ *         description: Server down
+ */
+
+/**
+ * @swagger
+ * /candidates/checkReferralMail:
+ *   post:
+ *     tags:
+ *       - Candidates
+ *     name:  check Referral Mail
+ *     summary: check Referral Mail
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             emailAddress:
+ *               type: string
+ *           required:
+ *             - emailAddress
+ *     responses:
+ *       200:
+ *         description: Api success
+ *       400:
+ *         description: Api Failed
+ *       401:
+ *         description: Unauthorised access
+ *       403:
+ *         description: Permission denied
+ *       500:
+ *         description: Server down
+ */
+
+/**
+ * @swagger
+ * /candidates/candidateReferralList:
+ *   get:
+ *     tags:
+ *       - Candidates
+ *     name: candidate Referral List
+ *     summary: Get Candidate Referral List
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *         type: string
+ *         enum: [name,email,createdOn]
+ *       - in: query
+ *         name: sortType
+ *         schema:
+ *         type: string
+ *         enum: [asc,desc]
+ *         example: asc
+ *       - in: query
+ *         name: searchKey
+ *         schema:
+ *         type: string
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *         type: integer
+ *         enum: [10,20,50,100]
+ *       - in: query
+ *         name: pageNumber
+ *         schema:
+ *         type: integer
+ *         enum: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+ *     responses:
+ *       200:
+ *         description: Api success
+ *       400:
+ *         description: Api Failed
+ *       401:
+ *         description: Unauthorised access
+ *       403:
+ *         description: Permission denied
+ *       500:
+ *         description: Server down
+ */
+
+/**
+ * @swagger
+ * /candidates/getEmailAddressFromReferralToken:
+ *   post:
+ *     tags:
+ *       - Candidates
+ *     name:  check Referral Mail
+ *     summary: check Referral Mail
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             token:
+ *               type: string
+ *           required:
+ *             - token
+ *     responses:
+ *       200:
+ *         description: Api success
+ *       400:
+ *         description: Api Failed
+ *       401:
+ *         description: Unauthorised access
+ *       403:
+ *         description: Permission denied
+ *       500:
+ *         description: Server down
+ */
+/**
+ * @swagger
+ * /candidates/getEmailAddressFromReferralToken:
+ *   get:
+ *     tags:
+ *       - Candidates
+ *     name: candidate Referral List
+ *     summary: Get Candidate Referral List
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *         type: string
+ *         enum: [name,email,createdOn]
+ *       - in: query
+ *         name: sortType
+ *         schema:
+ *         type: string
+ *         enum: [asc,desc]
+ *         example: asc
+ *       - in: query
+ *         name: searchKey
+ *         schema:
+ *         type: string
+ *       - in: query
+ *         name: pageSize
+ *         schema:
+ *         type: integer
+ *         enum: [10,20,50,100]
+ *       - in: query
+ *         name: pageNumber
+ *         schema:
+ *         type: integer
+ *         enum: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+ *     responses:
+ *       200:
+ *         description: Api success
+ *       400:
+ *         description: Api Failed
+ *       401:
+ *         description: Unauthorised access
+ *       403:
+ *         description: Permission denied
+ *       500:
+ *         description: Server down
+ */

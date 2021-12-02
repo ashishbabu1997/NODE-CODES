@@ -1,11 +1,11 @@
 import * as queryService from '../queryService/queryService';
 import config from '../config/config';
-import {createNotification, createHirerNotifications} from '../common/notifications/notifications';
+import { createNotification, createHirerNotifications } from '../common/notifications/notifications';
 import * as emailClient from '../emailManager/emailManager';
 import * as utils from '../utils/utils';
 import * as builder from '../utils/Builder';
 import * as constants from '../config/Constants';
-import {nanoid} from 'nanoid';
+import { nanoid } from 'nanoid';
 
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>>Email Function for admin to add reviews,assesment comments about the candidate
@@ -30,7 +30,11 @@ export const addCandidateReviewEmail = async (_body, client) => {
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>Email Function to remove a candidate from a position by admin and sending a notification email to the provider who added this candidate.
 export const removeCandidateFromPositionEmail = async (_body, client) => {
-  let candidateFirstName; let candidateLastName; let message; let positionName; let hirerName;
+  let candidateFirstName;
+  let candidateLastName;
+  let message;
+  let positionName;
+  let hirerName;
   try {
     const candidateId = _body.candidateId;
     const positionId = _body.positionId;
@@ -73,7 +77,18 @@ export const removeCandidateFromPositionEmail = async (_body, client) => {
       emailClient.emailManagerForNoReply(hirerDetails.rows[0].email, subject, path, replacements);
     }
 
-    await createNotification({positionId, companyId: _body.companyId, message, candidateId, notificationType: 'candidateChange', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: imageResults.rows[0].image, firstName: imageResults.rows[0].candidate_first_name, lastName: imageResults.rows[0].candidate_last_name});
+    await createNotification({
+      positionId,
+      companyId: _body.companyId,
+      message,
+      candidateId,
+      notificationType: 'candidateChange',
+      userRoleId: _body.userRoleId,
+      employeeId: _body.employeeId,
+      image: imageResults.rows[0].image,
+      firstName: imageResults.rows[0].candidate_first_name,
+      lastName: imageResults.rows[0].candidate_last_name,
+    });
   } catch (e) {
     console.log(e.message);
     throw new Error('Failed to send mail');
@@ -85,9 +100,13 @@ export const removeCandidateFromPositionEmail = async (_body, client) => {
 export const linkCandidateWithPositionEMail = async (_body, client) => {
   try {
     const candidateList = _body.candidates;
-    let positionName = ''; let hirerEmail = ''; let hirerCompanyId = null;
-    let recruiterEmail = ''; let recruiterName = '';
-    const candidateCount = _body.count; let candidateNames = '';
+    let positionName = '';
+    let hirerEmail = '';
+    let hirerCompanyId = null;
+    let recruiterEmail = '';
+    let recruiterName = '';
+    const candidateCount = _body.count;
+    let candidateNames = '';
     let cost = '';
 
     if (_body.userRoleId == 1) {
@@ -106,41 +125,46 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
     candidateList.forEach(async (element) => {
       element.positionId = _body.positionId;
       const res = await client.query(queryService.getLinkToPositionEmailDetails(element));
-      const {work_experience, name, ready_to_start, relevantExperience, email_address} = res.rows[0];
+      const { work_experience, name, ready_to_start, relevantExperience, email_address } = res.rows[0];
 
-      cost = positionResult.rows[0].isellowRate == false ? '' : element.ellowRate > 0 ? `${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n` : '';
-      const availability=utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
+      cost =
+        positionResult.rows[0].isellowRate == false
+          ? ''
+          : element.ellowRate > 0
+          ? `${utils.constValues('currencyType', element.currencyTypeId)} ${element.ellowRate} / ${utils.constValues('billType', element.billingTypeId)}\n`
+          : '';
+      const availability = utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
       candidateNames += `${name}\n`;
-
 
       if (_body.userRoleId == 1) {
         const requiredCandidateData = [];
-        if (utils.notNull(name)) requiredCandidateData.push({'name': 'Name of the Candidate', 'value': utils.capitalize(res.rows[0].candidate_first_name)+' '+utils.capitalize(res.rows[0].candidate_last_name)});
-        if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({'name': 'Total Years of Experience', 'value': work_experience});
-        if (utils.notNull(relevantExperience && relevantExperience > 0)) requiredCandidateData.push({'name': 'Relevant Years of Experience', 'value': relevantExperience});
-        if (utils.notNull(ready_to_start)) requiredCandidateData.push({'name': 'Availability', 'value': availability});
-        if (utils.notNull(cost)) requiredCandidateData.push({'name': 'Rate', 'value': cost});
+        if (utils.notNull(name))
+          requiredCandidateData.push({ name: 'Name of the Candidate', value: utils.capitalize(res.rows[0].candidate_first_name) + ' ' + utils.capitalize(res.rows[0].candidate_last_name) });
+        if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({ name: 'Total Years of Experience', value: work_experience });
+        if (utils.notNull(relevantExperience && relevantExperience > 0)) requiredCandidateData.push({ name: 'Relevant Years of Experience', value: relevantExperience });
+        if (utils.notNull(ready_to_start)) requiredCandidateData.push({ name: 'Availability', value: availability });
+        if (utils.notNull(cost)) requiredCandidateData.push({ name: 'Rate', value: cost });
 
-        const candidateReplacements = {name: name, positionName: positionName};
+        const candidateReplacements = { name: name, positionName: positionName };
         let path = 'src/emailTemplates/addCandidatesUsersText.html';
         if (utils.notNull(email_address) && !_body.addEllowRateOnly) {
           emailClient.emailManagerForNoReply(email_address, config.text.addCandidatesUsersTextSubject, path, candidateReplacements);
         }
 
         const recruiterSignDetails = utils.reccuiterSignatureCheck(recruiterEmail);
-        const {signature} = recruiterSignDetails;
+        const { signature } = recruiterSignDetails;
         element.uniqueId = nanoid();
         await client.query(queryService.insertRequestToken(element));
         // _body.host='https://dev.ellow.io'
         const replacements = {
-          'positionName': positionName,
-          'keys': requiredCandidateData,
-          'comments': element.adminComment ? element.adminComment : '',
-          'name': `With regards,\n ${recruiterName}`,
-          'number': signature,
-          'filename': `${element.fileName}.pdf`,
-          'scheduleLink': _body.host+`/approve-candidate?token=${element.uniqueId}&status=1`,
-          'rejectLink': _body.host+`/approve-candidate?token=${element.uniqueId}&status=2`,
+          positionName: positionName,
+          keys: requiredCandidateData,
+          comments: element.adminComment ? element.adminComment : '',
+          name: `With regards,\n ${recruiterName}`,
+          number: signature,
+          filename: `${element.fileName}.pdf`,
+          scheduleLink: _body.host + `/approve-candidate?token=${element.uniqueId}&status=1`,
+          rejectLink: _body.host + `/approve-candidate?token=${element.uniqueId}&status=2`,
         };
 
         const pdf = await builder.pdfBuilder(element.candidateId, _body.host);
@@ -155,7 +179,7 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
     if (_body.userRoleId != 1 && !_body.addEllowRateOnly) {
       const ellowAdmins = await client.query(queryService.getEllowAdmins());
       if (Array.isArray(ellowAdmins.rows)) {
-        const replacements = {positionName: positionName, candidateNames};
+        const replacements = { positionName: positionName, candidateNames };
         const path = 'src/emailTemplates/addCandidatesText.html';
         ellowAdmins['rows'].forEach((element) => {
           if (utils.notNull(element.email)) {
@@ -164,9 +188,32 @@ export const linkCandidateWithPositionEMail = async (_body, client) => {
         });
       }
     }
-    const message = candidateCount==1?`${candidateCount} candidate has been added for the position ${positionName}`:`${candidateCount} candidates has been added for the position ${positionName}`;
-    createHirerNotifications({positionId: _body.positionId, companyId: hirerCompanyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null});
-    createNotification({positionId: _body.positionId, companyId: _body.companyId, message: message, candidateId: null, notificationType: 'candidateList', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: null, lastName: null});
+    const message =
+      candidateCount == 1 ? `${candidateCount} candidate has been added for the position ${positionName}` : `${candidateCount} candidates has been added for the position ${positionName}`;
+    createHirerNotifications({
+      positionId: _body.positionId,
+      companyId: hirerCompanyId,
+      message: message,
+      candidateId: null,
+      notificationType: 'candidateList',
+      userRoleId: _body.userRoleId,
+      employeeId: _body.employeeId,
+      image: null,
+      firstName: null,
+      lastName: null,
+    });
+    createNotification({
+      positionId: _body.positionId,
+      companyId: _body.companyId,
+      message: message,
+      candidateId: null,
+      notificationType: 'candidateList',
+      userRoleId: _body.userRoleId,
+      employeeId: _body.employeeId,
+      image: null,
+      firstName: null,
+      lastName: null,
+    });
   } catch (e) {
     console.log('error : ', e.message);
     await client.query('ROLLBACK');
@@ -203,20 +250,20 @@ export const addResumeShareLinkEmail = async (_body) => {
   }
 };
 
-
 export const shareResumeSignupEmail = async (_body, client) => {
   try {
-    const replacements = {fName: _body.firstName, password: _body.password};
+    const replacements = { fName: _body.firstName, password: _body.password };
     const path = 'src/emailTemplates/newUserText.html';
     if (utils.notNull(_body.email)) {
       emailClient.emailManager(_body.email, config.text.newUserTextSubject, path, replacements);
     }
 
-    const adminReplacements =
-        {
-          firstName: _body.firstName, lastName: _body.lastName, email: _body.email,
-          phone: _body.telephoneNumber,
-        };
+    const adminReplacements = {
+      firstName: _body.firstName,
+      lastName: _body.lastName,
+      email: _body.email,
+      phone: _body.telephoneNumber,
+    };
 
     const adminPath = 'src/emailTemplates/newUserAdminText.html';
     const ellowAdmins = await client.query(queryService.getEllowAdmins());
@@ -239,7 +286,7 @@ export const createPdfFromHtmlEmail = async (_body, pdfBuffer) => {
     const name = _body.name + '.pdf';
     if (Array.isArray(_body.emailList)) {
       _body.emailList.forEach((element) => {
-        const replacements = {filename: name};
+        const replacements = { filename: name };
 
         const path = 'src/emailTemplates/sharePdfText.html';
         if (utils.notNull(element)) {
@@ -265,7 +312,7 @@ export const changeAssigneeEmail = async (_body, client) => {
     _body.auditLogComment = `Assignee for the candidate ${_body.candidateName} has been changed to ${assigneeName}`;
     const subject = 'ellow Screening Assignee Notification';
 
-    const replacements = {aName: assigneeName, cName: _body.candidateName};
+    const replacements = { aName: assigneeName, cName: _body.candidateName };
     const path = 'src/emailTemplates/changeAssigneeText.html';
 
     if (utils.notNull(assigneeMail)) {
@@ -284,7 +331,7 @@ export const changeAssigneeEmail = async (_body, client) => {
 // >>>>>>>> set corresponding stage values and flags in candidate related db
 export const changeEllowRecruitmentStageEmail = async (_body, client) => {
   try {
-    _body.auditType = 1,_body.assignedTo=_body.employeeId;
+    (_body.auditType = 1), (_body.assignedTo = _body.employeeId);
     const names = await client.query(queryService.getAssigneeName(_body));
     const assigneeName = names.rows[0].name;
     _body.auditLogComment = `Candidate ${_body.candidateName} have been moved to ${_body.stageName} by ${assigneeName}`;
@@ -296,7 +343,6 @@ export const changeEllowRecruitmentStageEmail = async (_body, client) => {
     throw new Error('Failed to send mail');
   }
 };
-
 
 // Reject at a stage of ellow recruitment
 // >>>>>>> FUNC. >>>>>>>
@@ -331,7 +377,7 @@ export const changeBlacklistedEmail = async (_body, client) => {
       _body.path = 'src/emailTemplates/removeFromBlacklistMail.html';
     }
 
-    _body.adminReplacements = {fName: _body.name};
+    _body.adminReplacements = { fName: _body.name };
 
     if (Array.isArray(ellowAdmins.rows)) {
       ellowAdmins.rows.forEach((element) => {
@@ -345,7 +391,6 @@ export const changeBlacklistedEmail = async (_body, client) => {
     throw new Error('Failed to send mail');
   }
 };
-
 
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>Emails for Link the candidates to a particular position .
@@ -373,7 +418,6 @@ export const changeBlacklistedEmail = async (_body, client) => {
 //         hirerEmail = positionResult.rows[0].email
 //         var hirerCompanyId = positionResult.rows[0].companyId
 //         var jobReceivedId = positionResult.rows[0].jobReceivedId
-
 
 //         let path = 'src/emailTemplates/addCandidateHirerMail.html';
 //         let res = await client.query(queryService.getLinkToPositionEmailDetails(_body));
@@ -434,12 +478,16 @@ export const changeBlacklistedEmail = async (_body, client) => {
 //     }
 // }
 
-
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>Share applied candidates pdf .
 export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
   try {
-    let positionName=''; let hirerEmail=''; let hirerCompanyId=''; let recruiterEmail=''; let recruiterName=''; let cost='';
+    let positionName = '';
+    let hirerEmail = '';
+    let hirerCompanyId = '';
+    let recruiterEmail = '';
+    let recruiterName = '';
+    let cost = '';
     const positionResult = await client.query(queryService.getPositionDetails(_body));
 
     // Get position related details
@@ -457,30 +505,32 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
       recruiterName = recruiterDetails.rows[0].name;
     }
     const res = await client.query(queryService.getLinkToPositionEmailDetails(_body));
-    const billingDetails=await client.query(queryService.getCandidateBillingDetails(_body));
-    const {ellowRate, billingTypeId, currencyTypeId}=billingDetails.rows[0];
-    const {work_experience, name, ready_to_start, relevantExperience} = res.rows[0];
-    const availability=utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
-    cost = positionResult.rows[0].isellowRate == false ? '' : ellowRate > 0 ? `${utils.constValues('currencyType', currencyTypeId)} ${ellowRate} / ${utils.constValues('billType', billingTypeId)}\n` : '';
+    const billingDetails = await client.query(queryService.getCandidateBillingDetails(_body));
+    const { ellowRate, billingTypeId, currencyTypeId } = billingDetails.rows[0];
+    const { work_experience, name, ready_to_start, relevantExperience } = res.rows[0];
+    const availability = utils.notNull(ready_to_start) ? `${utils.constValues('readyToStart', ready_to_start)}\n` : '';
+    cost =
+      positionResult.rows[0].isellowRate == false ? '' : ellowRate > 0 ? `${utils.constValues('currencyType', currencyTypeId)} ${ellowRate} / ${utils.constValues('billType', billingTypeId)}\n` : '';
 
     if (_body.userRoleId == 1) {
       const requiredCandidateData = [];
-      if (utils.notNull(name)) requiredCandidateData.push({'name': 'Name of the Candidate', 'value': utils.capitalize(res.rows[0].candidate_first_name)+' '+utils.capitalize(res.rows[0].candidate_last_name)});
-      if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({'name': 'Total Years of Experience', 'value': work_experience});
-      if (utils.notNull(relevantExperience && relevantExperience > 0)) requiredCandidateData.push({'name': 'Relevant Years of Experience', 'value': relevantExperience});
-      if (utils.notNull(ready_to_start)) requiredCandidateData.push({'name': 'Availability', 'value': availability});
-      if (utils.notNull(cost)) requiredCandidateData.push({'name': 'Rate', 'value': cost});
+      if (utils.notNull(name))
+        requiredCandidateData.push({ name: 'Name of the Candidate', value: utils.capitalize(res.rows[0].candidate_first_name) + ' ' + utils.capitalize(res.rows[0].candidate_last_name) });
+      if (utils.notNull(work_experience) && work_experience > 0) requiredCandidateData.push({ name: 'Total Years of Experience', value: work_experience });
+      if (utils.notNull(relevantExperience && relevantExperience > 0)) requiredCandidateData.push({ name: 'Relevant Years of Experience', value: relevantExperience });
+      if (utils.notNull(ready_to_start)) requiredCandidateData.push({ name: 'Availability', value: availability });
+      if (utils.notNull(cost)) requiredCandidateData.push({ name: 'Rate', value: cost });
 
       const recruiterSignDetails = utils.reccuiterSignatureCheck(recruiterEmail);
-      const {signature} = recruiterSignDetails;
+      const { signature } = recruiterSignDetails;
 
       const replacements = {
-        'positionName': positionName,
-        'keys': requiredCandidateData,
-        'comments': _body.adminComment ? _body.adminComment : '',
-        'name': `With regards,\n ${recruiterName}`,
-        'number': signature,
-        'filename': `${_body.fileName}.pdf`,
+        positionName: positionName,
+        keys: requiredCandidateData,
+        comments: _body.adminComment ? _body.adminComment : '',
+        name: `With regards,\n ${recruiterName}`,
+        number: signature,
+        filename: `${_body.fileName}.pdf`,
       };
 
       const pdf = await builder.pdfBuilder(_body.candidateId, _body.host);
@@ -502,14 +552,24 @@ export const shareAppliedCandidatesPdfEmails = async (_body, client) => {
   }
 };
 
-
 export const requestForScreeningMail = async (_body, client) => {
   try {
-    const adminReplacements = {name: _body.candidateName, designation: _body.candidatePositionName, email: _body.candidateEmail};
+    const adminReplacements = { name: _body.candidateName, designation: _body.candidatePositionName, email: _body.candidateEmail };
     const adminPath = 'src/emailTemplates/requestForScreening.html';
     const ellowAdmins = await client.query(queryService.getEllowAdmins());
-    const message=`A freelancer,${_body.candidateName} has requested to initiate the ellow screening process`;
-    createNotification({positionId: null, companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: _body.firstName, lastName: _body.lastName});
+    const message = `A freelancer,${_body.candidateName} has requested to initiate the ellow screening process`;
+    createNotification({
+      positionId: null,
+      companyId: _body.companyId,
+      message: message,
+      candidateId: _body.candidateId,
+      notificationType: 'candidate',
+      userRoleId: _body.userRoleId,
+      employeeId: _body.employeeId,
+      image: null,
+      firstName: _body.firstName,
+      lastName: _body.lastName,
+    });
     if (Array.isArray(ellowAdmins.rows)) {
       ellowAdmins.rows.forEach((element) => {
         if (utils.notNull(element.email)) {
@@ -524,19 +584,31 @@ export const requestForScreeningMail = async (_body, client) => {
 };
 export const updateAvailabilityNotificationMails = async (_body, client) => {
   try {
-    const candidateData=[];
-    const candidateSkills=[];
-    if (utils.notNull(_body.candidateName)) candidateData.push({name: 'Name ', value: _body.candidateName} );
-    if (utils.notNull(_body.candidatePositionName)) candidateData.push({name: 'Designation ', value: _body.candidatePositionName} );
-    if (utils.notNull(_body.candidateEmail)) candidateData.push({name: 'Email ', value: _body.candidateEmail} );
-    if (utils.notNull(_body.phoneNumber)) candidateData.push({name: 'Phone Number ', value: _body.phoneNumber} );
-    if (utils.notNull(_body.coreSkills)) candidateSkills.push({name: 'Top Skills', value: _body.coreSkills} );
-    const adminReplacements = {details: candidateData, skills: candidateSkills};
+    const candidateData = [];
+    const candidateSkills = [];
+    if (utils.notNull(_body.candidateName)) candidateData.push({ name: 'Name ', value: _body.candidateName });
+    if (utils.notNull(_body.candidatePositionName)) candidateData.push({ name: 'Designation ', value: _body.candidatePositionName });
+    if (utils.notNull(_body.candidateEmail)) candidateData.push({ name: 'Email ', value: _body.candidateEmail });
+    if (utils.notNull(_body.phoneNumber)) candidateData.push({ name: 'Phone Number ', value: _body.phoneNumber });
+    if (utils.notNull(_body.coreSkills)) candidateSkills.push({ name: 'Top Skills', value: _body.coreSkills });
+    const adminReplacements = { details: candidateData, skills: candidateSkills };
     const adminPath = 'src/emailTemplates/updateAvailabilityNotificationMail.html';
     const ellowAdmins = await client.query(queryService.getEllowAdmins());
-    const message=_body.availability==true?`The freelancer, ${_body.candidateName} is ready to apply for positions`:`The freelancer, ${_body.candidateName} is no longer available for any openings`;
-    createNotification({positionId: null, companyId: _body.companyId, message: message, candidateId: _body.candidateId, notificationType: 'candidate', userRoleId: _body.userRoleId, employeeId: _body.employeeId, image: null, firstName: _body.firstName, lastName: _body.lastName});
-    if (_body.availability==true) {
+    const message =
+      _body.availability == true ? `The freelancer, ${_body.candidateName} is ready to apply for positions` : `The freelancer, ${_body.candidateName} is no longer available for any openings`;
+    createNotification({
+      positionId: null,
+      companyId: _body.companyId,
+      message: message,
+      candidateId: _body.candidateId,
+      notificationType: 'candidate',
+      userRoleId: _body.userRoleId,
+      employeeId: _body.employeeId,
+      image: null,
+      firstName: _body.firstName,
+      lastName: _body.lastName,
+    });
+    if (_body.availability == true) {
       if (Array.isArray(ellowAdmins.rows)) {
         ellowAdmins.rows.forEach((element) => {
           if (utils.notNull(element.email)) {
@@ -551,25 +623,24 @@ export const updateAvailabilityNotificationMails = async (_body, client) => {
   }
 };
 
-
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>>Email Function for hirer's to send mail while they schedule interview via email button
 export const scheduleInterviewMail = async (_body, client) => {
   try {
     const candidateDetailResults = await client.query(queryService.getCandidateProfileName(_body));
-    const results=candidateDetailResults.rows[0];
-    const availability=utils.notNull(results.ready_to_start) ? `${utils.constValues('readyToStart', results.ready_to_start)}\n` : '';
+    const results = candidateDetailResults.rows[0];
+    const availability = utils.notNull(results.ready_to_start) ? `${utils.constValues('readyToStart', results.ready_to_start)}\n` : '';
 
-    const candidateData=[];
-    if (utils.notNull(results.name)) candidateData.push({name: 'Candidate Name ', value: results.name} );
-    if (utils.notNull(results.email)) candidateData.push({name: 'Email Address ', value: results.email} );
-    if (utils.notNull(results.phone)) candidateData.push({name: 'Phone Number ', value: results.phone} );
-    if (utils.notNull(results.work_experience)) candidateData.push({name: 'Experience ', value: results.work_experience+' years'} );
-    if (utils.notNull(availability)) candidateData.push({name: 'Availability', value: availability} );
+    const candidateData = [];
+    if (utils.notNull(results.name)) candidateData.push({ name: 'Candidate Name ', value: results.name });
+    if (utils.notNull(results.email)) candidateData.push({ name: 'Email Address ', value: results.email });
+    if (utils.notNull(results.phone)) candidateData.push({ name: 'Phone Number ', value: results.phone });
+    if (utils.notNull(results.work_experience)) candidateData.push({ name: 'Experience ', value: results.work_experience + ' years' });
+    if (utils.notNull(availability)) candidateData.push({ name: 'Availability', value: availability });
     const adminReplacements = {
-      'hirer': _body.companyName,
-      'position': _body.positionName,
-      'keys': candidateData,
+      hirer: _body.companyName,
+      position: _body.positionName,
+      keys: candidateData,
     };
     const adminPath = 'src/emailTemplates/scheduleInterviewAdminText.html';
     const ellowAdmins = await client.query(queryService.getEllowAdmins());
@@ -586,17 +657,16 @@ export const scheduleInterviewMail = async (_body, client) => {
   }
 };
 
-
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>>Email Function for hirer's to send mail while they reject candidate via email button
 export const rejectCandidateMail = async (_body, client) => {
   try {
-    var comment =utils.notNull(_body.comment)? `Reason for Rejection: ${_body.comment}`: ``
+    var comment = utils.notNull(_body.comment) ? `Reason for Rejection: ${_body.comment}` : ``;
     const adminReplacements = {
-      'candidateName': _body.candidateName,
-      'position': _body.positionName,
-      'company': _body.companyName,
-      'comment':comment
+      candidateName: _body.candidateName,
+      position: _body.positionName,
+      company: _body.companyName,
+      comment: comment,
     };
     const adminPath = 'src/emailTemplates/rejectCandidateAdminText.html';
     const ellowAdmins = await client.query(queryService.getEllowAdmins());
@@ -606,6 +676,44 @@ export const rejectCandidateMail = async (_body, client) => {
           emailClient.emailManagerForNoReply(element.email, config.text.rejectCandidateMailSubject, adminPath, adminReplacements);
         }
       });
+    }
+  } catch (e) {
+    console.log('error : ', e.message);
+    throw new Error('Failed to send mail');
+  }
+};
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Welcome mail for refered candidate
+export const referralCandidateWelcomeMail = async (_body) => {
+  try {
+    const subject = 'ellow.io Referral email';
+    const replacements = {
+      name: _body.candidateName,
+      link: `https://dev.ellow.io/candidate-signup?token=${_body.token}`,
+    };
+
+    if (utils.notNull(_body.emailAddress)) {
+      emailClient.emailManagerForNoReply(_body.emailAddress, subject, constants.emailPath.REFERRAL_WELCOME_MAIL, replacements);
+      console.log('3');
+    }
+  } catch (e) {
+    console.log('error : ', e.message);
+    throw new Error('Failed to send mail');
+  }
+};
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Thanks giving mail for refered candidate
+export const referalCandidateThanksMail = async (_body) => {
+  try {
+    const subject = 'ellow Thank you Note';
+    const replacements = {
+      name: _body.name,
+    };
+
+    if (utils.notNull(_body.emailAddress)) {
+      emailClient.emailManagerForNoReply(_body.emailAddress, subject, constants.emailPath.REFERRAL_THANKS_MAIL, replacements);
     }
   } catch (e) {
     console.log('error : ', e.message);

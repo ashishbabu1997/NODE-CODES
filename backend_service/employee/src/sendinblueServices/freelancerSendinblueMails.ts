@@ -70,3 +70,32 @@ export const sendinblueAddResources = (_body) => {
     });
   });
 };
+
+
+   // >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>> ADD RESOURCE TO SENDIBBLUE ALL RESOURCES LIST
+export const sendinblueSignUp = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      try {
+        const defaultClient = SibApiV3Sdk.ApiClient.instance;
+        console.log(_body)
+        const apiKey = defaultClient.authentications['api-key'];
+        // eslint-disable-next-line no-undef
+        apiKey.apiKey = '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';        
+        const apiInstance = new SibApiV3Sdk.ContactsApi();
+            const createContact = new SibApiV3Sdk.CreateContact();
+            createContact.email = _body.email;
+            createContact.attributes = { FIRSTNAME: _body.firstName, LASTNAME: _body.lastName, SMS: _body.telephoneNumber };
+            createContact.listIds = [_body.listId];
+            await apiInstance.createContact(createContact)
+        resolve({ code: 200, message: 'Added successfully', data: {} });
+      } catch (e) {
+        console.log(e);
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject({ code: 400, message: 'Failed. Please try again ', data: e.message });
+    });
+  });
+};

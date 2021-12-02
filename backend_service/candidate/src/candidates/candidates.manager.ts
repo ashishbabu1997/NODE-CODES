@@ -23,10 +23,12 @@ import * as emailClient from '../emailManager/emailManager';
 import { nanoid } from 'nanoid';
 import * as builder from '../utils/Builder';
 import * as SibApiV3Sdk from 'sib-api-v3-sdk';
-import { google } from "googleapis";
+import { google } from 'googleapis';
 import { hasOwnProperty } from 'tslint/lib/utils';
 import { Console } from 'console';
-import * as sendinblueService from '../sendinblueServices/freelancerSendinblueMails'
+import * as sendinblueService from '../sendinblueServices/freelancerSendinblueMails';
+import { Exception } from 'handlebars';
+import { isElementAccessChain } from 'typescript';
 
 dotenv.config();
 
@@ -154,16 +156,16 @@ export const listIncontractResources = (_body) => {
       const client = await database();
       try {
         const currentTime = Math.floor(Date.now());
-        let incontract = body.tabValue == 'activeIncontract'?true:false;
-        queryText = selectQuery + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
-        queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId, currenttime: currentTime,incontract:incontract }, queryValues);
+        let incontract = body.tabValue == 'activeIncontract' ? true : false;
+        queryText = selectQuery + filterQuery + searchQuery + utils.incontractResourceSort(body) + utils.resourcePagination(body);
+        queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId, currenttime: currentTime, incontract: incontract }, queryValues);
         const candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
         const queryCountText = totalQuery + filterQuery + searchQuery;
         const candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
 
         const candidates = candidateList.rows;
         const totalCount = candidateTotal.rows[0].totalCount;
-        console.log(totalCount)
+        console.log(totalCount);
         resolve({ code: 200, message: 'Candidate Listed successfully', data: { candidates, totalCount } });
       } catch (e) {
         console.log(e);
@@ -175,7 +177,6 @@ export const listIncontractResources = (_body) => {
     });
   });
 };
-
 
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>Listing required candidates for add from list from the candidates list.
@@ -1558,16 +1559,24 @@ export const changeEllowRecruitmentStage = (_body) => {
         if ([undefined, null, ''].includes(_body.assignedTo)) {
           reject({ code: 400, message: 'Candidate must be assigned to an assignee', data: {} });
         } else {
-          _body.vetted = (_body.stageName == config.ellowRecruitmentStatus.vettedStage ||  _body.stageName == config.ellowRecruitmentStatus.verifiedStage) ? 6 : 1;
+          _body.vetted = _body.stageName == config.ellowRecruitmentStatus.vettedStage || _body.stageName == config.ellowRecruitmentStatus.verifiedStage ? 6 : 1;
           await client.query(queryService.changeEllowRecruitmentStage(_body));
           await client.query(queryService.updateEllowStageStatus(_body));
           await emailService.changeEllowRecruitmentStageEmail(_body, client);
-          if(_body.stageName == config.ellowRecruitmentStatus.vettedStage)
-          {
-            let results=await client.query(queryService.getCandidatesProfile(_body));
-            let data=results.rows[0];
-            _body.firstName=data.candidate_first_name,_body.lastName=data.candidate_last_name,_body.email=data.email_address,_body.telephoneNumber=data.phone_number,_body.listId=config.sendinblue.certifiedListId;
-            sendinblueService.sendinblueAddResources(_body)
+          let results = await client.query(queryService.getCandidatesProfile(_body));
+          let data = results.rows[0];
+          (_body.firstName = data.candidate_first_name), (_body.lastName = data.candidate_last_name), (_body.email = data.email_address), (_body.telephoneNumber = data.phone_number);
+          if (_body.stageName == config.ellowRecruitmentStatus.TechnicalAssessmentStage) {
+            _body.stepId = 6;
+            let stageStatusResult = await client.query(queryService.getStageStatus(_body));
+            if (stageStatusResult.rows[0].stage_status == null) {
+              _body.listId = config.sendinblue.fullProfileList;
+              sendinblueService.sendinblueAddResources(_body);
+            }
+          }
+          if (_body.stageName == config.ellowRecruitmentStatus.vettedStage) {
+            _body.listId = config.sendinblue.certifiedListId;
+            sendinblueService.sendinblueAddResources(_body);
           }
           await client.query('COMMIT');
           resolve({ code: 200, message: 'Moved to stage successfully', data: {} });
@@ -1661,7 +1670,6 @@ export const listHirerResources = (_body) => {
         queryValues = Object.assign({ hirercompanyid: Number(_body.body.companyId) }, queryValues);
 
         const candidatesResult = await client.query(queryService.listCandidatesOfHirer(queryText, queryValues));
-        console.log(candidatesResult.rows);
         const totalCount = await client.query(queryService.listCandidatesOfHirerCount(queryCountText, queryValues));
         resolve({ code: 200, message: 'Candidate Listed successfully', data: { candidates: candidatesResult.rows, totalCount: totalCount.rows[0].totalCount } });
       } catch (e) {
@@ -1742,7 +1750,6 @@ export const resumeParser = (_body) => {
       const client = await database();
       try {
         var resumeCheck = await client.query(queryService.checkResumeExistance(_body));
-        console.log('ROWCOUNT', resumeCheck.rowCount);
         if (resumeCheck.rowCount == 0) {
           let responseData = null;
 
@@ -1949,8 +1956,8 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
         await client.query('BEGIN');
 
         // Inserting the integer representing the vetting status value
-        _body.tokens=_body.hasOwnProperty('token')?_body.token:_body.googleToken.slice(0, -1)
-        _body.query=_body.hasOwnProperty('token')?candidateQuery.getDetailsUsingLinkedinToken:candidateQuery.getDetailsUsingGoogleToken
+        _body.tokens = _body.hasOwnProperty('token') ? _body.token : _body.googleToken.slice(0, -1);
+        _body.query = _body.hasOwnProperty('token') ? candidateQuery.getDetailsUsingLinkedinToken : candidateQuery.getDetailsUsingGoogleToken;
         const getQuery = {
           name: 'get-employee-details',
           text: _body.query,
@@ -2528,7 +2535,7 @@ export const approveOrRejectAppliedCandidate = (_body) => {
         const getCandidateDetailsFromToken = await client.query(queryService.getCandidateDetailsFromTokenQueryService(_body));
         if (getCandidateDetailsFromToken.rowCount == 0) {
           (_body.responseMessage = `Cannot process the request since this action is already taken`), (_body.responseStatus = 3);
-          console.log("Action Taken")
+          console.log('Action Taken');
           resolve({ code: 200, message: _body.responseMessage, data: { status: _body.responseStatus } });
         } else {
           const results = getCandidateDetailsFromToken.rows[0];
@@ -2940,7 +2947,13 @@ export const getElloStage = (_body) => {
         var candidateResult = await client.query(queryService.getCandidateIdFromEmployeeId(_body));
         _body.candidateId = candidateResult.rows[0].candidate_id;
         var stageResult = await client.query(queryService.getFreelancerEllowStages(_body));
-
+        stageResult.rows.forEach((element) => {
+          if (element.stageName=='Basic Profile Submission')  element['icon']='profile_icon.svg';
+          else if (element.stageName=='Full Profile Submission') element['icon']='profile_submission_icon.svg';
+          else if (element.stageName=='ellow Technical Assessment') element['icon']='technical assessment_icon.svg';
+          else if (element.stageName=='Certification') element['icon']='ellow_certification_icon.svg';
+          else  element['icon']='';
+        });
         await client.query('COMMIT');
         resolve({ code: 200, message: 'Candidate Assesment Updated successfully', data: { stages: stageResult.rows } });
       } catch (e) {
@@ -2954,8 +2967,6 @@ export const getElloStage = (_body) => {
   });
 };
 
-
-
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>>>Function to edit the vetting status of the candidate.
 export const googleSignIn = (_body) => {
@@ -2963,8 +2974,6 @@ export const googleSignIn = (_body) => {
     (async () => {
       const client = await database();
       try {
-
-
         // Accessing users token for google
         const tokenResponse = await fetch(
           'https://accounts.google.com/o/oauth2/token?redirect_uri=https%3A%2F%2Fstagecandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
@@ -2973,37 +2982,34 @@ export const googleSignIn = (_body) => {
             headers: {
               Accept: 'application/json',
               Host: 'accounts.google.com',
-            'Content-Type': 'application/x-www-form-urlencoded'
+              'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: JSON.stringify({ a: 1, b: 'Textual content' }),
           },
         );
         const content = await tokenResponse.json();
-        console.log(content)
+        console.log(content);
         let oauth2Client = new google.auth.OAuth2();
-        oauth2Client.setCredentials({access_token: content.access_token});    // use the new auth client with the access_token
+        oauth2Client.setCredentials({ access_token: content.access_token }); // use the new auth client with the access_token
         let oauth2 = google.oauth2({
           auth: oauth2Client,
-          version: 'v2'
+          version: 'v2',
         });
         let { data } = await oauth2.userinfo.get();
-        
+
         // Data Check from database
-        _body.email=data.email,_body.firstName=data.given_name,_body.lastName=data.family_name;
+        (_body.email = data.email), (_body.firstName = data.given_name), (_body.lastName = data.family_name);
         let employeeCheck = await client.query(queryService.getEmail(_body));
-        if (employeeCheck.rowCount==1)
-        {
-          _body.employeeId=employeeCheck.rows[0].employee_id
-          _body.companyId=employeeCheck.rows[0].company_id
-          _body.userRoleId=employeeCheck.rows[0].user_role_id
-        }
-        else
-        {
+        if (employeeCheck.rowCount == 1) {
+          _body.employeeId = employeeCheck.rows[0].employee_id;
+          _body.companyId = employeeCheck.rows[0].company_id;
+          _body.userRoleId = employeeCheck.rows[0].user_role_id;
+        } else {
           let employeeEntry = await client.query(queryService.googleSSOEmployeeInsertion(_body));
           let candidateEntry = await client.query(queryService.insertIntoCandidate(_body));
           _body.employeeId = employeeEntry.rows[0].employee_id;
-          _body.companyId=employeeEntry.rows[0].company_id
-          _body.userRoleId=employeeEntry.rows[0].user_role_id
+          _body.companyId = employeeEntry.rows[0].company_id;
+          _body.userRoleId = employeeEntry.rows[0].user_role_id;
           _body.candidateId = candidateEntry.rows[0].candidate_id;
           await client.query(queryService.insertInToCandidateEmployee(_body));
         }
@@ -3015,12 +3021,11 @@ export const googleSignIn = (_body) => {
           },
           process.env.TOKEN_SECRET,
           { expiresIn: '24h' },
-
         );
         await client.query(queryService.insertEmployeeGoogleToken(_body));
         await client.query('COMMIT');
 
-        resolve({ code: 200, message: 'Candidate SSO successfull', data: { token: _body.token} });
+        resolve({ code: 200, message: 'Candidate SSO successfull', data: { token: _body.token } });
       } catch (e) {
         await client.query('ROLLBACK');
         console.log(e);
@@ -3031,9 +3036,6 @@ export const googleSignIn = (_body) => {
     });
   });
 };
-
-
-
 
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>> SEND BLUE CERTIFIED LIST
@@ -3074,8 +3076,179 @@ export const devSendinblueCertifiedList = (_body) => {
   });
 };
 
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Function to add referrals by candidate
+export const addReferral = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var candidateResult = await client.query(queryService.getCandidateIdFromEmployeeId(_body));
+        _body.candidateId = candidateResult.rows[0].candidate_id;
+        _body.referralList = [];
+        _body.nonReferralList = [];
+        // Verifying and Saving candidate's details
+        _body.candidateList.forEach(async (element) => {
+          element.emailAddress = element.emailAddress.trim();
+          var results = await client.query(queryService.getReferalDetailsFromEmail(_body));
+          if (results.rowCount == 0) {
+            (element.token = nanoid()), (element.candidateId = _body.candidateId), (element.candidateName = candidateResult.rows[0].name), (element.candidateEmail = candidateResult.rows[0].email);
+            var referralesult = await client.query(queryService.candidateReferralInsertion(element));
+            await client.query('COMMIT');
+            await emailService.referralCandidateWelcomeMail(element);
+            await emailService.referalCandidateThanksMail(element);
+            _body.referralList.push({ referralId: referralesult.rows[0].candidate_referral_id, name: element.name, emailAddress: element.emailAddress, phoneNumber: element.phoneNumber });
+          } else {
+            _body.nonReferralList.push({ name: element.name, emailAddress: element.emailAddress, phoneNumber: element.phoneNumber });
+          }
+        });
+        await client.query('COMMIT');
+        resolve({ code: 200, message: 'Referral Added successfully', data: { referredList: _body.referralList, nonReferredList: _body.nonReferralList } });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Function to check referral mails by candidate
+export const checkReferralMail = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        // Verifying and Saving candidate's details
+        var results = await client.query(queryService.getReferalDetailsFromEmail(_body));
+        if (results.rowCount == 0) {
+          resolve({ code: 200, message: 'Success', data: 'Success' });
+        } else {
+          reject({ code: 400, message: 'Failed ', data: 'Success' });
+        }
+        await client.query('COMMIT');
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Candidate Referral List
+export const candidateReferralList = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var candidateResult = await client.query(queryService.getCandidateIdFromEmployeeId(_body));
+        _body.candidateId = candidateResult.rows[0].candidate_id;
+        const selectQuery = candidateQuery.candidateReferralList;
+        const totalQuery = candidateQuery.candidateReferralListTotalCount;
+
+        let queryText = '';
+        let searchQuery = '';
+        let queryValues = {};
+
+        const searchResult = utils.referralSearch(_body, queryValues);
+        searchQuery = searchResult.searchQuery;
+        queryValues = searchResult.queryValues;
+
+        queryText = selectQuery + searchQuery + utils.referralSort(_body) + utils.resourcePagination(_body);
+        queryValues = Object.assign({ candidateid: _body.candidateId }, queryValues);
+
+        const queryCountText = totalQuery + searchQuery;
+
+        var referralList = await client.query(queryService.getCandidateReferalList(queryText,queryValues));
+        const totalCount = await client.query(queryService.getCandidateReferalListTotalCount(queryCountText, queryValues));
+
+        await client.query('COMMIT');
+        resolve({ code: 200, message: 'Referral Added successfully', data: { referralList: referralList.rows, totalCount: totalCount.rows[0].totalCount } });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Exception({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Exception({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Get Email Address from Token
+export const getEmailAddressFromReferralToken = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var result = await client.query(queryService.getEmailFromReferralToken(_body));
+        if (result.rowCount == 0) {
+          reject({ code: 400, message: 'Email Address not found ', data: 'No Email Address Found' });
+        } else {
+          resolve({ code: 200, message: 'Referral Added successfully', data: { email: result.rows[0].email_address, firstName: '', lastName: '', telephoneNumber: '' } });
+        }
+        await client.query('COMMIT');
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
 
 
 
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Candidate Referral List
+export const candidateAdminReferralList = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        const selectQuery = candidateQuery.candidateAdminReferralList;
+        const totalQuery = candidateQuery.candidateAdminReferralListTotalCount;
 
+        let queryText = '';
+        let searchQuery = '';
+        let queryValues = {};
 
+        const searchResult = utils.referralSearch(_body, queryValues);
+        searchQuery = searchResult.searchQuery;
+        queryValues = searchResult.queryValues;
+
+        queryText = selectQuery + searchQuery + utils.referralSort(_body) + utils.resourcePagination(_body);
+        queryValues = Object.assign( queryValues);
+
+        const queryCountText = totalQuery + searchQuery;
+
+        var referralList = await client.query(queryService.getCandidateReferalList(queryText,queryValues));
+        const totalCount = await client.query(queryService.getCandidateReferalListTotalCount(queryCountText, queryValues));
+
+        await client.query('COMMIT');
+        resolve({ code: 200, message: 'Referral Added successfully', data: { referralList: referralList.rows, totalCount: totalCount.rows[0].totalCount } });
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Exception({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Exception({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};

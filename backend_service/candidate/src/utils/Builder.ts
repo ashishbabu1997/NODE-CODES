@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import {nanoid} from 'nanoid';
+import { nanoid } from 'nanoid';
 import * as NodeCache from 'node-cache';
 import * as htmlToPdf from 'html-pdf-node';
 import * as utils from './utils';
@@ -26,9 +26,8 @@ export const pdfBuilder = async (candidateId, host) => {
       bottom: 50, // minimum required for footer msg to display
       top: 50,
     },
-
   };
-  const file = {url: host + '/sharePdf/' + uniqueId};
+  const file = { url: host + '/sharePdf/' + uniqueId };
 
   const pdfBuffer = await htmlToPdf.generatePdf(file, options);
   return pdfBuffer;

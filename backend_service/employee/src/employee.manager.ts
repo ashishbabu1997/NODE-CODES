@@ -159,7 +159,9 @@ export const createEmployee = (_body) => {
                 else {
                     console.log("Waiting for admin approval")
                 }
-
+                _body.body.listId=_body.body.accountType==1?config.sendinblue.hirerListId:config.sendinblue.providerListId
+                var list=_body.body;
+                sendinblueService.sendinblueAddResources(list)
 
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
@@ -387,13 +389,14 @@ export const checkCompanyByWorkMail = (_body) => {
 // >>>>>>>>>>>>>>>>>>Registration of a freelance employee,email verification
 export const createFreelancer = (_body) => {
     return new Promise((resolve, reject) => {
-        const loweremailId = _body.email.toLowerCase();
+        const loweremailId = _body.email.toLowerCase().trim();
 
         (async () => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                // Check if Email already exist reject in case exists        
+                // Check if Email already exist reject in case exists
+                   
                 const getEmailQuery = {
                     name: 'get-email',
                     text: employeeQuery.getEmail,
@@ -418,7 +421,28 @@ export const createFreelancer = (_body) => {
                 }
 
                 // If email does not exist allow registration
-
+                _body.name = _body.firstName.charAt(0).toUpperCase() + _body.firstName.slice(1) + " " + _body.lastName.charAt(0).toUpperCase() + _body.lastName.slice(1)
+                if (_body.token)
+                {
+                    var referralResults=await client.query(queryService.getDetailsFromReferralToken(_body));
+                    if(referralResults.rowCount!=0)
+                    {
+                        await client.query(queryService.updateCandidateReferralStatus(_body));
+                        const message = `A freelancer,${_body.name} has registered with us using referral link`;
+                        createNotification({
+                        positionId: null,
+                        companyId: _body.companyId,
+                        message: message,
+                        candidateId: null,
+                        notificationType: 'candidate',
+                        userRoleId: _body.userRoleId,
+                        employeeId: _body.employeeId,
+                        image: null,
+                        firstName: _body.firstName,
+                        lastName: _body.lastName,
+                        });
+                    }
+                }  
                 let uniqueId = nanoid();
                 const createFreelancerQuery = {
                     name: 'createEmployee',
@@ -426,7 +450,6 @@ export const createFreelancer = (_body) => {
                     values: { firstname: _body.firstName, lastname: _body.lastName, email: loweremailId, yoe: _body.yoe, phone: _body.telephoneNumber, createdtime: currentTime(), token: uniqueId },
                 }
                 await client.query(createFreelancerQuery);
-                _body.name = _body.firstName.charAt(0).toUpperCase() + _body.firstName.slice(1) + " " + _body.lastName.charAt(0).toUpperCase() + _body.lastName.slice(1)
                 let companyName = "Freelancer"
                 let emailAddress = _body.email
                 let number = ![null, undefined].includes(_body.telephoneNumber) ? _body.telephoneNumber : ""
@@ -473,6 +496,8 @@ export const createFreelancer = (_body) => {
                 emailClient.emailManagerForTeam(loweremailId, config.text.userSubject, path, freelancerReplacements);
                 _body.listId=config.sendinblue.allResourcesListId
                 sendinblueService.sendinblueAddResources(_body)
+                _body.listId=config.sendinblue.signUpListId
+                sendinblueService.sendinblueSignUp(_body)
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {

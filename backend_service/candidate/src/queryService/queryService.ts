@@ -91,7 +91,7 @@ export const updateContractStartAndEndDate = (_body) => {
   return {
     name: 'update-contract-start-end-date',
     text: candidateQuery.updateCandidateContractStartEndDate,
-    values: [_body.candidateId, _body.positionId, _body.startDate, _body.endDate, _body.contractRate.amount, _body.contractRate.currencyTypeId, _body.contractRate.billingTypeId],
+    values: [_body.candidateId, _body.positionId, _body.startDate, _body.endDate, _body.contractRate.amount, _body.contractRate.currencyTypeId, _body.contractRate.billingTypeId, _body.closedby],
   };
 };
 export const updateEllowRate = (_body) => {
@@ -145,6 +145,46 @@ export const getCandidateIdFromEmployeeId = (_body) => {
     name: 'get-candidate-id',
     text: candidateQuery.getCandidateIdFromEmployeeIdQuery,
     values: [_body.employeeId],
+  };
+};
+
+export const getEmailFromReferralToken = (_body) => {
+  return {
+    name: 'get-email-from-token',
+    text: candidateQuery.getEmailFromReferralTokenQuery,
+    values: [_body.token],
+  };
+};
+
+export const getCandidateReferalList = (queryText,queryValues) => {
+  return {
+    name: 'get-candidate-referral',
+    text: queryText,
+    values: queryValues,
+  };
+};
+
+export const getCandidateReferalListTotalCount = (queryText,queryValues) => {
+  return {
+    name: 'get-candidate-referral-total-count',
+    text: queryText,
+    values: queryValues,
+  };
+};
+
+export const getReferalDetailsFromEmail = (_body) => {
+  return {
+    name: 'get-referral-details',
+    text: candidateQuery.getReferralDetailsQuery,
+    values: [_body.emailAddress],
+  };
+};
+
+export const candidateReferralInsertion = (_body) => {
+  return {
+    name: 'insert-into-referral',
+    text: candidateQuery.insertIntoCandidateReferral,
+    values: [_body.candidateId, _body.emailAddress, _body.phoneNumber, null, currentTime(), _body.employeeId, _body.token, _body.name],
   };
 };
 export const addCandidateEmployee = (_body) => {
@@ -829,7 +869,6 @@ export const insertLinkedinToEmployee = (_body) => {
   };
 };
 
-
 export const googleSSOEmployeeInsertion = (_body) => {
   return {
     name: 'insert-into-employee',
@@ -1158,6 +1197,22 @@ export const updateAssigneeComment = (_body) => {
     name: 'change-candidate-assignee-comment',
     text: candidateQuery.updateAssigneeComments,
     values: [_body.candidateAssessmentId, _body.assigneeComment, currentTime()],
+  };
+};
+
+export const getCandidatesProfile = (_body) => {
+  return {
+    name: 'get-candidate-profile',
+    text: candidateQuery.getCandidate,
+    values: [_body.candidateId],
+  };
+};
+
+export const getStageStatus = (_body) => {
+  return {
+    name: 'get-stage-status',
+    text: candidateQuery.getStageStatusQuery,
+    values: [_body.candidateId, _body.stepId],
   };
 };
 

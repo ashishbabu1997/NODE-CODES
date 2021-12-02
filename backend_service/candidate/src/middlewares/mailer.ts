@@ -3,7 +3,9 @@ import config from '../config/config';
 import * as dotenv from 'dotenv';
 import * as util from '../utils/utils';
 
-const user=''; const pass=''; const recepient='';
+const user = '';
+const pass = '';
+const recepient = '';
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
@@ -12,7 +14,6 @@ const transporter = nodemailer.createTransport({
     user: config.noreplymail.user,
     pass: config.noreplymail.password,
   },
-
 });
 const transporterNoReply = nodemailer.createTransport({
   service: config.noreplymail.service,
@@ -20,7 +21,6 @@ const transporterNoReply = nodemailer.createTransport({
     user: config.noreplymail.user,
     pass: config.noreplymail.password,
   },
-
 });
 
 const getTransporter = (user, pass) => {
@@ -30,10 +30,8 @@ const getTransporter = (user, pass) => {
       user: user,
       pass: pass,
     },
-
   });
 };
-
 
 export const sendMail = (email, subject, html, callback) => {
   const mailOptions = {
@@ -43,7 +41,7 @@ export const sendMail = (email, subject, html, callback) => {
     html,
   };
 
-  transporter.sendMail(mailOptions, function(err, data) {
+  transporter.sendMail(mailOptions, function (err, data) {
     if (err) {
       return callback(err, null);
     }
@@ -62,7 +60,7 @@ export const sendMailWithAttachments = (email, subject, html, cc, attach, callba
       content: attach,
     },
   };
-  transporter.sendMail(mailOptions, function(err, data) {
+  transporter.sendMail(mailOptions, function (err, data) {
     if (err) {
       return callback(err, null);
     }
@@ -71,7 +69,7 @@ export const sendMailWithAttachments = (email, subject, html, cc, attach, callba
 };
 export const sendMailWithAttachmentsAndCc = (email, cc, bcc, subject, html, attach, userMail, callback) => {
   const userDetails = util.reccuiterMailCheck(userMail);
-  const {user, recipient, pass} = userDetails;
+  const { user, recipient, pass } = userDetails;
   const transpotterCc = getTransporter(user, pass);
 
   const mailOptions = {
@@ -87,7 +85,7 @@ export const sendMailWithAttachmentsAndCc = (email, cc, bcc, subject, html, atta
     },
   };
 
-  transpotterCc.sendMail(mailOptions, function(err, data) {
+  transpotterCc.sendMail(mailOptions, function (err, data) {
     if (err) {
       return callback(err, null);
     }
@@ -96,7 +94,7 @@ export const sendMailWithAttachmentsAndCc = (email, cc, bcc, subject, html, atta
 };
 export const sendMailWithAttachmentsOnly = (email, subject, html, attach, userMail, callback) => {
   const userDetails = util.reccuiterMailCheck(userMail);
-  const {user, recipient, pass} = userDetails;
+  const { user, recipient, pass } = userDetails;
   const transpotterCc = getTransporter(user, pass);
 
   const mailOptions = {
@@ -110,7 +108,7 @@ export const sendMailWithAttachmentsOnly = (email, subject, html, attach, userMa
     },
   };
 
-  transpotterCc.sendMail(mailOptions, function(err, data) {
+  transpotterCc.sendMail(mailOptions, function (err, data) {
     if (err) {
       return callback(err, null);
     }
@@ -128,7 +126,7 @@ export const sendMailWithDoc = (email, subject, html, attach, callback) => {
       content: attach,
     },
   };
-  transporter.sendMail(mailOptions, function(err, data) {
+  transporter.sendMail(mailOptions, function (err, data) {
     if (err) {
       return callback(err, null);
     }
@@ -143,7 +141,7 @@ export const sendMailForNoReply = (email, subject, html, callback) => {
     html,
   };
 
-  transporterNoReply.sendMail(mailOptions, function(err, data) {
+  transporterNoReply.sendMail(mailOptions, function (err, data) {
     if (err) {
       return callback(err, null);
     }
