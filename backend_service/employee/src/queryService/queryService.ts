@@ -24,6 +24,6 @@ export const updateCandidateReferralStatus = (_body) => {
     return {
         name: 'update-referral-status',
         text:employeeQuery.default.updateReferralStatus,
-        values: [_body.token],
+        values: [_body.token,_body.telephoneNumber],
     }
 }
