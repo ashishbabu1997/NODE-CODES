@@ -184,8 +184,8 @@ export const createEmployeeByAdmin = (_body) => {
                     var domain=utils.domainExtractor(loweremailId)
                     const createCompanyQuery = {
                         name: 'createCompany',
-                        text: employeeQuery.createCompany,
-                        values: [_body.companyName, currentTime(),domain],
+                        text: employeeQuery.createCompanyByAdmin,
+                        values: [_body.companyName, currentTime(),domain,_body.employeeId],
                     }
 
                     const result = await client.query(createCompanyQuery);

@@ -29,6 +29,7 @@ export const userSort = (body) => {
   // Sorting keys with values
   const orderBy = {
     updatedOn: 'src."updatedDate"',
+    createdOn: 'src."createdDate"',
     firstName: 'src."firstName"',
     lastName: 'src."lastName"',
     email: 'src.email',
