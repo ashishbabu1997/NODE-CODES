@@ -1825,7 +1825,7 @@ export const resumeParser = (_body) => {
             responseData = e.message;
           });
         } else {
-          reject({ code: 400, message: 'Resume already exist ', data: {} });
+          reject({ code: 400, message: 'The profile which you try to upload already exists with the platform', data: {} });
         }
       } catch (e) {
         console.log(e);
@@ -2823,7 +2823,7 @@ export const fullProfileResumeParser = (_body) => {
             responseData = e.message;
           });
         } else {
-          reject({ code: 400, message: 'Resume already exist ', data: {} });
+          reject({ code: 400, message: 'The profile which you try to upload already exists with the platform', data: {} });
         }
       } catch (e) {
         console.log(e);
