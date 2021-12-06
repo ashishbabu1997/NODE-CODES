@@ -42,6 +42,7 @@ export default {
         "subject":"Company Registration Notification",
         "newCompanySubject":"New Company Registration Notification",
         "newSubUserSubject":"Sub User Registration Notification",
+        "newUserSubject":"New User Registration Notification",
         "freelancerSubject":"Candidate Registration Notification",
         "userSubject":"Candidate Verification Link",
         "resetConfirmSubject":" ellow Password Confirmation Mail"
