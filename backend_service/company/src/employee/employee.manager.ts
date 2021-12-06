@@ -92,42 +92,45 @@ export const updateUser = (_body) => {
             let message='';
             try {
                 await client.query('BEGIN');
-                const getEmailResult = await client.query(queryService.checkEmailExistance(_body.email));
-                    
-                if (getEmailResult.rowCount >= 1) {
-                            var adminStatus = getEmailResult.rows[0].admin_approve_status
-                            message = adminStatus === null ? "EmailId is held for approval of Ellow recruiter"
-                            : adminStatus == 1 ? "Email already registered"
-                                : "This account is rejected by Ellow";
-
-                reject({ code: 400, statusCode: 406, message: message, data: {} });
-            
-                }
-                else{
-                    _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
+                     _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
                     var companyResults=await client.query(queryService.getProfile(_body));
                     var companyDomain=companyResults.rows[0].domain
                     _body.accType=companyResults.rows[0].account_type;
                     _body.urId=companyResults.rows[0].user_role_id;
+                    let employeeData = await client.query(queryService.getEmployeeData(_body))
                     if(utils.domainExtractor(_body.email) == companyDomain)
                     {
+
                         await client.query(queryService.updateEmployee(_body));
+                        if (_body.email!=employeeData.rows[0].email)
+                        {
+                            const getEmailResult = await client.query(queryService.checkEmailExistance(_body.email));
+                    
+                            if (getEmailResult.rowCount >= 1) {
+                                        var adminStatus = getEmailResult.rows[0].admin_approve_status
+                                        message = adminStatus === null ? "EmailId is held for approval of Ellow recruiter"
+                                        : adminStatus == 1 ? "Email already registered"
+                                            : "This account is rejected by Ellow";
+        
+                            reject({ code: 400, statusCode: 406, message: message, data: {} });
+                        
+                            }
+                            else{
+                                await client.query(queryService.updateUserEmail(_body));
+                            }
+                        }
 
                     }
                     else{
                         reject({ code: 400, message: "Email address does'nt belong to your company domain.", data: {} });
 
                     }
-                }
-
                 await client.query('COMMIT');
                 resolve({ code: 200, message: "Employee details updated successfully", data: {} });
             } catch (e) {
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            } finally {
-                client.release();
-            }
+            } 
         })().catch(e => {
             console.log(e)
             reject({ code: 400, message: "Failed. Please try again.", data: {} })

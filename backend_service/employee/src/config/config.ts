@@ -41,8 +41,8 @@ export default {
     
         "subject":"Company Registration Notification",
         "newCompanySubject":"New Company Registration Notification",
+        "newUserSubject":"User Registration Notification",
         "newSubUserSubject":"Sub User Registration Notification",
-        "newUserSubject":"New User Registration Notification",
         "freelancerSubject":"Candidate Registration Notification",
         "userSubject":"Candidate Verification Link",
         "resetConfirmSubject":" ellow Password Confirmation Mail"
@@ -63,7 +63,10 @@ export default {
     "adminEmail":"jjoseph@ellow.io",
     "colon":":",
     "sendinblue":{
-        "allResourcesListId":6,
-        "certifiedListId":4,
+        "allResourcesListId":16,
+        "certifiedListId":17,
+        "signUpListId":19,
+        "hirerListId":20,
+        "providerListId":21
     }
 };

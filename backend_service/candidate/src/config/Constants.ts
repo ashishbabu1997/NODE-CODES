@@ -12,6 +12,8 @@ export const emailPath = {
   CLIENT_SCREENING_REJECTION: 'src/emailTemplates/ellowRejectionAssigneeMailText.html',
   RESOURCE_CLIENT_SCREENING_REJECTION: 'src/emailTemplates/ellowRejectionResourceMailText.html',
   ELLOW_VETTED: 'src/emailTemplates/ellowVettedText.html',
+  REFERRAL_WELCOME_MAIL: 'src/emailTemplates/referalWelcomeMail.html',
+  REFERRAL_THANKS_MAIL: 'src/emailTemplates/referalThanksMail.html',
   FREELANCER_SUBMITTED: 'src/emailTemplates/freelancerSubmitText.html',
   INTERVIEW_REQUESTED: 'src/emailTemplates/interviewRequestMailText.html',
   MAKE_OFFER: 'src/emailTemplates/makeOfferMailText.html',

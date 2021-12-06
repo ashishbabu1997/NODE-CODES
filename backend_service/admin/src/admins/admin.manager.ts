@@ -36,6 +36,7 @@ export const listUsersDetails = (_body) => {
           phoneNumber: 'e.telephone_number',
           companyName: 'p.company_name',
           company: 'p.company_name',
+          createdOn: 'e.created_on'
         };
 
         if (_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy)) {

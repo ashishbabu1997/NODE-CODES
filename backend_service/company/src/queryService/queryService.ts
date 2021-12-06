@@ -53,7 +53,7 @@ export const addSubUser = (_body) => {
     return {
         name: 'add-subuser-details',
         text: employeeQuery.addSubUser,
-        values: [_body.firstName, _body.lastName, _body.userCompanyId, _body.email, _body.roleId, currentTime(),true,_body.urId,_body.accType,_body.employeeId,1,_body.hashedPassword],
+        values: [_body.firstName, _body.lastName, _body.userCompanyId, _body.email, _body.roleId, currentTime(),true,_body.urId,_body.accType,_body.employeeId,1,_body.hashedPassword,_body.phoneNumber],
     }
 }
 export const checkEmailExistance = (email) => {
@@ -61,6 +61,14 @@ export const checkEmailExistance = (email) => {
         name: 'check-email',
         text: employeeQuery.checkEmail,
         values: [email],
+    }
+}
+
+export const updateUserEmail = (_body) => {
+    return {
+        name: 'update-user-email',
+        text: employeeQuery.updatUserEmailQuery,
+        values: [_body.email,_body.empId],
     }
 }
 export const checkCompanyStatus = (_body) => {
