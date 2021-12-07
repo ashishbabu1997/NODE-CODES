@@ -690,7 +690,7 @@ export const referralCandidateWelcomeMail = async (_body) => {
     const subject = 'ellow.io Referral email';
     const replacements = {
       name: _body.candidateName,
-      link: `https://stage.ellow.io/candidate-signup?token=${_body.token}`,
+      link: `https://apps.ellow.io/candidate-signup?token=${_body.token}`,
     };
 
     if (utils.notNull(_body.emailAddress)) {
