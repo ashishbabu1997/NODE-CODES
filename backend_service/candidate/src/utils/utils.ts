@@ -208,6 +208,9 @@ export const referralSort = (body) => {
   if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
       sort = `  ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
     }
+    else{
+      sort=`  order by updated_on desc`
+    }
   return sort;
 };
 
