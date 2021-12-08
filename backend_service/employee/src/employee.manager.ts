@@ -395,7 +395,7 @@ export const createFreelancer = (_body) => {
                     if(referralResults.rowCount!=0)
                     {
                         await client.query(queryService.updateCandidateReferralStatus(_body));
-                        const message = `A freelancer,${_body.name} has registered with us using referral link`;
+                        const message = `A freelancer,${_body.name} has registered with us through freelancer referral scheme`;
                         createNotification({
                         positionId: null,
                         companyId: _body.companyId,
@@ -408,6 +408,16 @@ export const createFreelancer = (_body) => {
                         firstName: _body.firstName,
                         lastName: _body.lastName,
                         });
+
+                    const referrerSubject = 'ellow Thank you Note';
+                    const referrerReplacements = {
+                        name:_body.name,
+                    };
+                    const referrerPath='src/emailTemplates/referalThanksMail.html'
+                    if (utils.notNull(_body.emailAddress)) {
+                        emailClient.emailManagerForNoReply(referralResults.rows[0].emailAddress, referrerSubject,referrerPath, referrerReplacements);
+                    }
+   
                     }
                 }  
                 let uniqueId = nanoid();
