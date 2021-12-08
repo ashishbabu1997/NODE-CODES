@@ -1,7 +1,7 @@
 export default {
     "getEmail": "SELECT admin_approve_status,email FROM employee WHERE email=$1",
     "getAccountType":'select account_type from employee where primary_email=true and company_id=$1',
-    "getDetailsFromReferralToken":'select * from candidate_referral where referral_token=$1',
+    "getDetailsFromReferralToken":'select *,(select candidate.email_address from candidate where candidate_id=candidate_referral.candidate_id) as "emailAddress" from candidate_referral where referral_token=$1',
     "updateReferralStatus":'update candidate_referral set status=true,referral_token=null,phone_number=$2 where referral_token=$1',
     "getFreelancerCompanyId": "SELECT company_id FROM company WHERE company_type=2",
     "createCompany": "INSERT INTO company(company_name, created_on, updated_on, company_domain, user_id, company_type, company_type_id) VALUES ($1, $2, $2, $3, 1, 1, 1) RETURNING company_id",
