@@ -210,7 +210,7 @@ export const listAddFromListCandidates = (_body) => {
     (async () => {
       const client = await database();
       try {
-        (queryText = selectQuery + roleBasedQuery + filterQuery + searchQuery + utils.resourceSort(body)), utils.resourcePagination(body);
+        queryText = selectQuery + roleBasedQuery + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
         queryValues = Object.assign({ positionid: body.positionId }, queryValues);
 
         const candidatesResult = await client.query(queryService.listAddFromList(queryText, queryValues));
@@ -2947,11 +2947,11 @@ export const getElloStage = (_body) => {
         _body.candidateId = candidateResult.rows[0].candidate_id;
         var stageResult = await client.query(queryService.getFreelancerEllowStages(_body));
         stageResult.rows.forEach((element) => {
-          if (element.stageName=='Basic Profile Submission')  element['icon']='profile_icon.svg';
-          else if (element.stageName=='Full Profile Submission') element['icon']='profile_submission_icon.svg';
-          else if (element.stageName=='ellow Technical Assessment') element['icon']='technical assessment_icon.svg';
-          else if (element.stageName=='Certification') element['icon']='ellow_certification_icon.svg';
-          else  element['icon']='';
+          if (element.stageName == 'Basic Profile Submission') element['icon'] = 'profile_icon.svg';
+          else if (element.stageName == 'Full Profile Submission') element['icon'] = 'profile_submission_icon.svg';
+          else if (element.stageName == 'ellow Technical Assessment') element['icon'] = 'technical assessment_icon.svg';
+          else if (element.stageName == 'Certification') element['icon'] = 'ellow_certification_icon.svg';
+          else element['icon'] = '';
         });
         await client.query('COMMIT');
         resolve({ code: 200, message: 'Candidate Assesment Updated successfully', data: { stages: stageResult.rows } });
@@ -3168,7 +3168,7 @@ export const candidateReferralList = (_body) => {
 
         const queryCountText = totalQuery + searchQuery;
 
-        var referralList = await client.query(queryService.getCandidateReferalList(queryText,queryValues));
+        var referralList = await client.query(queryService.getCandidateReferalList(queryText, queryValues));
         const totalCount = await client.query(queryService.getCandidateReferalListTotalCount(queryCountText, queryValues));
 
         await client.query('COMMIT');
@@ -3210,8 +3210,6 @@ export const getEmailAddressFromReferralToken = (_body) => {
   });
 };
 
-
-
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>> Candidate Referral List
 export const candidateAdminReferralList = (_body) => {
@@ -3232,11 +3230,11 @@ export const candidateAdminReferralList = (_body) => {
         queryValues = searchResult.queryValues;
 
         queryText = selectQuery + searchQuery + utils.referralSort(_body) + utils.resourcePagination(_body);
-        queryValues = Object.assign( queryValues);
+        queryValues = Object.assign(queryValues);
 
         const queryCountText = totalQuery + searchQuery;
 
-        var referralList = await client.query(queryService.getCandidateReferalList(queryText,queryValues));
+        var referralList = await client.query(queryService.getCandidateReferalList(queryText, queryValues));
         const totalCount = await client.query(queryService.getCandidateReferalListTotalCount(queryCountText, queryValues));
 
         await client.query('COMMIT');
