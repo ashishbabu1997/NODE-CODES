@@ -1558,7 +1558,6 @@ export const changeEllowRecruitmentStage = (_body) => {
         if ([undefined, null, ''].includes(_body.assignedTo)) {
           reject({ code: 400, message: 'Candidate must be assigned to an assignee', data: {} });
         } else {
-          _body.vetted = _body.stageName == config.ellowRecruitmentStatus.vettedStage ? 6 : 1;
           await client.query(queryService.changeEllowRecruitmentStage(_body));
           await client.query(queryService.updateEllowStageStatus(_body));
           await emailService.changeEllowRecruitmentStageEmail(_body, client);
