@@ -3097,7 +3097,6 @@ export const addReferral = (_body) => {
             var referralesult = await client.query(queryService.candidateReferralInsertion(element));
             await client.query('COMMIT');
             await emailService.referralCandidateWelcomeMail(element);
-            await emailService.referalCandidateThanksMail(element);
             _body.referralList.push({ referralId: referralesult.rows[0].candidate_referral_id, name: element.name, emailAddress: element.emailAddress, phoneNumber: element.phoneNumber });
           } else {
             _body.nonReferralList.push({ name: element.name, emailAddress: element.emailAddress, phoneNumber: element.phoneNumber });
