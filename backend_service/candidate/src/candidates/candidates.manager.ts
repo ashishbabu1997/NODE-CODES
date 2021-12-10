@@ -210,7 +210,7 @@ export const listAddFromListCandidates = (_body) => {
     (async () => {
       const client = await database();
       try {
-        (queryText = selectQuery + roleBasedQuery + filterQuery + searchQuery + utils.resourceSort(body)), utils.resourcePagination(body);
+        queryText = selectQuery + roleBasedQuery + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
         queryValues = Object.assign({ positionid: body.positionId }, queryValues);
 
         const candidatesResult = await client.query(queryService.listAddFromList(queryText, queryValues));
@@ -246,7 +246,6 @@ export const addCandidateReview = (_body) => {
           _body.ellowRecruitmentStatus = config.ellowRecruitmentStatus.complete;
           var result = await client.query(queryService.updateEllowRecuiterReview(_body));
           _body.candidateId = result.rows[0].candidate_id;
-          _body.currentEllowStage = _body.reviewStepsId == 5 ? 6 : _body.reviewStepsId;
           var updateResult = await client.query(queryService.updateEllowRecruitmentStatus(_body));
           _body.ellowstatusId = updateResult.rows[0].ellow_status_id;
           if (_body.stageName == config.ellowRecruitmentStatus.verifiedStage) {
@@ -1559,7 +1558,6 @@ export const changeEllowRecruitmentStage = (_body) => {
         if ([undefined, null, ''].includes(_body.assignedTo)) {
           reject({ code: 400, message: 'Candidate must be assigned to an assignee', data: {} });
         } else {
-          _body.vetted = _body.stageName == config.ellowRecruitmentStatus.vettedStage || _body.stageName == config.ellowRecruitmentStatus.verifiedStage ? 6 : 1;
           await client.query(queryService.changeEllowRecruitmentStage(_body));
           await client.query(queryService.updateEllowStageStatus(_body));
           await emailService.changeEllowRecruitmentStageEmail(_body, client);
@@ -2948,11 +2946,11 @@ export const getElloStage = (_body) => {
         _body.candidateId = candidateResult.rows[0].candidate_id;
         var stageResult = await client.query(queryService.getFreelancerEllowStages(_body));
         stageResult.rows.forEach((element) => {
-          if (element.stageName=='Basic Profile Submission')  element['icon']='profile_icon.svg';
-          else if (element.stageName=='Full Profile Submission') element['icon']='profile_submission_icon.svg';
-          else if (element.stageName=='ellow Technical Assessment') element['icon']='technical assessment_icon.svg';
-          else if (element.stageName=='Certification') element['icon']='ellow_certification_icon.svg';
-          else  element['icon']='';
+          if (element.stageName == 'Basic Profile Submission') element['icon'] = 'profile_icon.svg';
+          else if (element.stageName == 'Full Profile Submission') element['icon'] = 'profile_submission_icon.svg';
+          else if (element.stageName == 'ellow Technical Assessment') element['icon'] = 'technical assessment_icon.svg';
+          else if (element.stageName == 'Certification') element['icon'] = 'ellow_certification_icon.svg';
+          else element['icon'] = '';
         });
         await client.query('COMMIT');
         resolve({ code: 200, message: 'Candidate Assesment Updated successfully', data: { stages: stageResult.rows } });
@@ -3097,7 +3095,6 @@ export const addReferral = (_body) => {
             var referralesult = await client.query(queryService.candidateReferralInsertion(element));
             await client.query('COMMIT');
             await emailService.referralCandidateWelcomeMail(element);
-            await emailService.referalCandidateThanksMail(element);
             _body.referralList.push({ referralId: referralesult.rows[0].candidate_referral_id, name: element.name, emailAddress: element.emailAddress, phoneNumber: element.phoneNumber });
           } else {
             _body.nonReferralList.push({ name: element.name, emailAddress: element.emailAddress, phoneNumber: element.phoneNumber });
@@ -3169,7 +3166,7 @@ export const candidateReferralList = (_body) => {
 
         const queryCountText = totalQuery + searchQuery;
 
-        var referralList = await client.query(queryService.getCandidateReferalList(queryText,queryValues));
+        var referralList = await client.query(queryService.getCandidateReferalList(queryText, queryValues));
         const totalCount = await client.query(queryService.getCandidateReferalListTotalCount(queryCountText, queryValues));
 
         await client.query('COMMIT');
@@ -3211,8 +3208,6 @@ export const getEmailAddressFromReferralToken = (_body) => {
   });
 };
 
-
-
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>> Candidate Referral List
 export const candidateAdminReferralList = (_body) => {
@@ -3233,11 +3228,11 @@ export const candidateAdminReferralList = (_body) => {
         queryValues = searchResult.queryValues;
 
         queryText = selectQuery + searchQuery + utils.referralSort(_body) + utils.resourcePagination(_body);
-        queryValues = Object.assign( queryValues);
+        queryValues = Object.assign(queryValues);
 
         const queryCountText = totalQuery + searchQuery;
 
-        var referralList = await client.query(queryService.getCandidateReferalList(queryText,queryValues));
+        var referralList = await client.query(queryService.getCandidateReferalList(queryText, queryValues));
         const totalCount = await client.query(queryService.getCandidateReferalListTotalCount(queryCountText, queryValues));
 
         await client.query('COMMIT');

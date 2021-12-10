@@ -129,7 +129,6 @@ export const createEmployee = (_body) => {
                 _body.body.listId=_body.body.accountType==1?config.sendinblue.hirerListId:config.sendinblue.providerListId
                 var list=_body.body;
                 sendinblueService.sendinblueAddResources(list)
-
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
@@ -414,7 +413,7 @@ export const createFreelancer = (_body) => {
                         name:_body.name,
                     };
                     const referrerPath='src/emailTemplates/referalThanksMail.html'
-                    if (utils.notNull(_body.emailAddress)) {
+                    if (utils.notNull(referralResults.rows[0].emailAddress)) {
                         emailClient.emailManagerForNoReply(referralResults.rows[0].emailAddress, referrerSubject,referrerPath, referrerReplacements);
                     }
    
