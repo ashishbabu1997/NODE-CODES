@@ -6,7 +6,7 @@ export default {
     getSkillNames:'select json_object_agg(skill_name ,skill_id)  as skills from skills ',
     addJobCategorySkills:`Insert into job_category_skills (job_category_id,skill_id,created_on,updated_on) values ($1,$2,$3,$3)`,
     getSkillsWithoutId:`select s.skill_id as "skillId", s.skill_name as "skillName",s.top_rated as "topRated" from  skills s where s.status  = true`,
-    getUsualOrderedSkills:`select s.skill_id as "skillId", s.skill_name as "skillName", s.top_rated as "topRated" from skills  order by case when s.skill_id in (select skill_id from job_category_skills where job_category_id = $1) then 1 else 2 end, skill_name `,
+    getUsualOrderedSkills:`select s.skill_id as "skillId", s.skill_name as "skillName", s.top_rated as "topRated" from skills s order by case when s.skill_id in (select skill_id from job_category_skills where job_category_id = $1) then 1 else 2 end, skill_name `,
     getOrderedSkills:`select s.skill_id as "skillId", s.skill_name as "skillName", s.top_rated as "topRated" from skills s where freelancer_skill = true order by case when s.skill_id in (select skill_id from job_category_skills where job_category_id = $1) then 1 else 2 end, skill_name `
 }
 
