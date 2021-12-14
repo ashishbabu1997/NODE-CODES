@@ -456,69 +456,78 @@ export const changeJobStatus = (_body) => {
         userMailAddress = results.rows[0].email;
         // If job status is 6, it means admin is reopening a position
         if (_body.jobStatus == 6) {
-          message = `A position,${positionName} has been reopened.`;
-          createNotification({
-            positionId: _body.positionId,
-            companyId: _body.companyId,
-            message: message,
-            candidateId: null,
-            notificationType: 'position',
-            userRoleId: _body.userRoleId,
-            employeeId: _body.employeeId,
-          });
-          // A notification is sent to the hirer about his/her reopened position
-          if (_body.userRoleId == 1) {
-            subj = 'Position Reopen Notification';
-            userPath = 'src/emailTemplates/adminToUserPositionReopen.html';
-            userReplacements = {
-              position: positionName,
-            };
-            adminPath = 'src/emailTemplates/adminToAdminPositionReopen.html';
-            adminReplacements = {
-              position: positionName,
-              company: positionCompanyName,
-            };
-          } else {
-            subj = 'Position Reopen Notification';
-            userPath = 'src/emailTemplates/userToUserPositionReopen.html';
-            userReplacements = {
-              position: positionName,
-            };
-            adminPath = 'src/emailTemplates/userToAdminPositionReopen.html';
-            adminReplacements = {
-              position: positionName,
-              company: positionCompanyName,
-            };
-          }
+                    message = `A position,${positionName} has been reopened.`;
+                    createNotification({
+                      positionId: _body.positionId,
+                      companyId: _body.companyId,
+                      message: message,
+                      candidateId: null,
+                      notificationType: 'position',
+                      userRoleId: _body.userRoleId,
+                      employeeId: _body.employeeId,
+                    });
+                    // A notification is sent to the hirer about his/her reopened position
+                    if (_body.userRoleId == 1) {
+                      subj = 'Position Reopen Notification';
+                      userPath = 'src/emailTemplates/adminToUserPositionReopen.html';
+                      userReplacements = {
+                        position: positionName,
+                      };
+                      adminPath = 'src/emailTemplates/adminToAdminPositionReopen.html';
+                      adminReplacements = {
+                        position: positionName,
+                        company: positionCompanyName,
+                      };
+                    } else {
+                      subj = 'Position Reopen Notification';
+                      userPath = 'src/emailTemplates/userToUserPositionReopen.html';
+                      userReplacements = {
+                        position: positionName,
+                      };
+                      adminPath = 'src/emailTemplates/userToAdminPositionReopen.html';
+                      adminReplacements = {
+                        position: positionName,
+                        company: positionCompanyName,
+                      };
+                    }
+                    emailClient.emailManagerForNoReply(userMailAddress, subj, userPath, userReplacements);
         }
 
         // If job status is 8,then the position is closed.
         else if (_body.jobStatus == 8) {
-          message = `A position,${positionName} has been closed.`;
-          createNotification({
-            positionId: _body.positionId,
-            companyId: _body.companyId,
-            message: message,
-            candidateId: null,
-            notificationType: 'position',
-            userRoleId: _body.userRoleId,
-            employeeId: _body.employeeId,
-          });
+                    message = `A position,${positionName} has been closed.`;
+                    createNotification({
+                      positionId: _body.positionId,
+                      companyId: _body.companyId,
+                      message: message,
+                      candidateId: null,
+                      notificationType: 'position',
+                      userRoleId: _body.userRoleId,
+                      employeeId: _body.employeeId,
+                    });
 
-          subj = 'Close Position Notification';
-          userPath = 'src/emailTemplates/adminToUserClosePosition.html';
-          userReplacements = {
-            position: positionName,
-          };
-          adminPath = 'src/emailTemplates/adminToAdminClosePosition.html';
-          adminReplacements = {
-            position: positionName,
-            company: positionCompanyName,
-          };
-        } else {
+                    subj = 'Close Position Notification';
+                    userPath = 'src/emailTemplates/adminToUserClosePosition.html';
+                    userReplacements = {
+                      position: positionName,
+                    };
+                    adminPath = 'src/emailTemplates/adminToAdminClosePosition.html';
+                    adminReplacements = {
+                      position: positionName,
+                      company: positionCompanyName,
+                    };
+                  var closedCountResult = await client.query(queryService.getClosedCount(_body));
+                  if(closedCountResult.rows[0].close_count!=0 )
+                  {
+                      emailClient.emailManagerForNoReply(userMailAddress, subj, userPath, userReplacements);
+
+                  }
+        } 
+        else {
           console.log('Job Status out of bound');
         }
-        emailClient.emailManagerForNoReply(userMailAddress, subj, userPath, userReplacements);
+        
+
         if (Array.isArray(ellowAdmins.rows)) {
           ellowAdmins.rows.forEach((element) => {
             emailClient.emailManagerForNoReply(element.email, subj, adminPath, adminReplacements);

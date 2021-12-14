@@ -39,6 +39,15 @@ export const listPrimaryEmails = (body) => {
         values: [body.positionId]
     }
 }
+
+export const getClosedCount = (body) => {
+    return {
+        name: 'get-closed-count',
+        text: positionsQuery.getClosedCount,
+        values: [body.positionId]
+    }
+}
+
 export const listSecondaryEmails = (body) => {
     return {
         name: 'get-hirer-secondary-mails',
