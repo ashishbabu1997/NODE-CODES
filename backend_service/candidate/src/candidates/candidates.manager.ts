@@ -284,7 +284,9 @@ export const addTestLink = (_body) => {
           (_body.ellowRecruitmentStatus = config.ellowRecruitmentStatus.partial),
           (_body.currentEllowStage = result.review_steps_id);
         await client.query(queryService.updateEllowRecruitmentStatus(_body));
-
+        var candidateDetailResult=await client.query(queryService.getCandidateProfileName(_body));
+        _body.emailAddress=candidateDetailResult.rows[0].email
+        await emailService.ellowTestLinkNotification(_body);
         await client.query('COMMIT');
         resolve({ code: 200, message: 'Candidate Assesment Updated successfully', data: {} });
       } catch (e) {

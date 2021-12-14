@@ -23,7 +23,7 @@ export default {
   fetchResourceCounts: 'select developer_count,close_count from positions where position_id=$1',
   closeJobStatus: 'update positions set job_status=8 where position_id=$1',
   setContractFalse:'update candidate_contract_details set in_contract=false where candidate_id=$1',
-  insertContractDetails:'insert into candidate_contract_details (candidate_id, position_id, contract_start_date, contract_end_date, created_on, updated_on, created_by, updated_by, in_contract, contract_rate, currency_type_id, billing_type) values ($1, $2, $3, $4, $5, $5, $6, $6, $7, $8, $9, $10)',
+  insertContractDetails:'insert into candidate_contract_details (candidate_id, position_id, contract_start_date, contract_end_date, created_on, updated_on, created_by, updated_by, in_contract, contract_rate, currency_type_id, billing_type,closed_by) values ($1, $2, $3, $4, $5, $5, $6, $6, $7, $8, $9, $10,$11)',
   updateResourceCount: 'update positions set close_count=close_count+1 where position_id=$1 returning developer_count,close_count',
   getJoinedCompanyName: 'select c.company_name as "companyName" from company c inner join employee e on e.company_id=c.company_id where e.employee_id=$1',
   updateAssigneeComments: 'update candidate_client_hiring_step set step_start_date=$3, assignee_comment=$2 where candidate_client_hiring_step_id = $1',

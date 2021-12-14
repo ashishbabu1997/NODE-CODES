@@ -720,3 +720,21 @@ export const referalCandidateThanksMail = async (_body) => {
     throw new Error('Failed to send mail');
   }
 };
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Ellow Test Link Notification to Candidate
+export const ellowTestLinkNotification = async (_body) => {
+  try {
+    const subject = 'ellow Technical Assessment link is open now!';
+    const replacements = {
+    };
+
+    if (utils.notNull(_body.emailAddress)) {
+      emailClient.emailManagerForNoReply(_body.emailAddress, subject, constants.emailPath.TEST_LINK_NOTIFIACTION, replacements);
+    }
+  } catch (e) {
+    console.log('error : ', e.message);
+    throw new Error('Failed to send mail');
+  }
+};

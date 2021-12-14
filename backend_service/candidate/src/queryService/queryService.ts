@@ -1673,6 +1673,7 @@ export const updateContractDetails = (_body) => {
       _body.contractRate.amount,
       _body.contractRate.currencyTypeId,
       _body.contractRate.billingTypeId,
+      _body.closedby
     ],
   };
 };
