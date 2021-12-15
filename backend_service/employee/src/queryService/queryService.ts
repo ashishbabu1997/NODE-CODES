@@ -13,7 +13,7 @@ export const getCompanyAccountType = (_body) => {
 }
 
 
-export const getDetailsFromReferralToken = (_body) => {
+export const  getDetailsFromReferralToken = (_body) => {
     return {
         name: 'get-details-referral-token',
         text:employeeQuery.default.getDetailsFromReferralToken,
