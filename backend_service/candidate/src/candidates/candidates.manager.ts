@@ -212,7 +212,7 @@ export const listAddFromListCandidates = (_body) => {
       try {
         queryText = selectQuery + roleBasedQuery + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
         queryValues = Object.assign({ positionid: body.positionId }, queryValues);
-
+        console.log(queryText)
         const candidatesResult = await client.query(queryService.listAddFromList(queryText, queryValues));
 
         queryText = totaltQuery + roleBasedQuery + filterQuery + searchQuery;

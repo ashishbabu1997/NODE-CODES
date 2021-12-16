@@ -11,7 +11,7 @@ export const recruiterPostSignup = (_body) => {
         .createHash("sha512")
         .update(_body.accesskey)
         .digest("hex");        
-        if(hashedAccess === '2201c26b2bc107c5d5a80ffe48fe7f750135695cf2168698cab5332aef173b90ccf98175c2258f47d1bc38818b2225f8030a7bcadecfc8db8475bc22847990c8')
+        if(hashedAccess === 'd786b5ff501d4e3a36ef4eff84679c2f6bf1c2630d43babba7fa5a42fd9b679fbe0ad310fe352668ad71fc7d642a0847babe6e45f2187050928e238393849fd3')
         {
             const currentTime = Math.floor(Date.now());
             const mailId = _body.email;

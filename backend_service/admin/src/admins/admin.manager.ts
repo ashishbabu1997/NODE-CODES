@@ -25,6 +25,13 @@ export const listUsersDetails = (_body) => {
       try {
         var selectQuery = adminQuery.listUsers;
         var totalQuery = adminQuery.listUsersTotalCount;
+        var filterQuery = '',
+          filter = _body.filter;
+        // Search for filters in the body
+
+        let filterResult = utils.usersFilter(filter, filterQuery);
+        filterQuery = filterResult.filterQuery;
+        selectQuery=selectQuery+filterQuery
         if (_body.searchKey) {
           selectQuery = selectQuery + ' ' + "AND LOWER(p.company_name) LIKE '" + _body.searchKey.toLowerCase() + "%'";
         }
