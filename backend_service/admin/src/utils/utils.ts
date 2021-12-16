@@ -23,9 +23,9 @@ export const usersFilter = (filter, filterQuery) => {
           filterQuery = filterQuery + ' and "adminApproveStatus"=0';
         }
       }
-      if (notNull(approveStatus)) {
+      if (notNull(assesedBy)) {
         
-          filterQuery = filterQuery + ` and "assesedBy"=${assesedBy}`;
+          filterQuery = filterQuery + ` and "assesedBy"=(select employee_id from employee where initcap(firstname || ' ' || lastname) ilike '%${assesedBy}%')`;
       }
 
       if ((notNull(fromDate) && fromDate>0) && (notNull(toDate) && toDate>0)) {
@@ -33,9 +33,9 @@ export const usersFilter = (filter, filterQuery) => {
         filterQuery = filterQuery + ` and "createdDate" between ${fromDate} and ${toDate} `;
       }
       if (notNull(companyType)) {
-        if (companyType == 'hirer') {
+        if (companyType == 'Hirer') {
           filterQuery = filterQuery + ' and  "accountType"=2';
-        } else if (companyType == 'provider') {
+        } else if (companyType == 'Provider') {
           filterQuery = filterQuery + ' and "accountType"=3';
         }
     }
