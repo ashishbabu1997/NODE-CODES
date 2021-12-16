@@ -12,13 +12,32 @@ export const adminPagination = (body) => {
 export const usersFilter = (filter, filterQuery) => {
   if (filter) {
     let approveStatus = filter.approveStatus;
-
-    if (notNull(approveStatus)) {
-      if (approveStatus == 'active') {
-        filterQuery = filterQuery + ' and  "adminApproveStatus"=1';
-      } else if (approveStatus == 'closed') {
-        filterQuery = filterQuery + ' and "adminApproveStatus"=0';
+    let assesedBy=filter.assesedBy
+    let fromDate=filter.fromDate
+    let toDate=filter.toDate
+    let companyType=filter.companyType
+      if (notNull(approveStatus)) {
+        if (approveStatus == 'active') {
+          filterQuery = filterQuery + ' and  "adminApproveStatus"=1';
+        } else if (approveStatus == 'closed') {
+          filterQuery = filterQuery + ' and "adminApproveStatus"=0';
+        }
       }
+      if (notNull(approveStatus)) {
+        
+          filterQuery = filterQuery + ` and "assesedBy"=${assesedBy}`;
+      }
+
+      if ((notNull(fromDate) && fromDate>0) && (notNull(toDate) && toDate>0)) {
+        
+        filterQuery = filterQuery + ` and "createdDate" between ${fromDate} and ${toDate} `;
+      }
+      if (notNull(companyType)) {
+        if (companyType == 'hirer') {
+          filterQuery = filterQuery + ' and  "accountType"=2';
+        } else if (companyType == 'provider') {
+          filterQuery = filterQuery + ' and "accountType"=3';
+        }
     }
   }
   return { filterQuery };
