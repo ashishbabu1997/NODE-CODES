@@ -25,24 +25,52 @@ export const usersFilter = (filter, filterQuery) => {
       }
       if (notNull(assesedBy)) {
         
-          filterQuery = filterQuery + ` and "assesedBy"=(select employee_id from employee where initcap(firstname || ' ' || lastname) ilike '%${assesedBy}%')`;
+          filterQuery = filterQuery + ` and "assesedBy"='${assesedBy}'`;
       }
-
       if ((notNull(fromDate) && fromDate>0) && (notNull(toDate) && toDate>0)) {
         
-        filterQuery = filterQuery + ` and "createdDate" between ${fromDate} and ${toDate} `;
+        filterQuery = filterQuery + ` and  ("createdDate" between ${fromDate} and ${toDate}) `;
       }
       if (notNull(companyType)) {
         if (companyType == 'Hirer') {
-          filterQuery = filterQuery + ' and  "accountType"=2';
+          filterQuery = filterQuery + ' and  "accountType"=1';
         } else if (companyType == 'Provider') {
-          filterQuery = filterQuery + ' and "accountType"=3';
+          filterQuery = filterQuery + ' and "accountType"=2';
         }
     }
   }
   return { filterQuery };
 };
 
+
+export const allUsersFilter = (filter, filterQuery) => {
+  if (filter) {
+    let approveStatus = filter.approveStatus;
+    let assesedBy=filter.assesedBy
+    let fromDate=filter.fromDate
+    let toDate=filter.toDate
+    let companyType=filter.companyType
+      if (notNull(approveStatus)) {
+        if (approveStatus == 'active') {
+          filterQuery = filterQuery + ' and  e.admin_approve_status=1';
+        } else if (approveStatus == 'closed') {
+          filterQuery = filterQuery + ' and e.admin_approve_status=0';
+        }
+      }
+      if ((notNull(fromDate) && fromDate>0) && (notNull(toDate) && toDate>0)) {
+        
+        filterQuery = filterQuery + ` and e.created_on between ${fromDate} and ${toDate} `;
+      }
+      if (notNull(companyType)) {
+        if (companyType == 'Hirer') {
+          filterQuery = filterQuery + ' and  e.account_type=1';
+        } else if (companyType == 'Provider') {
+          filterQuery = filterQuery + ' and e.account_type=2';
+        }
+    }
+  }
+  return { filterQuery };
+};
 export const userSort = (body) => {
   let sort = '';
   // Sorting keys with values

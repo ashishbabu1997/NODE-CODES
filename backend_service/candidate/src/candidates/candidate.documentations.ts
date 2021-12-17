@@ -3014,3 +3014,32 @@
  *       500:
  *         description: Server down
  */
+
+
+
+ /**
+ * @swagger
+ * /candidates/getSignedupCandidateDetails:
+ *   get:
+ *     tags:
+ *       - Candidates
+ *     name: Get candidate details
+ *     summary: Get Candidate sign up details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Api success
+ *       400:
+ *         description: Api Failed
+ *       401:
+ *         description: Unauthorised access
+ *       403:
+ *         description: Permission denied
+ *       500:
+ *         description: Server down
+ */
