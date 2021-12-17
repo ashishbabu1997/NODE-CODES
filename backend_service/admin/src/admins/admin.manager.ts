@@ -25,11 +25,13 @@ export const listUsersDetails = (_body) => {
       try {
         var selectQuery = adminQuery.listUsers;
         var totalQuery = adminQuery.listUsersTotalCount;
+        var body=_body.body;
+        _body=_body.query;
         var filterQuery = '',
-          filter = _body.filter;
+          filter = body.filter;
         // Search for filters in the body
 
-        let filterResult = utils.usersFilter(filter, filterQuery);
+        let filterResult = utils.allUsersFilter(filter, filterQuery);
         filterQuery = filterResult.filterQuery;
         selectQuery=selectQuery+filterQuery
         if (_body.searchKey) {
@@ -50,6 +52,7 @@ export const listUsersDetails = (_body) => {
           selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType;
         }
         selectQuery = selectQuery + utils.adminPagination(_body);
+        console.log(selectQuery)
         const listquery = {
           name: 'list-candidates',
           text: selectQuery,
