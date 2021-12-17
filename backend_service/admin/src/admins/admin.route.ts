@@ -8,7 +8,7 @@ import { checkJwt } from '../middleware/auth0Jwt';
 const router = express.Router();
 
 router
-  .post('/listUsers', jwtAuth, adminController.listUsers)
+  .get('/listUsers', jwtAuth, adminController.listUsers)
   .get('/userDetails', jwtAuth, adminController.userDetails)
   .post('/extractSkills', jwtAuth, adminController.extractSkillsFromExcel)
   .post('/userStatus', jwtAuth, setData(), adminController.adminPanel)
