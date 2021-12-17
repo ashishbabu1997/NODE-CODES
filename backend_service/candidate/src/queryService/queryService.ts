@@ -156,6 +156,15 @@ export const getEmailFromReferralToken = (_body) => {
   };
 };
 
+
+export const getCandidateBasicDetails = (_body) => {
+  return {
+    name: 'get-candidate-basic-details',
+    text: candidateQuery.getCandidateBasicDetails,
+    values: [_body.employeeId],
+  };
+};
+
 export const getCandidateReferalList = (queryText,queryValues) => {
   return {
     name: 'get-candidate-referral',

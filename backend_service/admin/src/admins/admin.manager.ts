@@ -95,7 +95,7 @@ export const allUsersList = (_body) => {
         _body.queryValues = Object.assign({ searchkey: searchKey }, _body.queryValues);
         _body.queryCountText = adminQuery.allRegisteredUsersListCount + filterQuery;
         _body.queryText = adminQuery.allRegisteredUsersList + filterQuery + utils.userSort(body) + utils.usersPagination(body);
-
+        console.log(_body.queryText)
         var results = await client.query(queryService.listquery(_body));
         var counts = await client.query(queryService.listQueryCount(_body));
         await client.query('COMMIT');
