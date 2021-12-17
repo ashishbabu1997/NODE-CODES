@@ -84,6 +84,9 @@ router
   .post('/checkReferralMail', jwtAuth, setData(), candidateController.checkReferralMailController)
   .get('/candidateReferralList', jwtAuth, setData(), candidateController.candidateReferralListController)
   .get('/candidateAdminReferralList', jwtAuth, setData(), candidateController.candidateAdminReferralListController)
-  .post('/getEmailAddressFromReferralToken', candidateController.getEmailAddressFromReferralTokenController);
+  .post('/getEmailAddressFromReferralToken', candidateController.getEmailAddressFromReferralTokenController)
+  .get('/getSignedupCandidateDetails', jwtAuth, setData(), candidateController.getSignedupCandidateDetailsController);
+
+  
 
 export default router;
