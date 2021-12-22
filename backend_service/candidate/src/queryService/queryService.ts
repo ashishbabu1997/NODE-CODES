@@ -164,6 +164,14 @@ export const getCandidateBasicDetails = (_body) => {
     values: [_body.employeeId],
   };
 };
+
+export const addReporter = (_body) => {
+  return {
+    name: 'add-reporter-details',
+    text: candidateQuery.addReporterDetails,
+    values: [_body.reporterName,_body.reporterEmail,_body.reporterPhoneNumber],
+  };
+};
 export const getWeeklyContractCandidates = (_body) => {
   return {
     name: 'get-contract-to-seven-candidates',

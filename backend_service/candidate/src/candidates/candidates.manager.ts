@@ -3275,3 +3275,27 @@ export const getSignedupCandidateDetails = (_body) => {
     });
   });
 };
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Get reporter Details
+export const getReporterDetails = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var result = await client.query(queryService.getCandidateBasicDetails(_body));
+        resolve({ code: 200, message: 'Details listed successfully', data: result.rows[0] });
+        
+        await client.query('COMMIT');
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
