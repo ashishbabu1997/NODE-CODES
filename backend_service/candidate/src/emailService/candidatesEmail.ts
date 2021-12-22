@@ -730,11 +730,75 @@ export const ellowTestLinkNotification = async (_body) => {
     const replacements = {
     };
 
-    if (utils.notNull(_body.emailAddress)) {
-      emailClient.emailManagerForNoReply(_body.emailAddress, subject, constants.emailPath.TEST_LINK_NOTIFIACTION, replacements);
+    if (utils.notNull(_body.email_address)) {
+      emailClient.emailManagerForNoReply(_body.email_address, subject, constants.emailPath.TEST_LINK_NOTIFIACTION, replacements);
     }
   } catch (e) {
     console.log('error : ', e.message);
     throw new Error('Failed to send mail');
   }
 };
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Ellow Candidate-Reporter Details Mail
+export const ellowCandidateReporterFetchMail = async (_body) => {
+  try {
+    const subject = 'Reporter Detail Form from ellow.io';
+    const replacements = {
+      link:'https://dev.ellow.io/feedback/'+_body.uniqueId
+    };
+
+    if (utils.notNull(_body.email_address)) {
+      emailClient.emailManagerForNoReply(_body.email_address, subject, constants.emailPath.REPORTER_DETAIL_FETCH_MAIL, replacements);
+    }
+  } catch (e) {
+    console.log('error : ', e.message);
+    throw new Error('Failed to send mail');
+  }
+};
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Reporter initial feedback remainder mail
+export const reporterInitialFeedbackRemainderMail = async (_body) => {
+  try {
+    const subject = 'ellow Candidate Feedback Mail';
+    const replacements = {
+      link:'https://dev.ellow.io/feedback/'+_body.uniqueId,
+      name:_body.name,
+      position:_body.position_name
+    };
+
+    if (utils.notNull(_body.reporter_email)) {
+      emailClient.emailManagerForNoReply(_body.reporter_email, subject, constants.emailPath.REPORTER_INITIAL_FEEDBACK_MAIL, replacements);
+    }
+  } catch (e) {
+    console.log('error : ', e.message);
+    throw new Error('Failed to send mail');
+  }
+};
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Reporter final feedback remainder mail
+export const reporterFinalFeedbackRemainderMail = async (_body) => {
+  try {
+    const subject = 'ellow Candidate Final Feedback Mail';
+    const replacements = {
+      link:'https://dev.ellow.io/feedback/'+_body.uniqueId,
+      name:_body.name,
+      position:_body.position_name
+    };
+
+    if (utils.notNull(_body.reporter_email)) {
+      emailClient.emailManagerForNoReply(_body.reporter_email, subject, constants.emailPath.REPORTER_INITIAL_FEEDBACK_MAIL, replacements);
+    }
+  } catch (e) {
+    console.log('error : ', e.message);
+    throw new Error('Failed to send mail');
+  }
+};
+

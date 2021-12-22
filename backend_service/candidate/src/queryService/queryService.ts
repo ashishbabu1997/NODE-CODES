@@ -164,6 +164,28 @@ export const getCandidateBasicDetails = (_body) => {
     values: [_body.employeeId],
   };
 };
+export const getWeeklyContractCandidates = (_body) => {
+  return {
+    name: 'get-contract-to-seven-candidates',
+    text: candidateQuery.getWeeklyContractCandidates,
+    values: [currentTime()],
+  };
+};
+
+export const getMidContractCandidateList = (_body) => {
+  return {
+    name: 'get-mid-contract-candidate-list',
+    text: candidateQuery.getMidContractCandidates,
+    values: [currentTime()],
+  };
+};
+export const getFinalContractCandidatesList = (_body) => {
+  return {
+    name: 'get-final-contract-candidate-list',
+    text: candidateQuery.getFinalContractCandidates,
+    values: [currentTime()],
+  };
+};
 
 export const getCandidateReferalList = (queryText,queryValues) => {
   return {
@@ -1473,11 +1495,21 @@ export const linkCandidateByAdminQuery = (element) => {
   };
 };
 
+
 export const updatePositionUpdatedOnAndBy = (_body) => {
   return {
     name: 'Update-position-date-and-by',
     text: candidateQuery.updatePositionDateAndBy,
     values: [_body.positionId, _body.employeeId, currentTime()],
+  };
+};
+
+
+export const insertIntoCandidateFeedbackReport = (_body) => {
+  return {
+    name: 'insert-into-feedback',
+    text: candidateQuery.insertIntoCandidateFeedback,
+    values: [_body.candidate_id,_body.candidate_contract_details_id,_body.uniqueId,true,currentTime()],
   };
 };
 
