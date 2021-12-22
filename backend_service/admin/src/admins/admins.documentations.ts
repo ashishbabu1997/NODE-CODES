@@ -296,8 +296,6 @@
  *     summary: Get all detailed reports for the recruiter
  *     consumes:
  *       - application/json
- *     security:
- *       - bearerAuth: []
  *     produces:
  *       - application/json
  *     parameters:
