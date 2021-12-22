@@ -729,7 +729,7 @@ export const reports = (_body) => {
           groupByPosition = ` group by ("RecruiterName", "PositionStatus") `,
           groupByCandidatePosition = ` group by ("RecruiterName") `,
           groupByCompanyReg = `group by "assesedBy", "adminApproveStatus" order by "assesedBy","status"`,
-          groupByFreelancer = `group by "candidateStatus", allocated_to order by allocated_to, "candidateStatus" desc`;
+          groupByFreelancer = ` GROUP BY \"ellow_status_id\", ers.review_steps_id, ers.status_name ORDER BY (SELECT step_order FROM review_steps rs WHERE ers.review_steps_id = rs.review_steps_id) NULLS FIRST, ellow_status_id`;
 
         if (utils.notNull(_body.fromDate) && utils.notNull(_body.toDate)) {
           dateRangeCandidate = ` and ca.created_on between ${_body.fromDate} and ${_body.toDate} `;
