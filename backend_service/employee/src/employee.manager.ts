@@ -53,6 +53,7 @@ export const createEmployee = (_body) => {
                 // create a new company if companyId is null or use the same companyId to create employee and other details
                 let companyId = _body.body.companyId;
                 let adminApproveStatus = 1, approvalStatus = true;
+                let userData;
                 if (companyId == null) {
                     var domain=utils.domainExtractor(loweremailId)
                     const createCompanyQuery = {
@@ -67,9 +68,19 @@ export const createEmployee = (_body) => {
                     _body.primaryEmail=true
                 }
                 else {
-                    _body.primaryEmail=false
+                    const results = await client.query(queryService.getPrimaryEmailQuery({companyId, accountType: parseInt(_body.body.accountType)}));
+                    userData =  results.rows[0];
+                    _body.primaryEmail= (userData.primary_email == null) ? true: false;
                 }
-                _body.userRoleId=_body.body.accountType == 1?2:3
+                _body.userRoleId=_body.body.accountType == 1?2:3;
+                if ((userData.company_type == 3 && _body.userRoleId == 2) || (userData.company_type == 1 && _body.userRoleId == 3)) {
+                    const updateCompanyTypeQuery = {
+                        name: 'update-company-type',
+                        text: employeeQuery.updateCompanyType,
+                        values: [4, companyId, currentTime()]
+                    }
+                    await client.query(updateCompanyTypeQuery);
+                }
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
@@ -228,21 +239,25 @@ export const createEmployeeByAdmin = (_body) => {
                     _body.responseMessage="Company Registration Successfull. We have sent a password to the registered mail address."
                     }
                     else{
-                        _body.primaryEmail=false
-                        accountTypeResult=await client.query(queryService.getCompanyAccountType(companyId))
-                        _body.responseMessage=_body.accountType==1?"This Company is already registered as a Hirer company. Login credentials have been sent to the given email address":"This Company is already registered as a Provider company. Login credentials have been sent to the given email address"
-                        if (accountTypeResult.rows[0].account_type !=_body.accountType)
-                        {
-                            let rejectMessage=_body.accountType==1?'This Company is already registered as a Provider company; We are unable to process this request':'This Company is already registered as a Hirer company; We are unable to process this request'
-                            reject({ code: 400, message: rejectMessage, data: 'Failed' });
-
+                        //query tot get primary email
+                        const results = await client.query(queryService.getPrimaryEmailQuery({companyId, accountType: _body.accountType}));
+                        const userData =  results.rows[0];
+                        _body.primaryEmail= userData.primary_email == null ? true: false;
+                        if ((userData.company_type == 3 && _body.accountType == 1) || (userData.company_type == 1 && _body.accountType == 2)) {
+                            const updateCompanyTypeQuery = {
+                                name: 'update-company-type',
+                                text: employeeQuery.updateCompanyType,
+                                values: [4, companyId, currentTime()]
+                            }
+                            await client.query(updateCompanyTypeQuery);
                         }
                     }
+                const userRoleId=_body.accountType == 1?2:3;
                    
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
-                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime(), 2, approvalStatus, adminApproveStatus,_body.primaryEmail],
+                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime(), userRoleId, approvalStatus, adminApproveStatus,_body.primaryEmail],
                 }
                 await client.query(createEmployeeQuery);
 
@@ -267,7 +282,7 @@ export const createEmployeeByAdmin = (_body) => {
                     values: [hashedPassword, loweremailId],
                 }
                 await client.query(storePasswordQuery);
-
+// ashish note to chnage the mail template as per new changes
                 let path = 'src/emailTemplates/newUserText.html';
                 var userReplacements = {
                     loginPassword: password

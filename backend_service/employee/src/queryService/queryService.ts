@@ -27,3 +27,11 @@ export const updateCandidateReferralStatus = (_body) => {
         values: [_body.token],
     }
 }
+
+export const getPrimaryEmailQuery = (_body) => {
+    return {
+        name: 'get-primary-email',
+        text:employeeQuery.default.getPrimaryEmail,
+        values: [_body.companyId,_body.accountType],
+    }
+}
