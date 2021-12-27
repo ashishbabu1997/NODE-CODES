@@ -22,6 +22,7 @@ import * as Tracing from '@sentry/tracing';
 import * as dotenv from 'dotenv';
 import * as cron from 'node-cron';
 import { consoleTestResultHandler } from 'tslint/lib/test';
+import * as cronScheduler  from './cronScheduler/cronscheduler';
 dotenv.config();
 
 const app = express();
@@ -104,10 +105,8 @@ app.listen(AppConfig.http.port, () => {
 //   console.log("Running");
 // }
 // schedule.scheduleJob( '*/5 * * * * *', jobs());
-cron.schedule('*/5 * * * * *', ()=> {
-  console.log('running a task every minute');
+cron.schedule('58 14 * * *', ()=> {
+  console.log('Running cron scheduler');
+  cronScheduler.candidateReporterDetailRemainder
 });
 
-cron.schedule('*/6 * * * * *', ()=> {
-  console.log('running second a task every minute');
-});

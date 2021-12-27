@@ -697,3 +697,30 @@ export const getSignedupCandidateDetailsController = (req, res) => {
     .then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
 };
+
+
+export const addReportController = (req, res) => {
+  const body = req.body;
+  candidateManager
+    .addReporterDetails(body)
+    .then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};
+
+
+export const updateReporterInitialFeedbackController = (req, res) => {
+  const body = req.body;
+  candidateManager
+    .updateReporterInitialFeedback(body)
+    .then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};
+
+
+export const updateReporterFinalFeedbackController = (req, res) => {
+  const body = req.body;
+  candidateManager
+    .updateReporterFinalFeedback(body)
+    .then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};

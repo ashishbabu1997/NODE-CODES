@@ -11,9 +11,11 @@ export const candidateReporterDetailRemainder = (_body) => {
       (async () => {
         const client = await database();
         try {
+          console.log("Started")
           await client.query('BEGIN');
           const promise=[]
           var result = await client.query(queryService.getWeeklyContractCandidates(_body));
+          console.log("RESULT",result)
           result.rows.forEach(async (element) => {
             element.uniqueId = nanoid()
             await emailService.ellowCandidateReporterFetchMail(_body);

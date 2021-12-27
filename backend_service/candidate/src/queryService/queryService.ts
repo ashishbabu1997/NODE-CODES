@@ -172,6 +172,25 @@ export const addReporter = (_body) => {
     values: [_body.reporterName,_body.reporterEmail,_body.reporterPhoneNumber],
   };
 };
+
+
+export const updateInitialFeedback = (_body) => {
+  return {
+    name: 'update-initial-feedback',
+    text: candidateQuery.updateInitialFeedback,
+    values: [_body.comment.description,_body.rating,currentTime(),_body.token],
+  };
+};
+
+
+export const updateFinalFeedback = (_body) => {
+  return {
+    name: 'update-final-feedback',
+    text: candidateQuery.updateFinalFeedback,
+    values: [_body.comment.description,_body.rating,currentTime(),_body.token],
+  };
+};
+
 export const getWeeklyContractCandidates = (_body) => {
   return {
     name: 'get-contract-to-seven-candidates',
