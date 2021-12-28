@@ -3073,7 +3073,7 @@
  *               type: string
  *             reporterEmail:
  *               type: string
- *              reporterPhoneNumber:
+ *             reporterPhoneNumber:
  *               type: string
  *           required:
  *             - token

@@ -105,8 +105,12 @@ app.listen(AppConfig.http.port, () => {
 //   console.log("Running");
 // }
 // schedule.scheduleJob( '*/5 * * * * *', jobs());
-cron.schedule('58 14 * * *', ()=> {
+cron.schedule('47 17 * * *', ()=> {
   console.log('Running cron scheduler');
-  cronScheduler.candidateReporterDetailRemainder
+  let crons=function(){
+    cronScheduler.candidateReporterDetailRemainder
+  }
+  crons()
+  console.log("Start")
 });
 
