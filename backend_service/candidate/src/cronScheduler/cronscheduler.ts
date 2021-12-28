@@ -83,7 +83,7 @@ export const reporterFinalFeedbackRemainder = () => {
           var result = await client.query(queryService.getFinalContractCandidatesList());
           result.rows.forEach(async (element) => {
             element.uniqueId = nanoid()
-           emailService.reporterInitialFeedbackRemainderMail(element);
+           emailService.reporterFinalFeedbackRemainderMail(element);
             promise.push(client.query(queryService.updateFinalFeedbackRemainder(element)));
           });
           await Promise.all(promise);
