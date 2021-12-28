@@ -747,7 +747,7 @@ export const ellowCandidateReporterFetchMail = async (_body) => {
   try {
     const subject = 'Reporter Detail Form from ellow.io';
     const replacements = {
-      link:'https://dev.ellow.io/feedback/'+_body.uniqueId
+      link:'https://dev.ellow.io/manager-details/'+_body.uniqueId
     };
 
     if (utils.notNull(_body.email_address)) {
@@ -766,7 +766,7 @@ export const reporterInitialFeedbackRemainderMail = async (_body) => {
   try {
     const subject = 'ellow Candidate Feedback Mail';
     const replacements = {
-      link:'https://dev.ellow.io/feedback/'+_body.uniqueId,
+      link:'https://dev.ellow.io/feedback?token='+_body.uniqueId+'&intial=true',
       name:_body.name,
       position:_body.position_name
     };
@@ -788,7 +788,7 @@ export const reporterFinalFeedbackRemainderMail = async (_body) => {
   try {
     const subject = 'ellow Candidate Final Feedback Mail';
     const replacements = {
-      link:'https://dev.ellow.io/feedback/'+_body.uniqueId,
+      link:'https://dev.ellow.io/feedback?token='+_body.uniqueId+'&intial=false',
       name:_body.name,
       position:_body.position_name
     };
