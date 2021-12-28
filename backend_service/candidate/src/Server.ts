@@ -96,7 +96,19 @@ app.use(function onError(err, req, res, next) {
   res.statusCode = err.status || 500;
   res.end(res.sentry + '\n');
 });
-
+cron.schedule('0 10 * * *', ()=> {
+  console.log('Running cron scheduler');
+    cronScheduler.candidateReporterDetailRemainder()
+  console.log("Start")
+});
+cron.schedule('2 10 * * *', ()=> {
+  console.log('Running cron scheduler');
+    cronScheduler.reporterFinalFeedbackRemainder()
+});
+cron.schedule('4 10 * * *', ()=> {
+  console.log('Running cron scheduler');
+    cronScheduler.reporterInitialFeedbackRemainder()
+});
 app.listen(AppConfig.http.port, () => {
   console.log('Listening on port ' + AppConfig.http.port);
 });
@@ -105,12 +117,5 @@ app.listen(AppConfig.http.port, () => {
 //   console.log("Running");
 // }
 // schedule.scheduleJob( '*/5 * * * * *', jobs());
-cron.schedule('47 17 * * *', ()=> {
-  console.log('Running cron scheduler');
-  let crons=function(){
-    cronScheduler.candidateReporterDetailRemainder
-  }
-  crons()
-  console.log("Start")
-});
+
 

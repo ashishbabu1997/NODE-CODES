@@ -6,19 +6,17 @@ import * as emailService from '../emailService/candidatesEmail';
 
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>> candidateReporterDetailRemainder
-export const candidateReporterDetailRemainder = (_body) => {
+export const candidateReporterDetailRemainder = () => {
     return new Promise((resolve, reject) => {
       (async () => {
         const client = await database();
         try {
-          console.log("Started")
           await client.query('BEGIN');
           const promise=[]
-          var result = await client.query(queryService.getWeeklyContractCandidates(_body));
-          console.log("RESULT",result)
-          result.rows.forEach(async (element) => {
+          var result = await client.query(queryService.getWeeklyContractCandidates());
+           result.rows.forEach( async (element) => {
             element.uniqueId = nanoid()
-            await emailService.ellowCandidateReporterFetchMail(_body);
+            await emailService.ellowCandidateReporterFetchMail(element);
             promise.push(client.query(queryService.insertIntoCandidateFeedbackReport(element)));
           });
           await Promise.all(promise);
@@ -41,17 +39,17 @@ export const candidateReporterDetailRemainder = (_body) => {
 
   // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>> Reporter initial feedback reminder
-export const reporterInitialFeedbackRemainder = (_body) => {
+export const reporterInitialFeedbackRemainder = () => {
     return new Promise((resolve, reject) => {
       (async () => {
         const client = await database();
         try {
           await client.query('BEGIN');
           const promise=[]
-          var result = await client.query(queryService.getMidContractCandidateList(_body));
+          var result = await client.query(queryService.getMidContractCandidateList());
           result.rows.forEach(async (element) => {
             element.uniqueId = nanoid()
-            await emailService.reporterInitialFeedbackRemainderMail(_body);
+            await emailService.reporterInitialFeedbackRemainderMail(element);
             promise.push(client.query(queryService.insertIntoCandidateFeedbackReport(element)));
           });
           await Promise.all(promise);
@@ -74,17 +72,17 @@ export const reporterInitialFeedbackRemainder = (_body) => {
 
     // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>> Reporter final feedback reminder
-export const reporterFinalFeedbackRemainder = (_body) => {
+export const reporterFinalFeedbackRemainder = () => {
     return new Promise((resolve, reject) => {
       (async () => {
         const client = await database();
         try {
           await client.query('BEGIN');
           const promise=[]
-          var result = await client.query(queryService.getFinalContractCandidatesList(_body));
+          var result = await client.query(queryService.getFinalContractCandidatesList());
           result.rows.forEach(async (element) => {
             element.uniqueId = nanoid()
-            await emailService.reporterInitialFeedbackRemainderMail(_body);
+            await emailService.reporterInitialFeedbackRemainderMail(element);
             promise.push(client.query(queryService.insertIntoCandidateFeedbackReport(element)));
           });
           await Promise.all(promise);

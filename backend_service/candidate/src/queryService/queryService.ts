@@ -191,7 +191,7 @@ export const updateFinalFeedback = (_body) => {
   };
 };
 
-export const getWeeklyContractCandidates = (_body) => {
+export const getWeeklyContractCandidates = () => {
   return {
     name: 'get-contract-to-seven-candidates',
     text: candidateQuery.getWeeklyContractCandidates,
@@ -199,14 +199,14 @@ export const getWeeklyContractCandidates = (_body) => {
   };
 };
 
-export const getMidContractCandidateList = (_body) => {
+export const getMidContractCandidateList = () => {
   return {
     name: 'get-mid-contract-candidate-list',
     text: candidateQuery.getMidContractCandidates,
     values: [currentTime()],
   };
 };
-export const getFinalContractCandidatesList = (_body) => {
+export const getFinalContractCandidatesList = () => {
   return {
     name: 'get-final-contract-candidate-list',
     text: candidateQuery.getFinalContractCandidates,
