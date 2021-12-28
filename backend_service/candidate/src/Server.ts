@@ -105,7 +105,7 @@ cron.schedule('45 11 * * *', ()=> {
   console.log('Running cron scheduler');
     cronScheduler.reporterFinalFeedbackRemainder()
 });
-cron.schedule('50 13 * * *', ()=> {
+cron.schedule('31 14 * * *', ()=> {
   console.log('Running cron scheduler');
     cronScheduler.reporterInitialFeedbackRemainder()
 });
