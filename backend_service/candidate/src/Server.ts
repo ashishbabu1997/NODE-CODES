@@ -96,16 +96,16 @@ app.use(function onError(err, req, res, next) {
   res.statusCode = err.status || 500;
   res.end(res.sentry + '\n');
 });
-cron.schedule('0 10 * * *', ()=> {
+cron.schedule('9 12 * * *', ()=> {
   console.log('Running cron scheduler');
     cronScheduler.candidateReporterDetailRemainder()
   console.log("Start")
 });
-cron.schedule('2 10 * * *', ()=> {
+cron.schedule('45 11 * * *', ()=> {
   console.log('Running cron scheduler');
     cronScheduler.reporterFinalFeedbackRemainder()
 });
-cron.schedule('4 10 * * *', ()=> {
+cron.schedule('45 11 * * *', ()=> {
   console.log('Running cron scheduler');
     cronScheduler.reporterInitialFeedbackRemainder()
 });
@@ -113,9 +113,6 @@ app.listen(AppConfig.http.port, () => {
   console.log('Listening on port ' + AppConfig.http.port);
 });
 
-// const jobs=function(){
-//   console.log("Running");
-// }
-// schedule.scheduleJob( '*/5 * * * * *', jobs());
+
 
 

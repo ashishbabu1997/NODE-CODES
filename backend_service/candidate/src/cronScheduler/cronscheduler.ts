@@ -16,9 +16,10 @@ export const candidateReporterDetailRemainder = () => {
           var result = await client.query(queryService.getWeeklyContractCandidates());
            result.rows.forEach( async (element) => {
             element.uniqueId = nanoid()
-            await emailService.ellowCandidateReporterFetchMail(element);
+            emailService.ellowCandidateReporterFetchMail(element);
             promise.push(client.query(queryService.insertIntoCandidateFeedbackReport(element)));
           });
+          console.log(promise)
           await Promise.all(promise);
           resolve({ code: 200, message: 'Details listed successfully', data: result.rows[0] });
           
@@ -49,8 +50,8 @@ export const reporterInitialFeedbackRemainder = () => {
           var result = await client.query(queryService.getMidContractCandidateList());
           result.rows.forEach(async (element) => {
             element.uniqueId = nanoid()
-            await emailService.reporterInitialFeedbackRemainderMail(element);
-            promise.push(client.query(queryService.insertIntoCandidateFeedbackReport(element)));
+             emailService.reporterInitialFeedbackRemainderMail(element);
+            promise.push(client.query(queryService.updateFeedbackRemainder(element)));
           });
           await Promise.all(promise);
           resolve({ code: 200, message: 'Details listed successfully', data: result.rows[0] });
@@ -82,8 +83,8 @@ export const reporterFinalFeedbackRemainder = () => {
           var result = await client.query(queryService.getFinalContractCandidatesList());
           result.rows.forEach(async (element) => {
             element.uniqueId = nanoid()
-            await emailService.reporterInitialFeedbackRemainderMail(element);
-            promise.push(client.query(queryService.insertIntoCandidateFeedbackReport(element)));
+           emailService.reporterInitialFeedbackRemainderMail(element);
+            promise.push(client.query(queryService.updateFinalFeedbackRemainder(element)));
           });
           await Promise.all(promise);
           resolve({ code: 200, message: 'Details listed successfully', data: result.rows[0] });

@@ -169,7 +169,7 @@ export const addReporter = (_body) => {
   return {
     name: 'add-reporter-details',
     text: candidateQuery.addReporterDetails,
-    values: [_body.reporterName,_body.reporterEmail,_body.reporterPhoneNumber],
+    values: [_body.reporterName,_body.reporterEmail,_body.reporterPhoneNumber,_body.token],
   };
 };
 
@@ -195,7 +195,7 @@ export const getWeeklyContractCandidates = () => {
   return {
     name: 'get-contract-to-seven-candidates',
     text: candidateQuery.getWeeklyContractCandidates,
-    values: [currentTime()],
+    values: [(currentTime()/1000)],
   };
 };
 
@@ -1536,10 +1536,26 @@ export const insertIntoCandidateFeedbackReport = (_body) => {
   return {
     name: 'insert-into-feedback',
     text: candidateQuery.insertIntoCandidateFeedback,
-    values: [_body.candidate_id,_body.candidate_contract_details_id,_body.uniqueId,true,currentTime()],
+    values: [_body.candidate_id,_body.candidate_contract_details_id,_body.uniqueId,true,'CANDIATE MAIL SENT',currentTime()],
   };
 };
 
+export const updateFeedbackRemainder = (_body) => {
+  return {
+    name: 'update-into-feedback',
+    text: candidateQuery.updateFeedback,
+    values: ['REPORTER INITIAL MAIL SENT',currentTime(),_body.candidate_id,_body.candidate_contract_details_id],
+  };
+};
+
+
+export const updateFinalFeedbackRemainder = (_body) => {
+  return {
+    name: 'update-into-final-feedback',
+    text: candidateQuery.updateFeedback,
+    values: ['REPORTER FINAL MAIL SENT',currentTime(),_body.candidate_id,_body.candidate_contract_details_id],
+  };
+};
 export const updateProviderCandidateEllowRate = (_body) => {
   return {
     name: 'link-provider-candidate-with-position',
