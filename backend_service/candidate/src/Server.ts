@@ -96,7 +96,7 @@ app.use(function onError(err, req, res, next) {
   res.statusCode = err.status || 500;
   res.end(res.sentry + '\n');
 });
-cron.schedule('9 12 * * *', ()=> {
+cron.schedule('44 12 * * *', ()=> {
   console.log('Running cron scheduler');
     cronScheduler.candidateReporterDetailRemainder()
   console.log("Start")
@@ -105,7 +105,7 @@ cron.schedule('45 11 * * *', ()=> {
   console.log('Running cron scheduler');
     cronScheduler.reporterFinalFeedbackRemainder()
 });
-cron.schedule('45 11 * * *', ()=> {
+cron.schedule('50 13 * * *', ()=> {
   console.log('Running cron scheduler');
     cronScheduler.reporterInitialFeedbackRemainder()
 });

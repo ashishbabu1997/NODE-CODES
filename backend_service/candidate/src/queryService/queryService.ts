@@ -1544,7 +1544,7 @@ export const updateFeedbackRemainder = (_body) => {
   return {
     name: 'update-into-feedback',
     text: candidateQuery.updateFeedback,
-    values: ['REPORTER INITIAL MAIL SENT',currentTime(),_body.candidate_id,_body.candidate_contract_details_id],
+    values: ['REPORTER INITIAL MAIL SENT',currentTime(),_body.candidate_id,_body.candidate_contract_details_id,_body.uniqueId],
   };
 };
 
@@ -1552,8 +1552,8 @@ export const updateFeedbackRemainder = (_body) => {
 export const updateFinalFeedbackRemainder = (_body) => {
   return {
     name: 'update-into-final-feedback',
-    text: candidateQuery.updateFeedback,
-    values: ['REPORTER FINAL MAIL SENT',currentTime(),_body.candidate_id,_body.candidate_contract_details_id],
+    text: candidateQuery.updateFinalFeedbackRemainder,
+    values: ['REPORTER FINAL MAIL SENT',currentTime(),_body.candidate_id,_body.candidate_contract_details_id,_body.uniqueId],
   };
 };
 export const updateProviderCandidateEllowRate = (_body) => {
