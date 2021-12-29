@@ -747,7 +747,7 @@ export const ellowCandidateReporterFetchMail = async (_body) => {
   try {
     const subject = 'Reporter Detail Form from ellow.io';
     const replacements = {
-      link:'http://localhost:3000/manager-details?token='+_body.uniqueId
+      link:'https://dev.ellow.io/manager-details?token='+_body.uniqueId
     };
 
     if (utils.notNull(_body.email_address)) {
