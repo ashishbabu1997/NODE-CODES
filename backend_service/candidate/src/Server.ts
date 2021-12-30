@@ -20,6 +20,9 @@ import * as path from 'path'; // version 2.x
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 import * as dotenv from 'dotenv';
+import * as cron from 'node-cron';
+import { consoleTestResultHandler } from 'tslint/lib/test';
+import * as cronScheduler  from './cronScheduler/cronscheduler';
 dotenv.config();
 
 const app = express();
@@ -93,7 +96,23 @@ app.use(function onError(err, req, res, next) {
   res.statusCode = err.status || 500;
   res.end(res.sentry + '\n');
 });
-
+cron.schedule('0 10 * * *', ()=> {
+  console.log('Running cron scheduler');
+    cronScheduler.candidateReporterDetailRemainder()
+  console.log("Start")
+});
+cron.schedule('0 10 * * *', ()=> {
+  console.log('Running cron scheduler');
+    cronScheduler.reporterFinalFeedbackRemainder()
+});
+cron.schedule('0 10 * * *', ()=> {
+  console.log('Running cron scheduler');
+    cronScheduler.reporterInitialFeedbackRemainder()
+});
 app.listen(AppConfig.http.port, () => {
   console.log('Listening on port ' + AppConfig.http.port);
 });
+
+
+
+

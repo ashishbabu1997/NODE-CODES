@@ -70,6 +70,16 @@ export const fetchFreelancerReports = (dateRange, groupBy) => {
   };
 };
 
+export const fetchHirerCompanyReports = (dateRange, groupBy) => {
+  return {
+    name: 'get-freelancer-report',
+    text: adminQuery.hirerCompanyReports + dateRange + groupBy,
+  };
+};
+
+
+
+
 // ----------------------------------------- Job category/ skill delete -------------------------------------------
 
 export const deleteJobCategory = (_body) => {

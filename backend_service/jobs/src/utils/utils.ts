@@ -172,6 +172,9 @@ export const positionTab = (body) =>{
         case 'draft':
         vettedQuery=' and p.job_status = 5 and p.created_by = $employeeid'
         break;
+        case 'myPositions':
+            vettedQuery=' and (p.job_status = 6 or p.job_status=8) and p.allocated_to = $employeeid'
+            break;
         default:
         break;
     }
