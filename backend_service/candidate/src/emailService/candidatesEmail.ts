@@ -745,7 +745,7 @@ export const ellowTestLinkNotification = async (_body) => {
 // >>>>>>>>>>>>>> Ellow Candidate-Reporter Details Mail
 export const ellowCandidateReporterFetchMail = async (_body) => {
   try {
-    const subject = 'Reporter Detail Form from ellow.io';
+    const subject = 'Reporting Manager Details';
     const replacements = {
       link:'https://dev.ellow.io/manager-details?token='+_body.uniqueId
     };
