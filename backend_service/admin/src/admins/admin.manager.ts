@@ -713,7 +713,7 @@ export const reports = (_body) => {
           groupByPosition = ` group by ("RecruiterName", "PositionStatus") `,
           groupByCandidatePosition = ` group by ("RecruiterName") `,
           groupByCompanyReg = `group by "assesedBy", "adminApproveStatus" order by "assesedBy","status"`,
-          groupByFreelancer = `group by "candidateStatus", allocated_to order by allocated_to, "candidateStatus" desc`;
+          groupByFreelancer = `   group by c.candidate_status, allocated_to,ers.status_name order by allocated_to, c.candidate_status desc`;
 
         if (utils.notNull(_body.fromDate) && utils.notNull(_body.toDate)) {
           dateRangeCandidate = ` and ca.created_on between ${_body.fromDate} and ${_body.toDate} `;
@@ -722,12 +722,15 @@ export const reports = (_body) => {
           dateRangeCompanyReg = `where "updatedDate" between ${_body.fromDate} and ${_body.toDate}`;
           dateRangeFreelancer = `and c.created_on between ${_body.fromDate} and ${_body.toDate}`;
         }
-
         let cpResults = await client.query(queryService.fetchCandidatePositionReports(dateRangeCandidatePosition, groupByCandidatePosition));
         let pResults = await client.query(queryService.fetchPositionReports(dateRangePosition, groupByPosition));
+
         let cResults = await client.query(queryService.fetchCandidateReports(dateRangeCandidate, groupByCandidate));
+
         let crResults = await client.query(queryService.fetchCompanyRegReports(dateRangeCompanyReg, groupByCompanyReg));
+
         let fResults = await client.query(queryService.fetchFreelancerReports(dateRangeFreelancer, groupByFreelancer));
+
 
         let data = {
           CandidatePositionReports: cpResults.rows,
