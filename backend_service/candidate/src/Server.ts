@@ -109,6 +109,10 @@ cron.schedule('0 10 * * *', ()=> {
   console.log('Running cron scheduler');
     cronScheduler.reporterInitialFeedbackRemainder()
 });
+cron.schedule('0 10 * * *', ()=> {
+  console.log('Running cron scheduler');
+    cronScheduler.closeContract()
+});
 app.listen(AppConfig.http.port, () => {
   console.log('Listening on port ' + AppConfig.http.port);
 });

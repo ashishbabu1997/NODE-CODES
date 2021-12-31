@@ -214,6 +214,13 @@ export const getFinalContractCandidatesList = () => {
   };
 };
 
+export const getContractExpiredCandidates = () => {
+  return {
+    name: 'get-contract-expired-candidates-list',
+    text: candidateQuery.getContractExpiredCandidatesId,
+    values: [currentTime()],
+  };
+};
 export const getCandidateReferalList = (queryText,queryValues) => {
   return {
     name: 'get-candidate-referral',
@@ -1554,6 +1561,14 @@ export const updateFinalFeedbackRemainder = (_body) => {
     name: 'update-into-final-feedback',
     text: candidateQuery.updateFinalFeedbackRemainder,
     values: ['REPORTER FINAL MAIL SENT',currentTime(),_body.candidate_id,_body.candidate_contract_details_id,_body.uniqueId],
+  };
+};
+
+export const closeCandidateContract = (_body) => {
+  return {
+    name: 'close-candidates-contract',
+    text: candidateQuery.updateInContractToFalse,
+    values: [_body.candidate_id,_body.position_id,currentTime()],
   };
 };
 export const updateProviderCandidateEllowRate = (_body) => {
