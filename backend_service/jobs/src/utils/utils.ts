@@ -33,7 +33,8 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
         otherSkills = filter.otherSkills,
         positionStatus = filter.positionStatus,
         activeStatus=filter.activeStatus,
-        typeOfJob=filter.typeOfJob
+        typeOfJob=filter.typeOfJob,
+        priority=filter.priority
         ; 
         
         if(![null,undefined,''].includes(startDate) && ![null,undefined,''].includes(endDate))
@@ -110,6 +111,32 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
             filterQuery=filterQuery+' AND p.job_status=$closed'
             queryValues = Object.assign({closed:8},queryValues)
         }  
+        if(![null,undefined,''].includes(priority) && priority=='Highest')
+        {
+            filterQuery=filterQuery+' AND p.priority=$priority'
+            queryValues = Object.assign({priority:1},queryValues)
+        }
+        if(![null,undefined,''].includes(priority) && priority=='High')
+        {
+            filterQuery=filterQuery+' AND p.priority=$priority'
+            queryValues = Object.assign({priority:2},queryValues)
+        } 
+        if(![null,undefined,''].includes(priority) && priority=='Medium')
+        {
+            filterQuery=filterQuery+' AND p.priority=$priority'
+            queryValues = Object.assign({priority:3},queryValues)
+        } 
+        if(![null,undefined,''].includes(priority) && priority=='Low')
+        {
+            filterQuery=filterQuery+' AND p.priority=$priority'
+            queryValues = Object.assign({priority:4},queryValues)
+        }   
+        if(![null,undefined,''].includes(priority) && priority=='Lowest')
+        {
+            filterQuery=filterQuery+' AND p.priority=$priority'
+            queryValues = Object.assign({priority:5},queryValues)
+        }     
+
     }
     return {filterQuery,queryValues};
 } 
@@ -130,7 +157,7 @@ export const positionSort = (body) => {
     }
     
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
-        sort = body.sortBy=='updatedOn'? ` ORDER BY p.job_status asc , p.updated_on desc `:` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
+        sort = body.sortBy=='updatedOn'? ` ORDER BY p.job_status asc , p.updated_on desc ,p.priority asc`:` ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;                
     }
     return sort;
 }
