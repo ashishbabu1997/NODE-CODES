@@ -23,7 +23,7 @@ router
   .delete('/deleteSkills', jwtAuth, setData(), adminController.removeSkills)
 
   .get('/allSkills', jwtAuth, setData(), adminController.allSkills)
-  .get('/reports', checkJwt(), adminController.reports)
+  .get('/reports', adminController.reports)
   .delete('/deleteResource', jwtAuth,setData(), setProfileAuth([1,2,1000]), adminController.deleteResource);
 export default router;
 
