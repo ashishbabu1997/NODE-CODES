@@ -36,7 +36,6 @@ export const listHirerNotifications = (companyId) => {
 };
 
 export const fetchCandidatePositionReports = (dateRange, groupBy) => {
-
   return {
     name: 'get-candidate-position-reports',
     text: adminQuery.candidatePositionReports + dateRange + groupBy,

@@ -14,6 +14,8 @@ export const emailPath = {
   ELLOW_VETTED: 'src/emailTemplates/ellowVettedText.html',
   REFERRAL_WELCOME_MAIL: 'src/emailTemplates/referalWelcomeMail.html',
   TEST_LINK_NOTIFIACTION: 'src/emailTemplates/ellowTestLinkNotification.html',
+  REPORTER_DETAIL_FETCH_MAIL:'src/emailTemplates/ellowCandidateReporterDetailFetchMail.html',
+  REPORTER_INITIAL_FEEDBACK_MAIL:'src/emailTemplates/reporterInitialFeedback.html',
   REFERRAL_THANKS_MAIL: 'src/emailTemplates/referalThanksMail.html',
   FREELANCER_SUBMITTED: 'src/emailTemplates/freelancerSubmitText.html',
   INTERVIEW_REQUESTED: 'src/emailTemplates/interviewRequestMailText.html',
