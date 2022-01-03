@@ -230,6 +230,7 @@ export const fetchPositionDetails = (_body) => {
             companyLinkedinId: step.company_linkedin_id,
             skills: step.skills,
             tyeOfJob: step.type_of_job,
+            priority:step.priority
           };
         });
         resolve({ code: 200, message: 'Fetched position details successfully', data: result });
