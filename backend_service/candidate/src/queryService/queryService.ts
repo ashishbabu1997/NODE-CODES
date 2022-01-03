@@ -1598,7 +1598,7 @@ export const addCandidateHiringSteps = (_body) => {
   return {
     name: 'add-candidate-client-hiring-steps',
     text: hiringQuery.addCandidatePositionHiringSteps,
-    values: [_body.positionId, _body.candidateId, _body.employeeId, currentTime()],
+    values: [parseInt(_body.positionId), parseInt(_body.candidateId), parseInt(_body.employeeId), currentTime()],
   };
 };
 

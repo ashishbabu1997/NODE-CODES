@@ -6,6 +6,8 @@ import * as emailClient from '../emailService/emailService';
 import * as queryService from '../queryService/queryService';
 import * as utils from '../utils/utils';
 import { Console } from 'console';
+const currentTime = () => { return new Date().getTime() }
+
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>>>>>>Get the position detils of a company
 export const getCompanyPositions = (_body) => {
@@ -34,7 +36,7 @@ export const getCompanyPositions = (_body) => {
         if (reqBody.userRoleId == 1) {
           _body.queryCountText = positionsQuery.getCompanyPositionsForAdminTotalCount + utils.positionTab(body) + filterQuery;
           _body.queryText = positionsQuery.getCompanyPositionsForAdmin + utils.positionTab(body) + filterQuery + utils.positionSort(body) + utils.positionPagination(body);
-          _body.queryValues = Object.assign({ searchkey: searchKey, employeeid: reqBody.employeeId }, _body.queryValues);
+          _body.queryValues = Object.assign({ searchkey: searchKey, employeeid: reqBody.employeeId,currenttime:(currentTime()/1000) }, _body.queryValues);
           // Object.assign({searchkey:searchKey,employeeid:reqBody.employeeId},queryValues)
         } else {
           _body.queryCountText = positionsQuery.getCompanyPositionsForBuyerTotalCount + utils.positionTab(body) + filterQuery;
@@ -228,6 +230,7 @@ export const fetchPositionDetails = (_body) => {
             companyLinkedinId: step.company_linkedin_id,
             skills: step.skills,
             tyeOfJob: step.type_of_job,
+            priority:step.priority
           };
         });
         resolve({ code: 200, message: 'Fetched position details successfully', data: result });
@@ -351,9 +354,6 @@ export const updateCompanyPositions = async (_body) => {
             await client.query(queryService.changePositionStatusQuery(_body));
           }
 
-          if (positionStatus.rows[0].job_status == 5) {
-            await client.query(queryService.deleteReadStatusQuery(_body));
-          }
         }
         _body.responseMessage = _body.publish == true ? 'Position created successfully' : 'Position saved successfully';
         resolve({ code: 200, message: _body.responseMessage, data: { positionId, companyName } });
