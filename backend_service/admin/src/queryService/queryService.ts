@@ -36,6 +36,7 @@ export const listHirerNotifications = (companyId) => {
 };
 
 export const fetchCandidatePositionReports = (dateRange, groupBy) => {
+
   return {
     name: 'get-candidate-position-reports',
     text: adminQuery.candidatePositionReports + dateRange + groupBy,
@@ -64,12 +65,21 @@ export const fetchCompanyRegReports = (dateRange, groupBy) => {
 };
 
 export const fetchFreelancerReports = (dateRange, groupBy) => {
-  console.log(adminQuery.freelancerReports+dateRange+groupBy)
   return {
     name: 'get-freelancer-reports',
     text: adminQuery.freelancerReports + dateRange + groupBy,
   };
 };
+
+export const fetchHirerCompanyReports = (dateRange, groupBy) => {
+  return {
+    name: 'get-freelancer-report',
+    text: adminQuery.hirerCompanyReports + dateRange + groupBy,
+  };
+};
+
+
+
 
 // ----------------------------------------- Job category/ skill delete -------------------------------------------
 
