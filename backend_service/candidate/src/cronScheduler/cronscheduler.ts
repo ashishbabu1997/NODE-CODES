@@ -115,6 +115,7 @@ export const closeContract = () => {
         const promise=[]
         var result = await client.query(queryService.getContractExpiredCandidates());
         result.rows.forEach(async (element) => {
+          console.log(element)
           promise.push(client.query(queryService.closeCandidateContract(element)));
         });
         await Promise.all(promise);
