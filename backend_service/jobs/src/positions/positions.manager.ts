@@ -269,7 +269,6 @@ export const updateCompanyPositions = async (_body) => {
         _body.tSkill = ![undefined, null].includes(_body.skills) && Array.isArray(_body.skills['topRatedSkills']) ? _body.skills['topRatedSkills'].map((a) => a.skillId) : [];
         _body.oSkill = ![undefined, null].includes(_body.skills) && Array.isArray(_body.skills['otherSkills']) ? _body.skills['otherSkills'].map((a) => a.skillId) : [];
         _body.skillSet = _body.tSkill.concat(_body.oSkill);
-        console.log("5")
         await client.query(queryService.deleteJobSkillsQuery(_body));
         await client.query('COMMIT');
         if (_body.tSkill.length > 0) {
