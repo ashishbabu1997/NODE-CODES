@@ -251,7 +251,7 @@ export const fetchPositionDetails = (_body) => {
 export const updateCompanyPositions = async (_body) => {
   return new Promise((resolve, reject) => {
     const positionId = _body.positionId;
-    const companyId = _body.userRoleId == 1 ? _body.hirerCompanyId : _body.companyId;
+    const companyId = _body.userRoleId == 1 ? parseInt(_body.hirerCompanyId) : parseInt(_body.companyId);
     const timer = setTimeout(() => '', 1000);
     _body.skillNames = [];
     (async () => {
@@ -269,6 +269,7 @@ export const updateCompanyPositions = async (_body) => {
         _body.tSkill = ![undefined, null].includes(_body.skills) && Array.isArray(_body.skills['topRatedSkills']) ? _body.skills['topRatedSkills'].map((a) => a.skillId) : [];
         _body.oSkill = ![undefined, null].includes(_body.skills) && Array.isArray(_body.skills['otherSkills']) ? _body.skills['otherSkills'].map((a) => a.skillId) : [];
         _body.skillSet = _body.tSkill.concat(_body.oSkill);
+        console.log("5")
         await client.query(queryService.deleteJobSkillsQuery(_body));
         await client.query('COMMIT');
         if (_body.tSkill.length > 0) {

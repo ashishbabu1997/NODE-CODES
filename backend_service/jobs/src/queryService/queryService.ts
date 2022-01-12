@@ -339,7 +339,7 @@ export const updateCompanyPositionsFirstQuery = (_body) => {
         text: positionsQuery.updatePositionFirst,
         values: [_body.positionName, _body.locationName, _body.developerCount,
         _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document,
-        _body.employeeId, currentTime(), _body.positionId, _body.cmpId, _body.jobCategoryId,_body.priority]
+        parseInt(_body.employeeId), currentTime(), _body.positionId, parseInt(_body.cmpId), _body.jobCategoryId,_body.priority]
     }
 }
 export const updateCompanyPositionsSecondQuery = (_body) => {
@@ -348,7 +348,7 @@ export const updateCompanyPositionsSecondQuery = (_body) => {
         text: positionsQuery.updatePositionSecond,
         values: [_body.contractStartDate,
         _body.currencyTypeId, _body.billingTypeId, _body.minBudget, _body.maxBudget,
-        _body.employeeId, currentTime(), _body.positionId, _body.cmpId, _body.contractDuration, _body.immediate,_body.typeOfJob]
+        parseInt(_body.employeeId), currentTime(), _body.positionId, _body.cmpId, _body.contractDuration, _body.immediate,_body.typeOfJob]
     }
 }
 export const deleteJobSkillsQuery = (_body) => {
