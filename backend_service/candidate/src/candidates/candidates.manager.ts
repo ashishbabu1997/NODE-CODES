@@ -2715,7 +2715,11 @@ export const updateStartAndEndDate = (_body) => {
               break;
 
             case 'update':
-              await client.query(queryService.updateContractStartAndEndDate(_body));
+              
+              await client.query(queryService.setOldContractToFalse(_body));
+              await client.query(queryService.updateContractDetails(_body));
+
+              // await client.query(queryService.updateContractStartAndEndDate(_body));
               break;
 
             default:
