@@ -266,6 +266,14 @@ export const fetchCompanyPositionsById = (_body) => {
 
     }
 }
+export const mockTails = (_body) => {
+    return {
+        name: 'id-fetch-mocj-positions',
+        text: positionsQuery.mock,
+        values: []
+
+    }
+}
 export const fetchPositionsCount = (_body) => {
     return {
         name: 'id-fetch-company-positions-count',
