@@ -89,7 +89,7 @@ export const companyBasedPositionReports = (_body) => {
   return {
     name: 'company-based-position-report',
     text: adminQuery.companyBasedPositionReports,
-    values:{fromdate:_body.fromDate,todate:_body.toDate}
+    values:[]
   };
 };
 
