@@ -1,7 +1,7 @@
 import * as adminManager from './admin.manager';
 import sendResponse from '../common/response/response';
 export const listUsers = (req, res) => {
-  const body = req.query;
+  const body = req;
   adminManager
     .listUsersDetails(body)
     .then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))

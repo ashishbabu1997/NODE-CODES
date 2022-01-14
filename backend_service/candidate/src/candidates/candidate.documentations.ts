@@ -2962,6 +2962,8 @@
  *       500:
  *         description: Server down
  */
+
+
 /**
  * @swagger
  * /candidates/getEmailAddressFromReferralToken:
@@ -3002,6 +3004,165 @@
  *         schema:
  *         type: integer
  *         enum: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25]
+ *     responses:
+ *       200:
+ *         description: Api success
+ *       400:
+ *         description: Api Failed
+ *       401:
+ *         description: Unauthorised access
+ *       403:
+ *         description: Permission denied
+ *       500:
+ *         description: Server down
+ */
+
+
+
+ /**
+ * @swagger
+ * /candidates/getSignedupCandidateDetails:
+ *   get:
+ *     tags:
+ *       - Candidates
+ *     name: Get candidate details
+ *     summary: Get Candidate sign up details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Api success
+ *       400:
+ *         description: Api Failed
+ *       401:
+ *         description: Unauthorised access
+ *       403:
+ *         description: Permission denied
+ *       500:
+ *         description: Server down
+ */
+
+
+ /**
+ * @swagger
+ * /candidates/addReport:
+ *   post:
+ *     tags:
+ *       - Candidates
+ *     name:  add reporter 
+ *     summary: Add Reporter Details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             token:
+ *               type: string
+ *             reporterName:
+ *               type: string
+ *             reporterEmail:
+ *               type: string
+ *             reporterPhoneNumber:
+ *               type: string
+ *           required:
+ *             - token
+ *     responses:
+ *       200:
+ *         description: Api success
+ *       400:
+ *         description: Api Failed
+ *       401:
+ *         description: Unauthorised access
+ *       403:
+ *         description: Permission denied
+ *       500:
+ *         description: Server down
+ */
+
+
+
+  /**
+ * @swagger
+ * /candidates/updateReporterInitialFeedback:
+ *   post:
+ *     tags:
+ *       - Candidates
+ *     name:  add reporter 
+ *     summary: Add Reporter Details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             comment:
+ *               type: json
+ *             rating:
+ *               type: json
+ *             token:
+ *               type: string
+ *           required:
+ *             - token
+ *     responses:
+ *       200:
+ *         description: Api success
+ *       400:
+ *         description: Api Failed
+ *       401:
+ *         description: Unauthorised access
+ *       403:
+ *         description: Permission denied
+ *       500:
+ *         description: Server down
+ */
+
+
+
+    /**
+ * @swagger
+ * /candidates/updateReporterFinalFeedback:
+ *   post:
+ *     tags:
+ *       - Candidates
+ *     name:  add reporter 
+ *     summary: Add Reporter Details
+ *     security:
+ *       - bearerAuth: []
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             comment:
+ *               type: json
+ *             rating:
+ *               type: json
+ *             token:
+ *               type: string
+ *           required:
+ *             - token
  *     responses:
  *       200:
  *         description: Api success

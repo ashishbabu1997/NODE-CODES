@@ -47,18 +47,40 @@ export const getCompanySkills = (_body) => {
 export const getCompanySkillsOrdered = (_body) => {
     return new Promise((resolve, reject) => {
         if (_body.jobCategoryId) {
-            const query = {
-                name: 'fetch-skills-by-jobcategory',
-                text: skillsQuery.getOrderedSkills,
-                values: [_body.jobCategoryId],
-            }
-            database().query(query, (error, results) => {
-                if (error) {
-                    reject({ code: 400, message: "Failed. Please try again.", data: {} });
-                    return;
+            if(_body.flag==true)
+            {
+                const query = {
+                    name: 'fetch-skills-by-jobcategory',
+                    text: skillsQuery.getOrderedSkills,
+                    values: [_body.jobCategoryId],
                 }
-                resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
-            })
+                database().query(query, (error, results) => {
+                    if (error) {
+                        console.log(error);
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                        return;
+                    }
+                    resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
+                })
+            }
+            else
+            {
+                const query = {
+                    name: 'fetch-skills-by-jobcategory',
+                    text: skillsQuery.getUsualOrderedSkills,
+                    values: [_body.jobCategoryId],
+                }
+                database().query(query, (error, results) => {
+                    if (error) {
+                        console.log(error);
+
+                        reject({ code: 400, message: "Failed. Please try again.", data: {} });
+                        return;
+                    }
+                    resolve({ code: 200, message: "Skills listed successfully", data: { skills: results.rows } });
+                })
+            }
+            
         }
         else {
             const queryWithJobCategoryId = {
@@ -68,6 +90,8 @@ export const getCompanySkillsOrdered = (_body) => {
             }
             database().query(queryWithJobCategoryId, (error, results) => {
                 if (error) {
+                    console.log(error);
+
                     reject({ code: 400, message: "Failed. Please try again.", data: {} });
                     return;
                 }

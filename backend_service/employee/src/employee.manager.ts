@@ -62,10 +62,20 @@ export const createEmployee = (_body) => {
                         values: [_body.body.companyName, currentTime(),domain],
                     }
                     const result = await client.query(createCompanyQuery);
+                     // create an entry in settings table later used for company preferences like currency
+                    const createSettingsQuery = {
+                        name: 'createSettings',
+                        text: employeeQuery.createSettings,
+                        values: [companyId, currentTime()],
+                    }
+                    await client.query(createSettingsQuery);
                     companyId = result.rows[0].company_id;
                     adminApproveStatus = null;
                     approvalStatus = false;
                     _body.primaryEmail=true
+                    _body.recruitersSubject = config.text.subject
+                    _body.recruitersPath = 'src/emailTemplates/userSignupText.html';
+                    _body.recruitersReplacements = { fName: _body.body.firstName, lName: _body.body.lastName, email: loweremailId, company: _body.body.companyName };
                 }
                 else {
                     const results = await client.query(queryService.getPrimaryEmailQuery({companyId, accountType: parseInt(_body.body.accountType)}));
@@ -73,6 +83,11 @@ export const createEmployee = (_body) => {
                     _body.primaryEmail= (userData.primary_email == null) ? true: false;
                 }
                 _body.userRoleId=_body.body.accountType == 1?2:3;
+                let Name = _body.body.firstName.charAt(0).toUpperCase() + _body.body.firstName.slice(1) + " " + _body.body.lastName.charAt(0).toUpperCase() + _body.body.lastName.slice(1)
+                _body.recruitersSubject=config.text.newUserSubject
+                let number = ![null, undefined].includes(_body.body.telephoneNumber) ? _body.body.telephoneNumber : "";
+                _body.recruitersPath = 'src/emailTemplates/applicationText.html';
+                _body.recruitersReplacements = { applicantName: Name, company: _body.body.companyName , email: loweremailId, phoneNumber: number }
                 if ((userData.company_type == 3 && _body.userRoleId == 2) || (userData.company_type == 1 && _body.userRoleId == 3)) {
                     const updateCompanyTypeQuery = {
                         name: 'update-company-type',
@@ -80,6 +95,8 @@ export const createEmployee = (_body) => {
                         values: [4, companyId, currentTime()]
                     }
                     await client.query(updateCompanyTypeQuery);
+                } else {
+                    reject({ code: 400, message: "Your company admin is already registered", data: {} });
                 }
                 const createEmployeeQuery = {
                     name: 'createEmployee',
@@ -93,87 +110,38 @@ export const createEmployee = (_body) => {
                     name: 'get-ellow-admin',
                     text: employeeQuery.getellowAdmins,
                     values: []
-
-
                 }
                 var ellowAdmins = await client.query(getEllowAdmins)
                 if (Array.isArray(ellowAdmins.rows)) {
-                    let recruitersSubject = 'Company Signup Notification'
-                    let recruitersPath = 'src/emailTemplates/userSignupText.html';
-                    let recruitersReplacements = { fName: _body.body.firstName, lName: _body.body.lastName, email: loweremailId, company: _body.body.companyName };
+                   
                     ellowAdmins.rows.forEach(element => {
-                        if (element.email != null || '' || undefined) {
-                            emailClient.emailManager(element.email, recruitersSubject, recruitersPath, recruitersReplacements);
-                        }
-                        else {
-                            console.log("Email Recipient is empty")
-                        }
+                            emailClient.emailManager(element.email, _body.recruitersSubject, _body.recruitersPath, _body.recruitersReplacements);
 
                     })
 
                 }
-                else {
-                    console.log("Error in fetch admin query")
-                }
-                // create an entry in settings table later used for company preferences like currency
-                const createSettingsQuery = {
-                    name: 'createSettings',
-                    text: employeeQuery.createSettings,
-                    values: [companyId, currentTime()],
-                }
-                await client.query(createSettingsQuery);
-                if (approvalStatus) {
-                    const password = passwordGenerator.generate({
+               
+                // Create and update password to employee table
+                const password = passwordGenerator.generate({
                         length: 10,
                         numbers: true
                     });
-                    var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
-                    const subject = " ellow.io LOGIN PASSWORD "
-                    const storePasswordQuery = {
+                var hashedPassword = crypto.createHash("sha256").update(password).digest("hex");
+                const subject = " ellow.io LOGIN PASSWORD "
+                const storePasswordQuery = {
                         name: 'store-encrypted-password',
                         text: employeeQuery.storePassword,
                         values: [hashedPassword, loweremailId],
-                    }
-                    await client.query(storePasswordQuery);
-
-                    let path = 'src/emailTemplates/newUserText.html';
-                    let userReplacements = { loginPassword: password };
-                    if (loweremailId != null || '' || undefined) {
-                        emailClient.emailManager(loweremailId, subject, path, userReplacements);
-                    }
-                    else {
-                        console.log("Email Recipient is empty")
-                    }
-                    let Name = _body.body.firstName.charAt(0).toUpperCase() + _body.body.firstName.slice(1) + " " + _body.body.lastName.charAt(0).toUpperCase() + _body.body.lastName.slice(1)
-                    let companyName = _body.body.companyName
-                    let emailAddress = _body.body.email
-                    let number = ![null, undefined].includes(_body.body.telephoneNumber) ? _body.body.telephoneNumber : ""
-                    let adminPath = 'src/emailTemplates/applicationText.html';
-                    let adminReplacements = { applicantName: Name, company: companyName, email: emailAddress, phoneNumber: number };
-                    const getEllowAdmins = {
-                        name: 'get-ellow-admin',
-                        text: employeeQuery.getellowAdmins,
-                        values: []
-
-
-                    }
-                    var ellowAdmins = await client.query(getEllowAdmins)
-                    if (Array.isArray(ellowAdmins.rows)) {
-
-                        ellowAdmins.rows.forEach(element => {
-
-                            emailClient.emailManagerForNoReply(element.email, config.text.subject, adminPath, adminReplacements);
-
-                        })
-                    }
                 }
-                else {
-                    console.log("Waiting for admin approval")
-                }
+                await client.query(storePasswordQuery);
+
+                let path = 'src/emailTemplates/newUserText.html';
+                let userReplacements = { loginPassword: password };
+                emailClient.emailManager(loweremailId, subject, path, userReplacements);
+            // Sendinblue Add Contact
                 _body.body.listId=_body.body.accountType==1?config.sendinblue.hirerListId:config.sendinblue.providerListId
                 var list=_body.body;
                 sendinblueService.sendinblueAddResources(list)
-
                 await client.query('COMMIT')
                 resolve({ code: 200, message: "Employee added successfully", data: {} });
             } catch (e) {
@@ -228,8 +196,8 @@ export const createEmployeeByAdmin = (_body) => {
                     var domain=utils.domainExtractor(loweremailId)
                     const createCompanyQuery = {
                         name: 'createCompany',
-                        text: employeeQuery.createCompany,
-                        values: [_body.companyName, currentTime(),domain],
+                        text: employeeQuery.createCompanyByAdmin,
+                        values: [_body.companyName, currentTime(),domain,_body.employeeId],
                     }
 
                     const result = await client.query(createCompanyQuery);
@@ -326,7 +294,7 @@ export const createEmployeeByAdmin = (_body) => {
                 console.log("Error1", e)
                 await client.query('ROLLBACK')
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
-            } 
+            }
         })().catch(e => {
             console.log("Error2", e)
             reject({ code: 400, message: "Failed. Please try again.", data: e.message })
@@ -443,7 +411,7 @@ export const createFreelancer = (_body) => {
                     if(referralResults.rowCount!=0)
                     {
                         await client.query(queryService.updateCandidateReferralStatus(_body));
-                        const message = `A freelancer,${_body.name} has registered with us using referral link`;
+                        const message = `A freelancer,${_body.name} has registered with us through freelancer referral scheme`;
                         createNotification({
                         positionId: null,
                         companyId: _body.companyId,
@@ -456,6 +424,16 @@ export const createFreelancer = (_body) => {
                         firstName: _body.firstName,
                         lastName: _body.lastName,
                         });
+
+                    const referrerSubject = 'ellow Thank you Note';
+                    const referrerReplacements = {
+                        name:_body.name,
+                    };
+                    const referrerPath='src/emailTemplates/referalThanksMail.html'
+                    if (utils.notNull(referralResults.rows[0].emailAddress)) {
+                        emailClient.emailManagerForNoReply(referralResults.rows[0].emailAddress, referrerSubject,referrerPath, referrerReplacements);
+                    }
+   
                     }
                 }  
                 let uniqueId = nanoid();
@@ -611,7 +589,7 @@ export const tokenCheck = (_body) => {
                 reject({ code: 400, message: "Failed. Please try again.", data: e.message });
             }
         })().catch(e => {
-            console.log("Error e2: ", e);
+            console.log("Error e2: ", e); 
             reject({ code: 400, message: "Failed. Please try again.", data: { e } })
         })
 
@@ -807,3 +785,28 @@ export function editRecuiterDetails(_body: any) {
     })
 }
 
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>>>>>Switch user
+export const switchUser = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                console.log(_body,"Dasdasd")
+                _body.userRoleId = _body.userRoleId == 2 ? 3 : 2;
+                const results = await client.query(queryService.switchUserQuery(_body));
+                let data = results.rows.length > 0 ? { code: 200, message: "Employee details fetched successfully", data:  results.rows[0]  } :
+                { code: 200, message: "Switch user is not enabled for this account", data: { } }
+                resolve(data);
+                await client.query('COMMIT')
+            } catch (e) {
+                console.log("Error e1: ", e);
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error e2: ", e);
+            reject({ code: 400, message: "Failed. Please try again.", data: { e } })
+        })
+    })
+}

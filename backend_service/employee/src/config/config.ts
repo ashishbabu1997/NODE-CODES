@@ -41,6 +41,7 @@ export default {
     
         "subject":"Company Registration Notification",
         "newCompanySubject":"New Company Registration Notification",
+        "newUserSubject":"User Registration Notification",
         "newSubUserSubject":"Sub User Registration Notification",
         "freelancerSubject":"Candidate Registration Notification",
         "userSubject":"Candidate Verification Link",

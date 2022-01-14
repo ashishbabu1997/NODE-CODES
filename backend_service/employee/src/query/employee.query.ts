@@ -1,10 +1,11 @@
 export default {
     "getEmail": "SELECT admin_approve_status,email FROM employee WHERE email=$1",
     "getAccountType":'select account_type from employee where primary_email=true and company_id=$1',
-    "getDetailsFromReferralToken":'select * from candidate_referral where referral_token=$1',
-    "updateReferralStatus":'update candidate_referral set status=true,referral_token=null where referral_token=$1',
+    "getDetailsFromReferralToken":'select *,(select candidate.email_address from candidate where candidate_id=candidate_referral.candidate_id) as "emailAddress" from candidate_referral where referral_token=$1',
+    "updateReferralStatus":'update candidate_referral set status=true,referral_token=null,phone_number=$2 where referral_token=$1',
     "getFreelancerCompanyId": "SELECT company_id FROM company WHERE company_type=2",
-    "createCompany": "INSERT INTO company( company_name,created_on,company_domain,user_id,company_type,company_type_id) VALUES ($1, $2,$3,1,1,1) RETURNING company_id",
+    "createCompany": "INSERT INTO company(company_name, created_on, updated_on, company_domain, user_id, company_type, company_type_id) VALUES ($1, $2, $2, $3, 1, 1, 1) RETURNING company_id",
+    "createCompanyByAdmin":"INSERT INTO company(company_name, created_on,updated_on, company_domain, user_id, company_type, company_type_id, assesed_by, created_by, updated_by) VALUES ($1, $2,$2, $3, 1, 1, 1,$4,$4,$4) RETURNING company_id",
     "createEmployee": `INSERT INTO employee(firstname,lastname,email,account_type,company_id,telephone_number,created_on,updated_on,user_role_id,status,admin_approve_status,primary_email) VALUES($1,$2,$3,$4,$5,$6,$7,$7,$8,$9,$10,$11)`,
     "createFreelancer": `WITH data(firstname, lastname, email, yoe, accounttype, phone, companyid, userroleid, adminapprovestatus, createdtime,token) AS ( VALUES ($firstname, $lastname, $email, $yoe::double precision, 4, $phone, (select company_id from company where company_type = 2), 4, 1, $createdtime::bigint,$token)) , ins1 as (INSERT INTO employee (firstname, lastname, email, account_type, company_id, telephone_number, created_on, user_role_id, admin_approve_status,token) select firstname, lastname, email, accounttype, companyid, phone, createdtime, userroleid, adminapprovestatus, token from data returning employee_id), ins2 as ( INSERT INTO candidate (candidate_first_name, candidate_last_name, company_id, email_address, work_experience, phone_number, created_on, updated_on, created_by, updated_by) select d.firstname, d.lastname, d.companyid, d.email, d.yoe, d.phone, d.createdtime, d.createdtime, ins1.employee_id, ins1.employee_id from data d,ins1 returning candidate_id ) INSERT INTO candidate_employee( employee_id, candidate_id, created_on, updated_on) select ins1.employee_id,ins2.candidate_id,d.createdtime,d.createdtime from data d,ins1,ins2 `,
     "createSettings": "INSERT INTO settings(company_id, created_on) VALUES ($1, $2)",
@@ -19,5 +20,6 @@ export default {
     "getEmployeesFromPositionId": "select concat(e.firstname,' ',e.lastname) as name ,e.employee_id as employeeId from employee e  left join positions p on p.company_id=e.company_id where p.position_id=$1",
     "updateRecruiterDetails":"update employee set email=$email, firstname=$firstName, lastname=$lastName, telephone_number=$phoneNumber, updated_on=$currenttime, updated_by=$employeeid where employee_id = $recruiterid",
     "updateCompanyType": "UPDATE company SET company_type=$1,updated_on=$3 WHERE company_id=$2 and status=true",
-    "getPrimaryEmail": "select distinct (e.primary_email), c.company_type from company c left join employee e on e.company_id = c.company_id and e.account_type = $2 where c.company_id = $1 and (e.primary_email is true or e.primary_email is null)"
+    "getPrimaryEmail": "select distinct (e.primary_email), c.company_type from company c left join employee e on e.company_id = c.company_id and e.account_type = $2 where c.company_id = $1 and (e.primary_email is true or e.primary_email is null)",
+    "switchUserEmail": "select email from employee where user_role_id = $2 and primary_email = true and company_id = $1"
 }

@@ -422,27 +422,25 @@ export const sigOn = (req, res) => {
   candidateManager
     .singleSignOn(body)
     .then((response: any) => {
-      res.writeHead(301, { Location: 'https://dev.ellow.io/candidate-login?token=' + response.data.token });
+      res.writeHead(301, { Location: 'https://stage.ellow.io/candidate-login?token=' + response.data.token });
       res.end();
     })
     .catch(() => {
-      res.writeHead(301, { Location: 'https://dev.ellow.io/redirect-notification' });
+      res.writeHead(301, { Location: 'https://stage.ellow.io/redirect-notification' });
       res.end();
     });
 };
 export const googleSignon = (req, res) => {
   const body = req.query;
-  candidateManager
-    .googleSignIn(body)
-    .then((response: any) => {
-      console.log(response.data.token);
-      res.writeHead(301, { Location: 'https://dev.ellow.io/candidate-login?googleToken=' + response.data.token });
-      res.end();
-    })
-    .catch(() => {
-      res.writeHead(301, { Location: 'https://dev.ellow.io/redirect-notification' });
-      res.end();
-    });
+  candidateManager.googleSignIn(body).then((response: any) => {
+    console.log(response.data.token)
+    res.writeHead(301, {Location: 'https://stage.ellow.io/candidate-login?googleToken='+response.data.token});
+    res.end();
+  })
+      .catch(() => {
+        res.writeHead(301, {Location: 'https://stage.ellow.io/redirect-notification'});
+        res.end();
+      });
 };
 export const getEmployeeDetailsFromLinkedin = (req, res) => {
   const body = req.body;
@@ -688,6 +686,41 @@ export const candidateAdminReferralListController = (req, res) => {
   const body = req.query;
   candidateManager
     .candidateAdminReferralList(body)
+    .then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};
+
+export const getSignedupCandidateDetailsController = (req, res) => {
+  const body = req.query;
+  candidateManager
+    .getSignedupCandidateDetails(body)
+    .then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};
+
+
+export const addReportController = (req, res) => {
+  const body = req.body;
+  candidateManager
+    .addReporterDetails(body)
+    .then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};
+
+
+export const updateReporterInitialFeedbackController = (req, res) => {
+  const body = req.body;
+  candidateManager
+    .updateReporterInitialFeedback(body)
+    .then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
+    .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
+};
+
+
+export const updateReporterFinalFeedbackController = (req, res) => {
+  const body = req.body;
+  candidateManager
+    .updateReporterFinalFeedback(body)
     .then((response: any) => sendResponse(res, response.code, 1, 200, response.message, response.data))
     .catch((error: any) => sendResponse(res, error.code, 0, 400, error.message, error.data));
 };

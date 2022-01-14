@@ -39,6 +39,15 @@ export const listPrimaryEmails = (body) => {
         values: [body.positionId]
     }
 }
+
+export const getClosedCount = (body) => {
+    return {
+        name: 'get-closed-count',
+        text: positionsQuery.getClosedCount,
+        values: [body.positionId]
+    }
+}
+
 export const listSecondaryEmails = (body) => {
     return {
         name: 'get-hirer-secondary-mails',
@@ -257,6 +266,14 @@ export const fetchCompanyPositionsById = (_body) => {
 
     }
 }
+export const mockTails = (_body) => {
+    return {
+        name: 'id-fetch-mocj-positions',
+        text: positionsQuery.mock,
+        values: []
+
+    }
+}
 export const fetchPositionsCount = (_body) => {
     return {
         name: 'id-fetch-company-positions-count',
@@ -273,7 +290,7 @@ export const addCompanyPositionsQuery = (_body) => {
             name: _body.positionName, location: _body.locationName, devcount: _body.developerCount, companyid: _body.cmpId,
             explevel: _body.experienceLevel, jobdesc: _body.jobDescription, doc: _body.document,
             currencyid: _body.currencyTypeId, billingtypeid: _body.billingTypeId, contractstartdate: _body.contractStartDate, contractduration: _body.contractDuration, maxbudget: _body.maxBudget, minbudget: _body.minBudget,
-            empid: _body.employeeId, time: currentTime(), jobcatid: _body.jobCategoryId,immediate:_body.immediate,typeofjob:_body.typeOfJob
+            empid: _body.employeeId, time: currentTime(), jobcatid: _body.jobCategoryId,immediate:_body.immediate,typeofjob:_body.typeOfJob,priority:_body.priority
         }
     }
 }
@@ -330,7 +347,7 @@ export const updateCompanyPositionsFirstQuery = (_body) => {
         text: positionsQuery.updatePositionFirst,
         values: [_body.positionName, _body.locationName, _body.developerCount,
         _body.allowRemote, _body.experienceLevel, _body.jobDescription, _body.document,
-        _body.employeeId, currentTime(), _body.positionId, _body.cmpId, _body.jobCategoryId]
+        parseInt(_body.employeeId), currentTime(), _body.positionId, parseInt(_body.cmpId), _body.jobCategoryId,_body.priority]
     }
 }
 export const updateCompanyPositionsSecondQuery = (_body) => {
@@ -339,7 +356,7 @@ export const updateCompanyPositionsSecondQuery = (_body) => {
         text: positionsQuery.updatePositionSecond,
         values: [_body.contractStartDate,
         _body.currencyTypeId, _body.billingTypeId, _body.minBudget, _body.maxBudget,
-        _body.employeeId, currentTime(), _body.positionId, _body.cmpId, _body.contractDuration, _body.immediate,_body.typeOfJob]
+        parseInt(_body.employeeId), currentTime(), _body.positionId, _body.cmpId, _body.contractDuration, _body.immediate,_body.typeOfJob]
     }
 }
 export const deleteJobSkillsQuery = (_body) => {

@@ -36,6 +36,8 @@ export const listHirerNotifications = (companyId) => {
 };
 
 export const fetchCandidatePositionReports = (dateRange, groupBy) => {
+  console.log("Candidate Position Reports",adminQuery.candidatePositionReports + dateRange + groupBy)
+
   return {
     name: 'get-candidate-position-reports',
     text: adminQuery.candidatePositionReports + dateRange + groupBy,
@@ -43,6 +45,7 @@ export const fetchCandidatePositionReports = (dateRange, groupBy) => {
 };
 
 export const fetchPositionReports = (dateRange, groupBy) => {
+  console.log("Position Reports",adminQuery.positionReports + dateRange + groupBy)
   return {
     name: 'get-position-reports',
     text: adminQuery.positionReports + dateRange + groupBy,
@@ -50,6 +53,7 @@ export const fetchPositionReports = (dateRange, groupBy) => {
 };
 
 export const fetchCandidateReports = (dateRange, groupBy) => {
+  console.log("Candidate Reports",adminQuery.candidateReports + dateRange + groupBy)
   return {
     name: 'get-candidate-reports',
     text: adminQuery.candidateReports + dateRange + groupBy,
@@ -57,6 +61,7 @@ export const fetchCandidateReports = (dateRange, groupBy) => {
 };
 
 export const fetchCompanyRegReports = (dateRange, groupBy) => {
+  console.log("Company Registration Reports",adminQuery.registrationReports + dateRange + groupBy)
   return {
     name: 'get-company-registration-reports',
     text: adminQuery.registrationReports + dateRange + groupBy,
@@ -64,11 +69,49 @@ export const fetchCompanyRegReports = (dateRange, groupBy) => {
 };
 
 export const fetchFreelancerReports = (dateRange, groupBy) => {
+  console.log("Freelancer Reports",adminQuery.freelancerReports + dateRange + groupBy)
   return {
     name: 'get-freelancer-reports',
     text: adminQuery.freelancerReports + dateRange + groupBy,
   };
 };
+
+export const fetchHirerCompanyReports = (dateRange, groupBy) => {
+  console.log("Hirer Reports",adminQuery.hirerCompanyReports + dateRange + groupBy)
+  return {
+    name: 'get-freelancer-report',
+    text: adminQuery.hirerCompanyReports + dateRange + groupBy,
+  };
+};
+
+
+export const companyBasedPositionReports = (_body) => {
+  return {
+    name: 'company-based-position-report',
+    text: adminQuery.companyBasedPositionReports,
+    values:{fromdate:_body.fromDate,todate:_body.toDate}
+  };
+};
+
+export const skillBasedPositions = (_body) => {
+  return {
+    name: 'skills-based-position-report',
+    text: adminQuery.skillBasedPositionsReports,
+    values:{fromdate:_body.fromDate,todate:_body.toDate}
+  };
+};
+
+export const skillBasedCandidatesReport = (_body) => {
+  return {
+    name: 'skills-based-candidate-report',
+    text: adminQuery.skillBasedCandidateReports,
+    values:{fromdate:_body.fromDate,todate:_body.toDate}
+  };
+};
+
+
+
+
 
 // ----------------------------------------- Job category/ skill delete -------------------------------------------
 

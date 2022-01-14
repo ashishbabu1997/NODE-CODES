@@ -8,7 +8,7 @@ import { checkJwt } from '../middleware/auth0Jwt';
 const router = express.Router();
 
 router
-  .get('/listUsers', jwtAuth, adminController.listUsers)
+  .post('/listUsers', jwtAuth, adminController.listUsers)
   .get('/userDetails', jwtAuth, adminController.userDetails)
   .post('/extractSkills', jwtAuth, adminController.extractSkillsFromExcel)
   .post('/userStatus', jwtAuth, setData(), adminController.adminPanel)
@@ -23,7 +23,7 @@ router
   .delete('/deleteSkills', jwtAuth, setData(), adminController.removeSkills)
 
   .get('/allSkills', jwtAuth, setData(), adminController.allSkills)
-  .get('/reports', checkJwt(), adminController.reports)
+  .get('/reports',jwtAuth, setData(),setProfileAuth([1,1000]), adminController.reports)
   .delete('/deleteResource', jwtAuth,setData(), setProfileAuth([1,2,1000]), adminController.deleteResource);
 export default router;
 

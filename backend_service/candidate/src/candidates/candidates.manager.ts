@@ -210,9 +210,9 @@ export const listAddFromListCandidates = (_body) => {
     (async () => {
       const client = await database();
       try {
-        (queryText = selectQuery + roleBasedQuery + filterQuery + searchQuery + utils.resourceSort(body)), utils.resourcePagination(body);
+        queryText = selectQuery + roleBasedQuery + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
         queryValues = Object.assign({ positionid: body.positionId }, queryValues);
-
+        console.log(queryText)
         const candidatesResult = await client.query(queryService.listAddFromList(queryText, queryValues));
 
         queryText = totaltQuery + roleBasedQuery + filterQuery + searchQuery;
@@ -246,7 +246,6 @@ export const addCandidateReview = (_body) => {
           _body.ellowRecruitmentStatus = config.ellowRecruitmentStatus.complete;
           var result = await client.query(queryService.updateEllowRecuiterReview(_body));
           _body.candidateId = result.rows[0].candidate_id;
-          _body.currentEllowStage = _body.reviewStepsId == 5 ? 6 : _body.reviewStepsId;
           var updateResult = await client.query(queryService.updateEllowRecruitmentStatus(_body));
           _body.ellowstatusId = updateResult.rows[0].ellow_status_id;
           if (_body.stageName == config.ellowRecruitmentStatus.verifiedStage) {
@@ -285,7 +284,9 @@ export const addTestLink = (_body) => {
           (_body.ellowRecruitmentStatus = config.ellowRecruitmentStatus.partial),
           (_body.currentEllowStage = result.review_steps_id);
         await client.query(queryService.updateEllowRecruitmentStatus(_body));
-
+        var candidateDetailResult=await client.query(queryService.getCandidateProfileName(_body));
+        _body.emailAddress=candidateDetailResult.rows[0].email
+        await emailService.ellowTestLinkNotification(_body);
         await client.query('COMMIT');
         resolve({ code: 200, message: 'Candidate Assesment Updated successfully', data: {} });
       } catch (e) {
@@ -1559,7 +1560,6 @@ export const changeEllowRecruitmentStage = (_body) => {
         if ([undefined, null, ''].includes(_body.assignedTo)) {
           reject({ code: 400, message: 'Candidate must be assigned to an assignee', data: {} });
         } else {
-          _body.vetted = _body.stageName == config.ellowRecruitmentStatus.vettedStage || _body.stageName == config.ellowRecruitmentStatus.verifiedStage ? 6 : 1;
           await client.query(queryService.changeEllowRecruitmentStage(_body));
           await client.query(queryService.updateEllowStageStatus(_body));
           await emailService.changeEllowRecruitmentStageEmail(_body, client);
@@ -1825,7 +1825,7 @@ export const resumeParser = (_body) => {
             responseData = e.message;
           });
         } else {
-          reject({ code: 400, message: 'Resume already exist ', data: {} });
+          reject({ code: 400, message: 'The profile which you try to upload already exists with the platform', data: {} });
         }
       } catch (e) {
         console.log(e);
@@ -2823,7 +2823,7 @@ export const fullProfileResumeParser = (_body) => {
             responseData = e.message;
           });
         } else {
-          reject({ code: 400, message: 'Resume already exist ', data: {} });
+          reject({ code: 400, message: 'The profile which you try to upload already exists with the platform', data: {} });
         }
       } catch (e) {
         console.log(e);
@@ -2948,11 +2948,11 @@ export const getElloStage = (_body) => {
         _body.candidateId = candidateResult.rows[0].candidate_id;
         var stageResult = await client.query(queryService.getFreelancerEllowStages(_body));
         stageResult.rows.forEach((element) => {
-          if (element.stageName=='Basic Profile Submission')  element['icon']='profile_icon.svg';
-          else if (element.stageName=='Full Profile Submission') element['icon']='profile_submission_icon.svg';
-          else if (element.stageName=='ellow Technical Assessment') element['icon']='technical assessment_icon.svg';
-          else if (element.stageName=='Certification') element['icon']='ellow_certification_icon.svg';
-          else  element['icon']='';
+          if (element.stageName == 'Basic Profile Submission') element['icon'] = 'profile_icon.svg';
+          else if (element.stageName == 'Full Profile Submission') element['icon'] = 'profile_submission_icon.svg';
+          else if (element.stageName == 'ellow Technical Assessment') element['icon'] = 'technical assessment_icon.svg';
+          else if (element.stageName == 'Certification') element['icon'] = 'ellow_certification_icon.svg';
+          else element['icon'] = '';
         });
         await client.query('COMMIT');
         resolve({ code: 200, message: 'Candidate Assesment Updated successfully', data: { stages: stageResult.rows } });
@@ -2976,8 +2976,7 @@ export const googleSignIn = (_body) => {
       try {
         // Accessing users token for google
         const tokenResponse = await fetch(
-          'https://accounts.google.com/o/oauth2/token?redirect_uri=https%3A%2F%2Fcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code=' +
-            _body.code,
+          'https://accounts.google.com/o/oauth2/token?redirect_uri=https%3A%2F%2Fstagecandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
           {
             method: 'POST',
             headers: {
@@ -3098,7 +3097,6 @@ export const addReferral = (_body) => {
             var referralesult = await client.query(queryService.candidateReferralInsertion(element));
             await client.query('COMMIT');
             await emailService.referralCandidateWelcomeMail(element);
-            await emailService.referalCandidateThanksMail(element);
             _body.referralList.push({ referralId: referralesult.rows[0].candidate_referral_id, name: element.name, emailAddress: element.emailAddress, phoneNumber: element.phoneNumber });
           } else {
             _body.nonReferralList.push({ name: element.name, emailAddress: element.emailAddress, phoneNumber: element.phoneNumber });
@@ -3170,7 +3168,7 @@ export const candidateReferralList = (_body) => {
 
         const queryCountText = totalQuery + searchQuery;
 
-        var referralList = await client.query(queryService.getCandidateReferalList(queryText,queryValues));
+        var referralList = await client.query(queryService.getCandidateReferalList(queryText, queryValues));
         const totalCount = await client.query(queryService.getCandidateReferalListTotalCount(queryCountText, queryValues));
 
         await client.query('COMMIT');
@@ -3212,8 +3210,6 @@ export const getEmailAddressFromReferralToken = (_body) => {
   });
 };
 
-
-
 // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>> Candidate Referral List
 export const candidateAdminReferralList = (_body) => {
@@ -3234,11 +3230,11 @@ export const candidateAdminReferralList = (_body) => {
         queryValues = searchResult.queryValues;
 
         queryText = selectQuery + searchQuery + utils.referralSort(_body) + utils.resourcePagination(_body);
-        queryValues = Object.assign( queryValues);
+        queryValues = Object.assign(queryValues);
 
         const queryCountText = totalQuery + searchQuery;
 
-        var referralList = await client.query(queryService.getCandidateReferalList(queryText,queryValues));
+        var referralList = await client.query(queryService.getCandidateReferalList(queryText, queryValues));
         const totalCount = await client.query(queryService.getCandidateReferalListTotalCount(queryCountText, queryValues));
 
         await client.query('COMMIT');
@@ -3250,6 +3246,105 @@ export const candidateAdminReferralList = (_body) => {
       }
     })().catch((e) => {
       reject(new Exception({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Get signed up candidate details
+export const getSignedupCandidateDetails = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var result = await client.query(queryService.getCandidateBasicDetails(_body));
+        resolve({ code: 200, message: 'Details listed successfully', data: result.rows[0] });
+        
+        await client.query('COMMIT');
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Get reporter Details
+export const addReporterDetails = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var result = await client.query(queryService.addReporter(_body));
+        resolve({ code: 200, message: 'Details listed successfully', data: result.rows[0] });
+        
+        await client.query('COMMIT');
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Update reporter initial feedback Details
+export const updateReporterInitialFeedback = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var result = await client.query(queryService.updateInitialFeedback(_body));
+        resolve({ code: 200, message: 'Details listed successfully', data: result.rows[0] });
+        
+        await client.query('COMMIT');
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+    });
+  });
+};
+
+
+
+// >>>>>>> FUNC. >>>>>>>
+// >>>>>>>>>>>>>> Update reporter final feedback Details
+export const updateReporterFinalFeedback = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        var result = await client.query(queryService.updateFinalFeedback(_body));
+        resolve({ code: 200, message: 'Details listed successfully', data: result.rows[0] });
+        
+        await client.query('COMMIT');
+      } catch (e) {
+        console.log(e);
+        await client.query('ROLLBACK');
+        reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
+      }
+    })().catch((e) => {
+      reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
     });
   });
 };

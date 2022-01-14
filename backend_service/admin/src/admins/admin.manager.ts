@@ -25,6 +25,15 @@ export const listUsersDetails = (_body) => {
       try {
         var selectQuery = adminQuery.listUsers;
         var totalQuery = adminQuery.listUsersTotalCount;
+        var body=_body.body;
+        _body=_body.query;
+        var filterQuery = '',
+          filter = body.filter;
+        // Search for filters in the body
+
+        let filterResult = utils.allUsersFilter(filter, filterQuery);
+        filterQuery = filterResult.filterQuery;
+        selectQuery=selectQuery+filterQuery
         if (_body.searchKey) {
           selectQuery = selectQuery + ' ' + "AND LOWER(p.company_name) LIKE '" + _body.searchKey.toLowerCase() + "%'";
         }
@@ -36,12 +45,14 @@ export const listUsersDetails = (_body) => {
           phoneNumber: 'e.telephone_number',
           companyName: 'p.company_name',
           company: 'p.company_name',
+          createdOn: 'e.created_on'
         };
 
         if (_body.sortBy && _body.sortType && Object.keys(orderBy).includes(_body.sortBy)) {
           selectQuery = selectQuery + ' ORDER BY ' + orderBy[_body.sortBy] + ' ' + _body.sortType;
         }
         selectQuery = selectQuery + utils.adminPagination(_body);
+        console.log(selectQuery)
         const listquery = {
           name: 'list-candidates',
           text: selectQuery,
@@ -87,7 +98,7 @@ export const allUsersList = (_body) => {
         _body.queryValues = Object.assign({ searchkey: searchKey }, _body.queryValues);
         _body.queryCountText = adminQuery.allRegisteredUsersListCount + filterQuery;
         _body.queryText = adminQuery.allRegisteredUsersList + filterQuery + utils.userSort(body) + utils.usersPagination(body);
-
+        console.log(_body.queryText)
         var results = await client.query(queryService.listquery(_body));
         var counts = await client.query(queryService.listQueryCount(_body));
         await client.query('COMMIT');
@@ -712,13 +723,16 @@ export const reports = (_body) => {
           dateRangePosition = '',
           dateRangeCandidatePosition = '',
           dateRangeCompanyReg = '',
-          dateRangeFreelancer = '';
+          dateRangeFreelancer = '',
+          dateRangeHirerCompany = '';
+
 
         let groupByCandidate = ` group by ("RecruiterName", "CandidateStatus") `,
           groupByPosition = ` group by ("RecruiterName", "PositionStatus") `,
           groupByCandidatePosition = ` group by ("RecruiterName") `,
           groupByCompanyReg = `group by "assesedBy", "adminApproveStatus" order by "assesedBy","status"`,
-          groupByFreelancer = `group by "candidateStatus", allocated_to order by allocated_to, "candidateStatus" desc`;
+          groupByFreelancer = ` GROUP BY \"ellow_status_id\", ers.review_steps_id, ers.status_name ORDER BY (SELECT step_order FROM review_steps rs WHERE ers.review_steps_id = rs.review_steps_id) NULLS FIRST, ellow_status_id`,
+          groupByHirerComoany = ` GROUP BY c.company_id, c.created_on ORDER BY c.created_on `
 
         if (utils.notNull(_body.fromDate) && utils.notNull(_body.toDate)) {
           dateRangeCandidate = ` and ca.created_on between ${_body.fromDate} and ${_body.toDate} `;
@@ -726,6 +740,7 @@ export const reports = (_body) => {
           dateRangeCandidatePosition = ` and cp.created_on between ${_body.fromDate} and ${_body.toDate} `;
           dateRangeCompanyReg = `where "updatedDate" between ${_body.fromDate} and ${_body.toDate}`;
           dateRangeFreelancer = `and c.created_on between ${_body.fromDate} and ${_body.toDate}`;
+          dateRangeHirerCompany = ` and c.created_on between ${_body.fromDate} and ${_body.toDate}`
         }
 
         let cpResults = await client.query(queryService.fetchCandidatePositionReports(dateRangeCandidatePosition, groupByCandidatePosition));
@@ -733,6 +748,7 @@ export const reports = (_body) => {
         let cResults = await client.query(queryService.fetchCandidateReports(dateRangeCandidate, groupByCandidate));
         let crResults = await client.query(queryService.fetchCompanyRegReports(dateRangeCompanyReg, groupByCompanyReg));
         let fResults = await client.query(queryService.fetchFreelancerReports(dateRangeFreelancer, groupByFreelancer));
+        let hCResults = await client.query(queryService.fetchHirerCompanyReports(dateRangeHirerCompany, groupByHirerComoany));
 
         let data = {
           CandidatePositionReports: cpResults.rows,
@@ -740,6 +756,7 @@ export const reports = (_body) => {
           CandidateReports: cResults.rows,
           CompanyRegistrationReports: crResults.rows,
           FreelancerReports: fResults.rows,
+          HirerCompanyReports: hCResults.rows
         };
 
         await client.query('COMMIT');

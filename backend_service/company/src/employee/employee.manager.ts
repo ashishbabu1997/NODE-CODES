@@ -116,7 +116,7 @@ export const updateUser = (_body) => {
                         
                             }
                             else{
-                                
+                                await client.query(queryService.updateUserEmail(_body));
                             }
                         }
 
