@@ -2709,13 +2709,16 @@ export const updateStartAndEndDate = (_body) => {
         if (utils.checkRate(_body.contractRate)) {
           switch (_body.action) {
             case 'add':
-              await client.query(queryService.setIncontractToFalse(_body));
               await client.query('COMMIT');
               await client.query(queryService.updateContractDetails(_body));
               break;
 
             case 'update':
-              await client.query(queryService.updateContractStartAndEndDate(_body));
+              
+              await client.query(queryService.setOldContractToFalse(_body));
+              await client.query(queryService.updateContractDetails(_body));
+
+              // await client.query(queryService.updateContractStartAndEndDate(_body));
               break;
 
             default:

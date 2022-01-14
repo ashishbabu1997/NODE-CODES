@@ -718,6 +718,7 @@ export const reports = (_body) => {
     (async () => {
       const client = await database();
       try {
+        console.log("STAART")
         await client.query('BEGIN');
         let dateRangeCandidate = '',
           dateRangePosition = '',
@@ -749,16 +750,21 @@ export const reports = (_body) => {
         let crResults = await client.query(queryService.fetchCompanyRegReports(dateRangeCompanyReg, groupByCompanyReg));
         let fResults = await client.query(queryService.fetchFreelancerReports(dateRangeFreelancer, groupByFreelancer));
         let hCResults = await client.query(queryService.fetchHirerCompanyReports(dateRangeHirerCompany, groupByHirerComoany));
-
+        console.log("Started company position results")
+        let companyPositionResults=await client.query(queryService.companyBasedPositionReports(_body));
+        let skillBasedPositionResult=await client.query(queryService.skillBasedPositions(_body));
+        let skillBasedCandidateResult=await client.query(queryService.skillBasedCandidatesReport(_body));
         let data = {
           CandidatePositionReports: cpResults.rows,
           PositionReports: pResults.rows,
           CandidateReports: cResults.rows,
           CompanyRegistrationReports: crResults.rows,
           FreelancerReports: fResults.rows,
-          HirerCompanyReports: hCResults.rows
+          HirerCompanyReports: hCResults.rows,
+          companyPositionReports:companyPositionResults.rows,
+          positionSkillsReport:skillBasedPositionResult.rows,
+          candidateSkillsReport:skillBasedCandidateResult.rows
         };
-
         await client.query('COMMIT');
         resolve({ code: 200, message: 'Reports fetched successfully', data });
       } catch (e) {
