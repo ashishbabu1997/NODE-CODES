@@ -97,6 +97,7 @@ export const createEmployee = (_body) => {
                     await client.query(updateCompanyTypeQuery);
                 } else {
                     reject({ code: 400, message: "Your company admin is already registered", data: {} });
+                    return;
                 }
                 const createEmployeeQuery = {
                     name: 'createEmployee',
@@ -218,6 +219,9 @@ export const createEmployeeByAdmin = (_body) => {
                                 values: [4, companyId, currentTime()]
                             }
                             await client.query(updateCompanyTypeQuery);
+                        } else {
+                            reject({ code: 400, message: "User provisions exceeded", data: {} });
+                            return;
                         }
                     }
                 const userRoleId=_body.accountType == 1?2:3;

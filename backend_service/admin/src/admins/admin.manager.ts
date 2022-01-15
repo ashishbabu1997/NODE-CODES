@@ -102,7 +102,7 @@ export const allUsersList = (_body) => {
         var results = await client.query(queryService.listquery(_body));
         var counts = await client.query(queryService.listQueryCount(_body));
         await client.query('COMMIT');
-        resolve({ code: 200, message: 'Users listed successfully', data: { Users: results.rows, totalCount: counts.rows[0].totalCount } });
+        resolve({ code: 200, message: 'Companies listed successfully', data: { companies: results.rows, totalCount: counts.rows[0].totalCount } });
       } catch (e) {
         await client.query('ROLLBACK');
         console.log('e : ', e);
