@@ -799,7 +799,6 @@ export const switchUser = (_body) => {
             const client = await database()
             try {
                 await client.query('BEGIN');
-                console.log(_body,"Dasdasd")
                 _body.userRoleId = _body.userRoleId == 2 ? 3 : 2;
                 const results = await client.query(queryService.switchUserQuery(_body));
                 let data = results.rows.length > 0 ? { code: 200, message: "Employee details fetched successfully", data:  results.rows[0]  } :
