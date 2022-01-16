@@ -53,6 +53,7 @@ export const createEmployee = (_body) => {
                 // create a new company if companyId is null or use the same companyId to create employee and other details
                 let companyId = _body.body.companyId;
                 let adminApproveStatus = 1, approvalStatus = true;
+                let userData;
                 if (companyId == null) {
                     var domain=utils.domainExtractor(loweremailId)
                     const createCompanyQuery = {
@@ -77,14 +78,27 @@ export const createEmployee = (_body) => {
                     _body.recruitersReplacements = { fName: _body.body.firstName, lName: _body.body.lastName, email: loweremailId, company: _body.body.companyName };
                 }
                 else {
-                    _body.primaryEmail=false
-                    let Name = _body.body.firstName.charAt(0).toUpperCase() + _body.body.firstName.slice(1) + " " + _body.body.lastName.charAt(0).toUpperCase() + _body.body.lastName.slice(1)
-                    _body.recruitersSubject=config.text.newUserSubject
-                    let number = ![null, undefined].includes(_body.body.telephoneNumber) ? _body.body.telephoneNumber : "";
-                    _body.recruitersPath = 'src/emailTemplates/applicationText.html';
-                    _body.recruitersReplacements = { applicantName: Name, company: _body.body.companyName , email: loweremailId, phoneNumber: number }
+                    const results = await client.query(queryService.getPrimaryEmailQuery({companyId, accountType: parseInt(_body.body.accountType)}));
+                    userData =  results.rows[0];
+                    _body.primaryEmail= (userData.primary_email == null) ? true: false;
                 }
-                _body.userRoleId=_body.body.accountType == 1?2:3
+                _body.userRoleId=_body.body.accountType == 1?2:3;
+                let Name = _body.body.firstName.charAt(0).toUpperCase() + _body.body.firstName.slice(1) + " " + _body.body.lastName.charAt(0).toUpperCase() + _body.body.lastName.slice(1)
+                _body.recruitersSubject=config.text.newUserSubject
+                let number = ![null, undefined].includes(_body.body.telephoneNumber) ? _body.body.telephoneNumber : "";
+                _body.recruitersPath = 'src/emailTemplates/applicationText.html';
+                _body.recruitersReplacements = { applicantName: Name, company: _body.body.companyName , email: loweremailId, phoneNumber: number }
+                if ((userData.company_type == 3 && _body.userRoleId == 2) || (userData.company_type == 1 && _body.userRoleId == 3)) {
+                    const updateCompanyTypeQuery = {
+                        name: 'update-company-type',
+                        text: employeeQuery.updateCompanyType,
+                        values: [4, companyId, currentTime()]
+                    }
+                    await client.query(updateCompanyTypeQuery);
+                } else {
+                    reject({ code: 400, message: "Your company admin is already registered", data: {} });
+                    return;
+                }
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
@@ -194,21 +208,28 @@ export const createEmployeeByAdmin = (_body) => {
                     _body.responseMessage="Company Registration Successfull. We have sent a password to the registered mail address."
                     }
                     else{
-                        _body.primaryEmail=false
-                        accountTypeResult=await client.query(queryService.getCompanyAccountType(companyId))
-                        _body.responseMessage=_body.accountType==1?"This Company is already registered as a Hirer company. Login credentials have been sent to the given email address":"This Company is already registered as a Provider company. Login credentials have been sent to the given email address"
-                        if (accountTypeResult.rows[0].account_type !=_body.accountType)
-                        {
-                            let rejectMessage=_body.accountType==1?'This Company is already registered as a Provider company; We are unable to process this request':'This Company is already registered as a Hirer company; We are unable to process this request'
-                            reject({ code: 400, message: rejectMessage, data: 'Failed' });
-
+                        //query tot get primary email
+                        const results = await client.query(queryService.getPrimaryEmailQuery({companyId, accountType: _body.accountType}));
+                        const userData =  results.rows[0];
+                        _body.primaryEmail= userData.primary_email == null ? true: false;
+                        if ((userData.company_type == 3 && _body.accountType == 1) || (userData.company_type == 1 && _body.accountType == 2)) {
+                            const updateCompanyTypeQuery = {
+                                name: 'update-company-type',
+                                text: employeeQuery.updateCompanyType,
+                                values: [4, companyId, currentTime()]
+                            }
+                            await client.query(updateCompanyTypeQuery);
+                        } else {
+                            reject({ code: 400, message: "User provisions exceeded", data: {} });
+                            return;
                         }
                     }
+                const userRoleId=_body.accountType == 1?2:3;
                    
                 const createEmployeeQuery = {
                     name: 'createEmployee',
                     text: employeeQuery.createEmployee,
-                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime(), 2, approvalStatus, adminApproveStatus,_body.primaryEmail],
+                    values: [_body.firstName, _body.lastName, loweremailId, _body.accountType, companyId, _body.telephoneNumber, currentTime(), userRoleId, approvalStatus, adminApproveStatus,_body.primaryEmail],
                 }
                 await client.query(createEmployeeQuery);
 
@@ -233,7 +254,7 @@ export const createEmployeeByAdmin = (_body) => {
                     values: [hashedPassword, loweremailId],
                 }
                 await client.query(storePasswordQuery);
-
+// ashish note to chnage the mail template as per new changes
                 let path = 'src/emailTemplates/newUserText.html';
                 var userReplacements = {
                     loginPassword: password
@@ -768,3 +789,28 @@ export function editRecuiterDetails(_body: any) {
     })
 }
 
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>>>>>Switch user
+export const switchUser = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+                console.log(_body,"Dasdasd")
+                _body.userRoleId = _body.userRoleId == 2 ? 3 : 2;
+                const results = await client.query(queryService.switchUserQuery(_body));
+                let data = results.rows.length > 0 ? { code: 200, message: "Employee details fetched successfully", data:  results.rows[0]  } :
+                { code: 200, message: "Switch user is not enabled for this account", data: { } }
+                resolve(data);
+                await client.query('COMMIT')
+            } catch (e) {
+                console.log("Error e1: ", e);
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error e2: ", e);
+            reject({ code: 400, message: "Failed. Please try again.", data: { e } })
+        })
+    })
+}

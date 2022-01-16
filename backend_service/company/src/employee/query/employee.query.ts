@@ -10,6 +10,5 @@ export default {
     updateActiveState: "update employee set status = (NOT status),updated_on=$2,updated_by=$3 where employee_id=$1",
     checkEmail:'select employee_id,email,admin_approve_status from employee where email=$1',
     checkCompanyStatus:'select e.admin_approve_status from employee e  where e.primary_email=true and e.company_id=$1',
-    updatePrimaryContact: "update employee set primary_email = case when employee_id = $2 then true else false end, updated_on = case when employee_id = $2 then $3 else updated_on end, updated_by = case when employee_id = $2 then $4 else updated_by end where company_id = $1",
-
+    updatePrimaryContact: "with src as (update employee set primary_email = true, updated_on = $3 ,updated_by = $4 where employee_id = $2 and company_id = $1 returning account_type) update employee set primary_email= false from src where employee_id not in ($2) and employee.account_type = src.account_type and company_id = $1"
 }

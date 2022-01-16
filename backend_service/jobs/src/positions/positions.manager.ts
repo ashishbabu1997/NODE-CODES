@@ -553,13 +553,12 @@ export const changeJobStatus = (_body) => {
 //>>>>>>>>>>>>>>>>>>Get the list of the companies with details
 export const getCompanies = (_body) => {
   return new Promise((resolve, reject) => {
-    _body.query = _body.accountType == 2 ? positionsQuery.getProviderNames : positionsQuery.getNames;
-    var CompanyQuery = {
+    const companyQuery = {
       name: 'get-company-names',
-      text: _body.query,
-      values: { accounttype: _body.accountType },
+      text: positionsQuery.getNames,
+      values: [_body.companyType],
     };
-    database().query(CompanyQuery, (error, results) => {
+    database().query(companyQuery, (error, results) => {
       if (error) {
         reject({ code: 400, message: 'Error in database connection.', data: {} });
         return;
