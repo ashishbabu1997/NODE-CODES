@@ -77,12 +77,14 @@ export const createEmployee = (_body) => {
                     _body.recruitersPath = 'src/emailTemplates/userSignupText.html';
                     _body.recruitersReplacements = { fName: _body.body.firstName, lName: _body.body.lastName, email: loweremailId, company: _body.body.companyName };
                 }
-                else {
-                    const results = await client.query(queryService.getPrimaryEmailQuery({companyId, accountType: parseInt(_body.body.accountType)}));
-                    userData =  results.rows[0];
-                    _body.primaryEmail= (userData.primary_email == null) ? true: false;
-                }
+                
+                const results = await client.query(queryService.getPrimaryEmailQuery({companyId, accountType: parseInt(_body.body.accountType)}));
+                userData =  results.rows[0];
+                _body.primaryEmail= (companyId  == null) || (userData.primary_email == null) ? true: false;
+                
+                
                 _body.userRoleId=_body.body.accountType == 1?2:3;
+                
                 let Name = _body.body.firstName.charAt(0).toUpperCase() + _body.body.firstName.slice(1) + " " + _body.body.lastName.charAt(0).toUpperCase() + _body.body.lastName.slice(1)
                 _body.recruitersSubject=config.text.newUserSubject
                 let number = ![null, undefined].includes(_body.body.telephoneNumber) ? _body.body.telephoneNumber : "";
@@ -95,7 +97,7 @@ export const createEmployee = (_body) => {
                         values: [4, companyId, currentTime()]
                     }
                     await client.query(updateCompanyTypeQuery);
-                } else {
+                } else if (!_body.primaryEmail) {
                     reject({ code: 400, message: "Your company admin is already registered", data: {} });
                     return;
                 }
