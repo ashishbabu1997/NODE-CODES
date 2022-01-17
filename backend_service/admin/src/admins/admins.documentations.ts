@@ -580,3 +580,40 @@
  *       500:
  *         description: Server down
  */
+
+
+
+/**
+ * @swagger
+ * /reportsSummary:
+ *   get:
+ *     tags:
+ *       - Admins
+ *     name: Get all detailed reports summary
+ *     summary: Get all detailed reports summary for the recruiter
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: fromDate
+ *         schema:
+ *         type: integer
+ *       - in: query
+ *         name: toDate
+ *         schema:
+ *         type: integer
+ *         required: [fromDate,toDate]
+ *     responses:
+ *       200:
+ *         description: Api success
+ *       400:
+ *         description: Api Failed
+ *       401:
+ *         description: Unauthorised access
+ *       403:
+ *         description: Permission denied
+ *       500:
+ *         description: Server down
+ */

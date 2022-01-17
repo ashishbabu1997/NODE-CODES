@@ -815,3 +815,37 @@ export const deleteResource = (_body) => {
     });
   });
 };
+
+
+
+
+
+
+//>>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>> Fetch recruiter reports summary
+export const reportsSummary = (_body) => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      const client = await database();
+      try {
+        await client.query('BEGIN');
+        let companyPositionResults=await client.query(queryService.companyBasedPositionReports(_body));
+        let skillBasedPositionResult=await client.query(queryService.skillBasedPositions(_body));
+        let skillBasedCandidateResult=await client.query(queryService.skillBasedCandidatesReport(_body));
+        let data = {
+          companyPositionReports:companyPositionResults.rows,
+          positionSkillsReport:skillBasedPositionResult.rows,
+          candidateSkillsReport:skillBasedCandidateResult.rows
+        };
+        await client.query('COMMIT');
+        resolve({ code: 200, message: 'Reports fetched successfully', data });
+      } catch (e) {
+        await client.query('ROLLBACK');
+        console.log(e);
+        reject({ code: 400, message: 'Failed. Please try again.', data: e.message });
+      }
+    })().catch((e) => {
+      reject({ code: 400, message: 'Failed. Please try again.', data: e.message });
+    });
+  });
+};
