@@ -2031,7 +2031,7 @@ export const listProviderResources = (_body) => {
         queryText = selectQuery + utils.resourceProviderTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
         const queryCountText = totalQuery + utils.resourceProviderTab(body) + filterQuery + searchQuery;
         queryValues = Object.assign({ providerCompanyId: _body.body.companyId }, queryValues);
-
+        console.log(queryText)
         const candidatesResult = await client.query(queryService.listCandidatesOfProvider(queryText, queryValues));
         const totalCount = await client.query(queryService.listCandidatesOfProviderCount(queryCountText, queryValues));
         resolve({ code: 200, message: 'Candidate Listed successfully', data: { candidates: candidatesResult.rows, totalCount: totalCount.rows[0].totalCount } });
