@@ -123,7 +123,7 @@ export const incontractResourceSort = (body) => {
     candidateFirstName: 'chsv."candidateFirstName"',
     candidatelastName: 'chsv."candidateLastName"',
     companyName: 'chsv."companyName"',
-    updatedOn: 'ccd.contract_end_date',
+    updatedOn: 'chsv."updatedOn"',
     availability: 'chsv."availability"',
     createdOn: 'chsv."createdOn"',
     experience: 'chsv."workExperience"',
