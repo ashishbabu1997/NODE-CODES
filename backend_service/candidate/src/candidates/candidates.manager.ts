@@ -2032,7 +2032,7 @@ export const listProviderResources = (_body) => {
         queryText = selectQuery + utils.resourceProviderTab(body) + filterQuery + searchQuery + utils.resourceSort(body) + utils.resourcePagination(body);
         const queryCountText = totalQuery + utils.resourceProviderTab(body) + filterQuery + searchQuery;
         queryValues = Object.assign({ providerCompanyId: _body.body.companyId }, queryValues);
-
+        console.log(queryText)
         const candidatesResult = await client.query(queryService.listCandidatesOfProvider(queryText, queryValues));
         const totalCount = await client.query(queryService.listCandidatesOfProviderCount(queryCountText, queryValues));
         resolve({ code: 200, message: 'Candidate Listed successfully', data: { candidates: candidatesResult.rows, totalCount: totalCount.rows[0].totalCount } });
@@ -2710,13 +2710,16 @@ export const updateStartAndEndDate = (_body) => {
         if (utils.checkRate(_body.contractRate)) {
           switch (_body.action) {
             case 'add':
-              await client.query(queryService.setIncontractToFalse(_body));
               await client.query('COMMIT');
               await client.query(queryService.updateContractDetails(_body));
               break;
 
             case 'update':
-              await client.query(queryService.updateContractStartAndEndDate(_body));
+              
+              await client.query(queryService.setOldContractToFalse(_body));
+              await client.query(queryService.updateContractDetails(_body));
+
+              // await client.query(queryService.updateContractStartAndEndDate(_body));
               break;
 
             default:

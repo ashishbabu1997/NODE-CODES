@@ -45,10 +45,10 @@ export const createEmployee = (_body) => {
                     }
                     else{
                         _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
-                        var companyResults=await client.query(queryService.getProfile(_body));
-                        var companyDomain=companyResults.rows[0].domain
-                        _body.accType=companyResults.rows[0].account_type;
-                        _body.urId=companyResults.rows[0].user_role_id;
+                        const companyResults= await client.query(queryService.getProfile(_body));
+                        const companyDomain= companyResults.rows[0].domain;
+                        _body.urId =  _body.accType == 1 ? 2 : 3;
+                        console.log(_body)
                         if(utils.domainExtractor(_body.email) == companyDomain)
                         {
                             _body.companyName=companyResults.rows[0].name
@@ -92,15 +92,12 @@ export const updateUser = (_body) => {
             let message='';
             try {
                 await client.query('BEGIN');
-                     _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
-                    var companyResults=await client.query(queryService.getProfile(_body));
-                    var companyDomain=companyResults.rows[0].domain
-                    _body.accType=companyResults.rows[0].account_type;
-                    _body.urId=companyResults.rows[0].user_role_id;
+                    _body["userCompanyId"] = _body.userRoleId == 1 ? _body["userCompanyId"] : _body.companyId;
+                    const companyResults= await client.query(queryService.getProfile(_body));
+                    const companyDomain= companyResults.rows[0].domain;
                     let employeeData = await client.query(queryService.getEmployeeData(_body))
                     if(utils.domainExtractor(_body.email) == companyDomain)
                     {
-
                         await client.query(queryService.updateEmployee(_body));
                         if (_body.email!=employeeData.rows[0].email)
                         {

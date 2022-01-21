@@ -144,7 +144,7 @@ export const getAllActivePositions = (_body) => {
                     }
                 }
                 else {
-                    console.log(_body.companyId)
+                    console.log("Hirer",_body.companyId)
                     const hirerActivePositions = await client.query(queryService.getHirerActivePositions(_body, utils.activePositionSort(_body)))
                     data = {
                         activePositions: hirerActivePositions.rows,

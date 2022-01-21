@@ -1,7 +1,7 @@
 import * as Joi from '@hapi/joi';
 
 export default Joi.object().keys({
-    accountType: Joi.number().required().error(errors => {
+    companyType: Joi.number().required().error(errors => {
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":

@@ -78,6 +78,32 @@ export const fetchHirerCompanyReports = (dateRange, groupBy) => {
 };
 
 
+export const companyBasedPositionReports = (_body) => {
+  return {
+    name: 'company-based-position-report',
+    text: adminQuery.companyBasedPositionReports,
+    values:[]
+  };
+};
+
+export const skillBasedPositions = (_body) => {
+  return {
+    name: 'skills-based-position-report',
+    text: adminQuery.skillBasedPositionsReports,
+    values:{fromdate:_body.fromDate,todate:_body.toDate}
+  };
+};
+
+export const skillBasedCandidatesReport = (_body) => {
+  return {
+    name: 'skills-based-candidate-report',
+    text: adminQuery.skillBasedCandidateReports,
+    values:{fromdate:_body.fromDate,todate:_body.toDate}
+  };
+};
+
+
+
 
 
 // ----------------------------------------- Job category/ skill delete -------------------------------------------

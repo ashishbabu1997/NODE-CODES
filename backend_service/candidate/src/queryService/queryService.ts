@@ -1783,6 +1783,13 @@ export const setIncontractToFalse = (_body) => {
     values: [_body.candidateId],
   };
 };
+export const setOldContractToFalse = (_body) => {
+  return {
+    name: 'set-candidate-old-contract-false',
+    text: hiringQuery.setOldContractToFalse,
+    values: [_body.candidateId,_body.position_id],
+  };
+};
 export const getCandidateDetails = (_body) => {
   return {
     name: 'get-candidate-name',

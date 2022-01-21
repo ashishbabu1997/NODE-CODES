@@ -19,5 +19,6 @@ router
     .put('/editRecruiterDetails',jwtAuth, setData(),employeeController.ellowRecruiterSignup)
     .get('/getAllAdmins', employeeController.getellowAdminsDetails)
     .get('/getEmployees',jwtAuth, setData(), employeeController.getEmployeesFromCompany)
+    .get('/switchUser', jwtAuth, setData(), employeeController.switchUserController)
 
 export default router;

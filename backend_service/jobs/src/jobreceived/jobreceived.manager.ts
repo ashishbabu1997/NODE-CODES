@@ -8,7 +8,7 @@ import {readHTMLFile} from '../middlewares/htmlReader'
 import * as emailClient from '../emailService/emailService';
 import * as passwordGenerator from 'generate-password'
 import * as crypto from 'crypto';
-import { ImportsNotUsedAsValues } from 'typescript';
+import { createImportSpecifier, ImportsNotUsedAsValues } from 'typescript';
 import * as queryService from '../queryService/queryService';
 import * as utils from '../utils/utils';
 

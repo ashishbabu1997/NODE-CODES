@@ -240,6 +240,7 @@ export const activePositionSort = (body) => {
         "position": 'position_name',
         "positions": 'developer_count',
         "company": 'company_name',
+        "updatedOn":'p.updated_on'
     }
     
     if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
