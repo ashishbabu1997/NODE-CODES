@@ -406,3 +406,30 @@
 *       500:
 *         description: Server down
 */
+
+
+
+/**
+* @swagger
+* /switchUser:
+*   get:
+*     tags:
+*       - Employees
+*     name: Switch Users
+*     summary: Switch users for both company
+*     consumes:
+*       - application/json
+*     produces:
+*       - application/json
+*     responses:
+*       200:
+*         description: Api success
+*       400:
+*         description: Api Failed
+*       401:
+*         description: Unauthorised access
+*       403:
+*         description: Permission denied
+*       500:
+*         description: Server down
+*/

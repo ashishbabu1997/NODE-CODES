@@ -123,7 +123,7 @@ export const incontractResourceSort = (body) => {
     candidateFirstName: 'chsv."candidateFirstName"',
     candidatelastName: 'chsv."candidateLastName"',
     companyName: 'chsv."companyName"',
-    updatedOn: 'ccd.contract_end_date',
+    updatedOn: 'chsv."updatedOn"',
     availability: 'chsv."availability"',
     createdOn: 'chsv."createdOn"',
     experience: 'chsv."workExperience"',
@@ -137,7 +137,7 @@ export const incontractResourceSort = (body) => {
     if (body.sortBy == 'availability') {
       sort = `  order by availability desc,"readyToStart" ${body.sortType} `;
     } else if (body.sortBy == 'updatedOn') {
-      sort = `  ORDER BY ${orderBy[body.sortBy]} ${body.sortType},ccd.contract_end_date asc `;
+      sort = `  ORDER BY ${orderBy[body.sortBy]} ${body.sortType} `;
     } else {
       sort = `  ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
     }
@@ -164,11 +164,11 @@ export const resourceSort = (body) => {
   };
   if (body.sortBy && body.sortType && Object.keys(orderBy).includes(body.sortBy)) {
     if (body.sortBy == 'availability') {
-      sort = `  order by availability desc,"readyToStart" ${body.sortType} `;
+      sort = `  order by availability desc,"readyToStart" ${body.sortType}  `;
     } else if (body.sortBy == 'updatedOn') {
-      sort = `  ORDER BY ${orderBy[body.sortBy]} ${body.sortType},chsv."candidateVetted" desc `;
+      sort = `  ORDER BY ${orderBy[body.sortBy]} ${body.sortType}  `;
     } else {
-      sort = `  ORDER BY ${orderBy[body.sortBy]} ${body.sortType}`;
+      sort = `  ORDER BY ${orderBy[body.sortBy]} ${body.sortType}  `;
     }
   }
   return sort;

@@ -230,7 +230,8 @@ export const fetchPositionDetails = (_body) => {
             companyLinkedinId: step.company_linkedin_id,
             skills: step.skills,
             tyeOfJob: step.type_of_job,
-            priority:step.priority
+            priority:step.priority,
+            closedCount: step.closedCount
           };
         });
         resolve({ code: 200, message: 'Fetched position details successfully', data: result });
@@ -251,7 +252,7 @@ export const fetchPositionDetails = (_body) => {
 export const updateCompanyPositions = async (_body) => {
   return new Promise((resolve, reject) => {
     const positionId = _body.positionId;
-    const companyId = _body.userRoleId == 1 ? _body.hirerCompanyId : _body.companyId;
+    const companyId = _body.userRoleId == 1 ? parseInt(_body.hirerCompanyId) : parseInt(_body.companyId);
     const timer = setTimeout(() => '', 1000);
     _body.skillNames = [];
     (async () => {
@@ -552,13 +553,12 @@ export const changeJobStatus = (_body) => {
 //>>>>>>>>>>>>>>>>>>Get the list of the companies with details
 export const getCompanies = (_body) => {
   return new Promise((resolve, reject) => {
-    _body.query = _body.accountType == 2 ? positionsQuery.getProviderNames : positionsQuery.getNames;
-    var CompanyQuery = {
+    const companyQuery = {
       name: 'get-company-names',
-      text: _body.query,
-      values: { accounttype: _body.accountType },
+      text: positionsQuery.getNames,
+      values: [_body.companyType],
     };
-    database().query(CompanyQuery, (error, results) => {
+    database().query(companyQuery, (error, results) => {
       if (error) {
         reject({ code: 400, message: 'Error in database connection.', data: {} });
         return;

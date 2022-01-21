@@ -9,14 +9,15 @@ export const get_Details = (_body) => {
     return new Promise((resolve, reject) => {
 
         _body["userCompanyId"] = _body.userRoleId == '1' ? _body["userCompanyId"] : _body.companyId;
+        
 
         database().query(queryService.getCompanyProfile(_body), (error, results) => {
             if (error) {
                 reject({ code: 400, message: "Failed to access profile. Please try again.", data: error.message });
                 return;
             }
+            console.log(results.rows,"Dasdasda")
             const response = results.rows[0];
-
             resolve({ code: 200, message: "Profile listed successfully", data: { Profile: response } });
         })
     });

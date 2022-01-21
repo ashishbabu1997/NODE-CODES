@@ -24,6 +24,7 @@ router
 
   .get('/allSkills', jwtAuth, setData(), adminController.allSkills)
   .get('/reports',jwtAuth, setData(),setProfileAuth([1,1000]), adminController.reports)
+  .get('/reportsSummary',jwtAuth, setData(),setProfileAuth([1,1000]), adminController.reportsSummaryController)
   .delete('/deleteResource', jwtAuth,setData(), setProfileAuth([1,2,1000]), adminController.deleteResource);
 export default router;
 

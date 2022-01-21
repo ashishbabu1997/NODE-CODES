@@ -105,6 +105,7 @@ export const getCompanyProfile = (_body) => {
         values: [_body.userCompanyId],
     }
 }
+
 export const getProfile = (_body) => {
     return {
         name: 'get-profile-details',
