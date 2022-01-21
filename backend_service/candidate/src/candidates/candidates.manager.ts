@@ -160,9 +160,10 @@ export const listIncontractResources = (_body) => {
         queryText = selectQuery + filterQuery + searchQuery + utils.incontractResourceSort(body) + utils.resourcePagination(body);
         queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId, currenttime: currentTime, incontract: incontract }, queryValues);
         const candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
-        const queryCountText = totalQuery + filterQuery + searchQuery;
-        const candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
 
+        const queryCountText = totalQuery + filterQuery + searchQuery;
+
+        const candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
         const candidates = candidateList.rows;
         const totalCount = candidateTotal.rows[0].totalCount;
         console.log(totalCount);
