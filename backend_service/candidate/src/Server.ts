@@ -96,19 +96,19 @@ app.use(function onError(err, req, res, next) {
   res.statusCode = err.status || 500;
   res.end(res.sentry + '\n');
 });
-cron.schedule('0 10 * * *', ()=> {
-  console.log('Running cron scheduler');
-    cronScheduler.candidateReporterDetailRemainder()
-  console.log("Start")
-});
-cron.schedule('0 10 * * *', ()=> {
-  console.log('Running cron scheduler');
-    cronScheduler.reporterFinalFeedbackRemainder()
-});
-cron.schedule('0 10 * * *', ()=> {
-  console.log('Running cron scheduler');
-    cronScheduler.reporterInitialFeedbackRemainder()
-});
+// cron.schedule('0 10 * * *', ()=> {
+//   console.log('Running cron scheduler');
+//     cronScheduler.candidateReporterDetailRemainder()
+//   console.log("Start")
+// });
+// cron.schedule('0 10 * * *', ()=> {
+//   console.log('Running cron scheduler');
+//     cronScheduler.reporterFinalFeedbackRemainder()
+// });
+// cron.schedule('0 10 * * *', ()=> {
+//   console.log('Running cron scheduler');
+//     cronScheduler.reporterInitialFeedbackRemainder()
+// });
 cron.schedule('0 10 * * *', ()=> {
   console.log('Running cron scheduler');
     cronScheduler.closeContract()
