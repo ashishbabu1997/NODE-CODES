@@ -113,13 +113,10 @@ export const closeContract = () => {
       try {
         await client.query('BEGIN');
         const promise=[]
-        var result = await client.query(queryService.getContractExpiredCandidates());
-        result.rows.forEach(async (element) => {
-          console.log(element)
-          promise.push(client.query(queryService.closeCandidateContract(element)));
-        });
-        await Promise.all(promise);
-        resolve({ code: 200, message: 'Details listed successfully', data: result.rows[0] });
+       
+       await client.query(queryService.closeCandidateContract(_body));
+       
+        resolve({ code: 200, message: 'Details listed successfully', data: "Success" });
         
         await client.query('COMMIT');
       } catch (e) {

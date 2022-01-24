@@ -49,7 +49,7 @@ export default {
   insertIntoCandidateFeedback:'insert into candidate_feedback_report (candidate_id, candidate_contract_id, candidate_token,mail_sent,  progress, created_on, updated_on)  values ($1,$2,$3,$4,$5,$6,$6)',
   updateFeedback:'update candidate_feedback_report set progress=$1,updated_on=$2,reporter_initial_token=$5 where candidate_id=$3 and candidate_contract_id=$4',
   updateFinalFeedbackRemainder:'update candidate_feedback_report set progress=$1,updated_on=$2,reporter_final_token=$5 where candidate_id=$3 and candidate_contract_id=$4',
-  updateInContractToFalse:'update candidate_contract_details set in_contract=false,updated_on=$3 where candidate_id=$1 and position_id=$2',
+  updateInContractToFalse:'update candidate_contract_details set in_contract=false,updated_on=$1 where contract_end_date<$1',
   deleteCandidate: `update candidate set status = false, updated_on=$2, updated_by = $3 where candidate_id = $1`,
   modifyLanguageProficiency: `update candidate_language set candidate_id = $2, language_id = $3, proficiency = $4, updated_on = $5, updated_by = $6 where candidate_language_id = $1`,
   insertLanguageProficiency: 'insert into candidate_language (candidate_id, language_id, proficiency, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$4,$5,$5) returning candidate_language_id',
