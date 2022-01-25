@@ -1265,13 +1265,7 @@ export const updateAssigneeComment = (_body) => {
   };
 };
 
-export const getCandidatesProfile = (_body) => {
-  return {
-    name: 'get-candidate-profile',
-    text: candidateQuery.getCandidate,
-    values: [_body.candidateId],
-  };
-};
+
 
 export const getStageStatus = (_body) => {
   return {
@@ -1324,6 +1318,13 @@ export const listCandidates = (queryText, queryValues) => {
   };
 };
 
+export const getCandidatesProfile = (_body) => {
+  return {
+    name: 'get-candidate-profile',
+    text: candidateQuery.getCandidate,
+    values: [_body.candidateId],
+  };
+};
 export const listCandidatesTotal = (queryText, queryValues) => {
   return {
     name: 'get-free-candidates-total',
@@ -1564,11 +1565,11 @@ export const updateFinalFeedbackRemainder = (_body) => {
   };
 };
 
-export const closeCandidateContract = () => {
+export const closeCandidateContract = (_body) => {
   return {
     name: 'close-candidates-contract',
     text: candidateQuery.updateInContractToFalse,
-    values: [currentTime()],
+    values: [_body.candidate_id,_body.position_id,currentTime()],
   };
 };
 export const updateProviderCandidateEllowRate = (_body) => {
