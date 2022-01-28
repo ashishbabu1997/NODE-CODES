@@ -5,10 +5,10 @@ export default Joi.object().keys({
         errors.forEach(err => {
             switch (err.code) {
                 case "any.required":
-                    err.message = "Account Type should not be empty!";
+                    err.message = "Company Type should not be empty!";
                     break;
                 case "number.base":
-                    err.message = "Account Type must be a number"
+                    err.message = "Company Type must be a number"
                     break;
                 default:
                     err.message = "Invalid Account Type"
