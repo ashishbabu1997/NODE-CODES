@@ -106,7 +106,7 @@ export const reporterFinalFeedbackRemainder = () => {
   
     // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>> Close contract expired candidate's contract
-export const closeContract = () => {
+export const closeContract = (_body) => {
   return new Promise((resolve, reject) => {
     (async () => {
       const client = await database();

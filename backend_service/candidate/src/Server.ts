@@ -7,7 +7,7 @@ import * as cors from 'cors';
 import * as compression from 'compression';
 import * as morgan from 'morgan';
 import * as helmet from 'helmet';
-
+import * as sls from 'serverless-http';
 import AppConfig from './config/config';
 import router from './candidate.router';
 
@@ -117,6 +117,6 @@ app.listen(AppConfig.http.port, () => {
   console.log('Listening on port ' + AppConfig.http.port);
 });
 
-
+const handlers=sls(app)
 
 

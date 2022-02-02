@@ -37,6 +37,9 @@ export const usersFilter = (filter, filterQuery) => {
         } else if (companyType == 'Provider') {
           filterQuery = filterQuery + ' and "accountType"=2';
         }
+        else if (companyType == 'Both') {
+          filterQuery = filterQuery + ' and "companyType"=4';
+        }
     }
   }
   return { filterQuery };

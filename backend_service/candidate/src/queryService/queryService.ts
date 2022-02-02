@@ -1565,11 +1565,11 @@ export const updateFinalFeedbackRemainder = (_body) => {
   };
 };
 
-export const closeCandidateContract = () => {
+export const closeCandidateContract = (_body) => {
   return {
     name: 'close-candidates-contract',
     text: candidateQuery.updateInContractToFalse,
-    values: [currentTime()],
+    values: [_body.candidate_id,_body.position_id,currentTime()],
   };
 };
 export const updateProviderCandidateEllowRate = (_body) => {
