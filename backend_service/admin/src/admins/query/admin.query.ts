@@ -16,7 +16,7 @@ export default {
   saveRecruiterQuery: 'update company set assesed_by=$1 where company_id=$2',
   closeHirerPositions: 'update positions set job_status=8 where company_id=$1',
   getCompanyNameQuery: 'select c.company_name,c.company_id from company c inner join employee e on e.company_id=c.company_id where e.employee_id=$1',
-  getellowAdmins: "select concat(firstname,' ',lastname) as name ,employee_id as employeeId,email as email from employee where status=true and user_role_id=1",
+  getellowAdmins: "select concat(firstname, ' ', lastname) as name, employee_id as employeeId, email as email from employee where status = true and user_role_id = 1 and email not like 'sirishk@ellow.io'",
   addNewJobCategory: 'INSERT INTO job_category (job_category_name, created_on, updated_on) VALUES ($1, $2, $2) returning job_category_id',
   addNewSkills:
     'with updated_src as ( with src as ( select (array(select unnest($1::text[]))) as newskill, (array(select skill_name from skills where status = true)) as existingskill ) INSERT INTO skills (skill_name, created_on, updated_on) VALUES (unnest((select array_agg(elem) from src, unnest(newskill) elem where elem not ilike all (existingskill) )), $2, $2) returning skill_id as newskill) select * from updated_src us union select skill_id as newskill from skills s where skill_name ilike any ($1::text[])',

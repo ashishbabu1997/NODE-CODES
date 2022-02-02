@@ -21,7 +21,7 @@ export default {
     getPositionCompanyName:'select c.company_name as "companyName" from company c left join positions p on p.company_id=c.company_id where p.position_id=$1',
     checkEMail:'SELECT * from employee WHERE email like $1',
     verifyFreelancerCompany:'select co.company_type,ca.candidate_first_name,ca.candidate_last_name,ca.email_address,ca.phone_number,ca.company_id from candidate ca left join company co on co.company_id=ca.company_id where ca.candidate_id=$1',
-    getellowAdmins:"select concat(firstname,' ',lastname) as name ,employee_id as employeeId,email as email from employee where status=true and user_role_id=1",
+    getellowAdmins:"select concat(firstname, ' ', lastname) as name, employee_id as employeeId, email as email from employee where status = true and user_role_id = 1 and email not like 'sirishk@ellow.io'",
     fetchCompanyName:'select company_name,company_type from company where company_id=$1',
     verifyCandidateInCandidateEmployeeTable:'select employee_id,candidate_id from  candidate_employee where candidate_id=$1',
     getDistinctJobId:'select distinct jcs.job_category_id,jc.job_category_name from job_category_skills jcs inner join job_category jc on jc.job_category_id=jcs.job_category_id order by job_category_id',

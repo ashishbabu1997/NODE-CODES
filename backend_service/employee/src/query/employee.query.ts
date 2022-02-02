@@ -15,7 +15,7 @@ export default {
     "getRegisteredEmail": "SELECT firstname,lastname,email FROM employee WHERE employee_id=$1",
     "checkTokenExistance": "SELECT employee_id,email FROM employee WHERE token like $token",
     "ellowAdminSignupQuery": " INSERT INTO employee (firstname,lastname,company_id,email,telephone_number,password,account_type,user_role_id,status,admin_approve_status,created_on) VALUES ($firstname,$lastname,(select company_id from company where company_type=0),$email,$telephonenumber,$password,$accounttype,$userroleid,$status,$adminapprovestatus,$createdon)",
-    "getellowAdmins": "select concat(firstname,' ',lastname) as name ,employee_id as employeeId,email as email from employee where status=true and user_role_id=1",
+    "getellowAdmins": "select concat(firstname,' ',lastname) as name ,employee_id as employeeId,email as email from employee where status=true and user_role_id=1 and email not like 'sirishk@ellow.io'",
     "getEmployeesQuery": "select concat(firstname,' ',lastname) as name ,employee_id as employeeId from employee where status=true and company_id=$1",
     "getEmployeesFromPositionId": "select concat(e.firstname,' ',e.lastname) as name ,e.employee_id as employeeId from employee e  left join positions p on p.company_id=e.company_id where p.position_id=$1",
     "updateRecruiterDetails":"update employee set email=$email, firstname=$firstName, lastname=$lastName, telephone_number=$phoneNumber, updated_on=$currenttime, updated_by=$employeeid where employee_id = $recruiterid",
