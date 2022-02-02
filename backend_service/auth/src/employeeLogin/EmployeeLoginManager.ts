@@ -61,7 +61,7 @@ export const employeeLoginMethod = (_body) => {
                                                     candidateId:value.candidateId ,  candidateStatus:value.candidateStatus,
                                                     email: value.email, firstName: value.firstName, lastName: value.lastName, accountType: value.accountType,
                                                     masked: value.masked, currencyTypeId: value.currencyTypeId, companyProfile: value.companyProfile,userRoleId:value.userRoleId,
-                                                    testLinkStatus : value.testLinkStatus
+                                                    testLinkStatus : value.testLinkStatus,companyType:value.companyType
                                                 }
                                             });
                                         }

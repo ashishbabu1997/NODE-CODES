@@ -824,7 +824,7 @@ export const deleteResource = (_body) => {
 //>>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>> Fetch recruiter reports summary
 export const reportsSummary = (_body) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => { 
     (async () => {
       const client = await database();
       try {
