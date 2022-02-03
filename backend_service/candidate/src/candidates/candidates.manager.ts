@@ -1847,7 +1847,7 @@ export const singleSignOn = (_body) => {
       const client = await database();
       try {
         const tokenResponse = await fetch(
-          'https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fstagecandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=867umqszmeupfh&client_secret=n7oVJe6kbinpdPqu&code=' +
+          'https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=867umqszmeupfh&client_secret=n7oVJe6kbinpdPqu&code=' +
             _body.code,
           {
             method: 'POST',
