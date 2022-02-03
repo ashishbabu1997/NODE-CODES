@@ -422,11 +422,11 @@ export const sigOn = (req, res) => {
   candidateManager
     .singleSignOn(body)
     .then((response: any) => {
-      res.writeHead(301, { Location: 'http://localhost:4005/candidate-login?token=' + response.data.token });
+      res.writeHead(301, { Location: 'https://dev.ellow.io/candidate-login?token=' + response.data.token });
       res.end();
     })
     .catch(() => {
-      res.writeHead(301, { Location: 'https://stage.ellow.io/redirect-notification' });
+      res.writeHead(301, { Location: 'https://dev.ellow.io/redirect-notification' });
       res.end();
     });
 };
