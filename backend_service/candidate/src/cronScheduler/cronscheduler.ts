@@ -106,15 +106,17 @@ export const reporterFinalFeedbackRemainder = () => {
   
     // >>>>>>> FUNC. >>>>>>>
 // >>>>>>>>>>>>>> Close contract expired candidate's contract
-export const closeContract = (_body) => {
+export const closeContract = () => {
   return new Promise((resolve, reject) => {
     (async () => {
       const client = await database();
       try {
         await client.query('BEGIN');
-     
-          await client.query(queryService.closeCandidateContract(_body));
-        resolve({ code: 200, message: 'Details listed successfully', data: 'Success' });
+        const promise=[]
+       
+       await client.query(queryService.closeCandidateContract());
+       
+        resolve({ code: 200, message: 'Details listed successfully', data: "Success" });
         
         await client.query('COMMIT');
       } catch (e) {

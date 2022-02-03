@@ -34,13 +34,19 @@ export  const positionFilter = (filter,filterQuery,queryValues) =>{
         positionStatus = filter.positionStatus,
         activeStatus=filter.activeStatus,
         typeOfJob=filter.typeOfJob,
-        priority=filter.priority
+        priority=filter.priority,
+        createdUser=filter.createdUser
         ; 
         
         if(![null,undefined,''].includes(startDate) && ![null,undefined,''].includes(endDate))
         {   
             filterQuery=filterQuery+' AND p.created_on BETWEEN $startdate  AND $enddate '
             queryValues = Object.assign({startdate:startDate,enddate:endDate},queryValues)
+        }
+        if(![null,undefined,''].includes(createdUser) )
+        {   
+            filterQuery=filterQuery+' AND p.created_by IN (SELECT employee_id FROM employee WHERE user_role_id = $createdby ) '
+            queryValues = Object.assign({createdby:createdUser},queryValues)
         }
         if(![null,undefined,''].includes(typeOfJob))
         {   
