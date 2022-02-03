@@ -1847,7 +1847,7 @@ export const singleSignOn = (_body) => {
       const client = await database();
       try {
         const tokenResponse = await fetch(
-          'https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=867umqszmeupfh&client_secret=n7oVJe6kbinpdPqu&code=' +
+          'https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fstagecandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=867umqszmeupfh&client_secret=n7oVJe6kbinpdPqu&code=' +
             _body.code,
           {
             method: 'POST',
@@ -1886,54 +1886,34 @@ export const singleSignOn = (_body) => {
         });
         const emailAddressResult = await emailAddress.json();
         _body.email = emailAddressResult.elements[0]['handle~']['emailAddress'];
-        console.log(_body.email);
         var results = await client.query(queryService.loginMailCheck(_body));
-        _body.companyName = 'Freelancer';
-        const companyResults = await client.query(queryService.getCompanyDetailsFromName(_body));
-        _body.cmpId = companyResults.rows[0].company_id;
-        _body.userRoleId = 4;
+      
         if (results.rowCount == 0) {
+          const companyResults = await client.query(queryService.getCompanyDetailsFromName(_body));
+          _body.cmpId = companyResults.rows[0].company_id;
+          _body.userRoleId = 4;
           const employeeResult = await client.query(queryService.insertLinkedinToEmployee(_body));
-          employeeId = employeeResult.rows[0].employee_id;
+          _body.employeeId = employeeResult.rows[0].employee_id;
           const candidateResult = await client.query(queryService.insertIntoCandidate(_body));
           candidateId = candidateResult.rows[0].candidate_id;
-          _body.employeeId = employeeId;
           _body.candidateId = candidateId;
           await client.query(queryService.insertInToCandidateEmployee(_body));
-          _body.token = jwt.sign(
-            {
-              employeeId: employeeId.toString(),
-              companyId: _body.cmpId.toString(),
-              userRoleId: _body.userRoleId.toString(),
-              // eslint-disable-next-line no-undef
-            },
-            process.env.TOKEN_SECRET,
-            { expiresIn: '24h' },
-          );
-          await client.query(queryService.insertEmployeeToken(_body));
         } else {
-          employeeId = results.rows[0].employee_id;
-          _body.employeeId = employeeId;
-          if (results.rows[0].password == null && results.rows[0].linkedin_token !== null) {
-            const getQuery = {
-              name: 'get-employee-details',
-              text: candidateQuery.getLoginDetailFromEmployeeId,
-              values: [_body.employeeId],
-            };
-            var result = await client.query(getQuery);
-            const data = result.rows;
-            if (data.length > 0) {
-              const value = data[0];
-              if (value.status) {
-                _body.token = value.linkedinToken;
-              } else {
-                reject({ code: 400, message: 'User does not exist.', data: {} });
-              }
-            }
-          } else {
-            reject({ code: 400, message: 'User already registered.Please login with your email and password provided!', data: {} });
-          }
+         _body.employeeId=results.rows[0].employee_id,
+         _body.cmpId=results.rows[0].company_id,
+         _body.userRoleId=results.rows[0].user_role_id
         }
+        _body.token = jwt.sign(
+          {
+            employeeId: _body.employeeId.toString(),
+            companyId: _body.cmpId.toString(),
+            userRoleId: _body.userRoleId.toString(),
+            // eslint-disable-next-line no-undef
+          },
+          process.env.TOKEN_SECRET,
+          { expiresIn: '24h' },
+        );
+        await client.query(queryService.insertEmployeeToken(_body));
         await client.query('COMMIT');
         // console.log("emailAddressResult : ",JSON.stringify(emailAddressResult));
         resolve({ code: 200, message: 'Candidate SSO successfull', data: { token: _body.token } });
@@ -2979,7 +2959,7 @@ export const googleSignIn = (_body) => {
       try {
         // Accessing users token for google
         const tokenResponse = await fetch(
-          'https://accounts.google.com/o/oauth2/token?redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
+          'https://accounts.google.com/o/oauth2/token?redirect_uri=https%3A%2F%2Fstagecandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
           {
             method: 'POST',
             headers: {
@@ -2999,6 +2979,7 @@ export const googleSignIn = (_body) => {
           version: 'v2',
         });
         let { data } = await oauth2.userinfo.get();
+
         // Data Check from database
         (_body.email = data.email), (_body.firstName = data.given_name), (_body.lastName = data.family_name);
         let employeeCheck = await client.query(queryService.getEmail(_body));

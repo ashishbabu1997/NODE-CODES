@@ -49,7 +49,7 @@ export default {
   insertIntoCandidateFeedback:'insert into candidate_feedback_report (candidate_id, candidate_contract_id, candidate_token,mail_sent,  progress, created_on, updated_on)  values ($1,$2,$3,$4,$5,$6,$6)',
   updateFeedback:'update candidate_feedback_report set progress=$1,updated_on=$2,reporter_initial_token=$5 where candidate_id=$3 and candidate_contract_id=$4',
   updateFinalFeedbackRemainder:'update candidate_feedback_report set progress=$1,updated_on=$2,reporter_final_token=$5 where candidate_id=$3 and candidate_contract_id=$4',
-  updateInContractToFalse:'update candidate_contract_details set in_contract=false,updated_on=$1 where contract_end_date>$1',
+  updateInContractToFalse:'update candidate_contract_details set in_contract=false,updated_on=$1 where contract_end_date<$1',
   deleteCandidate: `update candidate set status = false, updated_on=$2, updated_by = $3 where candidate_id = $1`,
   modifyLanguageProficiency: `update candidate_language set candidate_id = $2, language_id = $3, proficiency = $4, updated_on = $5, updated_by = $6 where candidate_language_id = $1`,
   insertLanguageProficiency: 'insert into candidate_language (candidate_id, language_id, proficiency, created_by, updated_by, created_on, updated_on) values($1,$2,$3,$4,$4,$5,$5) returning candidate_language_id',
@@ -184,9 +184,9 @@ export default {
   getFreelancerCompanyId: 'SELECT company_id FROM company WHERE company_type=2',
 
   // Linkedin Queries
-  employeeLogin: `SELECT employee_id,password,linkedin_token from employee where email = $1`,
+  employeeLogin: `SELECT employee_id,password,linkedin_token,user_role_id from employee where email = $1`,
   insertIntoEmployee: 'insert into employee (firstname,lastname,email,company_id,user_role_id,account_type,status,admin_approve_status) values($1,$2,$3,$4,$5,$5,$6,$7) returning employee_id',
-  getCompanyDetails: 'select * from company where company_name=$1',
+  getCompanyDetails: 'select * from company where company_type=2',
   checkResumeExists:'select candidate_id from candidate where resume_file_name ilike $1',
   insertIntoCandidate: 'insert into candidate (candidate_first_name, candidate_last_name,email_address,candidate_status,created_on,updated_on) values ($1,$2,$3,$4,$5,$5) returning candidate_id ',
   insertIntoCandidateEmployee: 'insert into candidate_employee (employee_id,candidate_id,created_on,updated_on) values ($1,$2,$3,$3)',

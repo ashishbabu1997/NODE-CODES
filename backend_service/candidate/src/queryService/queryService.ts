@@ -923,7 +923,7 @@ export const getCompanyDetailsFromName = (_body) => {
   return {
     name: 'get-company-details',
     text: candidateQuery.getCompanyDetails,
-    values: [_body.companyName],
+    values: [],
   };
 };
 export const insertLinkedinToEmployee = (_body) => {
