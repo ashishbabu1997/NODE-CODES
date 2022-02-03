@@ -47,7 +47,7 @@ export const getCompanyPositions = (_body) => {
         let results = await client.query(queryService.fetchCompanyPositionsById(_body));
         let counts = await client.query(queryService.fetchPositionsCount(_body));
         var steps = results.rows;
-        resolve({ code: 200, message: 'Positions listed successfully', data: { positions: steps, totalCount: counts.rows[0].totalCount, counts : counts.rows } });
+        resolve({ code: 200, message: 'Positions listed successfully', data: { positions: steps, totalCount: counts.rows[0].count, counts : counts.rows } });
       } catch (e) {
         await client.query('ROLLBACK');
         console.log('e : ', e);

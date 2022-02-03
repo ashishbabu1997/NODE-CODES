@@ -87,7 +87,7 @@ export const fetchHirerCompanyReports = (dateRange, groupBy) => {
 
 export const companyBasedPositionReports = (_body) => {
   return {
-    name: 'company-based-position-report',
+    name: 'company-based-position-report', 
     text: adminQuery.companyBasedPositionReports,
     values:[]
   };
