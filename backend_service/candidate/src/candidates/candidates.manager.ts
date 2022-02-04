@@ -1846,8 +1846,9 @@ export const singleSignOn = (_body) => {
     (async () => {
       const client = await database();
       try {
+        console.log(_body.code)
         const tokenResponse = await fetch(
-          'https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=86w0o74tpcdwl2&client_secret=SnYaChuW5W3yho2s&code=' +
+          'https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fdevcandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=867umqszmeupfh&client_secret=n7oVJe6kbinpdPqu&code=' +
             _body.code,
           {
             method: 'POST',
@@ -1859,6 +1860,7 @@ export const singleSignOn = (_body) => {
           },
         );
         const content = await tokenResponse.json();
+        console.log(content)
         const accessToken = content.access_token;
 
         const profile = await fetch('https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))', {
@@ -1872,6 +1874,7 @@ export const singleSignOn = (_body) => {
           },
         });
         const profileResult = await profile.json();
+        console.log(profileResult)
         _body.firstName = profileResult['firstName']['localized']['en_US'];
         _body.lastName = profileResult['lastName']['localized']['en_US'];
         const emailAddress = await fetch('https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))', {
@@ -1903,6 +1906,9 @@ export const singleSignOn = (_body) => {
          _body.cmpId=results.rows[0].company_id,
          _body.userRoleId=results.rows[0].user_role_id
         }
+        console.log(         _body.employeeId,
+          _body.cmpId,
+          _body.userRoleId)
         _body.token = jwt.sign(
           {
             employeeId: _body.employeeId.toString(),

@@ -184,7 +184,7 @@ export default {
   getFreelancerCompanyId: 'SELECT company_id FROM company WHERE company_type=2',
 
   // Linkedin Queries
-  employeeLogin: `SELECT employee_id,password,linkedin_token,user_role_id from employee where email = $1`,
+  employeeLogin: `SELECT employee_id,password,linkedin_token,user_role_id,company_id from employee where email = $1`,
   insertIntoEmployee: 'insert into employee (firstname,lastname,email,company_id,user_role_id,account_type,status,admin_approve_status) values($1,$2,$3,$4,$5,$5,$6,$7) returning employee_id',
   getCompanyDetails: 'select * from company where company_type=2',
   checkResumeExists:'select candidate_id from candidate where resume_file_name ilike $1',
