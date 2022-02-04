@@ -28,4 +28,3 @@ router
   .delete('/deleteResource', jwtAuth,setData(), setProfileAuth([1,2,1000]), adminController.deleteResource);
 export default router;
 
-// Admin@ellow123

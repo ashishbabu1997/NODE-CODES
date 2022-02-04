@@ -94,6 +94,8 @@ export const companyBasedPositionReports = (_body) => {
 };
 
 export const skillBasedPositions = (_body) => {
+  console.log(_body.fromDate,_body.toDate)
+
   return {
     name: 'skills-based-position-report',
     text: adminQuery.skillBasedPositionsReports,
