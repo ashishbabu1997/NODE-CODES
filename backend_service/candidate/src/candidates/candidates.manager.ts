@@ -1848,8 +1848,7 @@ export const singleSignOn = (_body) => {
       try {
         console.log(_body.code)
         const tokenResponse = await fetch(
-          'https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code&redirect_uri=https%3A%2F%2Fstagecandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FsingleSignOn&client_id=867umqszmeupfh&client_secret=n7oVJe6kbinpdPqu&code=' +
-            _body.code,
+          process.env.LINKEDIN_AUTH_URL +_body.code,
           {
             method: 'POST',
             headers: {
@@ -2965,7 +2964,7 @@ export const googleSignIn = (_body) => {
       try {
         // Accessing users token for google
         const tokenResponse = await fetch(
-          'https://accounts.google.com/o/oauth2/token?redirect_uri=https%3A%2F%2Fstagecandidate.ellow.io%2Fapi%2Fv1%2Fcandidates%2FgoogleSign&client_id=50243101957-grtcrpsmm98cg96me7b6vve0phpfdupp.apps.googleusercontent.com&client_secret=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&grant_type=authorization_code&code='+_body.code,
+          process.env.GOOGLESIGNIN_REDIRECT_URL+_body.code,
           {
             method: 'POST',
             headers: {
