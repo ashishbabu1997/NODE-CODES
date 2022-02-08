@@ -1,6 +1,9 @@
 /* eslint-disable no-undef */
 import * as candidateManager from './candidates.manager';
 import sendResponse from '../common/response/response';
+import * as dotenv from 'dotenv';
+dotenv.config()
+
 
 export const getPdf = (req, res) => {
   const body = req.body;
@@ -422,11 +425,11 @@ export const sigOn = (req, res) => {
   candidateManager
     .singleSignOn(body)
     .then((response: any) => {
-      res.writeHead(301, { Location: 'https://apps.ellow.io/candidate-login?token=' + response.data.token });
+      res.writeHead(301, { Location: process.env.LINKEDIN_REDIRECT_URL + response.data.token });
       res.end();
     })
     .catch(() => {
-      res.writeHead(301, { Location: 'https://apps.ellow.io/redirect-notification' });
+      res.writeHead(301, { Location: process.env.APP_REDIRECT_URL });
       res.end();
     });
 };
@@ -434,11 +437,11 @@ export const googleSignon = (req, res) => {
   const body = req.query;
   candidateManager.googleSignIn(body).then((response: any) => {
     console.log(response.data.token)
-    res.writeHead(301, {Location: 'https://apps.ellow.io/candidate-login?googleToken='+response.data.token});
+    res.writeHead(301, {Location: process.env.GOOGLE_REDIRECT_URL+response.data.token});
     res.end();
   })
       .catch(() => {
-        res.writeHead(301, {Location: 'https://apps.ellow.io/redirect-notification'});
+        res.writeHead(301, {Location: process.env.APP_REDIRECT_URL});
         res.end();
       });
 };

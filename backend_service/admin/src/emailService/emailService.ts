@@ -15,6 +15,8 @@ export const emailManager = (mailId, subject, path, replacements) => {
     });
   });
 };
+
+
 export const emailManagerCustomerSupport = (mailId, subject, path, replacements) => {
   readHTMLFile(path, function (err, html) {
     var template = handlebars.compile(html);
