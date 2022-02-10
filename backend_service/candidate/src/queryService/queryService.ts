@@ -701,6 +701,14 @@ export const fetchSharedResumeLinkEmails = (candidateId) => {
   };
 };
 
+
+export const checkEMailExistence = (_body) => {
+  return {
+    name: 'check-email-exists-candidate',
+    text: candidateQuery.checkEmailExistenceQuery,
+    values: [_body.email],
+  };
+};
 export const fetchProjects = (candidateId) => {
   return {
     name: 'fetch-project-details',
