@@ -2703,25 +2703,25 @@ export const updateStartAndEndDate = (_body) => {
       try {
         if (utils.checkRate(_body.contractRate)) {
           switch (_body.action) {
-            case 'add':
-              await client.query('COMMIT');
-              await client.query(queryService.updateContractDetails(_body));
-              break;
-
             case 'update':
-              
               await client.query(queryService.setOldContractToFalse(_body));
-              await client.query(queryService.updateContractDetails(_body));
-
               // await client.query(queryService.updateContractStartAndEndDate(_body));
               break;
 
             default:
               reject(new Error({ code: 400, message: 'Invalid action', data: {} }.toString()));
           }
+          if(_body.userRoleId==1)
+          {
+            await client.query(queryService.updateContractDetails(_body));
 
-          if (utils.checkRate(_body.ellowRate)) {
-            client.query(queryService.updateEllowRate(_body));
+          }
+          else{
+            await client.query(queryService.updateContractDetailsByHirer(_body));
+
+          }
+          if ((_body.ellowRate) && utils.checkRate(_body.ellowRate)) {
+            await client.query(queryService.updateEllowRate(_body));
           }
           resolve({ code: 200, message: 'Success', data: {} });
         } else {
