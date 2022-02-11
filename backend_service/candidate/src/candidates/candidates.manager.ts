@@ -160,9 +160,10 @@ export const listIncontractResources = (_body) => {
         queryText = selectQuery + filterQuery + searchQuery + utils.incontractResourceSort(body) + utils.resourcePagination(body);
         queryValues = Object.assign({ positionid: body.positionId, employeeid: body.employeeId, currenttime: currentTime, incontract: incontract }, queryValues);
         const candidateList = await client.query(queryService.listCandidates(queryText, queryValues));
-        const queryCountText = totalQuery + filterQuery + searchQuery;
-        const candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
 
+        const queryCountText = totalQuery + filterQuery + searchQuery;
+
+        const candidateTotal = await client.query(queryService.listCandidatesTotal(queryCountText, queryValues));
         const candidates = candidateList.rows;
         const totalCount = candidateTotal.rows[0].totalCount;
         console.log(totalCount);
@@ -590,13 +591,22 @@ export const modifyProfileDetails = (_body) => {
     (async () => {
       const client = await database().connect();
       try {
-        if (_body.userRoleId == 4) {
-          await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
-        } else {
-          _body.sellerCompanyId = _body.userRoleId == 1 ? _body.sellerCompanyId : _body.companyId;
-          await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
+        var emailCheck=await client.query(queryService.checkEMailExistence(_body));
+        if (emailCheck.rowCount>=1)
+        {
+          reject(new Error({ code: 400, message: 'Email Address already in use. Please try another one', data: config.emailWarning }.toString()));
         }
-        resolve({ code: 200, message: 'Candidate ProfileDetails updated successfully', data: {} });
+        else{
+          
+                  if (_body.userRoleId == 4) {
+                    await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
+                  } else {
+                    _body.sellerCompanyId = _body.userRoleId == 1 ? _body.sellerCompanyId : _body.companyId;
+                    await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
+                  }
+                  resolve({ code: 200, message: 'Candidate ProfileDetails updated successfully', data: {} });
+        }
+        
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
@@ -3036,7 +3046,7 @@ export const devSendinblueCertifiedList = (_body) => {
 
         const apiKey = defaultClient.authentications['api-key'];
         // eslint-disable-next-line no-undef
-        apiKey.apiKey = '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';
+        apiKey.apiKey = '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';
         const results = await client.query(queryService.getCertifiedContactDetails());
         const promise = [];
 

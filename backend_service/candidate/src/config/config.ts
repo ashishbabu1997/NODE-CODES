@@ -45,6 +45,7 @@ export default {
     password: 'DevD8u5er',
     port: 5432,
   },
+  emailWarning:'Email Address Already Exists',
   adminEmail: 'jjoseph@ellow.io',
   mail: {
     service: 'gmail',
