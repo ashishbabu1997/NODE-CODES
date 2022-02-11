@@ -1786,8 +1786,9 @@ export const updateContractDetails = (_body) => {
 };
 
 export const updateContractDetailsByHirer = (_body) => {
+  console.log(_body)
   return {
-    name: 'update-candidate-contract-details-by-hirer',
+    name: 'update-contract-by-hirer',
     text: hiringQuery.insertContractDetails,
     values: [
       _body.candidateId,
@@ -1800,10 +1801,12 @@ export const updateContractDetailsByHirer = (_body) => {
       _body.contractRate.amount,
       _body.contractRate.currencyTypeId,
       _body.contractRate.billingTypeId,
-      _body.employeeId
+      parseInt(_body.employeeId)
     ],
   };
 };
+
+
 export const setIncontractToFalse = (_body) => {
   return {
     name: 'set-candidate-contract-false',
