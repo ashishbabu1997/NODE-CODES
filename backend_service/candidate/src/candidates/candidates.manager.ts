@@ -25,7 +25,7 @@ import * as builder from '../utils/Builder';
 import * as SibApiV3Sdk from 'sib-api-v3-sdk';
 import { google } from 'googleapis';
 import { hasOwnProperty } from 'tslint/lib/utils';
-import { Console } from 'console';
+import { Console, error } from 'console';
 import * as sendinblueService from '../sendinblueServices/freelancerSendinblueMails';
 import { Exception } from 'handlebars';
 import { isElementAccessChain } from 'typescript';
@@ -591,13 +591,22 @@ export const modifyProfileDetails = (_body) => {
     (async () => {
       const client = await database().connect();
       try {
-        if (_body.userRoleId == 4) {
-          await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
-        } else {
-          _body.sellerCompanyId = _body.userRoleId == 1 ? _body.sellerCompanyId : _body.companyId;
-          await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
+        var emailCheck=await client.query(queryService.checkEMailExistence(_body));
+        if (emailCheck.rowCount>=1)
+        {
+          reject(new Error({ code: 400, message: 'Email Address already in use. Please try another one', data: config.emailWarning }.toString()));
         }
-        resolve({ code: 200, message: 'Candidate ProfileDetails updated successfully', data: {} });
+        else{
+          
+                  if (_body.userRoleId == 4) {
+                    await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
+                  } else {
+                    _body.sellerCompanyId = _body.userRoleId == 1 ? _body.sellerCompanyId : _body.companyId;
+                    await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
+                  }
+                  resolve({ code: 200, message: 'Candidate ProfileDetails updated successfully', data: {} });
+        }
+        
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
@@ -1942,7 +1951,7 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
         await client.query('BEGIN');
 
         // Inserting the integer representing the vetting status value
-        _body.tokens = _body.hasOwnProperty('token') ? _body.token : _body.googleToken.slice(0, -1);
+        _body.tokens = _body.hasOwnProperty('token') ? _body.token : _body.googleToken;
         _body.query = _body.hasOwnProperty('token') ? candidateQuery.getDetailsUsingLinkedinToken : candidateQuery.getDetailsUsingGoogleToken;
         const getQuery = {
           name: 'get-employee-details',
@@ -2696,34 +2705,43 @@ export const updateStartAndEndDate = (_body) => {
           switch (_body.action) {
             case 'add':
               await client.query('COMMIT');
-              await client.query(queryService.updateContractDetails(_body));
               break;
-
             case 'update':
               
               await client.query(queryService.setOldContractToFalse(_body));
-              await client.query(queryService.updateContractDetails(_body));
-
-              // await client.query(queryService.updateContractStartAndEndDate(_body));
+              ;
               break;
 
             default:
               reject(new Error({ code: 400, message: 'Invalid action', data: {} }.toString()));
           }
+          if (_body.userRoleId==1)
+          {
+              await client.query(queryService.updateContractDetails(_body));
 
+          }
+          else{
+            await client.query(queryService.updateContractDetailsByHirer(_body));
+
+          }
           if (utils.checkRate(_body.ellowRate)) {
             client.query(queryService.updateEllowRate(_body));
           }
-          resolve({ code: 200, message: 'Success', data: {} });
+
+        resolve({ code: 200, message: 'Success', data: {} });
         } else {
+          console.log(error);
+          
           reject(new Error({ code: 402, message: 'Malformed rate values, please check contract rate send' }.toString()));
         }
+
       } catch (e) {
         console.log(e);
         await client.query('ROLLBACK');
         reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
       }
     })().catch((e) => {
+      console.log(e)
       reject({ code: 400, message: 'Failed. Please try again ', data: e.message });
     });
   });
