@@ -3003,14 +3003,19 @@ export const googleSignIn = (_body) => {
           version: 'v2',
         });
         let { data } = await oauth2.userinfo.get();
-
         // Data Check from database
         (_body.email = data.email), (_body.firstName = data.given_name), (_body.lastName = data.family_name);
         let employeeCheck = await client.query(queryService.getEmail(_body));
         if (employeeCheck.rowCount == 1) {
-          _body.employeeId = employeeCheck.rows[0].employee_id;
-          _body.companyId = employeeCheck.rows[0].company_id;
-          _body.userRoleId = employeeCheck.rows[0].user_role_id;
+          if(employeeCheck.rows[0].user_role_id!=4)
+          {
+            reject({ code: 400, message: 'Email Already Exist', data: {} });
+          }
+          else{
+            _body.employeeId = employeeCheck.rows[0].employee_id;
+            _body.companyId = employeeCheck.rows[0].company_id;
+            _body.userRoleId = employeeCheck.rows[0].user_role_id;
+          }
         } else {
           let employeeEntry = await client.query(queryService.googleSSOEmployeeInsertion(_body));
           let candidateEntry = await client.query(queryService.insertIntoCandidate(_body));
