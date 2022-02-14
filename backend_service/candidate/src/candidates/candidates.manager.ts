@@ -1951,7 +1951,7 @@ export const getLinkedinEmployeeLoginDetails = (_body) => {
         await client.query('BEGIN');
 
         // Inserting the integer representing the vetting status value
-        _body.tokens = _body.hasOwnProperty('token') ? _body.token : _body.googleToken.slice(0, -1);
+        _body.tokens = _body.hasOwnProperty('token') ? _body.token : _body.googleToken;
         _body.query = _body.hasOwnProperty('token') ? candidateQuery.getDetailsUsingLinkedinToken : candidateQuery.getDetailsUsingGoogleToken;
         const getQuery = {
           name: 'get-employee-details',
