@@ -35,5 +35,6 @@ export default {
         "providersSubject":"New job posts from ellow.io"
     },
     "nextLine": "<br>",
-    "colon":":"
+    "colon":":",
+    "recruiterEmail":"ashish.babu@ellow.io"
 }

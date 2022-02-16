@@ -26,6 +26,7 @@ export default {
     getNotificationDetails: `select p.company_id as "companyId",p.position_name as "positionName", c.company_name as "companyName"from positions p left join company c on c.company_id = p.company_id where p.position_id = $1 and p.status = true`,
     getEmailAddressOfBuyerFromPositionId:'SELECT p.position_name ,e.email,e.company_id,c.company_name,p.job_status  FROM positions p LEFT JOIN employee e ON e.company_id=p.company_id LEFT JOIN company c on c.company_id=p.company_id  WHERE p.position_id=$1 ORDER BY e.employee_id LIMIT 1',
     deletePosition:'delete from positions where position_id=$1',
+    getSpecificRecruiterId:'select employee_id from employee where email ilike $1',
     getJobCategoryName:'select job_category_name from  job_category  WHERE job_category_id=$1',
     getSkillName:'select json_agg(json_build_object(\'skillName\',skill_name)) as skills from skills where skill_id in ($1)',
     insertReadStatus:'INSERT INTO position_read_status( position_id, employee_id, created_on, updated_on) values ($1,$2,$3,$3) on conflict on constraint position_read_status_position_id_employee_id_unique_key do nothing',

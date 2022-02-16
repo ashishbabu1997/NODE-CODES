@@ -126,25 +126,29 @@ export const createCompanyPositions = async (_body) => {
               userRoleId: _body.userRoleId,
               employeeId: _body.employeeId,
             });
-            await client.query(queryService.assigneeQuery(_body));
-            if (_body.typeOfJob == 0 || _body.typeOfJob == 1) {
-              var providers = await client.query(queryService.getAllProviders(_body));
-              var jobCategory = await client.query(queryService.getJobCategoryName(_body));
-              var jobRole = jobCategory.rows[0].job_category_name;
-              _body.skills.topRatedSkills.forEach((element) => {
-                _body.skillNames.push({ skillName: element.skillName });
-              });
-              var providerReplacements = { jobRole: jobRole, experienceLevel: _body.experienceInString, profiles: _body.developerCount, skills: _body.skillNames };
-              var providersPath = 'src/emailTemplates/newPositionAlertProviders.html';
-              if (Array.isArray(providers.rows)) {
-                providers.rows.forEach((element) => {
-                  _body.providerMails.push(element.email);
-                });
-              }
-              emailClient.multipleEmailManager(_body.providerMails, config.PositionText.providersSubject, providersPath, providerReplacements);
-            }
+           
           } else {
-            // console.log("Hirer or provider")
+            
+            const RecruiterId = await client.query(queryService.selectSpecificRecruiter());
+            _body.allocatedTo=RecruiterId.rows[0].employee_id
+
+          }
+          await client.query(queryService.assigneeQuery(_body));
+          if (_body.typeOfJob == 0 || _body.typeOfJob == 1) {
+            var providers = await client.query(queryService.getAllProviders(_body));
+            var jobCategory = await client.query(queryService.getJobCategoryName(_body));
+            var jobRole = jobCategory.rows[0].job_category_name;
+            _body.skills.topRatedSkills.forEach((element) => {
+              _body.skillNames.push({ skillName: element.skillName });
+            });
+            var providerReplacements = { jobRole: jobRole, experienceLevel: _body.experienceInString, profiles: _body.developerCount, skills: _body.skillNames };
+            var providersPath = 'src/emailTemplates/newPositionAlertProviders.html';
+            if (Array.isArray(providers.rows)) {
+              providers.rows.forEach((element) => {
+                _body.providerMails.push(element.email);
+              });
+            }
+            emailClient.multipleEmailManager(_body.providerMails, config.PositionText.providersSubject, providersPath, providerReplacements);
           }
           await client.query('COMMIT');
 
