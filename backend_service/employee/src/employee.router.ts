@@ -18,6 +18,7 @@ router
     .post('/ellowRecruiterSignup',employeeController.ellowRecruiterSignup)
     .put('/editRecruiterDetails',jwtAuth, setData(),employeeController.ellowRecruiterSignup)
     .get('/getAllAdmins', employeeController.getellowAdminsDetails)
+    .get('/getAllAdminsAndHirers', employeeController.getellowAdminsHirers)
     .get('/getEmployees',jwtAuth, setData(), employeeController.getEmployeesFromCompany)
     .get('/switchUser', jwtAuth, setData(), employeeController.switchUserController)
 
