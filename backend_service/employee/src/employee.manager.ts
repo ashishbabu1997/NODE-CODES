@@ -693,6 +693,37 @@ export const getAdminDetails = (_body) => {
     })
 }
 
+
+
+// >>>>>>> FUNC. >>>>>>>
+//>>>>>>>>>>>>>>>>>>Get Admins & Hirers 
+export const getAdminAndHirers = (_body) => {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            const client = await database()
+            try {
+                await client.query('BEGIN');
+
+                const allAdmins = {
+                    name: 'admin-signup',
+                    text: employeeQuery.getellowAdminsAndHirers,
+                    values: []
+                }
+                let result = await client.query(allAdmins);
+                resolve({ code: 200, message: "Success", data: { adminDetails: result.rows } });
+                await client.query('COMMIT')
+            } catch (e) {
+                console.log("Error e1: ", e);
+                await client.query('ROLLBACK')
+                reject({ code: 400, message: "Failed. Please try again.", data: e.message });
+            }
+        })().catch(e => {
+            console.log("Error e2: ", e);
+            reject({ code: 400, message: "Failed. Please try again.", data: { e } })
+        })
+
+    })
+}
 // >>>>>>> FUNC. >>>>>>>
 //>>>>>>>>>>>>>>>>>>Get employees
 export const getAllEmployees = (_body) => {

@@ -33,7 +33,7 @@ export const usersFilter = (filter, filterQuery) => {
       }
       if (notNull(companyType)) {
         if (companyType == 'Hirer') {
-          filterQuery = filterQuery + ' and  "accountType"=1';
+          filterQuery = filterQuery + ' and "accountType"=1';
         } else if (companyType == 'Provider') {
           filterQuery = filterQuery + ' and "accountType"=2';
         }
