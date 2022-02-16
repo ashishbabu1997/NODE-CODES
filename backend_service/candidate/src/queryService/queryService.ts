@@ -709,6 +709,13 @@ export const checkEMailExistence = (_body) => {
     values: [_body.email],
   };
 };
+export const checkMultipleMails = (_body) => {
+  return {
+    name: 'check-multiple-email-exists-candidate',
+    text: candidateQuery.checkMultipleEmailExistenceQuery,
+    values: [_body.email],
+  };
+};
 export const fetchProjects = (candidateId) => {
   return {
     name: 'fetch-project-details',

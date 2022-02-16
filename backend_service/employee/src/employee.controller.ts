@@ -81,6 +81,17 @@ export const  getellowAdminsDetails= (req, res) => {
         sendResponse(res, error.code, 0,error.statusCode, error.message, error.data)
     })
 }
+
+
+export const  getellowAdminsHirers= (req, res) => {
+    const body = req.query;
+    employeeManager.getAdminAndHirers(body).then((response: any) => {
+        sendResponse(res, response.code, 1,202, response.message, response.data)
+    }).catch(error => {
+        sendResponse(res, error.code, 0,error.statusCode, error.message, error.data)
+    })
+}
+
 export const  getEmployeesFromCompany= (req, res) => {
     const body = req.query;
     employeeManager.getAllEmployees(body).then((response: any) => {
