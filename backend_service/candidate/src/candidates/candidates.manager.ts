@@ -589,10 +589,10 @@ export const modifyResumeData = (_body) => {
 export const modifyProfileDetails = (_body) => {
   return new Promise((resolve, reject) => {
     (async () => {
-      const client = await database().connect();
+      const client = await database()
       try {
         var emailCheck=await client.query(queryService.checkEMailExistence(_body));
-        if (emailCheck.rowCount>=1)
+        if (emailCheck.rowCount>1)
         {
           reject(new Error({ code: 400, message: 'Email Address already in use. Please try another one', data: config.emailWarning }.toString()));
         }
@@ -602,7 +602,7 @@ export const modifyProfileDetails = (_body) => {
                     await client.query(queryService.modifyFreelancerProfileDetailsQuery(_body));
                   } else {
                     _body.sellerCompanyId = _body.userRoleId == 1 ? _body.sellerCompanyId : _body.companyId;
-                    await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
+                   await client.query(queryService.modifyCandidateProfileDetailsQuery(_body));
                   }
                   resolve({ code: 200, message: 'Candidate ProfileDetails updated successfully', data: {} });
         }
@@ -611,9 +611,7 @@ export const modifyProfileDetails = (_body) => {
         console.log(e);
         await client.query('ROLLBACK');
         reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
-      } finally {
-        client.release();
-      }
+      } 
     })().catch((e) => {
       reject(new Error({ code: 400, message: 'Failed. Please try again.', data: e.message }.toString()));
     });
