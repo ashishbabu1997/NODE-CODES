@@ -196,7 +196,8 @@ export const createEmployeeByAdmin = (_body) => {
                 let accountTypeResult;
                 let adminApproveStatus = 1, approvalStatus = true;
                 if (companyId == null) {
-                    var domain=utils.domainExtractor(loweremailId)
+                    var domain=utils.domainExtractor(loweremailId);
+                    _body.companyType=_body.accountType==1?1:3;
                     const createCompanyQuery = {
                         name: 'createCompany',
                         text: employeeQuery.createCompanyByAdmin,
