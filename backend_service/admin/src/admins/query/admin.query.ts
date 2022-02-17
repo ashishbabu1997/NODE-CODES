@@ -11,6 +11,8 @@ export default {
   subUserClearanceQuery: 'UPDATE employee SET status=$2,admin_approve_status=$3,updated_on=$4 WHERE company_id=$1',
   clearanceQuery: 'UPDATE employee SET status=$2,admin_approve_status=$3,updated_on=$4 WHERE employee_id=$1 RETURNING firstname,lastname,email,company_id,account_type',
   approveEmployeeQuery: 'UPDATE employee SET status= true, admin_approve_status=1, password=$2, updated_on=$3 WHERE employee_id = $1 RETURNING email,firstname,lastname',
+  approveCompany:'update company set status=true,admin_approve_status=1 where company_id=$1',
+  rejectCompany:'update company set status=false,admin_approve_status=0 where company_id=$1',
   reApproveEmployeeQuery: 'UPDATE employee SET status= false, admin_approve_status=1, password=$2, updated_on=$3 WHERE employee_id = $1 RETURNING email,firstname,lastname',
   storePassword: 'UPDATE  employee SET password=$1 WHERE email=$2',
   saveRecruiterQuery: 'update company set assesed_by=$1 where company_id=$2',
