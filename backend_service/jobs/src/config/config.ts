@@ -36,5 +36,5 @@ export default {
     },
     "nextLine": "<br>",
     "colon":":",
-    "recruiterEmail":"deena.s@ellow.io"
+    "recruiterEmail":"jesleen@ellow.io"
 }
