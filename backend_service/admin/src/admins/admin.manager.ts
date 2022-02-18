@@ -188,6 +188,16 @@ export const clearance = (_body) => {
           text: adminQuery.approveEmployeeQuery,
           values: [_body.selectedEmployeeId, hashedPassword, currentTime],
         };
+        const companyApprovalQuery = {
+          name: 'company-approval',
+          text: adminQuery.approveCompany,
+          values: [companyId],
+        };
+        const companyRejectQuery = {
+          name: 'company-rejection',
+          text: adminQuery.rejectCompany,
+          values: [companyId],
+        };
         const adminReApprovalQuery = {
           name: 'user-reapproval',
           text: adminQuery.reApproveEmployeeQuery,
@@ -195,6 +205,7 @@ export const clearance = (_body) => {
         };
         // Approving a user
         if (_body.decisionValue == 1) {
+           await client.query(companyApprovalQuery);
           if (_body.repeatValue == true) {
             const password = passwordGenerator.generate({
               length: 10,
@@ -261,6 +272,7 @@ export const clearance = (_body) => {
             }
           }
         } else {
+          await client.query(companyRejectQuery);
           if (_body.repeatValue == true) {
             var rejectResultSet = await client.query(userRejectQuery);
             if (rejectResultSet.rows[0].account_type == 1) {

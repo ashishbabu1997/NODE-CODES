@@ -1,7 +1,7 @@
 import positionsQuery from '../positions/query/positions.query';
 import jobReceivedQuery from '../jobreceived/query/jobreceived.query';
 import dashboardQuery from '../dashboard/query/query';
-
+import config from '../config/config';
 import * as format from 'pg-format';
 import jobreceivedQuery from '../jobreceived/query/jobreceived.query';
 
@@ -444,6 +444,15 @@ export const getNotificationDetailsQuery = (_body) => {
         name: 'get-notification-details',
         text: positionsQuery.getNotificationDetails,
         values: [_body.positionId]
+
+    }
+}
+
+export const selectSpecificRecruiter = () => {
+    return {
+        name: 'get-recruiter-details',
+        text: positionsQuery.getSpecificRecruiterId,
+        values: [config.recruiterEmail]
 
     }
 }
