@@ -56,10 +56,11 @@ export const createEmployee = (_body) => {
                 let userData;
                 if (companyId == null) {
                     var domain=utils.domainExtractor(loweremailId)
+                    _body.companyType=_body.body.accountType == 1?1:3;
                     const createCompanyQuery = {
                         name: 'createCompany',
                         text: employeeQuery.createCompany,
-                        values: [_body.body.companyName, currentTime(),domain],
+                        values: [_body.body.companyName, currentTime(),_body.companyType,domain],
                     }
                     const result = await client.query(createCompanyQuery);
                      // create an entry in settings table later used for company preferences like currency
