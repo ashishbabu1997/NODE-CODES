@@ -21,7 +21,7 @@ export default {
     deletePositionReadStatus:'delete from position_read_status where position_id=$1',
     changeJobStatus: 'UPDATE positions SET job_status=$3,updated_on=$1 WHERE position_id=$2 ',
     // changeJobReceivedStatus: 'UPDATE job_received SET job_received_status=$3,updated_on=$1 WHERE position_id=$2 ',
-    getNames: 'SELECT DISTINCT c.company_id as "companyId", c.company_name as "companyName" from company c WHERE c.status = true AND c.company_type in ($1,4) ORDER BY c.company_name',
+    getNames: 'SELECT DISTINCT c.company_id as "companyId", c.company_name as "companyName" from company c WHERE c.status = true AND c.company_type in ($1,4) AND c.admin_approve_status=1 ORDER BY c.company_name',
     getCompanyName: 'SELECT company_name as "companyName" FROM company WHERE company_id=$1',
     getNotificationDetails: `select p.company_id as "companyId",p.position_name as "positionName", c.company_name as "companyName"from positions p left join company c on c.company_id = p.company_id where p.position_id = $1 and p.status = true`,
     getEmailAddressOfBuyerFromPositionId:'SELECT p.position_name ,e.email,e.company_id,c.company_name,p.job_status  FROM positions p LEFT JOIN employee e ON e.company_id=p.company_id LEFT JOIN company c on c.company_id=p.company_id  WHERE p.position_id=$1 ORDER BY e.employee_id LIMIT 1',
